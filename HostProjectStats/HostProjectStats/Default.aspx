@@ -16,7 +16,7 @@
     <asp:Panel ID="Panel1" runat="server" Height="860px" Width="806px">
         Browse to a project that interests you, say Milkyway, Select a computer, select tasks at that computer<br /> select VALID tasks and makes sure there are exactly 20. Then copy the url from your browser<br /> into the &quot;Paste the url&quot; box below and click &quot;CALCULATE&quot;. You can also CLEAR the statistics or<br /> select additional pages of data up to a total of 10 pages.&nbsp;&nbsp; This program cannot log in to a uses account
         <br />
-        so you must enter a url that points to a host computer and NOT a list of user tasks.&nbsp; Sample urls are in<br /> the pull down box &quot;TEST HOST&#39;.&nbsp; They are the TOP computer (where available) that have the best<br /> statistics at the corresponding project. To demo what this program does, select a TEST HOST.&nbsp; To<br /> see the original data at web site click on &quot;REVIEW DATA&quot;<br />
+        so you must enter a url that points to a host computer and NOT a list of user tasks.&nbsp; Sample urls are in<br /> the pull down box &quot;TEST HOST&#39;.&nbsp; They are the TOP computer (where available) that have the best<br /> statistics at the corresponding project. To demo what this program does, select a TEST HOST.&nbsp; To<br /> see the original data at web site click on &quot;REVIEW DATA&quot;.&nbsp; The C# sources are at Github/BeemerBiker.<br />
         <br />
         TEST HOST DEMO:
         <asp:DropDownList ID="ddlTest" runat="server" AutoPostBack="True" OnSelectedIndexChanged="ddlTest_SelectedIndexChanged">
@@ -35,7 +35,7 @@
             <asp:ListItem Value="https://setiathome.berkeley.edu/results.php?hostid=7475713&amp;offset=0&amp;show_names=0&amp;state=4&amp;appid=">SETI</asp:ListItem>
         </asp:DropDownList>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <asp:Button ID="btnReview" runat="server" Text="REVIEW DATA" />
+        <asp:Button ID="btnReview" runat="server" Text="REVIEW DATA" OnClick="btnReview_Click" />
         <br />
         <br />
         <asp:Label ID="Label1" runat="server" BackColor="#FFCCFF" Text="Paste the url here"></asp:Label>
@@ -73,6 +73,11 @@
             <asp:ListItem>collatz</asp:ListItem>
             <asp:ListItem>latinsquares</asp:ListItem>
             <asp:ListItem>setiathome</asp:ListItem>
+            <asp:ListItem>latinsquares</asp:ListItem>
+            <asp:ListItem>Amicable</asp:ListItem>
+            <asp:ListItem>Enigma</asp:ListItem>
+            <asp:ListItem>LHC</asp:ListItem>
+            <asp:ListItem>SETI</asp:ListItem>
         </asp:DropDownList>
         <br />
         <br />

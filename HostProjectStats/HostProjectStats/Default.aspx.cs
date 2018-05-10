@@ -29,8 +29,8 @@ namespace HostProjectStats
         string StatsOut;
         // escatter is nfs at home
         enum eProjectID { einstein, milkyway, collatz, gpugrid, amicable, asteroids, cosmology, drugdiscovery, enigmaathome, latinsquares, lhcathome, escatter, theskynet, setiathome  };
-        string[] strProjNames = 
-            {"einstein", "milkyway", "collatz", "gpugrid", "amicable", "asteroids", "cosmology",
+        string[] strProjNames =  // damn -- casesensitive i forgot about that
+            {"einstein", "milkyway", "collatz", "gpugrid", "Amicable", "asteroids", "cosmology",
             "drugdiscovery", "enigmaathome", "latinsquares", "lhcathome", "escatter", "theskynet", "setiathome"};
         int iProjectID;
         //return bWasValid ? strTemp : strToday;
@@ -70,14 +70,21 @@ namespace HostProjectStats
 
         protected void Page_Load(object sender, EventArgs e)
         {
-
+            int i = 0;
             client = new WebClient();
             client.Headers.Add("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.2; .NET CLR 1.0.3705");
             Rt = new double[MaxNumSamples];
             Ct = new double[MaxNumSamples];
             Cr = new double[MaxNumSamples];
             ZeroStuff();
-            ProjUrl.Text = ddlTest.SelectedValue;
+            if (!IsPostBack)
+            {
+                ProjUrl.Text = ddlTest.SelectedValue;
+            }
+            else
+            {
+                i++;
+            }
         }
 
         double GetSTD(ref double[] dIn, double dAvg)
@@ -192,6 +199,7 @@ namespace HostProjectStats
                 case eProjectID.latinsquares:
                 case eProjectID.enigmaathome:
                 case eProjectID.lhcathome:
+                case eProjectID.amicable:
                     string strH = "<td><a href=" + "\"" + "workunit.php";
                     iStart = RawPage.IndexOf(strH);
                     iEnd = RawPage.Substring(iStart).IndexOf("</table>");
@@ -243,7 +251,7 @@ namespace HostProjectStats
             switch ((eProjectID) iProjectID )
             {
                 case eProjectID.einstein:
-                    strTmp += "?page=1";
+                    strTmp += "?page=0";
                     break;
                 case eProjectID.gpugrid:
                     strTmp += "&offset=0&show_names=0&state=3&appid=";
@@ -273,6 +281,7 @@ namespace HostProjectStats
             string strPrefix = "", strSuffix = "";
             int iStart=0, iEnd = -1;
             int iOffset = 0;
+            int j;
             string strProjUrl = ProjUrl.Text;
             if (ProjectLookup(strProjUrl) < 0) return;
             strProjUrl = ValidateUrl(ProjUrl.Text);
@@ -290,8 +299,10 @@ namespace HostProjectStats
                     iOffset = Convert.ToInt32(strProjUrl.Substring(iStart, iEnd - iStart));
                     break;
                 case eProjectID.einstein:
-                    strPrefix = strProjUrl + "?page=";
-                    strSuffix = "0";
+                    iStart = strProjUrl.IndexOf("page=");
+                    iStart += 5;
+                    strPrefix = strProjUrl.Substring(0, iStart);
+                    strSuffix = strProjUrl.Substring(iStart);
                     break;
             }
 
@@ -305,8 +316,10 @@ namespace HostProjectStats
             {
                 if((eProjectID) iProjectID == eProjectID.einstein)
                 {
-                    strSuffix = i.ToString();
                     nexturl = strPrefix + strSuffix;
+                    j = Convert.ToInt32(strSuffix);
+                    j++;
+                    strSuffix = j.ToString();
                 }
                 else
                 {
@@ -352,8 +365,10 @@ namespace HostProjectStats
 
         protected void btnReview_Click(object sender, EventArgs e)
         {
-            Response.Redirect(ddlTest.SelectedValue);
+            Response.Redirect(ProjUrl.Text);
         }
+
+        
 
 
 
