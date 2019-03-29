@@ -16,9 +16,9 @@ namespace HostProjectStats
     {
 
         WebClient client;
-        const int NumberToCollect = 20;
+        int NumberToCollect = 20;
         const int NumberMaxPages = 10;
-        const int MaxNumSamples = NumberMaxPages * NumberToCollect;
+        const int MaxNumSamples = NumberMaxPages * 20;
         int nTotalSamples;
         string RawPage;
         string RawTable;
@@ -28,10 +28,10 @@ namespace HostProjectStats
         int nPagesToRead;
         string StatsOut;
         // escatter is nfs at home
-        enum eProjectID { einstein, milkyway, collatz, gpugrid, amicable, asteroids, cosmology, drugdiscovery, enigmaathome, latinsquares, lhcathome, escatter, theskynet, setiathome  };
+        enum eProjectID { einstein, milkyway, collatz, gpugrid, amicable, asteroids, cosmology, drugdiscovery, enigmaathome, latinsquares, lhcathome, escatter, theskynet, setiathome, rosetta  };
         string[] strProjNames =  // damn -- casesensitive i forgot about that
             {"einstein", "milkyway", "collatz", "gpugrid", "Amicable", "asteroids", "cosmology",
-            "drugdiscovery", "enigmaathome", "latinsquares", "lhcathome", "escatter", "theskynet", "setiathome"};
+            "drugdiscovery", "enigmaathome", "latinsquares", "lhcathome", "escatter", "theskynet", "setiathome","rosetta"};
         int iProjectID;
         //return bWasValid ? strTemp : strToday;
 
@@ -200,13 +200,15 @@ namespace HostProjectStats
                 case eProjectID.enigmaathome:
                 case eProjectID.lhcathome:
                 case eProjectID.amicable:
+                case eProjectID.rosetta:
+                case eProjectID.milkyway:
                     string strH = "<td><a href=" + "\"" + "workunit.php";
                     iStart = RawPage.IndexOf(strH);
                     iEnd = RawPage.Substring(iStart).IndexOf("</table>");
                     iEnd += iStart;
                     if (iStart < 0 || iEnd < 0 || (iStart >= iEnd)) return -4;
                     RawTable = RawPage.Substring(iStart, iEnd - iStart);
-                    BuildStatsTable();
+                    return BuildStatsTable();
                     break;
                 default:
                     iStart = RawPage.IndexOf("<tr class=row0>");
@@ -223,7 +225,7 @@ namespace HostProjectStats
                     iEnd += iStart;
                     if (iStart < 0 || iEnd < 0 || (iStart >= iEnd)) return -4;
                     RawTable = RawPage.Substring(iStart, iEnd - iStart);
-                    BuildStatsTable();
+                    return BuildStatsTable();
                     break;
 
             }
@@ -231,6 +233,7 @@ namespace HostProjectStats
         }
 
         //https://milkyway.cs.rpi.edu/milkyway/results.php?hostid=766466&offset=0&show_names=0&state=4&appid=
+        //https://milkyway.cs.rpi.edu/milkyway/results.php?hostid=799122&offset=0&show_names=0&state=4&appid=
 
         private string ValidateUrl(string strIN)
         {
@@ -283,6 +286,7 @@ namespace HostProjectStats
             int iOffset = 0;
             int j;
             string strProjUrl = ProjUrl.Text;
+            NumberToCollect = Convert.ToInt32(tb_num2read.Text);
             if (ProjectLookup(strProjUrl) < 0) return;
             strProjUrl = ValidateUrl(ProjUrl.Text);
             if(strProjUrl =="")
@@ -332,6 +336,7 @@ namespace HostProjectStats
             }
             ShowData();
             FormStats();
+
             ResultsBox.Text = StatsOut;
         }
 
@@ -340,6 +345,7 @@ namespace HostProjectStats
             ZeroStuff();
             ResultsBox.Text = "";
             ProjUrl.Text = "";
+            tb_num2read.Text = "20";
         }
 
 
@@ -392,31 +398,36 @@ namespace HostProjectStats
 
         void FormStats()
         {
-            double t;
+            double t, tcc;
             string outStr = "";
             StatsOut += "         ----------------------------------\n";
             t = avgRt = avgRt / nTotalSamples;
+            tcc = t;
             outStr += t.ToString("0.0").PadLeft(12);
             t = avgCt = avgCt / nTotalSamples;
             outStr += t.ToString("0.0").PadLeft(14);
             t = avgCr = avgCr / nTotalSamples;
             outStr += t.ToString("0.0").PadLeft(13);
-
+            tcc /= t;
             StatsOut += "AVG:" + outStr;
             outStr = "\nSTD:";
             outStr += GetSTD(ref Rt, avgRt).ToString("0.0").PadLeft(12);
             outStr += GetSTD(ref Ct, avgCt).ToString("0.0").PadLeft(14);
             outStr += GetSTD(ref Cr, avgCr).ToString("0.0\n\n").PadLeft(15);
+            outStr += tcc.ToString("0.00 seconds per credit\n");
             StatsOut += outStr;
         }
+
+        // TIME TO COMPLETE ONE CREDIT
+
 
         private int BuildStatsTable()
         {
             int i;
             RawLines = RawTable.Split(new string[] { "\n", "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
-            if (RawLines.Count() < 200)
+            if (RawLines.Count() < 10 * NumberToCollect)
             {
-                ResultsBox.Text = "Error - must have at least " + NumberToCollect.ToString() + " values on a page";
+                ResultsBox.Text = "Error - must have at least " + NumberToCollect.ToString() + " values on a page\n";
                 return -1;
             }
             for (i = 0; i < 21; i++)
@@ -427,7 +438,7 @@ namespace HostProjectStats
                     return 0;
                 }
             }
-            ResultsBox.Text = "Error - could not find first value on the page";
+            ResultsBox.Text = "Error - could not find first value on the page\n";
             return -2;
         }
 

@@ -26,10 +26,7 @@
                 <a href="mailto:GRCcontact@stateson.net?subject=GRCemail">SendEmail</a>
             <br />
             All else:&nbsp;
-                <a href="mailto:PEBCAK@127.0.0.1?subject=Where you are going it is not half full">SendEmail</a>
-
-        <br />
-        <br />
+                <a href="mailto:PEBCAK@127.0.0.1?subject=Where you are going it is not half full">SendEmail</a>&nbsp;&nbsp; The C# sources are at Github/BeemerBiker.<br />
         <br />
         Other programs you may like.&nbsp; If you got to this web page you ran one of them already.<br />
         <br />

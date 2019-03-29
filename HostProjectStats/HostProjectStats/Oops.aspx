@@ -9,9 +9,10 @@
 <body>
     <form id="form1" runat="server">
         <div>
-            BUG BUG BUG
-            This program was tested only on Milkyway and Einstein and probably generates
-            horrendous errors on other sites. 
+            BUG OR NO ANOMYMOUS ACCESS, BACK UP, CLICK ON "CLEAR"
+            AND PAST URL AGAIN.  iF LESS THEN 20 CHANGE THAT 20
+            YOU MUST HAVE AUTO LOGIN ENABLED SINCE NO ANOM ALLOWED
+            SOURCE CODE IS AT GITHUB UNDER BEEMERBIKER
         </div>
     </form>
 </body>
