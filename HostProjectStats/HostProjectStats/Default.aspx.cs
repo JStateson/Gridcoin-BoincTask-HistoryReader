@@ -17,6 +17,8 @@ namespace HostProjectStats
 
         WebClient client;
         int NumberToCollect = 20;
+        int NumberWatts = 0;
+        int NumberConcurrent = 1;
         const int NumberMaxPages = 10;
         const int MaxNumSamples = NumberMaxPages * 20;
         int nTotalSamples;
@@ -126,9 +128,9 @@ namespace HostProjectStats
 
         void ExtractTriplet(int iLocation, int iIndex)
         {
-            Rt[iIndex] = GetValue(iLocation, 0);
-            Ct[iIndex] = GetValue(iLocation, 1);
-            Cr[iIndex] = GetValue(iLocation, 2);;
+            Rt[iIndex] = GetValue(iLocation, 0) / NumberConcurrent;
+            Ct[iIndex] = GetValue(iLocation, 1) / NumberConcurrent;
+            Cr[iIndex] = GetValue(iLocation, 2) / NumberConcurrent;
         }
 
         void ShowData()
@@ -287,6 +289,8 @@ namespace HostProjectStats
             int j;
             string strProjUrl = ProjUrl.Text;
             NumberToCollect = Convert.ToInt32(tb_num2read.Text);
+            NumberConcurrent = Convert.ToInt32(tb_ntasks.Text);
+            NumberWatts = Convert.ToInt32(tb_watts.Text);
             if (ProjectLookup(strProjUrl) < 0) return;
             strProjUrl = ValidateUrl(ProjUrl.Text);
             if(strProjUrl =="")
@@ -346,6 +350,8 @@ namespace HostProjectStats
             ResultsBox.Text = "";
             ProjUrl.Text = "";
             tb_num2read.Text = "20";
+            tb_ntasks.Text   = "1";
+            tb_watts.Text = "0";
         }
 
 
@@ -414,7 +420,12 @@ namespace HostProjectStats
             outStr += GetSTD(ref Rt, avgRt).ToString("0.0").PadLeft(12);
             outStr += GetSTD(ref Ct, avgCt).ToString("0.0").PadLeft(14);
             outStr += GetSTD(ref Cr, avgCr).ToString("0.0\n\n").PadLeft(15);
-            outStr += tcc.ToString("0.00 seconds per credit\n");
+            outStr += tcc.ToString("#,##0.00 seconds per credit\n");
+            if (NumberWatts > 0)
+            {
+                tcc *= NumberWatts;
+                outStr += tcc.ToString("#,##0.00 watts per credit\n");
+            }
             StatsOut += outStr;
         }
 

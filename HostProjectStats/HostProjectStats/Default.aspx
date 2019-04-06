@@ -14,11 +14,13 @@
          <p> 
 
     <asp:Panel ID="Panel1" runat="server" Height="860px" Width="806px">
-        Browse to a project that interests you, say Milkyway, Select a computer, select tasks at that computer<br /> select VALID tasks and makes sure there are exactly 20. Then copy the url from your browser<br /> into the &quot;Paste the url&quot; box below and click &quot;CALCULATE&quot;. You can also CLEAR the statistics or<br /> select additional pages of data up to a total of 10 pages.&nbsp;&nbsp; This program cannot log in to a uses account
+        Browse to a project that interests you, say Milkyway, Select a computer, select tasks at that computer<br /> select VALID tasks and makes sure there are exactly 20 or lower the value. Then copy the url from your<br /> browser into the &quot;Paste the url&quot; box below and click &quot;CALCULATE&quot;. You can also CLEAR the statistics<br /> or select additional pages of data up to a total of 10 pages.&nbsp;&nbsp; This program cannot log in to a uses account
         <br />
-        so you must enter a url that points to a host computer and NOT a list of user tasks.&nbsp; Sample urls are in<br /> the pull down box &quot;TEST HOST&#39;.&nbsp; They are the TOP computer (where available) that have the best<br /> statistics at the corresponding project. To demo what this program does, select a TEST HOST.&nbsp; To<br /> see the original data at web site click on &quot;REVIEW DATA&quot;.&nbsp; THIS NO LONGER WORKS ON<br /> PROJECTS THAT BLOCK ANONYMOUS ACCESS.&nbsp; Usefull on your own projects only.<br />
+        so you must enter a url that points to a host computer and NOT a list of user tasks.&nbsp; Sample urls are in<br /> the pull down box &quot;TEST HOST&#39;.&nbsp; They are the TOP computer (where available) that have the best<br /> statistics at the corresponding project. To demo what this program does, select a TEST HOST.&nbsp; To<br /> see the original data at web site click on &quot;REVIEW DATA&quot;.&nbsp; THIS NO LONGER WORKS ON<br /> PROJECTS THAT BLOCK ANONYMOUS ACCESS.&nbsp; Useful on your own projects only.<br /> Enter watts (45, 120, etc) rating of GPU to compute watts per credit.&nbsp;
         <br />
-        TEST HOST DEMO:
+        nCon is number of concurrent tasks in a single GPU (default is 1) .
+        <br />
+        TEST DEMO:
         <asp:DropDownList ID="ddlTest" runat="server" AutoPostBack="True" OnSelectedIndexChanged="ddlTest_SelectedIndexChanged">
             <asp:ListItem Value="https://milkyway.cs.rpi.edu/milkyway/results.php?hostid=591552&amp;offset=0&amp;show_names=0&amp;state=4&amp;appid=">Milkyway</asp:ListItem>
             <asp:ListItem Value="https://einsteinathome.org/host/12153266/tasks/4/0">Einstein</asp:ListItem>
@@ -35,9 +37,16 @@
             <asp:ListItem Value="https://setiathome.berkeley.edu/results.php?hostid=7475713&amp;offset=0&amp;show_names=0&amp;state=4&amp;appid=">SETI</asp:ListItem>
         </asp:DropDownList>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <asp:Button ID="btnReview" runat="server" Text="REVIEW DATA" OnClick="btnReview_Click" />
+        <asp:Button ID="btnReview" runat="server" Text="REVIEW DATA" OnClick="btnReview_Click" Width="99px" />
         &nbsp;&nbsp;&nbsp;&nbsp;
         <asp:TextBox ID="tb_num2read" runat="server" Width="28px">20</asp:TextBox>
+        &nbsp;
+        <asp:Label ID="Label3" runat="server" Text="Watts"></asp:Label>
+&nbsp;<asp:TextBox ID="tb_watts" runat="server" Width="28px">0</asp:TextBox>
+&nbsp;
+        <asp:Label ID="Label4" runat="server" Text="nCon"></asp:Label>
+&nbsp;
+        <asp:TextBox ID="tb_ntasks" runat="server" Width="28px">1</asp:TextBox>
         <br />
         <br />
         <asp:Label ID="Label1" runat="server" BackColor="#FFCCFF" Text="Paste the url here"></asp:Label>
