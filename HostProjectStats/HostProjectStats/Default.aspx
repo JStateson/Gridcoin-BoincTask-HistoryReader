@@ -14,17 +14,15 @@
          <p> 
 
     <asp:Panel ID="Panel1" runat="server" Height="860px" Width="806px">
-        Browse to a project that interests you, say Milkyway, Select a computer, select tasks at that computer<br /> select VALID tasks and makes sure there are exactly 20 or lower the value. Then copy the url from your<br /> browser into the &quot;Paste the url&quot; box below and click &quot;CALCULATE&quot;. You can also CLEAR the statistics<br /> or select additional pages of data up to a total of 10 pages.&nbsp;&nbsp; This program cannot log in to a uses account
+        Browse to a project that interests you, say Milkyway, select a computer, select tasks at that computer<br /> select VALID tasks and makes sure there are exactly 20 (or lower box value). Then copy the url from your<br /> browser into the &quot;Paste the url&quot; box below and click &quot;CALCULATE&quot;. You can also CLEAR the statistics<br /> or select additional pages of data up to a total of 10 pages.&nbsp;&nbsp; This program cannot log in to a uses account
         <br />
-        so you must enter a url that points to a host computer and NOT a list of user tasks.&nbsp; Sample urls are in<br /> the pull down box &quot;TEST HOST&#39;.&nbsp; They are the TOP computer (where available) that have the best<br /> statistics at the corresponding project. To demo what this program does, select a TEST HOST.&nbsp; To<br /> see the original data at web site click on &quot;REVIEW DATA&quot;.&nbsp; THIS NO LONGER WORKS ON<br /> PROJECTS THAT BLOCK ANONYMOUS ACCESS.&nbsp; Useful on your own projects only.<br /> Enter watts (45, 120, etc) rating of GPU to compute watts per credit.&nbsp;
-        <br />
-        nCon is number of concurrent tasks in a single GPU (default is 1) .
+        so you must enter a url that points to a host computer and NOT a list of user tasks.&nbsp; &nbsp; To see<br /> the original data at web site click on &quot;REVIEW DATA&quot;.&nbsp; TEST DEMO may no longer work as<br /> projects block anon access due to EU laws.&nbsp; This program is useful on your own projects only.<br /> nCon is number of concurrent tasks in a single GPU (default is 1), nGpu is number of GPUs.<br /> To compute watts per credit, enter watts (45, 120, etc) rating of GPU but if nGpu &gt; 1 or<br /> Watts &gt; 250 then&nbsp; total PC power consumption is assumed. &nbsp;
         <br />
         TEST DEMO:
         <asp:DropDownList ID="ddlTest" runat="server" AutoPostBack="True" OnSelectedIndexChanged="ddlTest_SelectedIndexChanged">
-            <asp:ListItem Value="https://milkyway.cs.rpi.edu/milkyway/results.php?hostid=591552&amp;offset=0&amp;show_names=0&amp;state=4&amp;appid=">Milkyway</asp:ListItem>
-            <asp:ListItem Value="https://einsteinathome.org/host/12153266/tasks/4/0">Einstein</asp:ListItem>
-            <asp:ListItem Value="https://boinc.thesonntags.com/collatz/results.php?hostid=148179&amp;offset=0&amp;show_names=0&amp;state=4&amp;appid=">Collatz</asp:ListItem>
+            <asp:ListItem Value="https://milkyway.cs.rpi.edu/milkyway/results.php?hostid=705276&amp;offset=0&amp;show_names=0&amp;state=4&amp;appid=">Milkyway</asp:ListItem>
+            <asp:ListItem Value="https://einsteinathome.org/host/10698787/tasks/4/0">Einstein</asp:ListItem>
+            <asp:ListItem Value="https://boinc.thesonntags.com/collatz/results.php?hostid=833335&amp;offset=0&amp;show_names=0&amp;state=4&amp;appid=">Collatz</asp:ListItem>
             <asp:ListItem Value="http://www.gpugrid.net/results.php?hostid=467730&amp;offset=0&amp;show_names=0&amp;state=3&amp;appid=">GpuGrid</asp:ListItem>
             <asp:ListItem Value="https://sech.me/boinc/Amicable/results.php?hostid=33751&amp;offset=0&amp;show_names=0&amp;state=4&amp;appid=">Amicable</asp:ListItem>
             <asp:ListItem Value="http://asteroidsathome.net/boinc/results.php?hostid=512380&amp;offset=0&amp;show_names=0&amp;state=4&amp;appid=">Astroids</asp:ListItem>
@@ -34,7 +32,7 @@
             <asp:ListItem Value="https://lhcathome.cern.ch/lhcathome/results.php?hostid=10484460&amp;offset=0&amp;show_names=0&amp;state=4&amp;appid=">LHC</asp:ListItem>
             <asp:ListItem Value="https://escatter11.fullerton.edu/nfs/results.php?hostid=880073&amp;offset=0&amp;show_names=0&amp;state=4&amp;appid=1">NFS</asp:ListItem>
             <asp:ListItem Value="http://pogs.theskynet.org/pogs/results.php?hostid=858228&amp;offset=0&amp;show_names=0&amp;state=4&amp;appid=">POGS</asp:ListItem>
-            <asp:ListItem Value="https://setiathome.berkeley.edu/results.php?hostid=7475713&amp;offset=0&amp;show_names=0&amp;state=4&amp;appid=">SETI</asp:ListItem>
+            <asp:ListItem Value="https://setiathome.berkeley.edu/results.php?hostid=8619726&amp;offset=0&amp;show_names=0&amp;state=4&amp;appid=">SETI</asp:ListItem>
         </asp:DropDownList>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         <asp:Button ID="btnReview" runat="server" Text="REVIEW DATA" OnClick="btnReview_Click" Width="99px" />
@@ -47,11 +45,13 @@
         <asp:Label ID="Label4" runat="server" Text="nCon"></asp:Label>
 &nbsp;
         <asp:TextBox ID="tb_ntasks" runat="server" Width="28px">1</asp:TextBox>
+        &nbsp;nGpu
+        <asp:TextBox ID="tb_ngpu" runat="server" Width="24px">1</asp:TextBox>
         <br />
         <br />
         <asp:Label ID="Label1" runat="server" BackColor="#FFCCFF" Text="Paste the url here"></asp:Label>
         :
-        <asp:TextBox ID="ProjUrl" runat="server" Height="16px" Width="504px"></asp:TextBox>
+        <asp:TextBox ID="ProjUrl" runat="server" Height="16px" Width="595px"></asp:TextBox>
         <br />
         <br />
         <asp:Button ID="btnCalc" runat="server" OnClick="btnCalc_Click" Text="CALCULATE" />
@@ -92,7 +92,7 @@
         </asp:DropDownList>
         <br />
         <br />
-        <asp:TextBox ID="ResultsBox" runat="server" Height="532px" ReadOnly="True" TextMode="MultiLine" Width="436px" ToolTip="sample location: https://milkyway.cs.rpi.edu/milkyway/results.php?hostid=766466&amp;offset=0&amp;show_names=0&amp;state=4&amp;appid="></asp:TextBox>
+        <asp:TextBox ID="ResultsBox" runat="server" Height="479px" ReadOnly="True" TextMode="MultiLine" Width="436px" ToolTip="sample location: https://milkyway.cs.rpi.edu/milkyway/results.php?hostid=766466&amp;offset=0&amp;show_names=0&amp;state=4&amp;appid="></asp:TextBox>
 
 
 

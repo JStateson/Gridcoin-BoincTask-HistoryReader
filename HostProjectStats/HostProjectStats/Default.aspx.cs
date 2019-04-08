@@ -19,6 +19,7 @@ namespace HostProjectStats
         int NumberToCollect = 20;
         int NumberWatts = 0;
         int NumberConcurrent = 1;
+        int NumberBoards = 1;
         const int NumberMaxPages = 10;
         const int MaxNumSamples = NumberMaxPages * 20;
         int nTotalSamples;
@@ -190,7 +191,7 @@ namespace HostProjectStats
                     iEnd = RawPage.IndexOf("</tbody>");
                     if (iStart < 0 || iEnd < 0 || (iStart >= iEnd))
                     {
-                        ResultsBox.Text = "Bad einstein url:  cannot find TABLE nor TBODY\n";
+                        ResultsBox.Text = "Bad einstein url:  cannot find TABLE nor TBODY or maybe no results\n";
                         return -3;
                     }
                     RawTable = RawPage.Substring(iStart, iEnd - iStart);
@@ -206,6 +207,11 @@ namespace HostProjectStats
                 case eProjectID.milkyway:
                     string strH = "<td><a href=" + "\"" + "workunit.php";
                     iStart = RawPage.IndexOf(strH);
+                    if(iStart < 0)
+                    {
+                        ResultsBox.Text = "error: missing '<a href=' or maybe no results\n";
+                        return -4;
+                    }
                     iEnd = RawPage.Substring(iStart).IndexOf("</table>");
                     iEnd += iStart;
                     if (iStart < 0 || iEnd < 0 || (iStart >= iEnd)) return -4;
@@ -216,7 +222,7 @@ namespace HostProjectStats
                     iStart = RawPage.IndexOf("<tr class=row0>");
                     if(iStart < 0)
                     {
-                        ResultsBox.Text = "cannot find: <tr class=row0>\n";
+                        ResultsBox.Text = "error: no data or missing '<tr class=row0>'\n";
                         return -4;
                     }
                     iEnd = RawPage.Substring(iStart).IndexOf("</table>");   // need skip over any earlier tables in the header
@@ -233,10 +239,11 @@ namespace HostProjectStats
             }
             return 0;
         }
-
-        //https://milkyway.cs.rpi.edu/milkyway/results.php?hostid=766466&offset=0&show_names=0&state=4&appid=
-        //https://milkyway.cs.rpi.edu/milkyway/results.php?hostid=799122&offset=0&show_names=0&state=4&appid=
-
+        /*
+        https://setiathome.berkeley.edu/results.php?hostid=8699104&offset=0&show_names=0&state=4&appid=
+        https://milkyway.cs.rpi.edu/milkyway/results.php?hostid=766466&offset=0&show_names=0&state=4&appid=
+        https://milkyway.cs.rpi.edu/milkyway/results.php?hostid=799122&offset=0&show_names=0&state=4&appid=
+        */
         private string ValidateUrl(string strIN)
         {
             string strTmp = "";
@@ -290,6 +297,7 @@ namespace HostProjectStats
             string strProjUrl = ProjUrl.Text;
             NumberToCollect = Convert.ToInt32(tb_num2read.Text);
             NumberConcurrent = Convert.ToInt32(tb_ntasks.Text);
+            NumberBoards = Convert.ToInt32(tb_ngpu.Text);
             NumberWatts = Convert.ToInt32(tb_watts.Text);
             if (ProjectLookup(strProjUrl) < 0) return;
             strProjUrl = ValidateUrl(ProjUrl.Text);
@@ -420,11 +428,25 @@ namespace HostProjectStats
             outStr += GetSTD(ref Rt, avgRt).ToString("0.0").PadLeft(12);
             outStr += GetSTD(ref Ct, avgCt).ToString("0.0").PadLeft(14);
             outStr += GetSTD(ref Cr, avgCr).ToString("0.0\n\n").PadLeft(15);
-            outStr += tcc.ToString("#,##0.00 seconds per credit\n");
+            outStr += tcc.ToString("#,##0.00 seconds per credit from above info\n");
             if (NumberWatts > 0)
             {
                 tcc *= NumberWatts;
-                outStr += tcc.ToString("#,##0.00 watts per credit\n");
+                if (NumberBoards > 1 || NumberWatts > 250)
+                {
+                    tcc /= NumberBoards;
+                    outStr += tcc.ToString("#,##0.00 watts per credit this PC\n(total joules for number of seconds shown)\n");
+                }
+                else
+                {
+
+                    outStr += tcc.ToString("#,##0.00 watts per credit this GPU\n");
+                }
+            }
+            else if (NumberBoards > 1)
+            {
+                tcc /= NumberBoards;
+                outStr += tcc.ToString("#,##0.00 seconds per credit overall this system\n");
             }
             StatsOut += outStr;
         }
