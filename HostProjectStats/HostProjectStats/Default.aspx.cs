@@ -360,6 +360,7 @@ namespace HostProjectStats
             tb_num2read.Text = "20";
             tb_ntasks.Text   = "1";
             tb_watts.Text = "0";
+            tb_ngpu.Text = "1";
         }
 
 
@@ -499,11 +500,20 @@ namespace HostProjectStats
                 {
                     j += 32;    // at first value: "2,224</td><td>369</td><td>3,465</td>"
                     RawLineValues = RawLines[i].Substring(j, 60).Split(new string[] { "<td>", "</td>" }, StringSplitOptions.RemoveEmptyEntries);
-                    Rt[iIndex] = t = Convert.ToDouble(RawLineValues[0]);
+
+                    t = Convert.ToDouble(RawLineValues[0]);
+                    t /= NumberConcurrent;
+                    Rt[iIndex] = t;
                     avgRt += t;
-                    Ct[iIndex] = t = Convert.ToDouble(RawLineValues[1]);
+
+                    t = Convert.ToDouble(RawLineValues[1]);
+                    t /= NumberConcurrent;
+                    Ct[iIndex] = t;
                     avgCt += t;
-                    Cr[iIndex] = t = Convert.ToDouble(RawLineValues[2]);
+
+                    t = Convert.ToDouble(RawLineValues[2]);
+                    t /= NumberConcurrent;
+                    Cr[iIndex] = t;
                     avgCr += t;
                 }
                 else
