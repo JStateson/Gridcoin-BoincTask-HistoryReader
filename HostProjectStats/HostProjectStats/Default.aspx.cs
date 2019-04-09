@@ -296,6 +296,7 @@ namespace HostProjectStats
             int j;
             string strProjUrl = ProjUrl.Text;
             NumberToCollect = Convert.ToInt32(tb_num2read.Text);
+            if (tb_ntasks.Text == "") tb_ntasks.Text = "1";
             NumberConcurrent = Convert.ToInt32(tb_ntasks.Text);
             NumberBoards = Convert.ToInt32(tb_ngpu.Text);
             NumberWatts = Convert.ToInt32(tb_watts.Text);
@@ -414,6 +415,7 @@ namespace HostProjectStats
         void FormStats()
         {
             double t, tcc;
+            double kwh;
             string outStr = "";
             StatsOut += "         ----------------------------------\n";
             t = avgRt = avgRt / nTotalSamples;
@@ -437,11 +439,13 @@ namespace HostProjectStats
                 {
                     tcc /= NumberBoards;
                     outStr += tcc.ToString("#,##0.00 watts per credit this PC\n(total joules for number of seconds shown)\n");
+                    kwh = 3600000.0 / tcc;
+                    outStr += kwh.ToString("A kilowatt hour will produce ###,##0.00 credits\n");
                 }
                 else
                 {
 
-                    outStr += tcc.ToString("#,##0.00 watts per credit this GPU\n");
+                    outStr += tcc.ToString("#,##0.00 watts per credit this GPU\n(total joules for number of seconds shown)\n");
                 }
             }
             else if (NumberBoards > 1)

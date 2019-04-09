@@ -13,7 +13,7 @@
     <form id="form1" runat="server">
          <p> 
 
-    <asp:Panel ID="Panel1" runat="server" Height="860px" Width="806px">
+    <asp:Panel ID="Panel1" runat="server" Height="909px" Width="797px">
         Browse to a project that interests you, say Milkyway, select a computer, select tasks at that computer<br /> select VALID tasks and makes sure there are exactly 20 (or lower box value). Then copy the url from your<br /> browser into the &quot;Paste the url&quot; box below and click &quot;CALCULATE&quot;. You can also CLEAR the statistics<br /> or select additional pages of data up to a total of 10 pages.&nbsp;&nbsp; This program cannot log in to a uses account
         <br />
         so you must enter a url that points to a host computer and NOT a list of user tasks.&nbsp; &nbsp; To see<br /> the original data at web site click on &quot;REVIEW DATA&quot;.&nbsp; TEST DEMO may no longer work as<br /> projects block anon access due to EU laws.&nbsp; This program is useful on your own projects only.<br /> nCon is number of concurrent tasks in a single GPU (default is 1), nGpu is number of GPUs.<br /> To compute watts per credit, enter watts (45, 120, etc) rating of GPU but if nGpu &gt; 1 or<br /> Watts &gt; 250 then&nbsp; total PC power consumption is assumed. &nbsp;
@@ -92,7 +92,7 @@
         </asp:DropDownList>
         <br />
         <br />
-        <asp:TextBox ID="ResultsBox" runat="server" Height="479px" ReadOnly="True" TextMode="MultiLine" Width="436px" ToolTip="sample location: https://milkyway.cs.rpi.edu/milkyway/results.php?hostid=766466&amp;offset=0&amp;show_names=0&amp;state=4&amp;appid="></asp:TextBox>
+        <asp:TextBox ID="ResultsBox" runat="server" Height="526px" ReadOnly="True" TextMode="MultiLine" Width="447px" ToolTip="sample location: https://milkyway.cs.rpi.edu/milkyway/results.php?hostid=766466&amp;offset=0&amp;show_names=0&amp;state=4&amp;appid="></asp:TextBox>
 
 
 
