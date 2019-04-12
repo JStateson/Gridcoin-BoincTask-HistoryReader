@@ -13,12 +13,9 @@
     <form id="form1" runat="server">
          <p> 
 
-    <asp:Panel ID="Panel1" runat="server" Height="909px" Width="797px">
-        Browse to a project that interests you, say Milkyway, select a computer, select tasks at that computer<br /> select VALID tasks and makes sure there are exactly 20 (or lower box value). Then copy the url from your<br /> browser into the &quot;Paste the url&quot; box below and click &quot;CALCULATE&quot;. You can also CLEAR the statistics<br /> or select additional pages of data up to a total of 10 pages.&nbsp;&nbsp; This program cannot log in to a uses account
-        <br />
-        so you must enter a url that points to a host computer and NOT a list of user tasks.&nbsp; &nbsp; To see<br /> the original data at web site click on &quot;REVIEW DATA&quot;.&nbsp; TEST DEMO may no longer work as<br /> projects block anon access due to EU laws.&nbsp; This program is useful on your own projects only.<br /> nCon is number of concurrent tasks in a single GPU (default is 1), nGpu is number of GPUs.<br /> To compute watts per credit, enter watts (45, 120, etc) rating of GPU but if nGpu &gt; 1 or<br /> Watts &gt; 250 then&nbsp; total PC power consumption is assumed. &nbsp;
-        <br />
-        TEST DEMO:
+    <asp:Panel ID="Panel1" runat="server" Height="942px" Width="798px">
+        Browse to a project and computer that interests you, select valid tasks at that computer, and<br /> make sure there are exactly 20 (or use a lower box value). Then copy the url from your browser<br /> into the &quot;Paste the url&quot; box below and click &quot;CALCULATE&quot;. You can also CLEAR the statistics<br /> or select additional pages of data up to a total of 10 pages.&nbsp;&nbsp; This program cannot log in to a users<br /> account so you must enter a url that points to a host computer and NOT a list of user tasks.<br /> To see the original data at web site click on &quot;REVIEW DATA&quot;.&nbsp; TEST DEMO may no longer work as<br /> projects block anon access due to EU laws.&nbsp; This program is useful on your own projects only.<br /> nCon is number of concurrent tasks in a single GPU (default is 1), nDev is number of GPUs or CPUs<br /> To compute watts per credit, enter Idle Watts and Load Watts of the system.&nbsp; If hyperthreads are<br /> enabled use # of threads not 
+        cores.&nbsp; If nCon &gt; 1 then raw stats are adjusted by dividing by nCon.<br /> TEST DEMO:
         <asp:DropDownList ID="ddlTest" runat="server" AutoPostBack="True" OnSelectedIndexChanged="ddlTest_SelectedIndexChanged">
             <asp:ListItem Value="https://milkyway.cs.rpi.edu/milkyway/results.php?hostid=705276&amp;offset=0&amp;show_names=0&amp;state=4&amp;appid=">Milkyway</asp:ListItem>
             <asp:ListItem Value="https://einsteinathome.org/host/10698787/tasks/4/0">Einstein</asp:ListItem>
@@ -35,17 +32,13 @@
             <asp:ListItem Value="https://setiathome.berkeley.edu/results.php?hostid=8619726&amp;offset=0&amp;show_names=0&amp;state=4&amp;appid=">SETI</asp:ListItem>
         </asp:DropDownList>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <asp:Button ID="btnReview" runat="server" Text="REVIEW DATA" OnClick="btnReview_Click" Width="99px" />
-        &nbsp;&nbsp;&nbsp;&nbsp;
+        <asp:Button ID="btnReview" runat="server" Text="REVIEW DATA" OnClick="btnReview_Click" Width="99px" OnClientClick="target ='_blank'" />
+        &nbsp;&nbsp;&nbsp;&nbsp;Wu&nbsp;
         <asp:TextBox ID="tb_num2read" runat="server" Width="28px">20</asp:TextBox>
-        &nbsp;
-        <asp:Label ID="Label3" runat="server" Text="Watts"></asp:Label>
-&nbsp;<asp:TextBox ID="tb_watts" runat="server" Width="28px">0</asp:TextBox>
-&nbsp;
-        <asp:Label ID="Label4" runat="server" Text="nCon"></asp:Label>
+        &nbsp; &nbsp;&nbsp;&nbsp;<asp:Label ID="Label4" runat="server" Text="nCon"></asp:Label>
 &nbsp;
         <asp:TextBox ID="tb_ntasks" runat="server" Width="28px">1</asp:TextBox>
-        &nbsp;nGpu
+        &nbsp;nDev
         <asp:TextBox ID="tb_ngpu" runat="server" Width="24px">1</asp:TextBox>
         <br />
         <br />
@@ -58,7 +51,7 @@
         &nbsp;&nbsp;&nbsp;&nbsp;
         <asp:Button ID="btnClear" runat="server" OnClick="btnClear_Click" Text="CLEAR" />
         &nbsp;&nbsp;&nbsp;&nbsp;
-        <asp:Button ID="btnAbout" runat="server" OnClick="Button1_Click" Text="ABOUT" />
+        <asp:Button ID="btnAbout" runat="server" OnClick="Button1_Click" Text="ABOUT" OnClientClick="target ='_blank'" />
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         <asp:Label ID="Label2" runat="server" BackColor="#33CCCC" Text="Number of pages to gather"></asp:Label>
         &nbsp;
@@ -76,23 +69,15 @@
         </asp:DropDownList>
         <br />
         <asp:Label ID="lblProjName" runat="server" Text="UNKNOWN PROJECT"></asp:Label>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; tested on the following:&nbsp;
-        <asp:DropDownList ID="ddlTested" runat="server">
-            <asp:ListItem>milkyway</asp:ListItem>
-            <asp:ListItem>einstein</asp:ListItem>
-            <asp:ListItem>gpugrid</asp:ListItem>
-            <asp:ListItem>collatz</asp:ListItem>
-            <asp:ListItem>latinsquares</asp:ListItem>
-            <asp:ListItem>setiathome</asp:ListItem>
-            <asp:ListItem>latinsquares</asp:ListItem>
-            <asp:ListItem>Amicable</asp:ListItem>
-            <asp:ListItem>Enigma</asp:ListItem>
-            <asp:ListItem>LHC</asp:ListItem>
-            <asp:ListItem>SETI</asp:ListItem>
-        </asp:DropDownList>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<asp:Label ID="Label5" runat="server" Text="Load"></asp:Label>
+        &nbsp;Watts
+        <asp:TextBox ID="tb_watts" runat="server" Height="17px" Width="39px">0</asp:TextBox>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Idle Watts
+        <asp:TextBox ID="tb_idle" runat="server" Width="33px">0</asp:TextBox>
+        &nbsp;
+        <asp:Button ID="btn_help" runat="server" OnClick="btn_help_Click" OnClientClick="target ='_blank'" Text="HELP" />
         <br />
-        <br />
-        <asp:TextBox ID="ResultsBox" runat="server" Height="526px" ReadOnly="True" TextMode="MultiLine" Width="447px" ToolTip="sample location: https://milkyway.cs.rpi.edu/milkyway/results.php?hostid=766466&amp;offset=0&amp;show_names=0&amp;state=4&amp;appid="></asp:TextBox>
+        <asp:TextBox ID="ResultsBox" runat="server" Height="580px" ReadOnly="True" TextMode="MultiLine" Width="699px" ToolTip="sample location: https://milkyway.cs.rpi.edu/milkyway/results.php?hostid=766466&amp;offset=0&amp;show_names=0&amp;state=4&amp;appid="></asp:TextBox>
 
 
 

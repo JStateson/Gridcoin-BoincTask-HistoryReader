@@ -18,6 +18,7 @@ namespace HostProjectStats
         WebClient client;
         int NumberToCollect = 20;
         int NumberWatts = 0;
+        int IdleWatts = 0;
         int NumberConcurrent = 1;
         int NumberBoards = 1;
         const int NumberMaxPages = 10;
@@ -31,10 +32,10 @@ namespace HostProjectStats
         int nPagesToRead;
         string StatsOut;
         // escatter is nfs at home
-        enum eProjectID { einstein, milkyway, collatz, gpugrid, amicable, asteroids, cosmology, drugdiscovery, enigmaathome, latinsquares, lhcathome, escatter, theskynet, setiathome, rosetta  };
+        enum eProjectID { einstein, milkyway, collatz, gpugrid, amicable, asteroids, cosmology, drugdiscovery, enigmaathome, latinsquares, lhcathome, escatter, theskynet, setiathome, rosetta, commgrid  };
         string[] strProjNames =  // damn -- casesensitive i forgot about that
             {"einstein", "milkyway", "collatz", "gpugrid", "Amicable", "asteroids", "cosmology",
-            "drugdiscovery", "enigmaathome", "latinsquares", "lhcathome", "escatter", "theskynet", "setiathome","rosetta"};
+            "drugdiscovery", "enigmaathome", "latinsquares", "lhcathome", "escatter", "theskynet", "setiathome","rosetta", "communitygrid"};
         int iProjectID;
         //return bWasValid ? strTemp : strToday;
 
@@ -49,6 +50,11 @@ namespace HostProjectStats
                 {
                     iProjectID = i; // enum must start at 0
                     lblProjName.Text = strProjNames[i];
+                    if((eProjectID) iProjectID == eProjectID.commgrid)
+                    {
+                        int j = Convert.ToInt32(tb_num2read.Text);
+                        if (j > 15) tb_num2read.Text = "15";    // wcg shows 15 per page
+                    }
                     return 0;
                 }
             }
@@ -131,7 +137,7 @@ namespace HostProjectStats
         {
             Rt[iIndex] = GetValue(iLocation, 0) / NumberConcurrent;
             Ct[iIndex] = GetValue(iLocation, 1) / NumberConcurrent;
-            Cr[iIndex] = GetValue(iLocation, 2) / NumberConcurrent;
+            Cr[iIndex] = GetValue(iLocation, 2);
         }
 
         void ShowData()
@@ -197,6 +203,10 @@ namespace HostProjectStats
                     RawTable = RawPage.Substring(iStart, iEnd - iStart);
                     BuildEinsteinStatsTable();
                     break;
+                case eProjectID.commgrid:
+                    string strGranted = "Granted BOINC Credit</td>";
+                    iStart = RawPage.IndexOf(strGranted);
+                    break;
                 case eProjectID.collatz:
                 case eProjectID.setiathome:
                 case eProjectID.latinsquares:
@@ -259,6 +269,12 @@ namespace HostProjectStats
             else strTmp = strIN;
             if(strTmp.Contains("&offset") || strTmp.Contains("&page="))return strTmp;
             if(strTmp.Contains("?offset") || strTmp.Contains("?page=")) return strTmp;
+            if(strTmp.Contains("&pageNum="))
+            {
+                // wcg does not "always" put pageNum at end of url where we need it 
+                //strTmp.Replace("&pageNum=", "");
+                // need to get rid of the digits jys do later
+            }
             // got to add offset or page phrase
             switch ((eProjectID) iProjectID )
             {
@@ -275,6 +291,9 @@ namespace HostProjectStats
                 case eProjectID.setiathome:
                 case eProjectID.milkyway:
                     strTmp += "&offset=0&show_names=0&state=4&appid=";
+                    break;
+                case eProjectID.commgrid:
+                    //strTmp += "&pageNum=1";
                     break;
                 default:
                     ResultsBox.Text = "problem with url:  missing phrase offset or page\n";
@@ -300,6 +319,7 @@ namespace HostProjectStats
             NumberConcurrent = Convert.ToInt32(tb_ntasks.Text);
             NumberBoards = Convert.ToInt32(tb_ngpu.Text);
             NumberWatts = Convert.ToInt32(tb_watts.Text);
+            IdleWatts = Convert.ToInt32(tb_idle.Text);
             if (ProjectLookup(strProjUrl) < 0) return;
             strProjUrl = ValidateUrl(ProjUrl.Text);
             if(strProjUrl =="")
@@ -307,6 +327,7 @@ namespace HostProjectStats
                 return;
             }
             StatsOut = "";
+            // be able to find the page or offset
             switch ((eProjectID) iProjectID)
             {
                 default:
@@ -321,6 +342,12 @@ namespace HostProjectStats
                     strPrefix = strProjUrl.Substring(0, iStart);
                     strSuffix = strProjUrl.Substring(iStart);
                     break;
+                case eProjectID.commgrid:
+                    iStart = strProjUrl.IndexOf("pageNum=");
+                    iStart += 8;
+                    strPrefix = strProjUrl.Substring(0, iStart);
+                    strSuffix = strProjUrl.Substring(iStart);
+                    break;
             }
 
 
@@ -331,7 +358,11 @@ namespace HostProjectStats
             IssueTitle();
             for (int i = 0; i < nPagesToRead;i++)
             {
-                if((eProjectID) iProjectID == eProjectID.einstein)
+
+                if (
+                    ((eProjectID) iProjectID == eProjectID.einstein) ||
+                    ((eProjectID) iProjectID == eProjectID.commgrid)
+                   )
                 {
                     nexturl = strPrefix + strSuffix;
                     j = Convert.ToInt32(strSuffix);
@@ -360,6 +391,7 @@ namespace HostProjectStats
             ProjUrl.Text = "";
             tb_num2read.Text = "20";
             tb_ntasks.Text   = "1";
+            tb_idle.Text = "0";
             tb_watts.Text = "0";
             tb_ngpu.Text = "1";
         }
@@ -390,7 +422,12 @@ namespace HostProjectStats
             Response.Redirect(ProjUrl.Text);
         }
 
-        
+        protected void btn_help_Click(object sender, EventArgs e)
+        {
+            Response.Redirect("~/help.aspx");
+        }
+
+
 
 
 
@@ -415,6 +452,7 @@ namespace HostProjectStats
         void FormStats()
         {
             double t, tcc;
+            double Total_watts, Each_watts;
             double kwh;
             string outStr = "";
             StatsOut += "         ----------------------------------\n";
@@ -432,26 +470,33 @@ namespace HostProjectStats
             outStr += GetSTD(ref Ct, avgCt).ToString("0.0").PadLeft(14);
             outStr += GetSTD(ref Cr, avgCr).ToString("0.0\n\n").PadLeft(15);
             outStr += tcc.ToString("#,##0.00 seconds per credit from above info\n");
+            Total_watts = tcc * NumberWatts;    // joules expended for seconds shown.  Multiply by # of devices
+            Each_watts = tcc * (NumberWatts - IdleWatts);
             if (NumberWatts > 0)
             {
-                tcc *= NumberWatts;
-                if (NumberBoards > 1 || NumberWatts > 250)
-                {
-                    tcc /= NumberBoards;
-                    outStr += tcc.ToString("#,##0.00 watts per credit this PC\n(total joules for number of seconds shown)\n");
-                    kwh = 3600000.0 / tcc;
-                    outStr += kwh.ToString("A kilowatt hour will produce ###,##0.00 credits\n");
-                }
-                else
-                {
-
-                    outStr += tcc.ToString("#,##0.00 watts per credit this GPU\n(total joules for number of seconds shown)\n");
-                }
+                t = Total_watts / NumberBoards;
+                outStr += t.ToString("#,##0.00 watts per credit this PC system\n\t(total joules for number of seconds shown this PC)\n");
+                t = Each_watts / NumberBoards;
+                outStr += t.ToString("#,##0.00 project watts per credit only GPUs(or CPUs)\n\t(total joules for number of seconds shown, devices only (idle removed)\n");
+                kwh = 3600000.0 / Total_watts;
+                outStr += kwh.ToString("A kilowatt hour will produce ###,##0.00 credits on this PC system\n");
+                kwh = 3600000.0 / Each_watts;
+                kwh /= NumberBoards;
+                outStr += kwh.ToString("Each device could produce ###,##0.00 credits in a kilowatt hour by itself (idle removed)\n");
+                outStr += "Use the above KWH credits to compare this device with any other device\n\tas the overhead (idle) has beed removed\n";
             }
             else if (NumberBoards > 1)
             {
                 tcc /= NumberBoards;
                 outStr += tcc.ToString("#,##0.00 seconds per credit overall this system\n");
+            }
+            tcc /= NumberBoards;
+            tcc = 3600.0 / tcc;
+            outStr += tcc.ToString("###,##0.00 credits in an hour, this system\n");
+            if (NumberWatts > 0)
+            {
+                t = NumberWatts * 3.6; // 3600/1000 to change joule/sec to kilowatt hours
+                outStr += t.ToString("###,##0.00 Kilowatts will be used during this hour\n");
             }
             StatsOut += outStr;
         }
