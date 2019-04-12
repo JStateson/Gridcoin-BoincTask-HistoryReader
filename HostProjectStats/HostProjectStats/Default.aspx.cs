@@ -1,4 +1,6 @@
-﻿using System;
+﻿//#define TenCheck
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -7,6 +9,8 @@ using System.Web.UI.WebControls;
 using System.Net;
 using System.IO;
 using System.Text;
+
+
 
 // Joseph BEEMER BIKER Stateson  copyright May 1, 2018
 
@@ -317,6 +321,11 @@ namespace HostProjectStats
             NumberToCollect = Convert.ToInt32(tb_num2read.Text);
             if (tb_ntasks.Text == "") tb_ntasks.Text = "1";
             NumberConcurrent = Convert.ToInt32(tb_ntasks.Text);
+#if TenCheck
+            tb_ngpu.Text = "3";
+            tb_watts.Text = "420";
+            tb_idle.Text = "120";
+#endif
             NumberBoards = Convert.ToInt32(tb_ngpu.Text);
             NumberWatts = Convert.ToInt32(tb_watts.Text);
             IdleWatts = Convert.ToInt32(tb_idle.Text);
@@ -451,52 +460,43 @@ namespace HostProjectStats
 
         void FormStats()
         {
-            double t, tcc;
-            double Total_watts, Each_watts;
+            double t;
+            double spc; //seconds per credit one gpu one work unit
+            double cps; //credits per second
+            double cph; //credits per hour
+            double Total_watts, Each_watts, GPU_watts;
             double kwh;
             string outStr = "";
             StatsOut += "         ----------------------------------\n";
-            t = avgRt = avgRt / nTotalSamples;
-            tcc = t;
-            outStr += t.ToString("0.0").PadLeft(12);
-            t = avgCt = avgCt / nTotalSamples;
-            outStr += t.ToString("0.0").PadLeft(14);
-            t = avgCr = avgCr / nTotalSamples;
-            outStr += t.ToString("0.0").PadLeft(13);
-            tcc /= t;
-            StatsOut += "AVG:" + outStr;
-            outStr = "\nSTD:";
+            avgCr = avgCr / nTotalSamples;
+            avgRt = avgRt / nTotalSamples;
+            avgCt = avgCt / nTotalSamples;
+            outStr = "\nAvg:";
+            outStr += avgRt.ToString("0.0").PadLeft(12);    // average runtime
+            outStr += avgCt.ToString("0.0").PadLeft(14);    // average cpu time
+            outStr += avgCr.ToString("0.0").PadLeft(13);    // average credit
+            outStr += "\nSTD:";
             outStr += GetSTD(ref Rt, avgRt).ToString("0.0").PadLeft(12);
             outStr += GetSTD(ref Ct, avgCt).ToString("0.0").PadLeft(14);
             outStr += GetSTD(ref Cr, avgCr).ToString("0.0\n\n").PadLeft(15);
-            outStr += tcc.ToString("#,##0.00 seconds per credit from above info\n");
-            Total_watts = tcc * NumberWatts;    // joules expended for seconds shown.  Multiply by # of devices
-            Each_watts = tcc * (NumberWatts - IdleWatts);
+            spc = avgRt / avgCr;
+#if TenCheck
+            spc = 10.0;
+#endif
+            cps = 1.0 / spc;
+            outStr += spc.ToString("#,##0.00 seconds per credit from above info one device\n");
+            cph = cps * 3600 * NumberBoards * NumberConcurrent;
+            outStr += cph.ToString("###,##0. number of credits in an hour, this system\n");
             if (NumberWatts > 0)
             {
-                t = Total_watts / NumberBoards;
-                outStr += t.ToString("#,##0.00 watts per credit this PC system\n\t(total joules for number of seconds shown this PC)\n");
-                t = Each_watts / NumberBoards;
-                outStr += t.ToString("#,##0.00 project watts per credit only GPUs(or CPUs)\n\t(total joules for number of seconds shown, devices only (idle removed)\n");
-                kwh = 3600000.0 / Total_watts;
-                outStr += kwh.ToString("A kilowatt hour will produce ###,##0.00 credits on this PC system\n");
-                kwh = 3600000.0 / Each_watts;
-                kwh /= NumberBoards;
-                outStr += kwh.ToString("Each device could produce ###,##0.00 credits in a kilowatt hour by itself (idle removed)\n");
+                GPU_watts = (NumberWatts - IdleWatts) / NumberBoards;
+                outStr += GPU_watts.ToString("#,##0. total watts used by a single producing device (no idle wattage)\n");
+                cph = cps * 3600 * NumberConcurrent;    // per each board or cpu thread this time.
+                outStr += cph.ToString("###,##0. credits per hour for one exactly one device\n");
+                // convert credits for a full kilowatt hour (not just GPU hours) 
+                kwh = cph * 1000 / GPU_watts;
+                outStr += kwh.ToString("A kilowatt hour will produce ###,##0. credits each device this PC\n");
                 outStr += "Use the above KWH credits to compare this device with any other device\n\tas the overhead (idle) has beed removed\n";
-            }
-            else if (NumberBoards > 1)
-            {
-                tcc /= NumberBoards;
-                outStr += tcc.ToString("#,##0.00 seconds per credit overall this system\n");
-            }
-            tcc /= NumberBoards;
-            tcc = 3600.0 / tcc;
-            outStr += tcc.ToString("###,##0.00 credits in an hour, this system\n");
-            if (NumberWatts > 0)
-            {
-                t = NumberWatts * 3.6; // 3600/1000 to change joule/sec to kilowatt hours
-                outStr += t.ToString("###,##0.00 Kilowatts will be used during this hour\n");
             }
             StatsOut += outStr;
         }
