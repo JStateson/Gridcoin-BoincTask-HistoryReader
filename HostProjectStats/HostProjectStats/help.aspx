@@ -62,7 +62,7 @@
         0.1 credits by 3600 to get 360 credits for that 100 watt-hour.<br />
         We can now calculate how many credits in a kilowatt hour by multiplying<br />
         by 10.&nbsp; This give 3600 credits per KWH per GPU.&nbsp; This value does not<br />
-        include any idle wattage and can be used to compoare to different GPUs<br />
+        include any idle wattage and can be used to compare to different GPUs<br />
         <br />
         Sources are at Github\BeemerBiker&nbsp; PM me if this does
         not seem correct.<br />

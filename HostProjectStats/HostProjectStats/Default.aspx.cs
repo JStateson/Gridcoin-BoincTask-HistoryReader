@@ -517,6 +517,7 @@ namespace HostProjectStats
                 cph = cps * 3600 * NumberConcurrent;    // per each board or cpu thread this time.
                 outStr += cph.ToString("###,##0. credits per hour for one exactly one device\n");
                 // convert credits for a full kilowatt hour (not just GPU hours) 
+                cph /= NumberBoards;
                 kwh = cph * 1000 / GPU_watts;
                 outStr += kwh.ToString("A kilowatt hour will produce ###,##0. credits each device this PC\n");
                 outStr += "Use the above KWH credits to compare this device with any other device\n\tas the overhead (idle) has beed removed\n";
