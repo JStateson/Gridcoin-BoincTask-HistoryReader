@@ -84,8 +84,12 @@ namespace HostProjectStats
         protected void Page_Load(object sender, EventArgs e)
         {
             int i = 0;
+            //CookieContainer cc = new CookieContainer();
             client = new WebClient();
             client.Headers.Add("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.2; .NET CLR 1.0.3705");
+            // the below were used for accedssing WCG but didnt work
+            //client.UseDefaultCredentials = true;
+            //client.Credentials = new NetworkCredential("username", "password");
             Rt = new double[MaxNumSamples];
             Ct = new double[MaxNumSamples];
             Cr = new double[MaxNumSamples];
@@ -171,6 +175,8 @@ namespace HostProjectStats
         {
             int iStart, iEnd;
             Uri myUri;
+
+
             iStart = 0; // for breakpoint purpose
             try
             {
@@ -186,12 +192,12 @@ namespace HostProjectStats
             }
             try
             {
-
+                //client.Credentials.GetCredential(myUri,"Basic");
                 RawPage = client.DownloadString(myUri);
             }
             catch
             {
-                ResultsBox.Text = "no internet connection or project down";
+                ResultsBox.Text = "no internet connection or project down\n";
                 return -2;
             }
             switch ((eProjectID)iProjectID)
@@ -326,13 +332,26 @@ namespace HostProjectStats
             tb_watts.Text = "420";
             tb_idle.Text = "120";
 #endif
+            if (tb_ngpu.Text == "") tb_ngpu.Text = "1";
+            if(tb_watts.Text=="")tb_watts.Text = "0";
+            if(tb_idle.Text== "")tb_idle.Text = "0";
             NumberBoards = Convert.ToInt32(tb_ngpu.Text);
             NumberWatts = Convert.ToInt32(tb_watts.Text);
             IdleWatts = Convert.ToInt32(tb_idle.Text);
-            if (ProjectLookup(strProjUrl) < 0) return;
+            if(IdleWatts > NumberWatts)
+            {
+                ResultsBox.Text += "Idle wattage must be less than load wattage";
+                return;
+            }
+            if (ProjectLookup(strProjUrl) < 0)
+            {
+                ResultsBox.Text = "problem with project lookup\n";
+                return;
+            }
             strProjUrl = ValidateUrl(ProjUrl.Text);
             if(strProjUrl =="")
             {
+                ResultsBox.Text += "url is bad";
                 return;
             }
             StatsOut = "";
@@ -385,7 +404,11 @@ namespace HostProjectStats
                 }
 
                 ProjUrl.Text = nexturl;
-                if(PerformCalculate(nexturl) < 0)return;
+                if (PerformCalculate(nexturl) < 0)
+                {
+                    ResultsBox.Text += "calculation was bad probably no data\n";
+                    return;
+                }
             }
             ShowData();
             FormStats();
