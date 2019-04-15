@@ -144,7 +144,7 @@ namespace HostProjectStats
         void ExtractTriplet(int iLocation, int iIndex)
         {
             Rt[iIndex] = GetValue(iLocation, 0) / NumberConcurrent;
-            Ct[iIndex] = GetValue(iLocation, 1) / NumberConcurrent;
+            Ct[iIndex] = GetValue(iLocation, 1);    // jys should not have reduced this as CPU time was correct
             Cr[iIndex] = GetValue(iLocation, 2);
         }
 
@@ -508,6 +508,10 @@ namespace HostProjectStats
 #endif
             cps = 1.0 / spc;
             outStr += spc.ToString("#,##0.00 seconds per credit from above info one device\n");
+            if(NumberConcurrent > 0)
+            {
+                outStr += "Times shown above were divided by number of concurrent tasks\n";
+            }
             cph = cps * 3600 * NumberBoards * NumberConcurrent;
             outStr += cph.ToString("###,##0. number of credits in an hour, this system\n");
             if (NumberWatts > 0)

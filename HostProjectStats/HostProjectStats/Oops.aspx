@@ -10,10 +10,14 @@
     <form id="form1" runat="server">
         <div>
             BUG OR NO ANOMYMOUS ACCESS, BACK UP, CLICK ON "CLEAR"
-            AND PAST URL AGAIN.  iF LESS THEN 20 CHANGE THAT 20
+            <br />
+            AND PAST URL AGAIN.  iF LESS THEN 20 CHANGE THAT 20<br />
             YOU MUST HAVE AUTO LOGIN ENABLED SINCE NO ANOM ALLOWED
+            <br />
             SOURCE CODE IS AT GITHUB UNDER BEEMERBIKER
-        </div>
+            <br />
+            My web site &quot;stateson.net&quot; will time you out after a while so you need<br />
+            to work quick or refresh the page.</div>
     </form>
 </body>
 </html>

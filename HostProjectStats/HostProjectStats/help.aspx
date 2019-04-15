@@ -39,7 +39,7 @@
         <br />
         <br />
         (1)&nbsp;&nbsp;&nbsp; WCG cannot be accessed because they required username / password to be stored in a cookie and this program<br />
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; does not implement that scheme.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; does not implement that scheme.&nbsp; I tried using WebClient but failed.<br />
         <br />
         The following two notes assume 120 watts idle and 420 watts full load with 3 GPUs and only 1 task per GPU<br />
         and A single watt is a joule of energy that is given up in 1 second of work.<br />
@@ -55,7 +55,8 @@
         <br />
         (3)&nbsp;&nbsp;&nbsp; Computation of KWH (cost of contribution) for each GPU (or CPU)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br />
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Assume your system uses 120 watts at idle and 420 watts at full load<br />
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; and has 3 GPUs working with one task per GPU:<br />
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; and has 3 GPUs working with one task per GPU.&nbsp; We wish to calculate<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; how many credits in singe KWH on just the GPU:<br />
         <br />
         The 3 GPUs each consume 100 watts.&nbsp;Doing the same calculation as<br />
         above,&nbsp; if the system is run for a fully hour at 100 watts then multiply<br />
@@ -63,6 +64,15 @@
         We can now calculate how many credits in a kilowatt hour by multiplying<br />
         by 10.&nbsp; This give 3600 credits per KWH per GPU.&nbsp; This value does not<br />
         include any idle wattage and can be used to compare to different GPUs<br />
+        Note that this is equivalent to powering the system for 10 hours as it will<br />
+        take 10 hours to utilize 1 KWH on each GPU.<br />
+        <br />
+        (4)&nbsp;&nbsp;&nbsp;&nbsp; If concurrent tasks are run then I assume they are actually concurrent<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; and divide the run time by the number of concurrent tasks.&nbsp; Theoritically<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this is correct but in actuality just an approximation that gets worse as<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; more tasks are run supposidly concurrently.&nbsp; I also do not account for the<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; number of invalid tasks that greatly increase when more than 3 tasks are<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; run concurrently.&nbsp; This seems to be a milkyway problem.<br />
         <br />
         Sources are at Github\BeemerBiker&nbsp; PM me if this does
         not seem correct.<br />
