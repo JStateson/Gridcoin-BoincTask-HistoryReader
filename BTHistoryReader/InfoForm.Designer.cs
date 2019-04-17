@@ -33,10 +33,10 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.tv_projapps = new System.Windows.Forms.TreeView();
             this.gb_Reveal = new System.Windows.Forms.GroupBox();
+            this.radioButton1 = new System.Windows.Forms.RadioButton();
             this.rbShowUnk = new System.Windows.Forms.RadioButton();
             this.rbShowHis = new System.Windows.Forms.RadioButton();
             this.rb_ShowAll = new System.Windows.Forms.RadioButton();
-            this.radioButton1 = new System.Windows.Forms.RadioButton();
             this.panel1.SuspendLayout();
             this.gb_Reveal.SuspendLayout();
             this.SuspendLayout();
@@ -46,7 +46,7 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(12, 9);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(261, 169);
+            this.label1.Size = new System.Drawing.Size(271, 182);
             this.label1.TabIndex = 1;
             this.label1.Text = resources.GetString("label1.Text");
             // 
@@ -78,6 +78,17 @@
             this.gb_Reveal.TabIndex = 1;
             this.gb_Reveal.TabStop = false;
             this.gb_Reveal.Text = "Reveal Project / Apps";
+            // 
+            // radioButton1
+            // 
+            this.radioButton1.AutoSize = true;
+            this.radioButton1.Location = new System.Drawing.Point(18, 42);
+            this.radioButton1.Name = "radioButton1";
+            this.radioButton1.Size = new System.Drawing.Size(110, 17);
+            this.radioButton1.TabIndex = 3;
+            this.radioButton1.Tag = "1";
+            this.radioButton1.Text = "Show All (expand)";
+            this.radioButton1.UseVisualStyleBackColor = true;
             // 
             // rbShowUnk
             // 
@@ -111,21 +122,11 @@
             this.rb_ShowAll.Name = "rb_ShowAll";
             this.rb_ShowAll.Size = new System.Drawing.Size(120, 17);
             this.rb_ShowAll.TabIndex = 0;
+            this.rb_ShowAll.TabStop = true;
             this.rb_ShowAll.Tag = "0";
             this.rb_ShowAll.Text = "Show All (collapsed)";
             this.rb_ShowAll.UseVisualStyleBackColor = true;
             this.rb_ShowAll.CheckedChanged += new System.EventHandler(this.rbShowAll_CheckedChanged);
-            // 
-            // radioButton1
-            // 
-            this.radioButton1.AutoSize = true;
-            this.radioButton1.Location = new System.Drawing.Point(18, 42);
-            this.radioButton1.Name = "radioButton1";
-            this.radioButton1.Size = new System.Drawing.Size(110, 17);
-            this.radioButton1.TabIndex = 3;
-            this.radioButton1.Tag = "1";
-            this.radioButton1.Text = "Show All (expand)";
-            this.radioButton1.UseVisualStyleBackColor = true;
             // 
             // InfoForm
             // 

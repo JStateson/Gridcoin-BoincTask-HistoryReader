@@ -46,11 +46,21 @@ namespace BTHistoryReader
             {
                 if (kpa.nAppsUsed == 0 && ShowType==eShowType.eShowHis)  // do not show unused projects
                     continue;
+                if (ShowType == eShowType.eShowUnk)
+                {
+                    if(!kpa.bIsUnknown)
+                    {
+                        if (!kpa.bContainsUnknownApps)
+                            continue;
+                    }
+                }
                 n = new TreeNode();
                 n.Name = i.ToString(); ;
                 n.Text = kpa.ProjName;
                 if (kpa.bIsUnknown)
+                {
                     n.ForeColor = System.Drawing.Color.Red;
+                }
                 else n.ForeColor = System.Drawing.Color.DarkBlue;
                 foreach (cAppName appName in kpa.KnownApps)
                 {
@@ -63,6 +73,7 @@ namespace BTHistoryReader
                         if (appName.bIsUnknown)
                             c.ForeColor = System.Drawing.Color.Red;
                         else c.ForeColor = System.Drawing.Color.DarkBlue;
+                        c.Text += " (" + appName.nAppEntries.ToString() + ")";
                     }
                     n.Nodes.Add(c);
                 }

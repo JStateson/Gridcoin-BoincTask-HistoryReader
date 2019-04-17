@@ -448,6 +448,7 @@ Mem              14
             if(i < 0)   // invalid selection. restore original project name using "tag"
             {
                 tb_Info.Text = "cannot find project: " + cb_SelProj.Text + " \r\n Restoreing";
+                if (cb_SelProj.Tag == null) return;
                 strProjName = KnownProjApps[(int)cb_SelProj.Tag].ProjName;
                 cb_SelProj.Text = strProjName;
                 return;
@@ -533,10 +534,49 @@ Mem              14
       //frm2.ShowDialog(); //shows form as a modal dialog
       //frm2.Show();    //shows form as a non modal dialog
       //frm2.Dispose();   
-        private void btnAbout_Click(object sender, EventArgs e)
+        private void btnShowProjectTree_Click(object sender, EventArgs e)
         {
             InfoForm MyInfo = new InfoForm(this);
             MyInfo.ShowDialog();
+        }
+
+        private void btnContinunity_Click(object sender, EventArgs e)
+        {
+            int NumUnits = lb_SelWorkUnits.SelectedItems.Count;;
+            int i, j, k, nItems;
+            double a,b,c, MaxDiff = 0.0;
+            int iLocMaxDiff=0;
+
+            lb_LocMax.Text = "";
+            lbTimeContinunity.Text = "";
+
+            if (NumUnits != 2)
+            {
+                tb_Results.Text = "you must select exactly two items\r\n";
+                return;
+            }
+            i = lb_SelWorkUnits.SelectedIndices[0]; // difference between this shows the selection
+            j = lb_SelWorkUnits.SelectedIndices[1];
+            nItems = 1 + j - i;
+            for(k=0; k < nItems - 1; k++)
+            {
+                a = ThisProjectInfo[iSortIndex[i+k]].time_t_Completed;
+                b = ThisProjectInfo[iSortIndex[i+k+1]].time_t_Started;
+                c = b - a;
+                if(c > MaxDiff)
+                {
+                    MaxDiff = c;
+                    iLocMaxDiff = k;
+                }
+            }
+            MaxDiff /= 60.0;    // to minutes
+            lbTimeContinunity.Text = "Most minutes between tasks: " + MaxDiff.ToString("###,##0.00") ;
+            if(MaxDiff > 0.0)
+            {
+                string strLine = lb_SelWorkUnits.Items[iLocMaxDiff].ToString().TrimStart();
+                i = strLine.IndexOf(' ');
+                lb_LocMax.Text = "Near line# " + strLine.Substring(0, i);
+            }
         }
     }
 }

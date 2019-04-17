@@ -30,6 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.btnShowProjectTree = new System.Windows.Forms.Button();
             this.gb_filter = new System.Windows.Forms.GroupBox();
             this.btnClear = new System.Windows.Forms.Button();
             this.lb_SelWorkUnits = new System.Windows.Forms.ListBox();
@@ -50,7 +51,10 @@
             this.btn_OpenHistory = new System.Windows.Forms.Button();
             this.ofd_history = new System.Windows.Forms.OpenFileDialog();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.btnAbout = new System.Windows.Forms.Button();
+            this.btnContinunity = new System.Windows.Forms.Button();
+            this.lbTimeContinunity = new System.Windows.Forms.Label();
+            this.lb_LocMax = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.gb_filter.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -60,7 +64,7 @@
             // panel1
             // 
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel1.Controls.Add(this.btnAbout);
+            this.panel1.Controls.Add(this.btnShowProjectTree);
             this.panel1.Controls.Add(this.gb_filter);
             this.panel1.Controls.Add(this.groupBox2);
             this.panel1.Controls.Add(this.groupBox1);
@@ -69,27 +73,41 @@
             this.panel1.Controls.Add(this.btn_OpenHistory);
             this.panel1.Location = new System.Drawing.Point(12, 12);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(822, 503);
+            this.panel1.Size = new System.Drawing.Size(858, 503);
             this.panel1.TabIndex = 0;
             this.panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.panel1_Paint);
             // 
+            // btnShowProjectTree
+            // 
+            this.btnShowProjectTree.Location = new System.Drawing.Point(555, 28);
+            this.btnShowProjectTree.Name = "btnShowProjectTree";
+            this.btnShowProjectTree.Size = new System.Drawing.Size(140, 23);
+            this.btnShowProjectTree.TabIndex = 7;
+            this.btnShowProjectTree.Text = "SHOW PROJECT TREE";
+            this.btnShowProjectTree.UseVisualStyleBackColor = true;
+            this.btnShowProjectTree.Click += new System.EventHandler(this.btnShowProjectTree_Click);
+            // 
             // gb_filter
             // 
+            this.gb_filter.Controls.Add(this.label4);
+            this.gb_filter.Controls.Add(this.lb_LocMax);
+            this.gb_filter.Controls.Add(this.lbTimeContinunity);
+            this.gb_filter.Controls.Add(this.btnContinunity);
             this.gb_filter.Controls.Add(this.btnClear);
             this.gb_filter.Controls.Add(this.lb_SelWorkUnits);
             this.gb_filter.Controls.Add(this.btn_Filter);
-            this.gb_filter.Location = new System.Drawing.Point(457, 168);
+            this.gb_filter.Location = new System.Drawing.Point(488, 77);
             this.gb_filter.Name = "gb_filter";
-            this.gb_filter.Size = new System.Drawing.Size(339, 319);
+            this.gb_filter.Size = new System.Drawing.Size(344, 379);
             this.gb_filter.TabIndex = 6;
             this.gb_filter.TabStop = false;
             this.gb_filter.Text = "Filter";
             // 
             // btnClear
             // 
-            this.btnClear.Location = new System.Drawing.Point(167, 277);
+            this.btnClear.Location = new System.Drawing.Point(19, 302);
             this.btnClear.Name = "btnClear";
-            this.btnClear.Size = new System.Drawing.Size(99, 23);
+            this.btnClear.Size = new System.Drawing.Size(114, 23);
             this.btnClear.TabIndex = 8;
             this.btnClear.Text = "Clear Selections";
             this.btnClear.UseVisualStyleBackColor = true;
@@ -100,18 +118,18 @@
             this.lb_SelWorkUnits.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lb_SelWorkUnits.FormattingEnabled = true;
             this.lb_SelWorkUnits.ItemHeight = 14;
-            this.lb_SelWorkUnits.Location = new System.Drawing.Point(15, 25);
+            this.lb_SelWorkUnits.Location = new System.Drawing.Point(19, 25);
             this.lb_SelWorkUnits.Name = "lb_SelWorkUnits";
             this.lb_SelWorkUnits.SelectionMode = System.Windows.Forms.SelectionMode.MultiSimple;
-            this.lb_SelWorkUnits.Size = new System.Drawing.Size(309, 228);
+            this.lb_SelWorkUnits.Size = new System.Drawing.Size(293, 228);
             this.lb_SelWorkUnits.TabIndex = 7;
             this.toolTip1.SetToolTip(this.lb_SelWorkUnits, "Select a start and a stop");
             // 
             // btn_Filter
             // 
-            this.btn_Filter.Location = new System.Drawing.Point(30, 277);
+            this.btn_Filter.Location = new System.Drawing.Point(19, 269);
             this.btn_Filter.Name = "btn_Filter";
-            this.btn_Filter.Size = new System.Drawing.Size(88, 23);
+            this.btn_Filter.Size = new System.Drawing.Size(114, 23);
             this.btn_Filter.TabIndex = 6;
             this.btn_Filter.Text = "Filter Selected";
             this.toolTip1.SetToolTip(this.btn_Filter, "Select items in box then apply filter");
@@ -263,27 +281,59 @@
             // 
             this.ofd_history.Filter = "CVS Files|*.cvs";
             // 
-            // btnAbout
+            // btnContinunity
             // 
-            this.btnAbout.Location = new System.Drawing.Point(555, 28);
-            this.btnAbout.Name = "btnAbout";
-            this.btnAbout.Size = new System.Drawing.Size(75, 23);
-            this.btnAbout.TabIndex = 7;
-            this.btnAbout.Text = "about";
-            this.btnAbout.UseVisualStyleBackColor = true;
-            this.btnAbout.Click += new System.EventHandler(this.btnAbout_Click);
+            this.btnContinunity.Location = new System.Drawing.Point(19, 334);
+            this.btnContinunity.Name = "btnContinunity";
+            this.btnContinunity.Size = new System.Drawing.Size(114, 23);
+            this.btnContinunity.TabIndex = 9;
+            this.btnContinunity.Text = "Check Continunity";
+            this.toolTip1.SetToolTip(this.btnContinunity, "avoid any large change in time");
+            this.btnContinunity.UseVisualStyleBackColor = true;
+            this.btnContinunity.Click += new System.EventHandler(this.btnContinunity_Click);
+            // 
+            // lbTimeContinunity
+            // 
+            this.lbTimeContinunity.AutoSize = true;
+            this.lbTimeContinunity.CausesValidation = false;
+            this.lbTimeContinunity.Location = new System.Drawing.Point(139, 339);
+            this.lbTimeContinunity.Name = "lbTimeContinunity";
+            this.lbTimeContinunity.Size = new System.Drawing.Size(91, 13);
+            this.lbTimeContinunity.TabIndex = 10;
+            this.lbTimeContinunity.Text = "not calculated yet";
+            // 
+            // lb_LocMax
+            // 
+            this.lb_LocMax.AutoSize = true;
+            this.lb_LocMax.CausesValidation = false;
+            this.lb_LocMax.Location = new System.Drawing.Point(139, 312);
+            this.lb_LocMax.Name = "lb_LocMax";
+            this.lb_LocMax.Size = new System.Drawing.Size(74, 13);
+            this.lb_LocMax.TabIndex = 11;
+            this.lb_LocMax.Text = "not known yet";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.BackColor = System.Drawing.SystemColors.Info;
+            this.label4.Location = new System.Drawing.Point(139, 279);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(161, 13);
+            this.label4.TabIndex = 12;
+            this.label4.Text = "Be sure to check continunity first";
             // 
             // BTHistory
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(870, 541);
+            this.ClientSize = new System.Drawing.Size(896, 541);
             this.Controls.Add(this.panel1);
             this.Name = "BTHistory";
             this.Text = "system";
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.gb_filter.ResumeLayout(false);
+            this.gb_filter.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.groupBox1.ResumeLayout(false);
@@ -314,7 +364,11 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.ListBox lb_SelWorkUnits;
         private System.Windows.Forms.Button btnClear;
-        private System.Windows.Forms.Button btnAbout;
+        private System.Windows.Forms.Button btnShowProjectTree;
+        private System.Windows.Forms.Label lbTimeContinunity;
+        private System.Windows.Forms.Button btnContinunity;
+        private System.Windows.Forms.Label lb_LocMax;
+        private System.Windows.Forms.Label label4;
     }
 }
 

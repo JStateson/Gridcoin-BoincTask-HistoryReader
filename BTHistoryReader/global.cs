@@ -52,6 +52,7 @@ namespace BTHistoryReader
     {
         public string ProjName;
         public bool bIsUnknown;
+        public bool bContainsUnknownApps;
         public List<cAppName> KnownApps;
         private int CountActualEntries()
         {
@@ -76,6 +77,7 @@ namespace BTHistoryReader
             ProjName = strIn;
             KnownApps = new List<cAppName>();
             bIgnore = true; // assume no apps for this project
+            bContainsUnknownApps = false;   // assume apps are known
             bIsUnknown = false;
         }
         public void AddUnkProj(string strIn)
@@ -102,7 +104,8 @@ namespace BTHistoryReader
             AppName.LineLoc = new List<int>();
             KnownApps.Add(AppName);
             bIgnore = false;   
-            bIsUnknown = true;
+            AppName.bIsUnknown = true;
+            bContainsUnknownApps = true;
             return AppName;
         }
         public string GetAppName(string strIn)
