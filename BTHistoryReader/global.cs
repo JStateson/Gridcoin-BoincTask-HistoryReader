@@ -43,6 +43,7 @@ namespace BTHistoryReader
         {
             LineLoc.Clear();
         }
+        public bool bIsUnknown;
     }
 
     // this structure is the "symbol table" used to lookup apps found in history
@@ -50,6 +51,7 @@ namespace BTHistoryReader
     public class cKnownProjApps
     {
         public string ProjName;
+        public bool bIsUnknown;
         public List<cAppName> KnownApps;
         private int CountActualEntries()
         {
@@ -74,6 +76,14 @@ namespace BTHistoryReader
             ProjName = strIn;
             KnownApps = new List<cAppName>();
             bIgnore = true; // assume no apps for this project
+            bIsUnknown = false;
+        }
+        public void AddUnkProj(string strIn)
+        {
+            ProjName = strIn;
+            KnownApps = new List<cAppName>();
+            bIgnore = true; // assume no apps for this project
+            bIsUnknown = true;
         }
 
         public void AddApp(string strIn)
@@ -82,20 +92,43 @@ namespace BTHistoryReader
             AppName.Name = strIn;
             AppName.LineLoc = new List<int>();
             KnownApps.Add(AppName);
-            bIgnore = false;    // if no apps then ignore project
+            bIgnore = false;  
+            bIsUnknown = false;
+        }
+        public cAppName AddUnkApp(string strIn)
+        {
+            cAppName AppName = new cAppName();
+            AppName.Name = strIn;
+            AppName.LineLoc = new List<int>();
+            KnownApps.Add(AppName);
+            bIgnore = false;   
+            bIsUnknown = true;
+            return AppName;
+        }
+        public string GetAppName(string strIn)
+        {
+            string[] strTemps = strIn.Split('\t');
+            return strTemps[2]; 
         }
 
-        public bool SymbolInsert(string strIn, int iLoc)
+        // look for known apps but if unknown found then insert it
+        public void SymbolInsert(string strIn, int iLoc)
         {
+            string strUnkApp;
+            cAppName UnkAppName;
+
             foreach (cAppName AppName in KnownApps)
             {
                 if (strIn.Contains(AppName.Name))
                 {
                     AppName.LineLoc.Add(iLoc);
-                    return true;
+                    return;
                 }
             }
-            return false;
+            strUnkApp = GetAppName(strIn);
+            UnkAppName = AddUnkApp(strUnkApp);
+            UnkAppName.LineLoc.Add(iLoc);
+            return;
         }
 
         // remove all traces of app results

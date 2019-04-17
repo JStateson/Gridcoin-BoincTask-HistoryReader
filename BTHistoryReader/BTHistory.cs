@@ -35,7 +35,7 @@ namespace BTHistoryReader
         const int LKUP_INVALID_LINE = -3;   // line in history is invalid 
 
 
-
+        public string CurrentSystem;   // computer name 
         public List<cProjectInfo> ThisProjectInfo;
 
         // pad right side with spaces to fill
@@ -99,9 +99,10 @@ namespace BTHistoryReader
         public  List<cKnownProjApps> KnownProjApps;
 
         // return index to project name in table else an error code that is negative
+        // return name of project were were trying to find
         // first non numeric non white character is start of project name: 43	SETI@home	SE
         // there is a numeric value followed by a tab.  Look for tab
-        public int LookupProj(string strIn)
+        public int LookupProj(string strIn, ref string strFoundName)
         {
             int i = strIn.Length;
             int iIndex = 1 + strIn.IndexOf('\t');
@@ -112,7 +113,8 @@ namespace BTHistoryReader
             {
                 int j = kpa.ProjName.Length;
                 if (i < j) return LKUP_INVALID_LINE;  // cannot be in this line
-                if (strIn.Substring(0, j) == kpa.ProjName)
+                strFoundName = strIn.Substring(0, j);
+                if (strFoundName == kpa.ProjName)
                 {
                     if (kpa.bIgnore) return LKUP_TOBE_IGNORED;
                     return iIndex;
@@ -180,7 +182,9 @@ namespace BTHistoryReader
                 kpa.EraseAppInfo();
                 lb_SelWorkUnits.Items.Clear();
                 cb_AppNames.Items.Clear();
+                cb_AppNames.Text = "";
                 cb_SelProj.Items.Clear();
+                cb_SelProj.Text = "";
                 tb_AvgCredit.Text = "0";
                 tb_Info.Text = "";
                 tb_Results.Text = "";
@@ -211,7 +215,8 @@ namespace BTHistoryReader
                 if (ValidateHistory() >= 0)
                 {
                     ClearPreviousHistory();
-                    BTHistory.ActiveForm.Text = LinesHistory[1];   // this is name of the computer
+                    CurrentSystem = LinesHistory[1];
+                    BTHistory.ActiveForm.Text = CurrentSystem; ;   // this is name of the computer
                     ProcessHistoryFile();
                     FillSelectBoxes();
                 }
@@ -279,6 +284,8 @@ namespace BTHistoryReader
             int iLine = -4;  // if > 4 then 
             int RtnCode;
             bool bFound;
+            string strProjOut = "";
+            cKnownProjApps kpa;
 
             // find and identify any project in the file
             foreach (string s in LinesHistory)
@@ -286,16 +293,23 @@ namespace BTHistoryReader
                 iLine++;
                 if (iLine < 1) continue;    // skip past header
                 // possible sanity check here: iLine is 1 and first token of "s" is also 1
-                RtnCode = LookupProj(s);
+                RtnCode = LookupProj(s, ref strProjOut);
                 //  may want to identify unknown projects
-                //  any syntax errors skip the problem line
+                //  any syntax errors skip the incomplete line and all that follow
                 if (RtnCode < 0)
                 {
-                    continue;
+                    if(RtnCode == LKUP_NOT_FOUND)
+                    {
+                        tb_Info.Text = "Cannot find project: " + strProjOut + " adding to database\r\n";
+                        kpa = new cKnownProjApps();
+                        kpa.AddUnkProj(strProjOut);
+                        KnownProjApps.Add(kpa);
+                        RtnCode = KnownProjApps.Count-1;  // put unknown project here
+                    }
+                    else continue;
                 }
                 // if the app is found then point to the line containing the app's info
-                bFound = KnownProjApps[RtnCode].SymbolInsert(s, 3+iLine);  // first real data is in 5th line (0..4)
-                // may want to identify unknown apps
+                KnownProjApps[RtnCode].SymbolInsert(s, 3+iLine);  // first real data is in 5th line (0..4)
             }
             return 0;
         }
@@ -317,6 +331,7 @@ namespace BTHistoryReader
                     cb_SelProj.Items.Add(kpa.ProjName);
                 }
             }
+            if (cb_SelProj.Items.Count == 0) return;
             strProjName = cb_SelProj.Items[0].ToString();
             n = LookupProject(strProjName);
             cb_SelProj.Text = strProjName;

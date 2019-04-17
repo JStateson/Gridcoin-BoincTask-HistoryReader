@@ -15,30 +15,92 @@ namespace BTHistoryReader
 
         public List<cKnownProjApps> KnownProjApps;
         public BTHistory btf;
+        public enum eShowType
+        {
+            eShowAllcol = 0,    // only one shown as collapsed (default)
+            eShowAllexp = 1,    // these must match the "tag" in radio button
+            eShowHis = 2,
+            eShowUnk = 3
+        }
+        public TreeNode mainNode;
+
+        public static eShowType ShowType = eShowType.eShowAllcol;
+
         public InfoForm(Form refForm)
         {
             InitializeComponent();
             btf = (BTHistory) refForm;
             KnownProjApps = btf.KnownProjApps;
-            TreeNode mainNode = new TreeNode();
-            mainNode.Name = "History";
-            mainNode.Text = "Projects";
-            int i = 1;
+            mainNode = new TreeNode();
+            mainNode.Text = btf.CurrentSystem;
             tv_projapps.Nodes.Add(mainNode);
+            ShowTree();
+        }
+
+        public void ShowTree()
+        {
+            int i = 1;
+            TreeNode n, c;
 
             foreach (cKnownProjApps kpa in KnownProjApps)
             {
-                TreeNode n = new TreeNode();
+                if (kpa.nAppsUsed == 0 && ShowType==eShowType.eShowHis)  // do not show unused projects
+                    continue;
+                n = new TreeNode();
                 n.Name = i.ToString(); ;
                 n.Text = kpa.ProjName;
-                foreach(cAppName appName in kpa.KnownApps)
+                if (kpa.bIsUnknown)
+                    n.ForeColor = System.Drawing.Color.Red;
+                else n.ForeColor = System.Drawing.Color.DarkBlue;
+                foreach (cAppName appName in kpa.KnownApps)
                 {
-                    TreeNode c = new TreeNode();
+                    if (appName.nAppEntries == 0 && ShowType == eShowType.eShowHis) // do not show unused apps
+                        continue;
+                    c = new TreeNode();
                     c.Text = appName.Name;
+                    if (appName.nAppEntries > 0)     // http://www.99colors.net/dot-net-colors
+                    {
+                        if (appName.bIsUnknown)
+                            c.ForeColor = System.Drawing.Color.Red;
+                        else c.ForeColor = System.Drawing.Color.DarkBlue;
+                    }
                     n.Nodes.Add(c);
                 }
                 tv_projapps.Nodes.Add(n);
             }
+            if (ShowType == eShowType.eShowAllcol)
+                mainNode.Collapse(true);
+            else
+                foreach (TreeNode node in tv_projapps.Nodes) node.Expand();
+        }
+
+        public void RevealApps()
+        {
+            foreach (RadioButton rb in gb_Reveal.Controls)
+            {
+                if(rb.Checked)
+                {
+                    ShowType = (eShowType)Convert.ToInt32(rb.Tag.ToString());
+                    break;
+                }
+            }
+            tv_projapps.Nodes.Clear();
+            ShowTree();
+        }
+
+        private void rbShowAll_CheckedChanged(object sender, EventArgs e)
+        {
+            RevealApps();
+        }
+
+        private void rbShowHis_CheckedChanged(object sender, EventArgs e)
+        {
+            RevealApps();
+        }
+
+        private void rbShowUnk_CheckedChanged(object sender, EventArgs e)
+        {
+            RevealApps();
         }
     }
 }

@@ -125,6 +125,11 @@ units in ascending order by time completed.   Counting
 the number of units and dividing that into the time.
 The time is calculated by subtracting the start time
 of the first unit from the completion time of the last.
-The user must select  a star time and stop.</value>
+The user must select  a star time and stop.
+
+The history file is processed to the last line or until the 
+first incomplete line is parsed.  
+
+Project apps in the history file are shown in dark blue.</value>
   </data>
 </root>
