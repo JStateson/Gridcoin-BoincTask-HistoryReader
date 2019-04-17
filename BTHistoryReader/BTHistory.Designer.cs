@@ -32,6 +32,10 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.btnShowProjectTree = new System.Windows.Forms.Button();
             this.gb_filter = new System.Windows.Forms.GroupBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.lb_LocMax = new System.Windows.Forms.Label();
+            this.lbTimeContinunity = new System.Windows.Forms.Label();
+            this.btnContinunity = new System.Windows.Forms.Button();
             this.btnClear = new System.Windows.Forms.Button();
             this.lb_SelWorkUnits = new System.Windows.Forms.ListBox();
             this.btn_Filter = new System.Windows.Forms.Button();
@@ -51,10 +55,8 @@
             this.btn_OpenHistory = new System.Windows.Forms.Button();
             this.ofd_history = new System.Windows.Forms.OpenFileDialog();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.btnContinunity = new System.Windows.Forms.Button();
-            this.lbTimeContinunity = new System.Windows.Forms.Label();
-            this.lb_LocMax = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.tbNDevices = new System.Windows.Forms.TextBox();
             this.panel1.SuspendLayout();
             this.gb_filter.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -102,6 +104,47 @@
             this.gb_filter.TabIndex = 6;
             this.gb_filter.TabStop = false;
             this.gb_filter.Text = "Filter";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.BackColor = System.Drawing.SystemColors.Info;
+            this.label4.Location = new System.Drawing.Point(139, 279);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(161, 13);
+            this.label4.TabIndex = 12;
+            this.label4.Text = "Be sure to check continunity first";
+            // 
+            // lb_LocMax
+            // 
+            this.lb_LocMax.AutoSize = true;
+            this.lb_LocMax.CausesValidation = false;
+            this.lb_LocMax.Location = new System.Drawing.Point(139, 312);
+            this.lb_LocMax.Name = "lb_LocMax";
+            this.lb_LocMax.Size = new System.Drawing.Size(74, 13);
+            this.lb_LocMax.TabIndex = 11;
+            this.lb_LocMax.Text = "not known yet";
+            // 
+            // lbTimeContinunity
+            // 
+            this.lbTimeContinunity.AutoSize = true;
+            this.lbTimeContinunity.CausesValidation = false;
+            this.lbTimeContinunity.Location = new System.Drawing.Point(139, 339);
+            this.lbTimeContinunity.Name = "lbTimeContinunity";
+            this.lbTimeContinunity.Size = new System.Drawing.Size(91, 13);
+            this.lbTimeContinunity.TabIndex = 10;
+            this.lbTimeContinunity.Text = "not calculated yet";
+            // 
+            // btnContinunity
+            // 
+            this.btnContinunity.Location = new System.Drawing.Point(19, 334);
+            this.btnContinunity.Name = "btnContinunity";
+            this.btnContinunity.Size = new System.Drawing.Size(114, 23);
+            this.btnContinunity.TabIndex = 9;
+            this.btnContinunity.Text = "Check Continunity";
+            this.toolTip1.SetToolTip(this.btnContinunity, "avoid any large change in time");
+            this.btnContinunity.UseVisualStyleBackColor = true;
+            this.btnContinunity.Click += new System.EventHandler(this.btnContinunity_Click);
             // 
             // btnClear
             // 
@@ -172,6 +215,8 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.tbNDevices);
+            this.groupBox1.Controls.Add(this.label5);
             this.groupBox1.Controls.Add(this.tb_AvgCredit);
             this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Controls.Add(this.btnFetchHistory);
@@ -188,7 +233,7 @@
             // 
             // tb_AvgCredit
             // 
-            this.tb_AvgCredit.Location = new System.Drawing.Point(287, 124);
+            this.tb_AvgCredit.Location = new System.Drawing.Point(286, 103);
             this.tb_AvgCredit.Name = "tb_AvgCredit";
             this.tb_AvgCredit.Size = new System.Drawing.Size(57, 20);
             this.tb_AvgCredit.TabIndex = 6;
@@ -197,7 +242,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(135, 132);
+            this.label3.Location = new System.Drawing.Point(134, 106);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(146, 13);
             this.label3.TabIndex = 5;
@@ -281,46 +326,23 @@
             // 
             this.ofd_history.Filter = "CVS Files|*.cvs";
             // 
-            // btnContinunity
+            // label5
             // 
-            this.btnContinunity.Location = new System.Drawing.Point(19, 334);
-            this.btnContinunity.Name = "btnContinunity";
-            this.btnContinunity.Size = new System.Drawing.Size(114, 23);
-            this.btnContinunity.TabIndex = 9;
-            this.btnContinunity.Text = "Check Continunity";
-            this.toolTip1.SetToolTip(this.btnContinunity, "avoid any large change in time");
-            this.btnContinunity.UseVisualStyleBackColor = true;
-            this.btnContinunity.Click += new System.EventHandler(this.btnContinunity_Click);
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(134, 132);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(128, 13);
+            this.label5.TabIndex = 7;
+            this.label5.Text = "Number of boards / cores";
             // 
-            // lbTimeContinunity
+            // tbNDevices
             // 
-            this.lbTimeContinunity.AutoSize = true;
-            this.lbTimeContinunity.CausesValidation = false;
-            this.lbTimeContinunity.Location = new System.Drawing.Point(139, 339);
-            this.lbTimeContinunity.Name = "lbTimeContinunity";
-            this.lbTimeContinunity.Size = new System.Drawing.Size(91, 13);
-            this.lbTimeContinunity.TabIndex = 10;
-            this.lbTimeContinunity.Text = "not calculated yet";
-            // 
-            // lb_LocMax
-            // 
-            this.lb_LocMax.AutoSize = true;
-            this.lb_LocMax.CausesValidation = false;
-            this.lb_LocMax.Location = new System.Drawing.Point(139, 312);
-            this.lb_LocMax.Name = "lb_LocMax";
-            this.lb_LocMax.Size = new System.Drawing.Size(74, 13);
-            this.lb_LocMax.TabIndex = 11;
-            this.lb_LocMax.Text = "not known yet";
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.BackColor = System.Drawing.SystemColors.Info;
-            this.label4.Location = new System.Drawing.Point(139, 279);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(161, 13);
-            this.label4.TabIndex = 12;
-            this.label4.Text = "Be sure to check continunity first";
+            this.tbNDevices.Location = new System.Drawing.Point(286, 132);
+            this.tbNDevices.Name = "tbNDevices";
+            this.tbNDevices.Size = new System.Drawing.Size(57, 20);
+            this.tbNDevices.TabIndex = 8;
+            this.tbNDevices.Text = "1";
+            this.toolTip1.SetToolTip(this.tbNDevices, "Number of GPUs or CPU threads \r\nthat produce the data down");
             // 
             // BTHistory
             // 
@@ -369,6 +391,8 @@
         private System.Windows.Forms.Button btnContinunity;
         private System.Windows.Forms.Label lb_LocMax;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.TextBox tbNDevices;
+        private System.Windows.Forms.Label label5;
     }
 }
 

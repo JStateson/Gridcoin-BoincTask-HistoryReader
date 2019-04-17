@@ -516,7 +516,9 @@ Mem              14
             tb_Results.Text += "Number Work Units: " + nItems + "\r\n";
             tb_Results.Text += "Units per second: " + dUnitsPerSecond.ToString("###,##0.0000\r\n");
             dAvgCreditPerUnit = Convert.ToDouble(tb_AvgCredit.Text);
-            tb_Results.Text += "Credits per second: " + (dUnitsPerSecond * dAvgCreditPerUnit).ToString("###,##0.00\r\n");
+            tb_Results.Text += "Credits/sec (system): " + (dUnitsPerSecond * dAvgCreditPerUnit).ToString("#,##0.00\r\n");
+            nItems = Convert.ToInt32( tbNDevices.Text);
+            tb_Results.Text += "Credits/sec (one device): " + (dUnitsPerSecond * dAvgCreditPerUnit / nItems).ToString("##0.00\r\n");
         }
 
         private void btnClear_Click(object sender, EventArgs e)

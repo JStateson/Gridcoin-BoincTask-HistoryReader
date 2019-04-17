@@ -508,7 +508,8 @@ namespace HostProjectStats
 #endif
             cps = 1.0 / spc;
             outStr += spc.ToString("#,##0.00 seconds per credit from above info one device\n");
-            if(NumberConcurrent > 0)
+            outStr += cps.ToString("##0.0000 Credits per second for one device\n");
+            if (NumberConcurrent > 0)
             {
                 outStr += "Times shown above were divided by number of concurrent tasks\n";
             }
