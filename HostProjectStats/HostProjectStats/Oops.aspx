@@ -17,7 +17,7 @@
             SOURCE CODE IS AT GITHUB UNDER BEEMERBIKER
             <br />
             My web site &quot;stateson.net&quot; will time you out after a while so you need<br />
-            to work quick or refresh the page.</div>
+            to work quick or refresh the page before the session times out.</div>
     </form>
 </body>
 </html>

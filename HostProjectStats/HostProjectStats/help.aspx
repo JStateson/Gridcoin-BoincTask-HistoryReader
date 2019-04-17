@@ -71,8 +71,11 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; and divide the run time by the number of concurrent tasks.&nbsp; Theoritically<br />
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this is correct but in actuality just an approximation that gets worse as<br />
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; more tasks are run supposidly concurrently.&nbsp; I also do not account for the<br />
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; number of invalid tasks that greatly increase when more than 3 tasks are<br />
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; run concurrently.&nbsp; This seems to be a milkyway problem.<br />
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; number of invalid tasks nor the idle time between tasks which increases<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; as one attempts to run more concurrent tasks.&nbsp; If the RunTime on<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; concurrent tasks is greater then the RunTime for a single task then<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; there is no benefit.&nbsp; RunTime is divided by number concurrent to<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; make it easy to compare.<br />
         <br />
         Sources are at Github\BeemerBiker&nbsp; PM me if this does
         not seem correct.<br />

@@ -523,8 +523,9 @@ namespace HostProjectStats
                 // convert credits for a full kilowatt hour (not just GPU hours) 
                 cph /= NumberBoards;
                 kwh = cph * 1000 / GPU_watts;
-                outStr += kwh.ToString("A kilowatt hour will produce ###,##0. credits each device this PC\n");
+                outStr += kwh.ToString("A kilowatt hour will theoretically  produce maximum of ###,##0. credits each device this PC\n");
                 outStr += "Use the above KWH credits to compare this device with any other device\n\tas the overhead (idle) has been removed\n";
+                outStr += "Actual credit product is less because the GPU has idle time between tasks\n";
             }
             StatsOut += outStr;
         }

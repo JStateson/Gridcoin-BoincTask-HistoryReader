@@ -1,4 +1,3 @@
-
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27428.2043
@@ -6,6 +5,8 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GRCearned", "GRCearned\GRCearned\GRCearned.csproj", "{DE25EE6B-4E65-4141-B3F4-9FECB5758F3F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HostProjectStats", "HostProjectStats\HostProjectStats\HostProjectStats.csproj", "{C84FC968-04E8-44B9-AC57-0328EEF62BCB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BTHistoryReader", "BTHistoryReader\BTHistoryReader.csproj", "{678E5BC2-E16C-4396-909E-37ED92143F4A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +22,10 @@ Global
 		{C84FC968-04E8-44B9-AC57-0328EEF62BCB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C84FC968-04E8-44B9-AC57-0328EEF62BCB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C84FC968-04E8-44B9-AC57-0328EEF62BCB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{678E5BC2-E16C-4396-909E-37ED92143F4A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{678E5BC2-E16C-4396-909E-37ED92143F4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{678E5BC2-E16C-4396-909E-37ED92143F4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{678E5BC2-E16C-4396-909E-37ED92143F4A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
