@@ -563,12 +563,12 @@ Mem              14
             for(k=0; k < nItems - 1; k++)
             {
                 a = ThisProjectInfo[iSortIndex[i+k]].time_t_Completed;
-                b = ThisProjectInfo[iSortIndex[i+k+1]].time_t_Started;
+                b = ThisProjectInfo[iSortIndex[i+k+1]].time_t_Completed;
                 c = b - a;
                 if(c > MaxDiff)
                 {
                     MaxDiff = c;
-                    iLocMaxDiff = k;
+                    iLocMaxDiff = k+i;
                 }
             }
             MaxDiff /= 60.0;    // to minutes
