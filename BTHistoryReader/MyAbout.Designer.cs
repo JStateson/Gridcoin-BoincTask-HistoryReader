@@ -40,7 +40,7 @@
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(289, 65);
             this.label1.TabIndex = 0;
-            this.label1.Text = "Copyright 2019 Joseph \"Beemer Biker\" Stateson\r\nversion  17-april-2019\r\nIf this pr" +
+            this.label1.Text = "Copyright 2019 Joseph \"Beemer Biker\" Stateson\r\nversion  18-april-2019\r\nIf this pr" +
     "ogram proves useful send a few gridcoins my way to\r\nSLGw2i8evCmVQq5oqs2FVV6TsrsT" +
     "KZbAiR\r\n\r\n";
             // 

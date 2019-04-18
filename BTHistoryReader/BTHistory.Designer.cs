@@ -30,6 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.btnAbout = new System.Windows.Forms.Button();
             this.btnShowProjectTree = new System.Windows.Forms.Button();
             this.gb_filter = new System.Windows.Forms.GroupBox();
             this.label4 = new System.Windows.Forms.Label();
@@ -57,7 +58,6 @@
             this.btn_OpenHistory = new System.Windows.Forms.Button();
             this.ofd_history = new System.Windows.Forms.OpenFileDialog();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.btnAbout = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.gb_filter.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -77,9 +77,19 @@
             this.panel1.Controls.Add(this.btn_OpenHistory);
             this.panel1.Location = new System.Drawing.Point(12, 12);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(858, 503);
+            this.panel1.Size = new System.Drawing.Size(858, 527);
             this.panel1.TabIndex = 0;
             this.panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.panel1_Paint);
+            // 
+            // btnAbout
+            // 
+            this.btnAbout.Location = new System.Drawing.Point(725, 28);
+            this.btnAbout.Name = "btnAbout";
+            this.btnAbout.Size = new System.Drawing.Size(75, 23);
+            this.btnAbout.TabIndex = 8;
+            this.btnAbout.Text = "ABOUT";
+            this.btnAbout.UseVisualStyleBackColor = true;
+            this.btnAbout.Click += new System.EventHandler(this.btnAbout_Click);
             // 
             // btnShowProjectTree
             // 
@@ -185,9 +195,9 @@
             // 
             this.groupBox2.Controls.Add(this.tb_Results);
             this.groupBox2.Controls.Add(this.rbThroughput);
-            this.groupBox2.Location = new System.Drawing.Point(22, 346);
+            this.groupBox2.Location = new System.Drawing.Point(16, 327);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(398, 141);
+            this.groupBox2.Size = new System.Drawing.Size(398, 185);
             this.groupBox2.TabIndex = 5;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Type Analysis";
@@ -195,11 +205,11 @@
             // tb_Results
             // 
             this.tb_Results.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tb_Results.Location = new System.Drawing.Point(92, 19);
+            this.tb_Results.Location = new System.Drawing.Point(109, 19);
             this.tb_Results.Multiline = true;
             this.tb_Results.Name = "tb_Results";
             this.tb_Results.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.tb_Results.Size = new System.Drawing.Size(285, 103);
+            this.tb_Results.Size = new System.Drawing.Size(268, 103);
             this.tb_Results.TabIndex = 4;
             // 
             // rbThroughput
@@ -226,7 +236,7 @@
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Controls.Add(this.cb_AppNames);
             this.groupBox1.Controls.Add(this.cb_SelProj);
-            this.groupBox1.Location = new System.Drawing.Point(16, 168);
+            this.groupBox1.Location = new System.Drawing.Point(16, 159);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(404, 162);
             this.groupBox1.TabIndex = 4;
@@ -235,7 +245,7 @@
             // 
             // tbNDevices
             // 
-            this.tbNDevices.Location = new System.Drawing.Point(286, 132);
+            this.tbNDevices.Location = new System.Drawing.Point(282, 129);
             this.tbNDevices.Name = "tbNDevices";
             this.tbNDevices.Size = new System.Drawing.Size(57, 20);
             this.tbNDevices.TabIndex = 8;
@@ -245,7 +255,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(134, 132);
+            this.label5.Location = new System.Drawing.Point(130, 129);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(128, 13);
             this.label5.TabIndex = 7;
@@ -253,7 +263,7 @@
             // 
             // tb_AvgCredit
             // 
-            this.tb_AvgCredit.Location = new System.Drawing.Point(286, 103);
+            this.tb_AvgCredit.Location = new System.Drawing.Point(282, 100);
             this.tb_AvgCredit.Name = "tb_AvgCredit";
             this.tb_AvgCredit.Size = new System.Drawing.Size(57, 20);
             this.tb_AvgCredit.TabIndex = 6;
@@ -262,7 +272,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(134, 106);
+            this.label3.Location = new System.Drawing.Point(130, 103);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(146, 13);
             this.label3.TabIndex = 5;
@@ -270,7 +280,7 @@
             // 
             // btnFetchHistory
             // 
-            this.btnFetchHistory.Location = new System.Drawing.Point(12, 122);
+            this.btnFetchHistory.Location = new System.Drawing.Point(11, 119);
             this.btnFetchHistory.Name = "btnFetchHistory";
             this.btnFetchHistory.Size = new System.Drawing.Size(75, 23);
             this.btnFetchHistory.TabIndex = 4;
@@ -302,7 +312,7 @@
             this.cb_AppNames.FormattingEnabled = true;
             this.cb_AppNames.Location = new System.Drawing.Point(86, 67);
             this.cb_AppNames.Name = "cb_AppNames";
-            this.cb_AppNames.Size = new System.Drawing.Size(216, 21);
+            this.cb_AppNames.Size = new System.Drawing.Size(279, 21);
             this.cb_AppNames.TabIndex = 1;
             this.cb_AppNames.SelectedIndexChanged += new System.EventHandler(this.cb_AppNames_SelectedIndexChanged);
             // 
@@ -311,7 +321,7 @@
             this.cb_SelProj.FormattingEnabled = true;
             this.cb_SelProj.Location = new System.Drawing.Point(86, 25);
             this.cb_SelProj.Name = "cb_SelProj";
-            this.cb_SelProj.Size = new System.Drawing.Size(216, 21);
+            this.cb_SelProj.Size = new System.Drawing.Size(279, 21);
             this.cb_SelProj.TabIndex = 0;
             this.cb_SelProj.SelectedIndexChanged += new System.EventHandler(this.cb_SelProj_SelectedIndexChanged);
             // 
@@ -345,16 +355,6 @@
             // ofd_history
             // 
             this.ofd_history.Filter = "CVS Files|*.cvs";
-            // 
-            // btnAbout
-            // 
-            this.btnAbout.Location = new System.Drawing.Point(725, 28);
-            this.btnAbout.Name = "btnAbout";
-            this.btnAbout.Size = new System.Drawing.Size(75, 23);
-            this.btnAbout.TabIndex = 8;
-            this.btnAbout.Text = "ABOUT";
-            this.btnAbout.UseVisualStyleBackColor = true;
-            this.btnAbout.Click += new System.EventHandler(this.btnAbout_Click);
             // 
             // BTHistory
             // 

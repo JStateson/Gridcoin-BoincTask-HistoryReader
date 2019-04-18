@@ -29,6 +29,7 @@ namespace BTHistoryReader
         static double dAvgCreditPerUnit;
         static int iPadSize;
         static int[] iSortIndex;
+        static int LastKnownProject = 0;
 
         const int LKUP_NOT_FOUND = -1;      // cannot find project- forgot it or new one
         const int LKUP_TOBE_IGNORED = -2;   // do not use this project
@@ -99,21 +100,25 @@ namespace BTHistoryReader
         public  List<cKnownProjApps> KnownProjApps;
 
         // return index to project name in table else an error code that is negative
-        // return name of project were were trying to find
+        // return name of project were were trying to find and its app which is also unknown
         // first non numeric non white character is start of project name: 43	SETI@home	SE
         // there is a numeric value followed by a tab.  Look for tab
-        public int LookupProj(string strIn, ref string strFoundName)
+        public int LookupProj(string strIn, ref string strFoundName, ref string strFoundApp)
         {
             int i = strIn.Length;
             int iIndex = 1 + strIn.IndexOf('\t');
             if (iIndex <= 0) return LKUP_INVALID_LINE; 
             strIn = strIn.Substring(iIndex);
+            iIndex = strIn.IndexOf('\t');       // end of name of project in new history line
+            strFoundName = strIn.Substring(0, iIndex);
+            strIn = strIn.Substring(1+iIndex);
+            iIndex = strIn.IndexOf('\t');       // is also start of project name
+            strFoundApp = strIn.Substring(0, iIndex);
             iIndex = 0;
             foreach (cKnownProjApps kpa in KnownProjApps)
             {
                 int j = kpa.ProjName.Length;
                 if (i < j) return LKUP_INVALID_LINE;  // cannot be in this line
-                strFoundName = strIn.Substring(0, j);
                 if (strFoundName == kpa.ProjName)
                 {
                     if (kpa.bIgnore) return LKUP_TOBE_IGNORED;
@@ -152,6 +157,11 @@ namespace BTHistoryReader
             KnownProjApps.Add(kpa);
 
             kpa = new cKnownProjApps();
+            kpa.AddName("LHC@home");
+            kpa.AddApp("SixTrack");
+            KnownProjApps.Add(kpa);
+
+            kpa = new cKnownProjApps();
             kpa.AddName("World Community Grid");
             kpa.AddApp("Mapping Cancer Markers");
             kpa.AddApp("FightAIDS@Home - Phase 1");
@@ -166,28 +176,75 @@ namespace BTHistoryReader
             kpa.AddApp("Long runs (8-12 hours on fastest card)");
             KnownProjApps.Add(kpa);
 
+            kpa = new cKnownProjApps();
+            kpa.AddName("NFS@Home");
+            kpa.AddApp("15e Lattice Sieve");
+            kpa.AddApp("16e Lattice Sieve V5");
+            kpa.AddApp("14e Lattice Sieve");
+            KnownProjApps.Add(kpa);
+
+            kpa = new cKnownProjApps();
+            kpa.AddName("Cosmology@Home");
+            kpa.AddApp("camb_legacy");
+            KnownProjApps.Add(kpa);
+
+            kpa = new cKnownProjApps();
+            kpa.AddName("Rosetta@home");
+            kpa.AddApp("Rosetta@home");
+            KnownProjApps.Add(kpa);
+
+            kpa = new cKnownProjApps();
+            kpa.AddName("TN-Grid Platform");
+            kpa.AddApp("gene@home PC-IM");
+            KnownProjApps.Add(kpa);
+
+            kpa = new cKnownProjApps();
+            kpa.AddName("NumberFields@home");
+            kpa.AddApp("Get Decic Fields");
+            KnownProjApps.Add(kpa);
+
+            kpa = new cKnownProjApps();
+            kpa.AddName("Einstein@Home");
+            kpa.AddApp("Gravitational Wave Engineering run on LIGO O1 Open Data");
+            kpa.AddApp("Gamma-ray pulsar binary search #1 on GPUs");
+            KnownProjApps.Add(kpa);
+
+
             // this project ignored
             kpa = new cKnownProjApps();
             kpa.AddName("WUProp@Home");
             KnownProjApps.Add(kpa);
 
+            kpa = new cKnownProjApps();
+            kpa.AddName("latinsquares");
+            kpa.AddApp("odlk3@home");
+            kpa.AddApp("odlkmax@home");
+            KnownProjApps.Add(kpa);
+
             //lb_NumKnown.Text = "Known Projects: " + KnownProjApps.Count.ToString();
-            
+            LastKnownProject = KnownProjApps.Count;
+        }
+
+        public void ClearInfoTables()
+        {
+            tb_AvgCredit.Text = "0";
+            tb_Info.Text = "";
+            tb_Results.Text = "";
         }
 
         public void ClearPreviousHistory()
         {
+            if(ThisProjectInfo != null)
+                ThisProjectInfo.Clear();
             foreach (cKnownProjApps kpa in KnownProjApps)
             {
                 kpa.EraseAppInfo();
                 lb_SelWorkUnits.Items.Clear();
                 cb_AppNames.Items.Clear();
-                cb_AppNames.Text = "";
                 cb_SelProj.Items.Clear();
                 cb_SelProj.Text = "";
-                tb_AvgCredit.Text = "0";
-                tb_Info.Text = "";
-                tb_Results.Text = "";
+                cb_AppNames.Text = "";
+                ClearInfoTables();
             }
         }
 
@@ -216,7 +273,8 @@ namespace BTHistoryReader
                 {
                     ClearPreviousHistory();
                     CurrentSystem = LinesHistory[1];
-                    BTHistory.ActiveForm.Text = CurrentSystem; ;   // this is name of the computer
+                    if(BTHistory.ActiveForm != null)    // can occur during debugging
+                        BTHistory.ActiveForm.Text = CurrentSystem; ;   // this is name of the computer
                     ProcessHistoryFile();
                     FillSelectBoxes();
                 }
@@ -245,7 +303,12 @@ namespace BTHistoryReader
                 tb_Info.Text += (string)e.Data["MSG"] + "\r\n";
                 return -1;
             }
-            if (LinesHistory[0] == ReqVer && LinesHistory[2] == ReqID) return 0;
+            if (LinesHistory[0] == ReqVer && LinesHistory[2] == ReqID)
+            {
+                iPadSize = Convert.ToInt32(Math.Ceiling(Math.Log10(LinesHistory.Length)));
+                    // want to know how many digits to format data in combobox view
+                return 0;
+            }
             else
             {
                 tb_Info.Text += "cannot find " + ReqVer + " or " + ReqID + "\r\n";
@@ -285,6 +348,7 @@ namespace BTHistoryReader
             int RtnCode;
             bool bFound;
             string strProjOut = "";
+            string strAppOut = "";
             cKnownProjApps kpa;
 
             // find and identify any project in the file
@@ -293,14 +357,12 @@ namespace BTHistoryReader
                 iLine++;
                 if (iLine < 1) continue;    // skip past header
                 // possible sanity check here: iLine is 1 and first token of "s" is also 1
-                RtnCode = LookupProj(s, ref strProjOut);
-                //  may want to identify unknown projects
-                //  any syntax errors skip the incomplete line and all that follow
+                RtnCode = LookupProj(s, ref strProjOut, ref strAppOut);
                 if (RtnCode < 0)
                 {
                     if(RtnCode == LKUP_NOT_FOUND)
                     {
-                        tb_Info.Text = "Cannot find project: " + strProjOut + " adding to database\r\n";
+                        tb_Info.Text += "Cannot find project: " + strProjOut + " adding to database\r\n";
                         kpa = new cKnownProjApps();
                         kpa.AddUnkProj(strProjOut);
                         KnownProjApps.Add(kpa);
@@ -309,7 +371,7 @@ namespace BTHistoryReader
                     else continue;
                 }
                 // if the app is found then point to the line containing the app's info
-                KnownProjApps[RtnCode].SymbolInsert(s, 3+iLine);  // first real data is in 5th line (0..4)
+                KnownProjApps[RtnCode].SymbolInsert(strAppOut, 3+iLine);  // first real data is in 5th line (0..4)
             }
             return 0;
         }
@@ -418,9 +480,10 @@ Mem              14
                 sTemp = strSymbols[11];                             // this is completed time in seconds based on 1970    
                 n = Convert.ToInt64(sTemp);                         // want to convert to time stamp
                 ThisProjectInfo[j].time_t_Completed = n;
-                if (n <= 0)
+                if (n <= 0)   // is 0 if not calculated yet
                 {
-                    break;  // is 0 if not calculated yet
+                    tb_Info.Text += "No completion time " + AppName.GetInfo + " at line " + i.ToString() + "\r\n" ;
+                    continue;  
                 }
                 dt_this = dt_1970.AddSeconds(n);
                 sTemp = fmtLineNumber(strSymbols[0]) + dt_this.ToString();
@@ -442,8 +505,9 @@ Mem              14
         {
             int iProject, iApp, i;
             cAppName AppName;
-            string strProjName;
+            string strProjName, strAppName;
 
+            ClearInfoTables();
             i = cb_SelProj.SelectedIndex;
             if(i < 0)   // invalid selection. restore original project name using "tag"
             {
@@ -457,12 +521,16 @@ Mem              14
             iProject = LookupProject(strProjName);
             Debug.Assert(iProject >= 0);
             iApp = cb_AppNames.SelectedIndex;
+            strAppName = cb_AppNames.Items[iApp].ToString();    // lcontains line count
+            i = strAppName.LastIndexOf(" (");
+            if (i > 0) strAppName = strAppName.Substring(0, i).TrimEnd();
             if (iProject < 0 || iApp < 0)
                 return;
-            AppName = KnownProjApps[iProject].KnownApps[iApp];
+            //iApp = KnownProjApps[iProject].FindApp(strAppName);
+            //AppName = KnownProjApps[iProject].KnownApps[iApp];
+            AppName = KnownProjApps[iProject].FindApp(strAppName);
             ThisProjectInfo = new List<cProjectInfo>(AppName.nAppEntries);
             lb_SelWorkUnits.Items.Clear();
-            iPadSize = Convert.ToInt32( Math.Floor(Math.Log10(AppName.nAppEntries) + 1));  // want to know how many digits in row counter
             for (i = 0;i < AppName.nAppEntries;i++)
             {
                 cProjectInfo cpi = new cProjectInfo();
@@ -529,7 +597,6 @@ Mem              14
         private void cb_AppNames_SelectedIndexChanged(object sender, EventArgs e)
         {
             string strTemp = cb_AppNames.Text;
-
         }
 
 

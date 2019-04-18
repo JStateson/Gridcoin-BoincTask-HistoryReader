@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace BTHistoryReader
 {
@@ -34,6 +35,12 @@ namespace BTHistoryReader
     public class cAppName
     {
         public string Name;
+        public cKnownProjApps ptrKPA;
+        public string GetInfo
+        {
+            get { return ptrKPA.ProjName + "\\" + Name; }
+        }
+
         public List<int> LineLoc;
         public int nAppEntries
         {
@@ -54,6 +61,16 @@ namespace BTHistoryReader
         public bool bIsUnknown;
         public bool bContainsUnknownApps;
         public List<cAppName> KnownApps;
+        public cAppName FindApp(string strName)
+        {
+            foreach(cAppName AppName in KnownApps)
+            {
+                if (AppName.Name == strName)
+                    return AppName;
+            }
+            Debug.Assert(false);
+            return null;
+        }
         private int CountActualEntries()
         {
             int n = 0;
@@ -91,6 +108,7 @@ namespace BTHistoryReader
         public void AddApp(string strIn)
         {
             cAppName AppName = new cAppName();
+            AppName.ptrKPA = this;
             AppName.Name = strIn;
             AppName.LineLoc = new List<int>();
             KnownApps.Add(AppName);
@@ -101,6 +119,7 @@ namespace BTHistoryReader
         {
             cAppName AppName = new cAppName();
             AppName.Name = strIn;
+            AppName.ptrKPA = this;
             AppName.LineLoc = new List<int>();
             KnownApps.Add(AppName);
             bIgnore = false;   
@@ -108,28 +127,20 @@ namespace BTHistoryReader
             bContainsUnknownApps = true;
             return AppName;
         }
-        public string GetAppName(string strIn)
-        {
-            string[] strTemps = strIn.Split('\t');
-            return strTemps[2]; 
-        }
 
         // look for known apps but if unknown found then insert it
-        public void SymbolInsert(string strIn, int iLoc)
+        public void SymbolInsert(string strAppName, int iLoc)
         {
-            string strUnkApp;
             cAppName UnkAppName;
-
             foreach (cAppName AppName in KnownApps)
             {
-                if (strIn.Contains(AppName.Name))
+                if (strAppName == AppName.Name)
                 {
                     AppName.LineLoc.Add(iLoc);
                     return;
                 }
             }
-            strUnkApp = GetAppName(strIn);
-            UnkAppName = AddUnkApp(strUnkApp);
+            UnkAppName = AddUnkApp(strAppName);
             UnkAppName.LineLoc.Add(iLoc);
             return;
         }
