@@ -282,9 +282,9 @@
             // 
             this.btnFetchHistory.Location = new System.Drawing.Point(11, 119);
             this.btnFetchHistory.Name = "btnFetchHistory";
-            this.btnFetchHistory.Size = new System.Drawing.Size(75, 23);
+            this.btnFetchHistory.Size = new System.Drawing.Size(96, 23);
             this.btnFetchHistory.TabIndex = 4;
-            this.btnFetchHistory.Text = "Fetch History";
+            this.btnFetchHistory.Text = "Display History";
             this.toolTip1.SetToolTip(this.btnFetchHistory, "Extract all app reslults  from history");
             this.btnFetchHistory.UseVisualStyleBackColor = true;
             this.btnFetchHistory.Click += new System.EventHandler(this.btnFetchHistory_Click);

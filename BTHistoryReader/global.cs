@@ -129,7 +129,7 @@ namespace BTHistoryReader
         }
 
         // look for known apps but if unknown found then insert it
-        public void SymbolInsert(string strAppName, int iLoc)
+        public cAppName SymbolInsert(string strAppName, int iLoc)
         {
             cAppName UnkAppName;
             foreach (cAppName AppName in KnownApps)
@@ -137,12 +137,14 @@ namespace BTHistoryReader
                 if (strAppName == AppName.Name)
                 {
                     AppName.LineLoc.Add(iLoc);
-                    return;
+                    AppName.bIsUnknown = false;
+                    return AppName;    // was a known app or was in database
                 }
             }
             UnkAppName = AddUnkApp(strAppName);
             UnkAppName.LineLoc.Add(iLoc);
-            return;
+            UnkAppName.bIsUnknown = true;
+            return UnkAppName; // was an unknown app
         }
 
         // remove all traces of app results

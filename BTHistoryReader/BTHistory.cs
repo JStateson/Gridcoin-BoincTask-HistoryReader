@@ -190,7 +190,7 @@ namespace BTHistoryReader
 
             kpa = new cKnownProjApps();
             kpa.AddName("Rosetta@home");
-            kpa.AddApp("Rosetta@home");
+            kpa.AddApp("Rosetta");
             KnownProjApps.Add(kpa);
 
             kpa = new cKnownProjApps();
@@ -346,7 +346,7 @@ namespace BTHistoryReader
         {
             int iLine = -4;  // if > 4 then 
             int RtnCode;
-            bool bFound;
+            cAppName AppName;
             string strProjOut = "";
             string strAppOut = "";
             cKnownProjApps kpa;
@@ -371,7 +371,9 @@ namespace BTHistoryReader
                     else continue;
                 }
                 // if the app is found then point to the line containing the app's info
-                KnownProjApps[RtnCode].SymbolInsert(strAppOut, 3+iLine);  // first real data is in 5th line (0..4)
+                AppName = KnownProjApps[RtnCode].SymbolInsert(strAppOut, 3+iLine);  // first real data is in 5th line (0..4)
+                if(AppName.bIsUnknown)
+                    tb_Info.Text += "Unk App " + AppName.GetInfo + " added to database\r\n";
             }
             return 0;
         }
