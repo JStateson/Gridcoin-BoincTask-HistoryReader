@@ -43,6 +43,8 @@
             this.tb_Results = new System.Windows.Forms.TextBox();
             this.rbThroughput = new System.Windows.Forms.RadioButton();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.tbNDevices = new System.Windows.Forms.TextBox();
+            this.label5 = new System.Windows.Forms.Label();
             this.tb_AvgCredit = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.btnFetchHistory = new System.Windows.Forms.Button();
@@ -55,8 +57,7 @@
             this.btn_OpenHistory = new System.Windows.Forms.Button();
             this.ofd_history = new System.Windows.Forms.OpenFileDialog();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.label5 = new System.Windows.Forms.Label();
-            this.tbNDevices = new System.Windows.Forms.TextBox();
+            this.btnAbout = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.gb_filter.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -66,6 +67,7 @@
             // panel1
             // 
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel1.Controls.Add(this.btnAbout);
             this.panel1.Controls.Add(this.btnShowProjectTree);
             this.panel1.Controls.Add(this.gb_filter);
             this.panel1.Controls.Add(this.groupBox2);
@@ -231,6 +233,24 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "History Selections";
             // 
+            // tbNDevices
+            // 
+            this.tbNDevices.Location = new System.Drawing.Point(286, 132);
+            this.tbNDevices.Name = "tbNDevices";
+            this.tbNDevices.Size = new System.Drawing.Size(57, 20);
+            this.tbNDevices.TabIndex = 8;
+            this.tbNDevices.Text = "1";
+            this.toolTip1.SetToolTip(this.tbNDevices, "Number of GPUs or CPU threads \r\nthat produce the data down");
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(134, 132);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(128, 13);
+            this.label5.TabIndex = 7;
+            this.label5.Text = "Number of boards / cores";
+            // 
             // tb_AvgCredit
             // 
             this.tb_AvgCredit.Location = new System.Drawing.Point(286, 103);
@@ -326,23 +346,15 @@
             // 
             this.ofd_history.Filter = "CVS Files|*.cvs";
             // 
-            // label5
+            // btnAbout
             // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(134, 132);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(128, 13);
-            this.label5.TabIndex = 7;
-            this.label5.Text = "Number of boards / cores";
-            // 
-            // tbNDevices
-            // 
-            this.tbNDevices.Location = new System.Drawing.Point(286, 132);
-            this.tbNDevices.Name = "tbNDevices";
-            this.tbNDevices.Size = new System.Drawing.Size(57, 20);
-            this.tbNDevices.TabIndex = 8;
-            this.tbNDevices.Text = "1";
-            this.toolTip1.SetToolTip(this.tbNDevices, "Number of GPUs or CPU threads \r\nthat produce the data down");
+            this.btnAbout.Location = new System.Drawing.Point(725, 28);
+            this.btnAbout.Name = "btnAbout";
+            this.btnAbout.Size = new System.Drawing.Size(75, 23);
+            this.btnAbout.TabIndex = 8;
+            this.btnAbout.Text = "ABOUT";
+            this.btnAbout.UseVisualStyleBackColor = true;
+            this.btnAbout.Click += new System.EventHandler(this.btnAbout_Click);
             // 
             // BTHistory
             // 
@@ -393,6 +405,7 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox tbNDevices;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Button btnAbout;
     }
 }
 

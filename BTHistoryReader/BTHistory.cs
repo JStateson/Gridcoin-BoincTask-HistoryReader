@@ -580,5 +580,11 @@ Mem              14
                 lb_LocMax.Text = "Near line# " + strLine.Substring(0, i);
             }
         }
+
+        private void btnAbout_Click(object sender, EventArgs e)
+        {
+            MyAbout myAbout = new MyAbout();
+            myAbout.ShowDialog();
+        }
     }
 }
