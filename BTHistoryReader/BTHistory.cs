@@ -204,6 +204,16 @@ namespace BTHistoryReader
             KnownProjApps.Add(kpa);
 
             kpa = new cKnownProjApps();
+            kpa.AddName("Enigma@Home");
+            kpa.AddApp("Enigma GPU");
+            KnownProjApps.Add(kpa);
+
+            kpa = new cKnownProjApps();
+            kpa.AddName("PrimeGrid");
+            kpa.AddApp("PPS (Sieve)");
+            KnownProjApps.Add(kpa);
+
+            kpa = new cKnownProjApps();
             kpa.AddName("Einstein@Home");
             kpa.AddApp("Gravitational Wave Engineering run on LIGO O1 Open Data");
             kpa.AddApp("Gamma-ray pulsar binary search #1 on GPUs");
