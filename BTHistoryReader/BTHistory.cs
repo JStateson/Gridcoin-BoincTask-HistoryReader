@@ -16,27 +16,9 @@ namespace BTHistoryReader
     public partial class BTHistory : Form
     {
 
-        public enum eHindex
-        {
-            eRun =             0,
-            Project =          1,
-            Application =      2,
-            VersionNumber  =   3,
-            Name =             4,
-            PlanClass =        5,
-            ElapsedTime_Cpu =  6,   // if 0 here then dont use
-            ElapsedTime_Gpu =  7,   // if 0 here then dont use
-            State =            8,   // if 3 then aborted??
-            ExitStatus =       9,
-            ReportedTime =    10,
-            CompletedTime =   11,
-            Use =             12,
-            Received =        14,
-            VMem =            15,
-            Mem  =            16
-        }
+        public int AnalysisType;
 
-
+        public cSplitHistoryValues OneSplitLine;    // use this for processing each line in history file
 
         public BTHistory()
         {
@@ -113,36 +95,18 @@ namespace BTHistoryReader
             return LKUP_NOT_FOUND;
         }
 
-        private static string fmtHMS(long seconds)
-        {
-            TimeSpan time = TimeSpan.FromSeconds(seconds);
-            return time.ToString(@"hh\:mm\:ss");
-        }
+
 
         // this is our lookup table
         public  List<cKnownProjApps> KnownProjApps;
 
-        // return index to project name in table else an error code that is negative
-        // return name of project were were trying to find and its app which is also unknown
-        // first non numeric non white character is start of project name: 43	SETI@home	SE
-        // there is a numeric value followed by a tab.  Look for tab
-        public int LookupProj(string strIn, ref string strFoundName, ref string strFoundApp)
+        // lookup name of project in table
+        public int LookupProj(string strProjName)
         {
-            int i = strIn.Length;
-            int iIndex = 1 + strIn.IndexOf('\t');
-            if (iIndex <= 0) return LKUP_INVALID_LINE; 
-            strIn = strIn.Substring(iIndex);
-            iIndex = strIn.IndexOf('\t');       // end of name of project in new history line
-            strFoundName = strIn.Substring(0, iIndex);
-            strIn = strIn.Substring(1+iIndex);
-            iIndex = strIn.IndexOf('\t');       // is also start of project name
-            strFoundApp = strIn.Substring(0, iIndex);
-            iIndex = 0;
+            int iIndex = 0;
             foreach (cKnownProjApps kpa in KnownProjApps)
             {
-                int j = kpa.ProjName.Length;
-                if (i < j) return LKUP_INVALID_LINE;  // cannot be in this line
-                if (strFoundName == kpa.ProjName)
+                if (strProjName == kpa.ProjName)
                 {
                     if (kpa.bIgnore) return LKUP_TOBE_IGNORED;
                     return iIndex;
@@ -157,7 +121,7 @@ namespace BTHistoryReader
         {
             cKnownProjApps kpa;
             KnownProjApps = new List<cKnownProjApps>();
-
+            OneSplitLine = new cSplitHistoryValues();
             kpa = new cKnownProjApps();
             kpa.AddName("Milkyway@Home");
             kpa.AddApp("Milkyway@home Separation");
@@ -347,7 +311,8 @@ namespace BTHistoryReader
             if (LinesHistory[0] == ReqVer && LinesHistory[2] == ReqID)
             {
                 iPadSize = Convert.ToInt32(Math.Ceiling(Math.Log10(LinesHistory.Length)));
-                    // want to know how many digits to format data in combobox view
+                // want to know how many digits to format data in combobox view
+                //OneSplitLine.StoreLineOfHistory(LinesHistory[3]);    // this was used to look at the header items
                 return 0;
             }
             else
@@ -355,9 +320,6 @@ namespace BTHistoryReader
                 tb_Info.Text += "cannot find " + ReqVer + " or " + ReqID + "\r\n";
                 return -2;
             }
-   
-
-            return 0;
         }
 
         // iLoc is index to project table and we need list of apps to show
@@ -382,14 +344,25 @@ namespace BTHistoryReader
             cb_AppNames.Tag = i;    // use tag to restore any edits to the combo box as I cant make it readonly
         }
 
-        // get list of projects
+        public void PerformCalcAverages()
+        {
+            foreach(cKnownProjApps kpa in KnownProjApps)
+            {
+                foreach(cAppName AppName in kpa.KnownApps)
+                {
+                    AppName.DoAverages();
+                }
+            }
+        }
+
+        // get list of projects and their apps
+        // save all information in the KnownProjApp table
         int ProcessHistoryFile()
         {
             int iLine = -4;  // if > 4 then 
             int RtnCode;
+            int eInvalid;   // invalid line in history (not complete or whatever)
             cAppName AppName;
-            string strProjOut = "";
-            string strAppOut = "";
             cKnownProjApps kpa;
 
             // find and identify any project in the file
@@ -398,24 +371,29 @@ namespace BTHistoryReader
                 iLine++;
                 if (iLine < 1) continue;    // skip past header
                 // possible sanity check here: iLine is 1 and first token of "s" is also 1
-                RtnCode = LookupProj(s, ref strProjOut, ref strAppOut);
+                eInvalid = OneSplitLine.StoreLineOfHistory(s);
+                RtnCode = LookupProj(OneSplitLine.Project);
                 if (RtnCode < 0)
                 {
                     if(RtnCode == LKUP_NOT_FOUND)
                     {
-                        tb_Info.Text += "Cannot find project: " + strProjOut + " adding to database\r\n";
+                        tb_Info.Text += "Cannot find project: " + OneSplitLine.Project + " adding to database\r\n";
                         kpa = new cKnownProjApps();
-                        kpa.AddUnkProj(strProjOut);
+                        kpa.AddUnkProj(OneSplitLine.Name);
                         KnownProjApps.Add(kpa);
                         RtnCode = KnownProjApps.Count-1;  // put unknown project here
                     }
                     else continue;
                 }
                 // if the app is found then point to the line containing the app's info
-                AppName = KnownProjApps[RtnCode].SymbolInsert(strAppOut, 3+iLine);  // first real data is in 5th line (0..4)
+                // and put all info also 
+                AppName = KnownProjApps[RtnCode].SymbolInsert(OneSplitLine.Application, 3+iLine);  // first real data is in 5th line (0..4)
+                AppName.dElapsedTime.Add(OneSplitLine.dElapsedTimeCpu); // want to calculate average time this app
+                AppName.bIsValid.Add(eInvalid == (int)eHistoryError.SeemsOK);
                 if(AppName.bIsUnknown)
                     tb_Info.Text += "Unk App " + AppName.GetInfo + " added to database\r\n";
             }
+            PerformCalcAverages();
             return 0;
         }
 
@@ -488,6 +466,11 @@ namespace BTHistoryReader
             }
         }
 
+        static string fmtHMS(long seconds)
+        {
+            TimeSpan time = TimeSpan.FromSeconds(seconds);
+            return time.ToString(@"hh\:mm\:ss");
+        }
 
         public void FillProjectInfo(cAppName AppName)
         {
@@ -499,11 +482,13 @@ namespace BTHistoryReader
             bool bState;
             long n, nElapsedTime;
 
-            foreach (int i in AppName.LineLoc)
+
+
+            foreach (int i in AppName.LineLoc)  // this needs to be re-written to use the SplitLine stuff
             {
                 bState = true;  // assume all will be fine
                 strSymbols = LinesHistory[i].Split('\t');
-                ThisProjectInfo[j].strLineNum = strSymbols[(int)eHindex.eRun];
+                ThisProjectInfo[j].strLineNum = strSymbols[(int)eHindex.Run];
                 sTemp = strSymbols[(int)eHindex.CompletedTime];                             // this is completed time in seconds based on 1970    
                 n = Convert.ToInt64(sTemp);                         // want to convert to time stamp
                 ThisProjectInfo[j].time_t_Completed = n;
@@ -514,11 +499,11 @@ namespace BTHistoryReader
                     continue;  
                 }
                 dt_this = dt_1970.AddSeconds(n);
-                sTemp = fmtLineNumber(strSymbols[(int)eHindex.eRun]) + dt_this.ToString();
+                sTemp = fmtLineNumber(strSymbols[(int)eHindex.Run]) + dt_this.ToString();
                 ThisProjectInfo[j].strCompletedTime = sTemp;        // save in readable format
-                nElapsedTime = Convert.ToInt64(strSymbols[(int)eHindex.ElapsedTime_Cpu].ToString()); // this is actually elapsed time
+                nElapsedTime = Convert.ToInt64(strSymbols[(int)eHindex.ElapsedTimeCpu].ToString()); // this is actually elapsed time
                 // the below is actually CPU time as it appears headers in history are reversed for these two items
-                ThisProjectInfo[j].dElapsedCPU = Convert.ToDouble(strSymbols[(int)eHindex.ElapsedTime_Gpu].ToString());
+                ThisProjectInfo[j].dElapsedCPU = Convert.ToDouble(strSymbols[(int)eHindex.ElapsedTimeGpu].ToString());
                 ThisProjectInfo[j].dElapsedTime = nElapsedTime;
 
                 // try to find which history entries are bad and mark them out of statistical calculations for "avg" 
@@ -536,7 +521,7 @@ namespace BTHistoryReader
                 n -= nElapsedTime;                                  // get the correct start time as best as we can
                 ThisProjectInfo[j].time_t_Started = n;              // needed to calculate throughput
                 ThisProjectInfo[j].strElapsedTimeCpu = fmtHMS(nElapsedTime);
-                ThisProjectInfo[j].strElapsedTimeGpu = fmtHMS(Convert.ToInt64(strSymbols[(int)eHindex.ElapsedTime_Gpu].ToString()));
+                ThisProjectInfo[j].strElapsedTimeGpu = fmtHMS(Convert.ToInt64(strSymbols[(int)eHindex.ElapsedTimeGpu].ToString()));
                 sTemp += " " + ThisProjectInfo[j].strElapsedTimeCpu;
                 //    "(" + ThisProjectInfo[j].strElapsedTimeGpu + ")";
                 ThisProjectInfo[j].strOutput = sTemp;               // eventually put into our text box to allow selections
@@ -545,48 +530,9 @@ namespace BTHistoryReader
             SortTimeIncreasing(j);
         }
 
-        private void btnFetchHistory_Click(object sender, EventArgs e)
+        private void PerformThruput()
         {
-            int iProject, iApp, i;
-            cAppName AppName;
-            string strProjName, strAppName;
 
-            ClearInfoTables();
-            i = cb_SelProj.SelectedIndex;
-            if(i < 0)   // invalid selection. restore original project name using "tag"
-            {
-                tb_Info.Text = "cannot find project: " + cb_SelProj.Text + " \r\n Restoreing";
-                if (cb_SelProj.Tag == null) return;
-                strProjName = KnownProjApps[(int)cb_SelProj.Tag].ProjName;
-                cb_SelProj.Text = strProjName;
-                return;
-            }
-            strProjName = cb_SelProj.Items[i].ToString();
-            iProject = LookupProject(strProjName);
-            Debug.Assert(iProject >= 0);
-            iApp = cb_AppNames.SelectedIndex;
-            strAppName = cb_AppNames.Items[iApp].ToString();    // lcontains line count
-            i = strAppName.LastIndexOf(" (");
-            if (i > 0) strAppName = strAppName.Substring(0, i).TrimEnd();
-            if (iProject < 0 || iApp < 0)
-                return;
-            //iApp = KnownProjApps[iProject].FindApp(strAppName);
-            //AppName = KnownProjApps[iProject].KnownApps[iApp];
-            AppName = KnownProjApps[iProject].FindApp(strAppName);
-            ThisProjectInfo = new List<cProjectInfo>(AppName.nAppEntries);
-            lb_SelWorkUnits.Items.Clear();
-            for (i = 0;i < AppName.nAppEntries;i++)
-            {
-                cProjectInfo cpi = new cProjectInfo();
-                ThisProjectInfo.Add(cpi);
-            }
-            FillProjectInfo(AppName);
-        }
-
-
-        // the first number shown in the selection box is line number in the history file, not the index to the project info table
-        private void btn_Filter_Click(object sender, EventArgs e)
-        {
             long t_start, t_stop, t_diff;
             int i, j, k;
             int i1, i2; // used to access iSort..
@@ -617,8 +563,8 @@ namespace BTHistoryReader
             s2 = s2.Substring(0, k + 1);
 
             t_start = ThisProjectInfo[i].time_t_Started;
-            t_stop  = ThisProjectInfo[j].time_t_Completed;
-            tb_Results.Text  = "Start time " + s1 + "\r\n";
+            t_stop = ThisProjectInfo[j].time_t_Completed;
+            tb_Results.Text = "Start time " + s1 + "\r\n";
             tb_Results.Text += "Stop  time " + s2 + "\r\n";
             t_diff = t_stop - t_start;  // seconds
             dSeconds = (double)t_diff;
@@ -629,8 +575,98 @@ namespace BTHistoryReader
             tb_Results.Text += "Units per second: " + dUnitsPerSecond.ToString("###,##0.0000\r\n");
             dAvgCreditPerUnit = Convert.ToDouble(tb_AvgCredit.Text);
             tb_Results.Text += "Credits/sec (system): " + (dUnitsPerSecond * dAvgCreditPerUnit).ToString("#,##0.00\r\n");
-            nItems = Convert.ToInt32( tbNDevices.Text);
+            nItems = Convert.ToInt32(tbNDevices.Text);
             tb_Results.Text += "Credits/sec (one device): " + (dUnitsPerSecond * dAvgCreditPerUnit / nItems).ToString("##0.00\r\n");
+        }
+
+        private void PerformStats()
+        {
+            int i, j, k, n;
+            double Avg = 0.0;
+            double Std = 0.0;
+            double d;
+            string strOut = "";
+
+            int NumUnits = lb_SelWorkUnits.SelectedItems.Count;
+            if (NumUnits != 2)
+            {
+                tb_Results.Text = "you must select exactly two items\r\n";
+                return;
+            }
+            i = lb_SelWorkUnits.SelectedIndices[0]; // difference between this shows the selection
+            j = lb_SelWorkUnits.SelectedIndices[1];
+            n = 1 + j - i;  // number of items to average
+            if(n < 2)return;
+            n = 0;
+            for(k=i; k <= j; k++)
+            {
+                d = ThisProjectInfo[k].dElapsedTime / 60.0;
+                if (d == 0.0) continue;
+                n++;
+                Avg += d;
+                strOut += d.ToString("###,##0.00") + "\r\n";
+            }
+            if (n == 0) return;
+            Avg /= n;
+            Std = 0;
+            for (k = i; k <= j; k++)
+            {
+                d = ThisProjectInfo[k].dElapsedTime/ 60.0 - Avg;
+                if (d == 0.0) continue;
+                Std += d*d;
+            }
+            Std = Math.Sqrt(Std / n);
+            tb_Results.Text = strOut;
+            tb_Results.Text += "Number of selections " + n.ToString("#,##0") + "\r\n";
+            tb_Results.Text += "AVG elapsed time (minutes) " + Avg.ToString("###,##0.00") + "\r\n";
+            tb_Results.Text += "STD of elapsed time " + Std.ToString("###,##0.00") + "\r\n";
+        }
+
+        private void btnFetchHistory_Click(object sender, EventArgs e)
+        {
+
+            int iProject, iApp, i;
+            cAppName AppName;
+            string strProjName, strAppName;
+
+            ClearInfoTables();
+            i = cb_SelProj.SelectedIndex;
+            if (i < 0)   // invalid selection. restore original project name using "tag"
+            {
+                tb_Info.Text = "cannot find project: " + cb_SelProj.Text + " \r\n Restoreing";
+                if (cb_SelProj.Tag == null) return;
+                strProjName = KnownProjApps[(int)cb_SelProj.Tag].ProjName;
+                cb_SelProj.Text = strProjName;
+                return;
+            }
+            strProjName = cb_SelProj.Items[i].ToString();
+            iProject = LookupProject(strProjName);
+            Debug.Assert(iProject >= 0);
+            iApp = cb_AppNames.SelectedIndex;
+            strAppName = cb_AppNames.Items[iApp].ToString();    // lcontains line count
+            i = strAppName.LastIndexOf(" (");
+            if (i > 0) strAppName = strAppName.Substring(0, i).TrimEnd();
+            if (iProject < 0 || iApp < 0)
+                return;
+            //iApp = KnownProjApps[iProject].FindApp(strAppName);
+            //AppName = KnownProjApps[iProject].KnownApps[iApp];
+            AppName = KnownProjApps[iProject].FindApp(strAppName);
+            ThisProjectInfo = new List<cProjectInfo>(AppName.nAppEntries);
+            lb_SelWorkUnits.Items.Clear();
+            for (i = 0; i < AppName.nAppEntries; i++)
+            {
+                cProjectInfo cpi = new cProjectInfo();
+                ThisProjectInfo.Add(cpi);
+            }
+            FillProjectInfo(AppName);
+        }
+
+
+        // the first number shown in the selection box is line number in the history file, not the index to the project info table
+        private void btn_Filter_Click(object sender, EventArgs e)
+        {
+            if (rbElapsed.Checked) PerformStats();
+            if (rbThroughput.Checked) PerformThruput();
         }
 
         private void btnClear_Click(object sender, EventArgs e)
@@ -696,6 +732,15 @@ namespace BTHistoryReader
         {
             MyAbout myAbout = new MyAbout();
             myAbout.ShowDialog();
+        }
+
+
+        private void rbElapsed_CheckedChanged(object sender, EventArgs e)
+        {
+        }
+
+        private void rbThroughput_CheckedChanged(object sender, EventArgs e)
+        {
         }
     }
 }

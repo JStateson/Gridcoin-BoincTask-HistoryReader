@@ -20,7 +20,8 @@ namespace BTHistoryReader
             eShowAllcol = 0,    // only one shown as collapsed (default)
             eShowAllexp = 1,    // these must match the "tag" in radio button
             eShowHis = 2,
-            eShowUnk = 3
+            eShowUnk = 3,
+            eShowStats = 4
         }
         public TreeNode mainNode;
 
@@ -65,7 +66,8 @@ namespace BTHistoryReader
                 else n.ForeColor = System.Drawing.Color.DarkBlue;
                 foreach (cAppName appName in kpa.KnownApps)
                 {
-                    if (appName.nAppEntries == 0 && ShowType == eShowType.eShowHis) // do not show unused apps
+                    if (appName.nAppEntries == 0 &&
+                        ((ShowType == eShowType.eShowHis) || (ShowType == eShowType.eShowStats))) // do not show unused apps
                         continue;
                     c = new TreeNode();
                     c.Text = appName.Name;
@@ -74,7 +76,16 @@ namespace BTHistoryReader
                         if (appName.bIsUnknown)
                             c.ForeColor = System.Drawing.Color.Red;
                         else c.ForeColor = System.Drawing.Color.DarkBlue;
-                        c.Text += " (" + appName.nAppEntries.ToString() + ")";
+                        if(ShowType == eShowType.eShowStats)
+                        {
+                            if (appName.bNoResults)
+                                continue;
+                            c.Text += " [" + appName.strAvgStd + "]";
+                        }
+                        else
+                        {
+                            c.Text += " (" + appName.nAppEntries.ToString() + ")";
+                        }
                     }
                     n.Nodes.Add(c);
                 }
@@ -123,6 +134,11 @@ namespace BTHistoryReader
         private void InfoForm_HelpButtonClicked(object sender, CancelEventArgs e)
         {
 
+        }
+
+        private void rbShowStats_CheckedChanged(object sender, EventArgs e)
+        {
+            RevealApps();
         }
     }
 }

@@ -37,6 +37,7 @@
             this.rbShowUnk = new System.Windows.Forms.RadioButton();
             this.rbShowHis = new System.Windows.Forms.RadioButton();
             this.rb_ShowAll = new System.Windows.Forms.RadioButton();
+            this.rbShowStats = new System.Windows.Forms.RadioButton();
             this.panel1.SuspendLayout();
             this.gb_Reveal.SuspendLayout();
             this.SuspendLayout();
@@ -68,13 +69,14 @@
             // 
             // gb_Reveal
             // 
+            this.gb_Reveal.Controls.Add(this.rbShowStats);
             this.gb_Reveal.Controls.Add(this.radioButton1);
             this.gb_Reveal.Controls.Add(this.rbShowUnk);
             this.gb_Reveal.Controls.Add(this.rbShowHis);
             this.gb_Reveal.Controls.Add(this.rb_ShowAll);
             this.gb_Reveal.Location = new System.Drawing.Point(15, 210);
             this.gb_Reveal.Name = "gb_Reveal";
-            this.gb_Reveal.Size = new System.Drawing.Size(203, 125);
+            this.gb_Reveal.Size = new System.Drawing.Size(203, 164);
             this.gb_Reveal.TabIndex = 1;
             this.gb_Reveal.TabStop = false;
             this.gb_Reveal.Text = "Reveal Project / Apps";
@@ -128,6 +130,19 @@
             this.rb_ShowAll.UseVisualStyleBackColor = true;
             this.rb_ShowAll.CheckedChanged += new System.EventHandler(this.rbShowAll_CheckedChanged);
             // 
+            // rbShowStats
+            // 
+            this.rbShowStats.AutoSize = true;
+            this.rbShowStats.Location = new System.Drawing.Point(18, 111);
+            this.rbShowStats.Name = "rbShowStats";
+            this.rbShowStats.Size = new System.Drawing.Size(163, 17);
+            this.rbShowStats.TabIndex = 4;
+            this.rbShowStats.TabStop = true;
+            this.rbShowStats.Tag = "4";
+            this.rbShowStats.Text = "Show elapsed [num-Avg(std)]";
+            this.rbShowStats.UseVisualStyleBackColor = true;
+            this.rbShowStats.CheckedChanged += new System.EventHandler(this.rbShowStats_CheckedChanged);
+            // 
             // InfoForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -157,5 +172,6 @@
         private System.Windows.Forms.RadioButton rbShowHis;
         private System.Windows.Forms.RadioButton rb_ShowAll;
         private System.Windows.Forms.RadioButton radioButton1;
+        private System.Windows.Forms.RadioButton rbShowStats;
     }
 }

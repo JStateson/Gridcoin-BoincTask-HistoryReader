@@ -58,6 +58,7 @@
             this.btn_OpenHistory = new System.Windows.Forms.Button();
             this.ofd_history = new System.Windows.Forms.OpenFileDialog();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.rbElapsed = new System.Windows.Forms.RadioButton();
             this.panel1.SuspendLayout();
             this.gb_filter.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -193,11 +194,12 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.rbElapsed);
             this.groupBox2.Controls.Add(this.tb_Results);
             this.groupBox2.Controls.Add(this.rbThroughput);
             this.groupBox2.Location = new System.Drawing.Point(16, 327);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(398, 185);
+            this.groupBox2.Size = new System.Drawing.Size(452, 185);
             this.groupBox2.TabIndex = 5;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Type Analysis";
@@ -205,7 +207,7 @@
             // tb_Results
             // 
             this.tb_Results.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tb_Results.Location = new System.Drawing.Point(109, 19);
+            this.tb_Results.Location = new System.Drawing.Point(151, 19);
             this.tb_Results.Multiline = true;
             this.tb_Results.Name = "tb_Results";
             this.tb_Results.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
@@ -220,10 +222,10 @@
             this.rbThroughput.Name = "rbThroughput";
             this.rbThroughput.Size = new System.Drawing.Size(80, 17);
             this.rbThroughput.TabIndex = 0;
-            this.rbThroughput.TabStop = true;
             this.rbThroughput.Text = "Throughput";
             this.toolTip1.SetToolTip(this.rbThroughput, "Number of tasks and time interval from first to last");
             this.rbThroughput.UseVisualStyleBackColor = true;
+            this.rbThroughput.CheckedChanged += new System.EventHandler(this.rbThroughput_CheckedChanged);
             // 
             // groupBox1
             // 
@@ -238,7 +240,7 @@
             this.groupBox1.Controls.Add(this.cb_SelProj);
             this.groupBox1.Location = new System.Drawing.Point(16, 159);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(404, 162);
+            this.groupBox1.Size = new System.Drawing.Size(452, 162);
             this.groupBox1.TabIndex = 4;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "History Selections";
@@ -356,6 +358,18 @@
             // 
             this.ofd_history.Filter = "CVS Files|*.cvs";
             // 
+            // rbElapsed
+            // 
+            this.rbElapsed.AutoSize = true;
+            this.rbElapsed.Location = new System.Drawing.Point(6, 62);
+            this.rbElapsed.Name = "rbElapsed";
+            this.rbElapsed.Size = new System.Drawing.Size(111, 17);
+            this.rbElapsed.TabIndex = 5;
+            this.rbElapsed.Text = "Avg Elapsed Time";
+            this.toolTip1.SetToolTip(this.rbElapsed, "Number of tasks and time interval from first to last");
+            this.rbElapsed.UseVisualStyleBackColor = true;
+            this.rbElapsed.CheckedChanged += new System.EventHandler(this.rbElapsed_CheckedChanged);
+            // 
             // BTHistory
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -406,6 +420,7 @@
         private System.Windows.Forms.TextBox tbNDevices;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Button btnAbout;
+        private System.Windows.Forms.RadioButton rbElapsed;
     }
 }
 

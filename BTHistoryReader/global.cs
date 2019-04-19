@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using System.Diagnostics;
 
 namespace BTHistoryReader
 {
@@ -35,6 +36,149 @@ namespace BTHistoryReader
         public string strOutput;
     }
 
+
+
+    public enum eHindex
+    {
+        Run = 0,
+        Project = 1,
+        Application = 2,
+        VersionNumber = 3,
+        Name = 4,
+        PlanClass = 5,
+        ElapsedTimeCpu = 6,    // if 0 here then dont use
+        ElapsedTimeGpu = 7,    // if 0 here then dont use
+        State = 8,              // if 3 then aborted
+        ExitStatus = 9,
+        ReportedTime = 10,
+        CompletedTime = 11,
+        Use = 12,
+        Received = 14,
+        VMem = 15,
+        Mem = 16
+    }
+    
+    public enum eHistoryError
+    {
+        SeemsOK = 0,
+        EndHistory = -1,
+        NoCompletionTime = 1,
+        NoStartTime = 2,
+        MissingCPUtime = 4,
+        MissingGPUtime = 8,
+        StateIs_3 = 16, // this is bad state?
+        ConversionError = 32
+    }
+
+    public class cSplitHistoryValues
+    {
+        private string[] SplitHistoryLine;
+        private string fmtHMS(long seconds)
+        {
+            TimeSpan time = TimeSpan.FromSeconds(seconds);
+            return time.ToString(@"hh\:mm\:ss");
+        }
+        public int RtnCod;
+        public string strConversionError = "";
+        public int StoreLineOfHistory(string OneHistoryLine)
+        {
+            if (OneHistoryLine.Length < 100) return (int)eHistoryError.EndHistory;  // cant be valid, lines are huge
+            SplitHistoryLine = OneHistoryLine.Split('\t');
+            try
+            {
+                return ProcessLine();
+            }
+            catch (Exception e)
+            {
+                RtnCod |= (int)eHistoryError.ConversionError;    // an unknown conversion
+                strConversionError = (string)e.Message;
+                return (int)eHistoryError.ConversionError;
+            }
+        }
+        private int ProcessLine()
+        {
+            RtnCod = (int)eHistoryError.SeemsOK;
+            Run = Convert.ToInt32(SplitHistoryLine[(int)eHindex.Run]);
+            Project = SplitHistoryLine[(int)eHindex.Project];
+            Application = SplitHistoryLine[(int)eHindex.Application];
+            VersionNumber = Convert.ToInt32(SplitHistoryLine[(int)eHindex.VersionNumber]);
+            Name = SplitHistoryLine[(int)eHindex.Name];
+            PlanClass = SplitHistoryLine[(int)eHindex.PlanClass];
+            try
+            {
+                ElapsedTimeCpu = Convert.ToInt64(SplitHistoryLine[(int)eHindex.ElapsedTimeCpu]);
+            }
+            catch
+            {
+                ElapsedTimeCpu = 0;
+            }
+            dElapsedTimeCpu = ElapsedTimeCpu;
+            try
+            {
+                ElapsedTimeGpu = Convert.ToInt64(SplitHistoryLine[(int)eHindex.ElapsedTimeGpu]);
+            }
+            catch
+            {
+                ElapsedTimeGpu = 0;
+            }
+            dElapsedTimeGpu = ElapsedTimeGpu;
+            State = Convert.ToInt32(SplitHistoryLine[(int)eHindex.State]);
+            ExitStatus = Convert.ToInt32(SplitHistoryLine[(int)eHindex.ExitStatus]);
+            try
+            {
+                ReportedTime = Convert.ToInt64(SplitHistoryLine[(int)eHindex.ReportedTime]);
+                strReportedTime = fmtHMS(ReportedTime);
+            }
+            catch   //  this error is not critical as of now
+            {
+                ReportedTime = 0;
+                strCompletedTime = "";
+            }
+            try
+            {
+                CompletedTime = Convert.ToInt64(SplitHistoryLine[(int)eHindex.CompletedTime]);
+                strCompletedTime = fmtHMS(CompletedTime);
+            }
+            catch
+            {
+                CompletedTime = 0;
+                strCompletedTime = "";
+            }
+            use = SplitHistoryLine[(int)eHindex.Use];
+            // not useing the following
+            //Received = Convert.ToDouble(SplitHistoryLine[(int)eHindex.Received]);
+            //vMem = Convert.ToDouble(SplitHistoryLine[(int)eHindex.VMem]);
+            //Mem = Convert.ToDouble(SplitHistoryLine[(int)eHindex.Mem]);
+            RtnCod |= (ElapsedTimeCpu == 0) ? (int)eHistoryError.MissingCPUtime : 0;
+            RtnCod |= (ElapsedTimeGpu == 0) ? (int)eHistoryError.MissingGPUtime : 0;
+            RtnCod |= (ExitStatus == 3) ? (int)eHistoryError.StateIs_3 : 0;
+            RtnCod |= (CompletedTime == 0) ? (int)eHistoryError.NoCompletionTime : 0;
+            return RtnCod;
+        }
+        public int Run;
+        public string Project;
+        public string Application;
+        public int VersionNumber;
+        public string Name;
+        public string PlanClass;
+        public long ElapsedTimeCpu;
+        public double dElapsedTimeCpu;
+        public long ElapsedTimeGpu;
+        public double dElapsedTimeGpu;
+        public int State;
+        public int ExitStatus;
+        public long ReportedTime;
+        public string strReportedTime;
+        public long CompletedTime;
+        public string strCompletedTime;
+        public string use;
+        public double Received;
+        public double vMem;
+        public double Mem;
+        
+    }
+
+
     public class cAppName
     {
         public string Name;
@@ -46,17 +190,49 @@ namespace BTHistoryReader
         public int NumberBadWorkUnits;
         public double AvgRunTime;
         public double StdRunTime;
-        public void FormStats()
+        public bool bNoResults = false;
+        public string strAvgStd = "";
+        public bool DoAverages()            // return true if avg was calculated
         {
             int nUsed = 0;
+            double d;
+
+            bNoResults = false;
             AvgRunTime = 0.0;
             StdRunTime = 0.0;
-            foreach(int i in LineLoc)
+            for(int i = 0; i < bIsValid.Count;i++)
             {
-
+                if(bIsValid[i])
+                {
+                    d = dElapsedTime[i] / 60.0; // want minutes
+                    AvgRunTime += d;
+                    nUsed++;
+                }
             }
+            if(nUsed == 0)
+            {
+                bNoResults = true;
+                return false;
+            }
+            AvgRunTime /= nUsed;
+            for (int i = 0; i < bIsValid.Count; i++)
+            {
+                if (bIsValid[i])
+                {
+                    d = dElapsedTime[i] / 60.0;
+                    d = d - AvgRunTime;
+                    d = d * d;
+                    StdRunTime += d;
+                }
+            }
+            StdRunTime /= nUsed;
+            StdRunTime = Math.Sqrt(StdRunTime);
+            strAvgStd = nUsed.ToString("##,##0") + "-" +  AvgRunTime.ToString("###,##0.0") + "(" + StdRunTime.ToString("#,##0.0") + ")";
+            return true;
         }
         public List<int> LineLoc;
+        public List<double> dElapsedTime;
+        public List<bool> bIsValid;
         public int nAppEntries
         {
             get { return LineLoc.Count; }
@@ -129,6 +305,8 @@ namespace BTHistoryReader
             AppName.ptrKPA = this;
             AppName.Name = strIn;
             AppName.LineLoc = new List<int>();
+            AppName.dElapsedTime = new List<double>();
+            AppName.bIsValid = new List<bool>();
             KnownApps.Add(AppName);
             bIgnore = false;  
             bIsUnknown = false;
@@ -139,6 +317,8 @@ namespace BTHistoryReader
             AppName.Name = strIn;
             AppName.ptrKPA = this;
             AppName.LineLoc = new List<int>();
+            AppName.dElapsedTime = new List<double>();
+            AppName.bIsValid = new List<bool>();
             KnownApps.Add(AppName);
             bIgnore = false;   
             AppName.bIsUnknown = true;
