@@ -56,14 +56,14 @@
             this.panel1.Controls.Add(this.tv_projapps);
             this.panel1.Location = new System.Drawing.Point(335, 23);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(396, 400);
+            this.panel1.Size = new System.Drawing.Size(426, 400);
             this.panel1.TabIndex = 2;
             // 
             // tv_projapps
             // 
-            this.tv_projapps.Location = new System.Drawing.Point(42, 36);
+            this.tv_projapps.Location = new System.Drawing.Point(33, 37);
             this.tv_projapps.Name = "tv_projapps";
-            this.tv_projapps.Size = new System.Drawing.Size(295, 314);
+            this.tv_projapps.Size = new System.Drawing.Size(363, 314);
             this.tv_projapps.TabIndex = 0;
             // 
             // gb_Reveal
@@ -138,6 +138,7 @@
             this.Controls.Add(this.label1);
             this.Name = "InfoForm";
             this.Text = "InfoForm";
+            this.HelpButtonClicked += new System.ComponentModel.CancelEventHandler(this.InfoForm_HelpButtonClicked);
             this.panel1.ResumeLayout(false);
             this.gb_Reveal.ResumeLayout(false);
             this.gb_Reveal.PerformLayout();

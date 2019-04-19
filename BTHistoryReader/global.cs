@@ -17,8 +17,11 @@ namespace BTHistoryReader
         public string strName;
         public string strPlanClass;
         public string strElapsedTimeCpu;    // actually this is the "elapsed time"
+        public double dElapsedTime;
         public string strElapsedTimeGpu;    // actually this is the cpu time that is in parens ie: "00:02:45(00:00:17)"
-        public string strState;
+        public double dElapsedCPU;  // this seems to really be CPU time
+        public string strState;     // seems a '3' here is aborted or bad
+        public bool bState; // if true then state is valid can can be counted in average & std computations
         public string strExitstatus;
         public string strReportedTime;
         public string strCompletedTime;
@@ -40,7 +43,19 @@ namespace BTHistoryReader
         {
             get { return ptrKPA.ProjName + "\\" + Name; }
         }
+        public int NumberBadWorkUnits;
+        public double AvgRunTime;
+        public double StdRunTime;
+        public void FormStats()
+        {
+            int nUsed = 0;
+            AvgRunTime = 0.0;
+            StdRunTime = 0.0;
+            foreach(int i in LineLoc)
+            {
 
+            }
+        }
         public List<int> LineLoc;
         public int nAppEntries
         {
@@ -49,6 +64,8 @@ namespace BTHistoryReader
         public void init()
         {
             LineLoc.Clear();
+            AvgRunTime = 0.0;
+            StdRunTime = 0.0;
         }
         public bool bIsUnknown;
     }
@@ -60,6 +77,7 @@ namespace BTHistoryReader
         public string ProjName;
         public bool bIsUnknown;
         public bool bContainsUnknownApps;
+        public int NumberBadWorkUnits;
         public List<cAppName> KnownApps;
         public cAppName FindApp(string strName)
         {
@@ -150,12 +168,13 @@ namespace BTHistoryReader
         // remove all traces of app results
         public void EraseAppInfo()
         {
+            NumberBadWorkUnits = 0;
             foreach(cAppName AppName in KnownApps)
             {
                 AppName.LineLoc.Clear();
+                AppName.NumberBadWorkUnits = 0;
             }
         }
     }
-
 
 }

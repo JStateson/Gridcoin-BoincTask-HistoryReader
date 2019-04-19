@@ -34,6 +34,7 @@ namespace BTHistoryReader
             mainNode = new TreeNode();
             mainNode.Text = btf.CurrentSystem;
             tv_projapps.Nodes.Add(mainNode);
+            // GetTreeLayout(); // not used as better to show last tree layout and not start over
             ShowTree();
         }
 
@@ -87,16 +88,21 @@ namespace BTHistoryReader
 
         public void RevealApps()
         {
+            GetTreeLayout();
+            tv_projapps.Nodes.Clear();
+            ShowTree();
+        }
+
+        public void GetTreeLayout()
+        {
             foreach (RadioButton rb in gb_Reveal.Controls)
             {
-                if(rb.Checked)
+                if (rb.Checked)
                 {
                     ShowType = (eShowType)Convert.ToInt32(rb.Tag.ToString());
                     break;
                 }
             }
-            tv_projapps.Nodes.Clear();
-            ShowTree();
         }
 
         private void rbShowAll_CheckedChanged(object sender, EventArgs e)
@@ -112,6 +118,11 @@ namespace BTHistoryReader
         private void rbShowUnk_CheckedChanged(object sender, EventArgs e)
         {
             RevealApps();
+        }
+
+        private void InfoForm_HelpButtonClicked(object sender, CancelEventArgs e)
+        {
+
         }
     }
 }

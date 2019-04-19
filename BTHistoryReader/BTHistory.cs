@@ -15,12 +15,34 @@ namespace BTHistoryReader
 {
     public partial class BTHistory : Form
     {
+
+        public enum eHindex
+        {
+            eRun =             0,
+            Project =          1,
+            Application =      2,
+            VersionNumber  =   3,
+            Name =             4,
+            PlanClass =        5,
+            ElapsedTime_Cpu =  6,   // if 0 here then dont use
+            ElapsedTime_Gpu =  7,   // if 0 here then dont use
+            State =            8,   // if 3 then aborted??
+            ExitStatus =       9,
+            ReportedTime =    10,
+            CompletedTime =   11,
+            Use =             12,
+            Received =        14,
+            VMem =            15,
+            Mem  =            16
+        }
+
+
+
         public BTHistory()
         {
             InitializeComponent();
             InitLookupTable();
         }
-
 
         static string str_PathToHistory;
         static string[] LinesHistory;
@@ -30,6 +52,7 @@ namespace BTHistoryReader
         static int iPadSize;
         static int[] iSortIndex;
         static int LastKnownProject = 0;
+        public int NumberBadWorkUnits;
 
         const int LKUP_NOT_FOUND = -1;      // cannot find project- forgot it or new one
         const int LKUP_TOBE_IGNORED = -2;   // do not use this project
@@ -191,6 +214,7 @@ namespace BTHistoryReader
             kpa = new cKnownProjApps();
             kpa.AddName("Rosetta@home");
             kpa.AddApp("Rosetta");
+            kpa.AddApp("Rosetta Mini");
             KnownProjApps.Add(kpa);
 
             kpa = new cKnownProjApps();
@@ -229,6 +253,13 @@ namespace BTHistoryReader
             kpa.AddName("latinsquares");
             kpa.AddApp("odlk3@home");
             kpa.AddApp("odlkmax@home");
+            KnownProjApps.Add(kpa);
+
+            kpa = new cKnownProjApps();
+            kpa.AddName("yoyo@home");
+            kpa.AddApp("Siever");
+            kpa.AddApp("Cruncher ogr");
+            kpa.AddApp("ecm");
             KnownProjApps.Add(kpa);
 
             //lb_NumKnown.Text = "Known Projects: " + KnownProjApps.Count.ToString();
@@ -458,24 +489,6 @@ namespace BTHistoryReader
         }
 
 
-        /*
-Project           0
-Application       1
-Version Number    2
-Name              3
-PlanClass         4
-Elapsed Time Cpu  5
-Elapsed Time Gpu  6
-State             7
-ExitStatus        8
-Reported time     9
-Completed time   10 
-Use              11
-Received         12
-VMem             13
-Mem              14
-         */
-
         public void FillProjectInfo(cAppName AppName)
         {
             string[] strSymbols;
@@ -483,28 +496,47 @@ Mem              14
             System.DateTime dt_1970 = new System.DateTime(1970, 1, 1);
             System.DateTime dt_this;
             int j = 0;
+            bool bState;
             long n, nElapsedTime;
 
             foreach (int i in AppName.LineLoc)
             {
+                bState = true;  // assume all will be fine
                 strSymbols = LinesHistory[i].Split('\t');
-                ThisProjectInfo[j].strLineNum = strSymbols[0];
-                sTemp = strSymbols[11];                             // this is completed time in seconds based on 1970    
+                ThisProjectInfo[j].strLineNum = strSymbols[(int)eHindex.eRun];
+                sTemp = strSymbols[(int)eHindex.CompletedTime];                             // this is completed time in seconds based on 1970    
                 n = Convert.ToInt64(sTemp);                         // want to convert to time stamp
                 ThisProjectInfo[j].time_t_Completed = n;
                 if (n <= 0)   // is 0 if not calculated yet
                 {
                     tb_Info.Text += "No completion time " + AppName.GetInfo + " at line " + i.ToString() + "\r\n" ;
+                    // may not have finished yet ???
                     continue;  
                 }
                 dt_this = dt_1970.AddSeconds(n);
-                sTemp = fmtLineNumber(strSymbols[0]) + dt_this.ToString();
+                sTemp = fmtLineNumber(strSymbols[(int)eHindex.eRun]) + dt_this.ToString();
                 ThisProjectInfo[j].strCompletedTime = sTemp;        // save in readable format
-                nElapsedTime = Convert.ToInt64(strSymbols[6].ToString()); // this is elapsed time
+                nElapsedTime = Convert.ToInt64(strSymbols[(int)eHindex.ElapsedTime_Cpu].ToString()); // this is actually elapsed time
+                // the below is actually CPU time as it appears headers in history are reversed for these two items
+                ThisProjectInfo[j].dElapsedCPU = Convert.ToDouble(strSymbols[(int)eHindex.ElapsedTime_Gpu].ToString());
+                ThisProjectInfo[j].dElapsedTime = nElapsedTime;
+
+                // try to find which history entries are bad and mark them out of statistical calculations for "avg" 
+                // they still count in thruput
+
+                bState &= strSymbols[(int)eHindex.State].ToString() != "3";
+                bState &= (nElapsedTime > 0);
+                bState &= (ThisProjectInfo[j].dElapsedCPU > 0.0);
+                ThisProjectInfo[j].bState = bState;
+                if(!bState)
+                {
+                    AppName.NumberBadWorkUnits++;
+                    tb_Info.Text += "Bad exit status line " + ThisProjectInfo[j].strLineNum + "\r\n";
+                }
                 n -= nElapsedTime;                                  // get the correct start time as best as we can
                 ThisProjectInfo[j].time_t_Started = n;              // needed to calculate throughput
                 ThisProjectInfo[j].strElapsedTimeCpu = fmtHMS(nElapsedTime);
-                ThisProjectInfo[j].strElapsedTimeGpu = fmtHMS(Convert.ToInt64(strSymbols[7].ToString()));
+                ThisProjectInfo[j].strElapsedTimeGpu = fmtHMS(Convert.ToInt64(strSymbols[(int)eHindex.ElapsedTime_Gpu].ToString()));
                 sTemp += " " + ThisProjectInfo[j].strElapsedTimeCpu;
                 //    "(" + ThisProjectInfo[j].strElapsedTimeGpu + ")";
                 ThisProjectInfo[j].strOutput = sTemp;               // eventually put into our text box to allow selections
