@@ -232,6 +232,11 @@ namespace BTHistoryReader
             kpa.AddApp("Period Search Application");
             KnownProjApps.Add(kpa);
 
+            kpa = new cKnownProjApps();
+            kpa.AddName("Moo! Wrapper");
+            kpa.AddApp("Distributed.net Client");
+            KnownProjApps.Add(kpa);
+
             //lb_NumKnown.Text = "Known Projects: " + KnownProjApps.Count.ToString();
             LastKnownProject = KnownProjApps.Count;
         }
