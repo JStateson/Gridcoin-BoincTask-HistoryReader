@@ -720,7 +720,7 @@ namespace BTHistoryReader
             lb_LocMax.Text = "";
             lbTimeContinunity.Text = "";
 
-            if (NumUnits != 2)
+            if (CountSelected() == 0)
             {
                 tb_Results.Text = "you must select exactly two items\r\n";
                 return;
@@ -741,7 +741,8 @@ namespace BTHistoryReader
             }
             MaxDiff /= 60.0;    // to minutes
             lbTimeContinunity.Text = "Most minutes between tasks: " + MaxDiff.ToString("###,##0.00") ;
-            if(MaxDiff > 0.0)
+            lb_LocMax.Visible = (MaxDiff > 0.0);
+            if (lb_LocMax.Visible)
             {
                 string strLine = lb_SelWorkUnits.Items[iLocMaxDiff].ToString().TrimStart();
                 i = strLine.IndexOf(' ');
@@ -762,6 +763,39 @@ namespace BTHistoryReader
 
         private void rbThroughput_CheckedChanged(object sender, EventArgs e)
         {
+        }
+
+        private int CountSelected()
+        {
+            int i, j, n = lb_SelWorkUnits.SelectedIndices.Count;
+            if (n != 2)
+            {
+                lb_NumSel.Visible = false;
+                lb_LocMax.Visible = false;
+                lbTimeContinunity.Text = "not calculated yet";
+                return 0;
+            }
+            lb_NumSel.Visible = true;
+            i = lb_SelWorkUnits.SelectedIndices[0]; // difference between this shows the selection
+            j = lb_SelWorkUnits.SelectedIndices[1];
+            n = 1 + j - i;
+            lb_NumSel.Text = "Selected: " + n.ToString();
+            return n;
+        }
+
+
+        private void bt_all_Click(object sender, EventArgs e)
+        {
+            int i = lb_SelWorkUnits.Items.Count;
+            lb_SelWorkUnits.ClearSelected();
+            lb_SelWorkUnits.SetSelected(0, true);
+            lb_SelWorkUnits.SetSelected(i-1, true);
+            CountSelected();
+        }
+
+        private void lb_SelWorkUnits_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            CountSelected();
         }
     }
 }

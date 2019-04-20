@@ -41,6 +41,7 @@
             this.lb_SelWorkUnits = new System.Windows.Forms.ListBox();
             this.btn_Filter = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.rbElapsed = new System.Windows.Forms.RadioButton();
             this.tb_Results = new System.Windows.Forms.TextBox();
             this.rbThroughput = new System.Windows.Forms.RadioButton();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -58,7 +59,8 @@
             this.btn_OpenHistory = new System.Windows.Forms.Button();
             this.ofd_history = new System.Windows.Forms.OpenFileDialog();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.rbElapsed = new System.Windows.Forms.RadioButton();
+            this.bt_all = new System.Windows.Forms.Button();
+            this.lb_NumSel = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.gb_filter.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -104,6 +106,8 @@
             // 
             // gb_filter
             // 
+            this.gb_filter.Controls.Add(this.lb_NumSel);
+            this.gb_filter.Controls.Add(this.bt_all);
             this.gb_filter.Controls.Add(this.label4);
             this.gb_filter.Controls.Add(this.lb_LocMax);
             this.gb_filter.Controls.Add(this.lbTimeContinunity);
@@ -113,7 +117,7 @@
             this.gb_filter.Controls.Add(this.btn_Filter);
             this.gb_filter.Location = new System.Drawing.Point(488, 77);
             this.gb_filter.Name = "gb_filter";
-            this.gb_filter.Size = new System.Drawing.Size(344, 379);
+            this.gb_filter.Size = new System.Drawing.Size(344, 421);
             this.gb_filter.TabIndex = 6;
             this.gb_filter.TabStop = false;
             this.gb_filter.Text = "Filter";
@@ -137,6 +141,7 @@
             this.lb_LocMax.Size = new System.Drawing.Size(74, 13);
             this.lb_LocMax.TabIndex = 11;
             this.lb_LocMax.Text = "not known yet";
+            this.lb_LocMax.Visible = false;
             // 
             // lbTimeContinunity
             // 
@@ -180,6 +185,7 @@
             this.lb_SelWorkUnits.Size = new System.Drawing.Size(293, 228);
             this.lb_SelWorkUnits.TabIndex = 7;
             this.toolTip1.SetToolTip(this.lb_SelWorkUnits, "Select a start and a stop");
+            this.lb_SelWorkUnits.SelectedIndexChanged += new System.EventHandler(this.lb_SelWorkUnits_SelectedIndexChanged);
             // 
             // btn_Filter
             // 
@@ -204,6 +210,18 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Type Analysis";
             // 
+            // rbElapsed
+            // 
+            this.rbElapsed.AutoSize = true;
+            this.rbElapsed.Location = new System.Drawing.Point(6, 62);
+            this.rbElapsed.Name = "rbElapsed";
+            this.rbElapsed.Size = new System.Drawing.Size(111, 17);
+            this.rbElapsed.TabIndex = 5;
+            this.rbElapsed.Text = "Avg Elapsed Time";
+            this.toolTip1.SetToolTip(this.rbElapsed, "Number of tasks and time interval from first to last");
+            this.rbElapsed.UseVisualStyleBackColor = true;
+            this.rbElapsed.CheckedChanged += new System.EventHandler(this.rbElapsed_CheckedChanged);
+            // 
             // tb_Results
             // 
             this.tb_Results.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -222,6 +240,7 @@
             this.rbThroughput.Name = "rbThroughput";
             this.rbThroughput.Size = new System.Drawing.Size(80, 17);
             this.rbThroughput.TabIndex = 0;
+            this.rbThroughput.TabStop = true;
             this.rbThroughput.Text = "Throughput";
             this.toolTip1.SetToolTip(this.rbThroughput, "Number of tasks and time interval from first to last");
             this.rbThroughput.UseVisualStyleBackColor = true;
@@ -358,17 +377,25 @@
             // 
             this.ofd_history.Filter = "CVS Files|*.cvs";
             // 
-            // rbElapsed
+            // bt_all
             // 
-            this.rbElapsed.AutoSize = true;
-            this.rbElapsed.Location = new System.Drawing.Point(6, 62);
-            this.rbElapsed.Name = "rbElapsed";
-            this.rbElapsed.Size = new System.Drawing.Size(111, 17);
-            this.rbElapsed.TabIndex = 5;
-            this.rbElapsed.Text = "Avg Elapsed Time";
-            this.toolTip1.SetToolTip(this.rbElapsed, "Number of tasks and time interval from first to last");
-            this.rbElapsed.UseVisualStyleBackColor = true;
-            this.rbElapsed.CheckedChanged += new System.EventHandler(this.rbElapsed_CheckedChanged);
+            this.bt_all.Location = new System.Drawing.Point(19, 373);
+            this.bt_all.Name = "bt_all";
+            this.bt_all.Size = new System.Drawing.Size(75, 23);
+            this.bt_all.TabIndex = 13;
+            this.bt_all.Text = "Select All";
+            this.bt_all.UseVisualStyleBackColor = true;
+            this.bt_all.Click += new System.EventHandler(this.bt_all_Click);
+            // 
+            // lb_NumSel
+            // 
+            this.lb_NumSel.AutoSize = true;
+            this.lb_NumSel.Location = new System.Drawing.Point(139, 383);
+            this.lb_NumSel.Name = "lb_NumSel";
+            this.lb_NumSel.Size = new System.Drawing.Size(51, 13);
+            this.lb_NumSel.TabIndex = 14;
+            this.lb_NumSel.Text = "unknown";
+            this.lb_NumSel.Visible = false;
             // 
             // BTHistory
             // 
@@ -421,6 +448,8 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Button btnAbout;
         private System.Windows.Forms.RadioButton rbElapsed;
+        private System.Windows.Forms.Button bt_all;
+        private System.Windows.Forms.Label lb_NumSel;
     }
 }
 
