@@ -33,6 +33,8 @@
             this.btnAbout = new System.Windows.Forms.Button();
             this.btnShowProjectTree = new System.Windows.Forms.Button();
             this.gb_filter = new System.Windows.Forms.GroupBox();
+            this.lb_NumSel = new System.Windows.Forms.Label();
+            this.bt_all = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
             this.lb_LocMax = new System.Windows.Forms.Label();
             this.lbTimeContinunity = new System.Windows.Forms.Label();
@@ -59,8 +61,8 @@
             this.btn_OpenHistory = new System.Windows.Forms.Button();
             this.ofd_history = new System.Windows.Forms.OpenFileDialog();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.bt_all = new System.Windows.Forms.Button();
-            this.lb_NumSel = new System.Windows.Forms.Label();
+            this.lb_nProj = new System.Windows.Forms.Label();
+            this.lb_nApps = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.gb_filter.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -121,6 +123,26 @@
             this.gb_filter.TabIndex = 6;
             this.gb_filter.TabStop = false;
             this.gb_filter.Text = "Filter";
+            // 
+            // lb_NumSel
+            // 
+            this.lb_NumSel.AutoSize = true;
+            this.lb_NumSel.Location = new System.Drawing.Point(139, 373);
+            this.lb_NumSel.Name = "lb_NumSel";
+            this.lb_NumSel.Size = new System.Drawing.Size(51, 13);
+            this.lb_NumSel.TabIndex = 14;
+            this.lb_NumSel.Text = "unknown";
+            this.lb_NumSel.Visible = false;
+            // 
+            // bt_all
+            // 
+            this.bt_all.Location = new System.Drawing.Point(19, 368);
+            this.bt_all.Name = "bt_all";
+            this.bt_all.Size = new System.Drawing.Size(75, 23);
+            this.bt_all.TabIndex = 13;
+            this.bt_all.Text = "Select All";
+            this.bt_all.UseVisualStyleBackColor = true;
+            this.bt_all.Click += new System.EventHandler(this.bt_all_Click);
             // 
             // label4
             // 
@@ -248,6 +270,8 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.lb_nApps);
+            this.groupBox1.Controls.Add(this.lb_nProj);
             this.groupBox1.Controls.Add(this.tbNDevices);
             this.groupBox1.Controls.Add(this.label5);
             this.groupBox1.Controls.Add(this.tb_AvgCredit);
@@ -377,25 +401,25 @@
             // 
             this.ofd_history.Filter = "CVS Files|*.cvs";
             // 
-            // bt_all
+            // lb_nProj
             // 
-            this.bt_all.Location = new System.Drawing.Point(19, 373);
-            this.bt_all.Name = "bt_all";
-            this.bt_all.Size = new System.Drawing.Size(75, 23);
-            this.bt_all.TabIndex = 13;
-            this.bt_all.Text = "Select All";
-            this.bt_all.UseVisualStyleBackColor = true;
-            this.bt_all.Click += new System.EventHandler(this.bt_all_Click);
+            this.lb_nProj.AutoSize = true;
+            this.lb_nProj.Location = new System.Drawing.Point(384, 33);
+            this.lb_nProj.Name = "lb_nProj";
+            this.lb_nProj.Size = new System.Drawing.Size(25, 13);
+            this.lb_nProj.TabIndex = 9;
+            this.lb_nProj.Text = "unk";
+            this.lb_nProj.Visible = false;
             // 
-            // lb_NumSel
+            // lb_nApps
             // 
-            this.lb_NumSel.AutoSize = true;
-            this.lb_NumSel.Location = new System.Drawing.Point(139, 383);
-            this.lb_NumSel.Name = "lb_NumSel";
-            this.lb_NumSel.Size = new System.Drawing.Size(51, 13);
-            this.lb_NumSel.TabIndex = 14;
-            this.lb_NumSel.Text = "unknown";
-            this.lb_NumSel.Visible = false;
+            this.lb_nApps.AutoSize = true;
+            this.lb_nApps.Location = new System.Drawing.Point(384, 75);
+            this.lb_nApps.Name = "lb_nApps";
+            this.lb_nApps.Size = new System.Drawing.Size(25, 13);
+            this.lb_nApps.TabIndex = 10;
+            this.lb_nApps.Text = "unk";
+            this.lb_nApps.Visible = false;
             // 
             // BTHistory
             // 
@@ -450,6 +474,8 @@
         private System.Windows.Forms.RadioButton rbElapsed;
         private System.Windows.Forms.Button bt_all;
         private System.Windows.Forms.Label lb_NumSel;
+        private System.Windows.Forms.Label lb_nApps;
+        private System.Windows.Forms.Label lb_nProj;
     }
 }
 

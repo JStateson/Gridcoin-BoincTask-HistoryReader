@@ -264,10 +264,21 @@ namespace BTHistoryReader
             }
         }
 
+        private void ShowNumberApps()
+        {
+            lb_nApps.Visible = cb_AppNames.Items.Count > 0;
+            if(lb_nApps.Visible)
+            {
+                lb_nApps.Text = cb_AppNames.Items.Count.ToString();
+            }
+        }
+
         private void btn_OpenHistory_Click(object sender, EventArgs e)
         {
             string str_WantedDirectory = "\\EFmer\\BoincTasks\\history";
             string str_LookHere = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            bool bAny = false;
+
             ofd_history.DefaultExt = ".cvs?";
             str_PathToHistory = str_LookHere + str_WantedDirectory;
             tb_Results.Text = "";
@@ -304,6 +315,11 @@ namespace BTHistoryReader
                 tb_Info.Text += "file does not exist\r\n";
                 str_PathToHistory = "";
             }
+            bAny = KnownProjApps.Count > 0;
+            lb_nProj.Visible = bAny;
+            if (bAny)
+                lb_nProj.Text = KnownProjApps.Count.ToString();
+            ShowNumberApps();
         }
 
         int ValidateHistory()
@@ -703,6 +719,7 @@ namespace BTHistoryReader
         private void cb_AppNames_SelectedIndexChanged(object sender, EventArgs e)
         {
             string strTemp = cb_AppNames.Text;
+            ShowNumberApps();
         }
 
 
