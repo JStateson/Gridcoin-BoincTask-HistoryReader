@@ -134,6 +134,8 @@ Steps
       the completion time else your statistics may be inaccurate
 6 - Enter the average credits given per work unit if you know it
 7 - Enter number of GPUs or CPU cores
-8 - Click the select fileter button to get results</value>
+8 - Click the select fileter button to get results
+9 - If statistics is selected then instead of throughput the avg
+     and std of the elapsed time is calculated.</value>
   </data>
 </root>

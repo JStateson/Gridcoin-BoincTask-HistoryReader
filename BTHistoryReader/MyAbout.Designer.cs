@@ -49,7 +49,7 @@
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(59, 74);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(306, 221);
+            this.label2.Size = new System.Drawing.Size(306, 247);
             this.label2.TabIndex = 1;
             this.label2.Text = resources.GetString("label2.Text");
             // 
@@ -57,7 +57,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(486, 310);
+            this.ClientSize = new System.Drawing.Size(493, 365);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Name = "MyAbout";
