@@ -35,6 +35,7 @@ namespace BTHistoryReader
         static int[] iSortIndex;
         static int LastKnownProject = 0;
         public int NumberBadWorkUnits;
+        static int ExpectedLengthLine = 100;
 
         const int LKUP_NOT_FOUND = -1;      // cannot find project- forgot it or new one
         const int LKUP_TOBE_IGNORED = -2;   // do not use this project
@@ -302,11 +303,22 @@ namespace BTHistoryReader
 
         int ValidateHistory()
         {
-            int iErr = 0;
+            int i = 0;
 
             try
             {
                 LinesHistory = File.ReadAllLines(str_PathToHistory);
+                do
+                {
+                    if (LinesHistory.Length == 0) break;
+                    i = LinesHistory.Last().Length;
+                    if (i < ExpectedLengthLine)
+                    {
+                        Array.Resize(ref LinesHistory, LinesHistory.Length - 1);
+                    }
+                    else break;
+                } while (true);
+
             }
             catch (Exception e)
             {
@@ -376,7 +388,7 @@ namespace BTHistoryReader
                 iLine++;
                 if (iLine < 1) continue;    // skip past header
                 // possible sanity check here: iLine is 1 and first token of "s" is also 1
-                eInvalid = OneSplitLine.StoreLineOfHistory(s);
+                eInvalid = OneSplitLine.StoreLineOfHistory(s, ExpectedLengthLine);
                 RtnCode = LookupProj(OneSplitLine.Project);
                 if (RtnCode < 0)
                 {
@@ -491,7 +503,11 @@ namespace BTHistoryReader
 
             foreach (int i in AppName.LineLoc)  // this needs to be re-written to use the SplitLine stuff
             {
-                bState = true;  // assume all will be fine
+                bState = LinesHistory[i].Length > ExpectedLengthLine;
+                if(!bState)
+                {
+                    break;
+                }
                 strSymbols = LinesHistory[i].Split('\t');
                 ThisProjectInfo[j].strLineNum = strSymbols[(int)eHindex.Run];
                 sTemp = strSymbols[(int)eHindex.CompletedTime];                             // this is completed time in seconds based on 1970    
@@ -648,7 +664,7 @@ namespace BTHistoryReader
             iProject = LookupProject(strProjName);
             Debug.Assert(iProject >= 0);
             iApp = cb_AppNames.SelectedIndex;
-            strAppName = cb_AppNames.Items[iApp].ToString();    // lcontains line count
+            strAppName = cb_AppNames.Items[iApp].ToString();    // contains line count
             i = strAppName.LastIndexOf(" (");
             if (i > 0) strAppName = strAppName.Substring(0, i).TrimEnd();
             if (iProject < 0 || iApp < 0)

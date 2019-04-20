@@ -80,9 +80,9 @@ namespace BTHistoryReader
         }
         public int RtnCod;
         public string strConversionError = "";
-        public int StoreLineOfHistory(string OneHistoryLine)
+        public int StoreLineOfHistory(string OneHistoryLine, int ExpectedLengthLine)
         {
-            if (OneHistoryLine.Length < 100) return (int)eHistoryError.EndHistory;  // cant be valid, lines are huge
+            if (OneHistoryLine.Length < ExpectedLengthLine) return (int)eHistoryError.EndHistory;  // cant be valid, lines are huge
             SplitHistoryLine = OneHistoryLine.Split('\t');
             try
             {
