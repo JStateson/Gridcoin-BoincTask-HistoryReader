@@ -226,6 +226,11 @@ namespace BTHistoryReader
             kpa.AddApp("ecm");
             KnownProjApps.Add(kpa);
 
+            kpa = new cKnownProjApps();
+            kpa.AddName("Asteroids@home");
+            kpa.AddApp("Period Search Application");
+            KnownProjApps.Add(kpa);
+
             //lb_NumKnown.Text = "Known Projects: " + KnownProjApps.Count.ToString();
             LastKnownProject = KnownProjApps.Count;
         }
@@ -379,7 +384,7 @@ namespace BTHistoryReader
                     {
                         tb_Info.Text += "Cannot find project: " + OneSplitLine.Project + " adding to database\r\n";
                         kpa = new cKnownProjApps();
-                        kpa.AddUnkProj(OneSplitLine.Name);
+                        kpa.AddUnkProj(OneSplitLine.Project);
                         KnownProjApps.Add(kpa);
                         RtnCode = KnownProjApps.Count-1;  // put unknown project here
                     }
