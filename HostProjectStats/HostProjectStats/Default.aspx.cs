@@ -54,10 +54,14 @@ namespace HostProjectStats
                 {
                     iProjectID = i; // enum must start at 0
                     lblProjName.Text = strProjNames[i];
-                    if((eProjectID) iProjectID == eProjectID.commgrid)
+                    if ((eProjectID)iProjectID == eProjectID.commgrid)
                     {
                         int j = Convert.ToInt32(tb_num2read.Text);
-                        if (j > 15) tb_num2read.Text = "15";    // wcg shows 15 per page
+                        if (j > 15)
+                        {
+                            tb_num2read.Text = "15";    // wcg shows 15 per page
+                            NumberToCollect = 15;
+                        }
                     }
                     return 0;
                 }
@@ -543,11 +547,11 @@ namespace HostProjectStats
                 ResultsBox.Text = "Error - must have at least " + NumberToCollect.ToString() + " values on a page\n";
                 return -1;
             }
-            for (i = 0; i < 21; i++)
+            for (i = 0; i < 21; i++)    // first line of data must be within first 21 or so lines
             {
                 if (RawLines[i].Contains("right>"))
                 {
-                    FinishTable(i);
+                    FinishTable(i); // this gets rest of table which might be less then 20 lines
                     return 0;
                 }
             }
@@ -567,12 +571,13 @@ namespace HostProjectStats
             string[] RawLineValues;
 
             RawLines = RawTable.Split(new string[] { "\n", "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
-            if (RawLines.Count() < 21)
+            NumberToCollect = Math.Min(NumberToCollect, RawLines.Length - 1);
+            if (RawLines.Count() < NumberToCollect)
             {
                 ResultsBox.Text = "Error - must have at least " + NumberToCollect.ToString() + " values on a page";
                 Environment.Exit(0);
             }
-            for (i = 1; i < 21; i++) // first data line starts as row 1, not 0
+            for (i = 1; i < (1+NumberToCollect); i++) // first data line starts as row 1, not 0
             {
                 j = RawLines[i].IndexOf("Completed and validated");
                 if (j > 0)
