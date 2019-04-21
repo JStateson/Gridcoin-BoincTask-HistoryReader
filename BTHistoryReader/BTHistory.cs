@@ -236,6 +236,18 @@ namespace BTHistoryReader
             kpa.AddName("Moo! Wrapper");
             kpa.AddApp("Distributed.net Client");
             KnownProjApps.Add(kpa);
+            
+            kpa = new cKnownProjApps();
+            kpa.AddName("Gerasim@home");
+            kpa.AddApp("spstarter");
+            kpa.AddApp("Test separator");
+            KnownProjApps.Add(kpa);
+
+            kpa = new cKnownProjApps();
+            kpa.AddName("Universe@Home");
+            kpa.AddApp("Universe BHspin v2");
+            KnownProjApps.Add(kpa);
+
 
             //lb_NumKnown.Text = "Known Projects: " + KnownProjApps.Count.ToString();
             LastKnownProject = KnownProjApps.Count;
