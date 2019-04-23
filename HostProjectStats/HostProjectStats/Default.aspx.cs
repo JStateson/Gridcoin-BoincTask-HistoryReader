@@ -515,14 +515,14 @@ namespace HostProjectStats
             outStr += cps.ToString("##0.0000 Credits per second for one device\n");
             if (NumberConcurrent > 0)
             {
-                outStr += "Times shown above were divided by number of concurrent tasks\n";
+                outStr += "Times shown above were divided by number of concurrent tasks(" + NumberConcurrent.ToString() + ")\n";
             }
             cph = cps * 3600 * NumberBoards * NumberConcurrent;
             outStr += cph.ToString("###,##0. number of credits in an hour, this system\n");
             if (NumberWatts > 0)
             {
                 GPU_watts = (NumberWatts - IdleWatts) / NumberBoards;
-                outStr += GPU_watts.ToString("#,##0. total watts used by a single producing device (no idle wattage)\n");
+                outStr += GPU_watts.ToString("#,##0. total watts used by a single producing device (avg each work unit)\n");
                 cph = cps * 3600 * NumberConcurrent;    // per each board or cpu thread this time.
                 outStr += cph.ToString("###,##0. credits per hour for exactly one device\n");
                 // convert credits for a full kilowatt hour (not just GPU hours) 
