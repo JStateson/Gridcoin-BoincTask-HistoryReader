@@ -34,6 +34,7 @@ namespace BTHistoryReader
         public string strVMem;
         public string strMem;
         public string strOutput;
+        public int iSystem;    // index to system data came from
     }
 
 
@@ -95,6 +96,7 @@ namespace BTHistoryReader
                 return (int)eHistoryError.ConversionError;
             }
         }
+
         private int ProcessLine()
         {
             RtnCod = (int)eHistoryError.SeemsOK;
@@ -155,6 +157,7 @@ namespace BTHistoryReader
             RtnCod |= (CompletedTime == 0) ? (int)eHistoryError.NoCompletionTime : 0;
             return RtnCod;
         }
+
         public int Run;
         public string Project;
         public string Application;
@@ -274,6 +277,15 @@ namespace BTHistoryReader
             }
             return n;
         }
+        public int NumDValues()
+        {
+            int n = 0;
+            foreach (cAppName AppName in KnownApps)
+            {
+                n += AppName.dElapsedTime.Count;
+            }
+            return n;
+        }
         public int nAppsDefined         // there are this many in the lookup table
         {
             get { return KnownApps.Count; }
@@ -330,6 +342,10 @@ namespace BTHistoryReader
         public cAppName SymbolInsert(string strAppName, int iLoc)
         {
             cAppName UnkAppName;
+            //if(strAppName.Contains( "camb_"))
+            //{
+            //    int i = 0;
+            //}
             foreach (cAppName AppName in KnownApps)
             {
                 if (strAppName == AppName.Name)

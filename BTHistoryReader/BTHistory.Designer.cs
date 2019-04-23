@@ -47,6 +47,8 @@
             this.tb_Results = new System.Windows.Forms.TextBox();
             this.rbThroughput = new System.Windows.Forms.RadioButton();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.lb_nApps = new System.Windows.Forms.Label();
+            this.lb_nProj = new System.Windows.Forms.Label();
             this.tbNDevices = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
             this.tb_AvgCredit = new System.Windows.Forms.TextBox();
@@ -61,8 +63,6 @@
             this.btn_OpenHistory = new System.Windows.Forms.Button();
             this.ofd_history = new System.Windows.Forms.OpenFileDialog();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.lb_nProj = new System.Windows.Forms.Label();
-            this.lb_nApps = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.gb_filter.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -88,7 +88,7 @@
             // 
             // btnAbout
             // 
-            this.btnAbout.Location = new System.Drawing.Point(725, 28);
+            this.btnAbout.Location = new System.Drawing.Point(552, 41);
             this.btnAbout.Name = "btnAbout";
             this.btnAbout.Size = new System.Drawing.Size(75, 23);
             this.btnAbout.TabIndex = 8;
@@ -98,7 +98,7 @@
             // 
             // btnShowProjectTree
             // 
-            this.btnShowProjectTree.Location = new System.Drawing.Point(555, 28);
+            this.btnShowProjectTree.Location = new System.Drawing.Point(552, 12);
             this.btnShowProjectTree.Name = "btnShowProjectTree";
             this.btnShowProjectTree.Size = new System.Drawing.Size(140, 23);
             this.btnShowProjectTree.TabIndex = 7;
@@ -288,6 +288,26 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "History Selections";
             // 
+            // lb_nApps
+            // 
+            this.lb_nApps.AutoSize = true;
+            this.lb_nApps.Location = new System.Drawing.Point(384, 75);
+            this.lb_nApps.Name = "lb_nApps";
+            this.lb_nApps.Size = new System.Drawing.Size(25, 13);
+            this.lb_nApps.TabIndex = 10;
+            this.lb_nApps.Text = "unk";
+            this.lb_nApps.Visible = false;
+            // 
+            // lb_nProj
+            // 
+            this.lb_nProj.AutoSize = true;
+            this.lb_nProj.Location = new System.Drawing.Point(384, 33);
+            this.lb_nProj.Name = "lb_nProj";
+            this.lb_nProj.Size = new System.Drawing.Size(25, 13);
+            this.lb_nProj.TabIndex = 9;
+            this.lb_nProj.Text = "unk";
+            this.lb_nProj.Visible = false;
+            // 
             // tbNDevices
             // 
             this.tbNDevices.Location = new System.Drawing.Point(282, 129);
@@ -384,8 +404,9 @@
             this.lb_history_loc.AutoSize = true;
             this.lb_history_loc.Location = new System.Drawing.Point(3, 12);
             this.lb_history_loc.Name = "lb_history_loc";
-            this.lb_history_loc.Size = new System.Drawing.Size(0, 13);
+            this.lb_history_loc.Size = new System.Drawing.Size(189, 13);
             this.lb_history_loc.TabIndex = 1;
+            this.lb_history_loc.Text = "Select multiple files to do a comparison";
             // 
             // btn_OpenHistory
             // 
@@ -400,26 +421,7 @@
             // ofd_history
             // 
             this.ofd_history.Filter = "CVS Files|*.cvs";
-            // 
-            // lb_nProj
-            // 
-            this.lb_nProj.AutoSize = true;
-            this.lb_nProj.Location = new System.Drawing.Point(384, 33);
-            this.lb_nProj.Name = "lb_nProj";
-            this.lb_nProj.Size = new System.Drawing.Size(25, 13);
-            this.lb_nProj.TabIndex = 9;
-            this.lb_nProj.Text = "unk";
-            this.lb_nProj.Visible = false;
-            // 
-            // lb_nApps
-            // 
-            this.lb_nApps.AutoSize = true;
-            this.lb_nApps.Location = new System.Drawing.Point(384, 75);
-            this.lb_nApps.Name = "lb_nApps";
-            this.lb_nApps.Size = new System.Drawing.Size(25, 13);
-            this.lb_nApps.TabIndex = 10;
-            this.lb_nApps.Text = "unk";
-            this.lb_nApps.Visible = false;
+            this.ofd_history.Multiselect = true;
             // 
             // BTHistory
             // 

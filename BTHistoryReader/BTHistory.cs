@@ -17,7 +17,7 @@ namespace BTHistoryReader
     {
 
         public int AnalysisType;
-
+        public string ThisSystem;
         public cSplitHistoryValues OneSplitLine;    // use this for processing each line in history file
 
         public BTHistory()
@@ -26,8 +26,10 @@ namespace BTHistoryReader
             InitLookupTable();
         }
 
+        public string[] AllHistories;
+
         static string str_PathToHistory;
-        static string[] LinesHistory;
+        public string[] LinesHistory;
         static string ReqVer = "1.79";
         static string ReqID = "BoincTasks History";
         static double dAvgCreditPerUnit;
@@ -285,11 +287,11 @@ namespace BTHistoryReader
             }
         }
 
-        private void btn_OpenHistory_Click(object sender, EventArgs e)
+        private int LocatePathToHistory()
         {
             string str_WantedDirectory = "\\EFmer\\BoincTasks\\history";
             string str_LookHere = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            bool bAny = false;
+            int nFiles = 0;
 
             ofd_history.DefaultExt = ".cvs?";
             str_PathToHistory = str_LookHere + str_WantedDirectory;
@@ -302,13 +304,34 @@ namespace BTHistoryReader
                 str_LookHere = str_PathToHistory + "\r\n";
                 tb_Info.Text += str_LookHere;
             }
+            foreach (string sFile in Directory.GetFiles(str_PathToHistory, "*.cvs"))
+                nFiles++;
+
             ofd_history.InitialDirectory = str_PathToHistory;
+            return nFiles;
+        }
+
+        private void PerformSelectCompare()
+        {
+            CompareHistories MyHistories = new CompareHistories(this);
+            MyHistories.ShowDialog();
+        }
+
+        private void btn_OpenHistory_Click(object sender, EventArgs e)
+        {
+            int nFiles = LocatePathToHistory();
+            bool bAny = nFiles > 0;
             ofd_history.ShowDialog();
+            AllHistories = ofd_history.FileNames;
+            if(AllHistories.Length > 1)
+            {
+                PerformSelectCompare();
+            }
             lb_history_loc.Text = ofd_history.FileName;
             if(File.Exists(lb_history_loc.Text))
             {
                 str_PathToHistory = lb_history_loc.Text;
-                if (ValidateHistory() >= 0)
+                if (ValidateHistory(str_PathToHistory) >= 0)
                 {
                     ClearPreviousHistory();
                     CurrentSystem = LinesHistory[1];
@@ -327,20 +350,19 @@ namespace BTHistoryReader
                 tb_Info.Text += "file does not exist\r\n";
                 str_PathToHistory = "";
             }
-            bAny = KnownProjApps.Count > 0;
+            bAny = cb_SelProj.Items.Count > 0;
             lb_nProj.Visible = bAny;
-            if (bAny)
-                lb_nProj.Text = KnownProjApps.Count.ToString();
+            lb_nProj.Text = bAny ? cb_SelProj.Items.Count.ToString() : "";
             ShowNumberApps();
         }
 
-        int ValidateHistory()
+        public int ValidateHistory(string strFile)
         {
             int i = 0;
 
             try
             {
-                LinesHistory = File.ReadAllLines(str_PathToHistory);
+                LinesHistory = File.ReadAllLines(strFile);
                 do
                 {
                     if (LinesHistory.Length == 0) break;
@@ -363,6 +385,7 @@ namespace BTHistoryReader
                 iPadSize = Convert.ToInt32(Math.Ceiling(Math.Log10(LinesHistory.Length)));
                 // want to know how many digits to format data in combobox view
                 //OneSplitLine.StoreLineOfHistory(LinesHistory[3]);    // this was used to look at the header items
+                ThisSystem = LinesHistory[1];
                 return 0;
             }
             else
@@ -407,7 +430,7 @@ namespace BTHistoryReader
 
         // get list of projects and their apps
         // save all information in the KnownProjApp table
-        int ProcessHistoryFile()
+        public int ProcessHistoryFile()
         {
             int iLine = -4;  // if > 4 then 
             int RtnCode;
@@ -522,7 +545,7 @@ namespace BTHistoryReader
             return time.ToString(@"hh\:mm\:ss");
         }
 
-        public void FillProjectInfo(cAppName AppName)
+        public int FillProjectInfo(cAppName AppName)
         {
             string[] strSymbols;
             string sTemp;
@@ -532,7 +555,7 @@ namespace BTHistoryReader
             bool bState;
             long n, nElapsedTime;
 
-
+            if (AppName.LineLoc.Count == 0) return 0;
 
             foreach (int i in AppName.LineLoc)  // this needs to be re-written to use the SplitLine stuff
             {
@@ -582,6 +605,7 @@ namespace BTHistoryReader
                 j++;
             }
             SortTimeIncreasing(j);
+            return j;
         }
 
         private void PerformThruput()
@@ -831,5 +855,6 @@ namespace BTHistoryReader
         {
             CountSelected();
         }
+
     }
 }

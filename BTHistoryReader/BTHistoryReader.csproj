@@ -52,6 +52,12 @@
     <Compile Include="BTHistory.Designer.cs">
       <DependentUpon>BTHistory.cs</DependentUpon>
     </Compile>
+    <Compile Include="CompareHistories.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CompareHistories.Designer.cs">
+      <DependentUpon>CompareHistories.cs</DependentUpon>
+    </Compile>
     <Compile Include="MyAbout.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -69,6 +75,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="BTHistory.resx">
       <DependentUpon>BTHistory.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CompareHistories.resx">
+      <DependentUpon>CompareHistories.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MyAbout.resx">
       <DependentUpon>MyAbout.cs</DependentUpon>
