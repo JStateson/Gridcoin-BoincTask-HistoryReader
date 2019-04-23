@@ -155,6 +155,7 @@ namespace BTHistoryReader
         {
             string strProjSelected = LBoxProjects.Text;
             TBoxResults.Text = "";
+            TBoxStats.Text = "";
             ShowAppsThisProj(strProjSelected);
         }
 
