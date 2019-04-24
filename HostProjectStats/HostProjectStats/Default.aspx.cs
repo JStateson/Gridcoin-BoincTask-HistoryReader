@@ -524,7 +524,7 @@ namespace HostProjectStats
                 GPU_watts = (NumberWatts - IdleWatts) / NumberBoards;
                 outStr += GPU_watts.ToString("#,##0. total watts used by a single producing device (avg each work unit)\n");
                 cph = cps * 3600 * NumberConcurrent;    // per each board or cpu thread this time.
-                outStr += cph.ToString("###,##0. credits per hour for exactly one device\n");
+                outStr += cph.ToString("###,##0") + " credits per hour for exactly one device(" + NumberConcurrent.ToString() + " tasks)\n"; 
                 // convert credits for a full kilowatt hour (not just GPU hours) 
                 cph /= NumberBoards;
                 kwh = cph * 1000 / GPU_watts;
