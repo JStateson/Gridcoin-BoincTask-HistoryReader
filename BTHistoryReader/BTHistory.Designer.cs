@@ -63,6 +63,7 @@
             this.btn_OpenHistory = new System.Windows.Forms.Button();
             this.ofd_history = new System.Windows.Forms.OpenFileDialog();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.btnCheckNext = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.gb_filter.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -82,13 +83,13 @@
             this.panel1.Controls.Add(this.btn_OpenHistory);
             this.panel1.Location = new System.Drawing.Point(12, 12);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(858, 527);
+            this.panel1.Size = new System.Drawing.Size(908, 527);
             this.panel1.TabIndex = 0;
             this.panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.panel1_Paint);
             // 
             // btnAbout
             // 
-            this.btnAbout.Location = new System.Drawing.Point(552, 41);
+            this.btnAbout.Location = new System.Drawing.Point(747, 12);
             this.btnAbout.Name = "btnAbout";
             this.btnAbout.Size = new System.Drawing.Size(75, 23);
             this.btnAbout.TabIndex = 8;
@@ -108,6 +109,7 @@
             // 
             // gb_filter
             // 
+            this.gb_filter.Controls.Add(this.btnCheckNext);
             this.gb_filter.Controls.Add(this.lb_NumSel);
             this.gb_filter.Controls.Add(this.bt_all);
             this.gb_filter.Controls.Add(this.label4);
@@ -117,9 +119,9 @@
             this.gb_filter.Controls.Add(this.btnClear);
             this.gb_filter.Controls.Add(this.lb_SelWorkUnits);
             this.gb_filter.Controls.Add(this.btn_Filter);
-            this.gb_filter.Location = new System.Drawing.Point(488, 77);
+            this.gb_filter.Location = new System.Drawing.Point(533, 70);
             this.gb_filter.Name = "gb_filter";
-            this.gb_filter.Size = new System.Drawing.Size(344, 421);
+            this.gb_filter.Size = new System.Drawing.Size(344, 442);
             this.gb_filter.TabIndex = 6;
             this.gb_filter.TabStop = false;
             this.gb_filter.Text = "Filter";
@@ -177,13 +179,14 @@
             // 
             // btnContinunity
             // 
+            this.btnContinunity.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
             this.btnContinunity.Location = new System.Drawing.Point(19, 334);
             this.btnContinunity.Name = "btnContinunity";
             this.btnContinunity.Size = new System.Drawing.Size(114, 23);
             this.btnContinunity.TabIndex = 9;
             this.btnContinunity.Text = "Check Continunity";
             this.toolTip1.SetToolTip(this.btnContinunity, "avoid any large change in time");
-            this.btnContinunity.UseVisualStyleBackColor = true;
+            this.btnContinunity.UseVisualStyleBackColor = false;
             this.btnContinunity.Click += new System.EventHandler(this.btnContinunity_Click);
             // 
             // btnClear
@@ -227,7 +230,7 @@
             this.groupBox2.Controls.Add(this.rbThroughput);
             this.groupBox2.Location = new System.Drawing.Point(16, 327);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(452, 185);
+            this.groupBox2.Size = new System.Drawing.Size(500, 185);
             this.groupBox2.TabIndex = 5;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Type Analysis";
@@ -247,11 +250,11 @@
             // tb_Results
             // 
             this.tb_Results.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tb_Results.Location = new System.Drawing.Point(151, 19);
+            this.tb_Results.Location = new System.Drawing.Point(133, 19);
             this.tb_Results.Multiline = true;
             this.tb_Results.Name = "tb_Results";
             this.tb_Results.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.tb_Results.Size = new System.Drawing.Size(268, 134);
+            this.tb_Results.Size = new System.Drawing.Size(349, 134);
             this.tb_Results.TabIndex = 4;
             // 
             // rbThroughput
@@ -283,7 +286,7 @@
             this.groupBox1.Controls.Add(this.cb_SelProj);
             this.groupBox1.Location = new System.Drawing.Point(16, 159);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(452, 162);
+            this.groupBox1.Size = new System.Drawing.Size(500, 162);
             this.groupBox1.TabIndex = 4;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "History Selections";
@@ -396,7 +399,7 @@
             this.tb_Info.Multiline = true;
             this.tb_Info.Name = "tb_Info";
             this.tb_Info.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.tb_Info.Size = new System.Drawing.Size(452, 68);
+            this.tb_Info.Size = new System.Drawing.Size(500, 68);
             this.tb_Info.TabIndex = 2;
             // 
             // lb_history_loc
@@ -423,11 +426,24 @@
             this.ofd_history.Filter = "CVS Files|*.cvs";
             this.ofd_history.Multiselect = true;
             // 
+            // btnCheckNext
+            // 
+            this.btnCheckNext.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
+            this.btnCheckNext.Location = new System.Drawing.Point(19, 401);
+            this.btnCheckNext.Name = "btnCheckNext";
+            this.btnCheckNext.Size = new System.Drawing.Size(114, 23);
+            this.btnCheckNext.TabIndex = 15;
+            this.btnCheckNext.Text = "Check Next";
+            this.toolTip1.SetToolTip(this.btnCheckNext, "avoid any large change in time");
+            this.btnCheckNext.UseVisualStyleBackColor = false;
+            this.btnCheckNext.Visible = false;
+            this.btnCheckNext.Click += new System.EventHandler(this.btnCheckNext_Click);
+            // 
             // BTHistory
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(896, 541);
+            this.ClientSize = new System.Drawing.Size(932, 541);
             this.Controls.Add(this.panel1);
             this.Name = "BTHistory";
             this.Text = "system";
@@ -478,6 +494,7 @@
         private System.Windows.Forms.Label lb_NumSel;
         private System.Windows.Forms.Label lb_nApps;
         private System.Windows.Forms.Label lb_nProj;
+        private System.Windows.Forms.Button btnCheckNext;
     }
 }
 

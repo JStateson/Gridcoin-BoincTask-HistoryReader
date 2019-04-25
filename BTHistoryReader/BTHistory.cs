@@ -26,6 +26,7 @@ namespace BTHistoryReader
             InitLookupTable();
         }
 
+        private int iLocMaxDiff;
         public string[] AllHistories;
 
         static string str_PathToHistory;
@@ -769,13 +770,14 @@ namespace BTHistoryReader
             MyInfo.ShowDialog();
         }
 
-        private void btnContinunity_Click(object sender, EventArgs e)
+        private void RunContinunityCheck()
         {
-            int NumUnits = lb_SelWorkUnits.SelectedItems.Count;;
-            int i, j, k, nItems;
-            double a,b,c, MaxDiff = 0.0;
-            int iLocMaxDiff=0;
 
+            int NumUnits = lb_SelWorkUnits.SelectedItems.Count; ;
+            int i, j, k, nItems;
+            double a, b, c, MaxDiff = 0.0;
+
+            iLocMaxDiff = 0;
             lb_LocMax.Text = "";
             lbTimeContinunity.Text = "";
 
@@ -787,19 +789,19 @@ namespace BTHistoryReader
             i = lb_SelWorkUnits.SelectedIndices[0]; // difference between this shows the selection
             j = lb_SelWorkUnits.SelectedIndices[1];
             nItems = 1 + j - i;
-            for(k=0; k < nItems - 1; k++)
+            for (k = 0; k < nItems - 1; k++)
             {
-                a = ThisProjectInfo[iSortIndex[i+k]].time_t_Completed;
-                b = ThisProjectInfo[iSortIndex[i+k+1]].time_t_Completed;
+                a = ThisProjectInfo[iSortIndex[i + k]].time_t_Completed;
+                b = ThisProjectInfo[iSortIndex[i + k + 1]].time_t_Completed;
                 c = b - a;
-                if(c > MaxDiff)
+                if (c > MaxDiff)
                 {
                     MaxDiff = c;
-                    iLocMaxDiff = k+i;
+                    iLocMaxDiff = k + i;
                 }
             }
             MaxDiff /= 60.0;    // to minutes
-            lbTimeContinunity.Text = "Most minutes between tasks: " + MaxDiff.ToString("###,##0.00") ;
+            lbTimeContinunity.Text = "Most minutes between tasks: " + MaxDiff.ToString("###,##0.00");
             lb_LocMax.Visible = (MaxDiff > 0.0);
             if (lb_LocMax.Visible)
             {
@@ -807,6 +809,12 @@ namespace BTHistoryReader
                 i = strLine.IndexOf(' ');
                 lb_LocMax.Text = "Near line# " + strLine.Substring(0, i);
             }
+            btnCheckNext.Visible = lb_history_loc.Visible;
+        }
+
+        private void btnContinunity_Click(object sender, EventArgs e)
+        {
+            RunContinunityCheck();
         }
 
         private void btnAbout_Click(object sender, EventArgs e)
@@ -822,6 +830,7 @@ namespace BTHistoryReader
 
         private void rbThroughput_CheckedChanged(object sender, EventArgs e)
         {
+
         }
 
         private int CountSelected()
@@ -846,6 +855,7 @@ namespace BTHistoryReader
         private void bt_all_Click(object sender, EventArgs e)
         {
             int i = lb_SelWorkUnits.Items.Count;
+            if (i == 0) return;
             lb_SelWorkUnits.ClearSelected();
             lb_SelWorkUnits.SetSelected(0, true);
             lb_SelWorkUnits.SetSelected(i-1, true);
@@ -857,5 +867,19 @@ namespace BTHistoryReader
             CountSelected();
         }
 
+        private void btnCheckNext_Click(object sender, EventArgs e)
+        {
+            int i, j, n;
+            i = lb_SelWorkUnits.SelectedIndices[0]; // difference between this shows the selection
+            j = lb_SelWorkUnits.SelectedIndices[1];
+            n = j - i;
+            if (n < 2) return;
+            n = iLocMaxDiff+1;
+            if ((j - n) < 2) return;
+            lb_SelWorkUnits.SetSelected(i, false);
+            lb_SelWorkUnits.SetSelected(n, true);
+            CountSelected();
+            RunContinunityCheck();
+        }
     }
 }
