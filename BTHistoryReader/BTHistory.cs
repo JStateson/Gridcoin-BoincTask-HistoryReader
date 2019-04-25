@@ -380,7 +380,7 @@ namespace BTHistoryReader
                 tb_Info.Text += (string)e.Data["MSG"] + "\r\n";
                 return -1;
             }
-            if (LinesHistory[0] == ReqVer && LinesHistory[2] == ReqID)
+            if (LinesHistory[0] == ReqVer && LinesHistory[2] == ReqID && LinesHistory[1] != "")
             {
                 iPadSize = Convert.ToInt32(Math.Ceiling(Math.Log10(LinesHistory.Length)));
                 // want to know how many digits to format data in combobox view
@@ -390,7 +390,7 @@ namespace BTHistoryReader
             }
             else
             {
-                tb_Info.Text += "cannot find " + ReqVer + " or " + ReqID + "\r\n";
+                tb_Info.Text += "cannot find " + ReqVer + " or " + ReqID + " or maybe empty systemn name\r\n";
                 return -2;
             }
         }
@@ -615,7 +615,7 @@ namespace BTHistoryReader
             int i, j, k;
             int i1, i2; // used to access iSort..
             double dSeconds = 0;
-            int nItems;
+            int nItems, nDevices;
             double dUnitsPerSecond;
             int NumUnits = lb_SelWorkUnits.SelectedItems.Count;
             string sTemp, s1, s2;
@@ -627,7 +627,7 @@ namespace BTHistoryReader
             }
             i = lb_SelWorkUnits.SelectedIndices[0]; // difference between this shows the selection
             j = lb_SelWorkUnits.SelectedIndices[1];
-
+            nDevices = Convert.ToInt32(tbNDevices.Text);
             sTemp = lb_SelWorkUnits.SelectedItems[0].ToString();
             //i1 = Convert.ToInt32(sTemp.Substring(0, iPadSize)) - 1;  // origin is 0 not 1
             s1 = sTemp.Substring(iPadSize + 1); // remove digits and space
@@ -650,11 +650,12 @@ namespace BTHistoryReader
             dUnitsPerSecond = nItems / dSeconds;
             tb_Results.Text += "Elapsed seconds: " + dSeconds.ToString("###,##0\r\n");
             tb_Results.Text += "Number Work Units: " + nItems + "\r\n";
-            tb_Results.Text += "Units per second: " + dUnitsPerSecond.ToString("###,##0.0000\r\n");
+            tb_Results.Text += "Units per second(system): " + dUnitsPerSecond.ToString("###,##0.0000\r\n");
+            tb_Results.Text += "Secs per work unit per devices: " + (nDevices / dUnitsPerSecond).ToString("###,##0\r\n");
             dAvgCreditPerUnit = Convert.ToDouble(tb_AvgCredit.Text);
             tb_Results.Text += "Credits/sec (system): " + (dUnitsPerSecond * dAvgCreditPerUnit).ToString("#,##0.00\r\n");
-            nItems = Convert.ToInt32(tbNDevices.Text);
-            tb_Results.Text += "Credits/sec (one device): " + (dUnitsPerSecond * dAvgCreditPerUnit / nItems).ToString("##0.00\r\n");
+
+            tb_Results.Text += "Credits/sec (one device): " + (dUnitsPerSecond * dAvgCreditPerUnit / nDevices).ToString("##0.00\r\n");
         }
 
         private void PerformStats()

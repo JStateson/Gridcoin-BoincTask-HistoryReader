@@ -16,6 +16,7 @@ namespace BTHistoryReader
         public List<string> Projects;
         public List<string> Systems;
         public List<cKPAlocs> KPAlocs;
+        public List<string> SystemsCompared;
 
         public List<bool> bItemsToColor = new List<bool>(); // use color to show which apps have values
 
@@ -29,6 +30,9 @@ namespace BTHistoryReader
                 dLelapsedTime.Add(d);
             }
         }
+
+        public string Last_sProj="";
+        public string Last_sApp="";
 
         public class cKPAproj
         {
@@ -71,6 +75,7 @@ namespace BTHistoryReader
             Projects = new List<string>();
             KPAlocs = new List<cKPAlocs>();
             Systems = new List<string>();;
+            SystemsCompared = new List<string>();
             int iSystem = -1;
 
             btf = (BTHistory)refForm;
@@ -80,6 +85,7 @@ namespace BTHistoryReader
             foreach(string sProj in btf.AllHistories)
             {
                 int RtnCod = btf.ValidateHistory(sProj);
+                if (RtnCod < 0) continue;
                 Systems.Add(btf.ThisSystem);
                 iSystem = Systems.Count - 1;    // index into name of system
                 btf.ClearPreviousHistory();
@@ -92,28 +98,35 @@ namespace BTHistoryReader
                 }
                 cKPAlocs ckpal = new cKPAlocs();
                 KPAlocs.Add(ckpal);
-                ckpal.AddNewPath(sProj);
+                ckpal.AddNewPath(sProj);    // sProj does not contain the exact name of system that "history" has
                 foreach (cKnownProjApps kpa in btf.KnownProjApps)
                 {
+                    if (kpa.nAppsUsed == 0) continue;
                     cKPAproj ckpap = ckpal.AddProj(kpa.ProjName);
                     foreach (cAppName AppName in kpa.KnownApps)
                     {
                         int nEntries = AppName.dElapsedTime.Count;  // nEntries from AppName is not valid here
                         if (nEntries == 0) continue;
+
                         cKPAapps ckpaa = ckpap.AddApp(AppName.Name);
                         btf.ThisProjectInfo = new List<cProjectInfo>(nEntries);
                         cProjectInfo cpi = new cProjectInfo();
                         cpi.iSystem = iSystem;
                         ckpaa.iSystem = iSystem;
                         foreach (double d in AppName.dElapsedTime)
-                                ckpaa.AddValue(d / 60.0);
+                        {
+                            ckpaa.AddValue(d / 60.0); 
+                        }
                         btf.ThisProjectInfo.Add(cpi);
                     }
                     btf.ClearPreviousHistory();
                 }
             }
+
             foreach (string s in Projects)
+            {
                 LBoxProjects.Items.Add(s);
+            }
         }
 
         private void ShowAppsThisProj(string sProj)
@@ -157,11 +170,12 @@ namespace BTHistoryReader
             TBoxResults.Text = "";
             TBoxStats.Text = "";
             ShowAppsThisProj(strProjSelected);
+            LViewConc.Items.Clear();
         }
 
 
-
-        private void CalcAllValues(string sProj, string sApp)
+        // if bMakeTable is not true then we are recalculating using number of devices from table
+        private void CalcAllValues(string sProj, string sApp, bool bMakeTable)
         {
             TBoxResults.Text = "";
             TBoxStats.Text = "";
@@ -170,25 +184,37 @@ namespace BTHistoryReader
             double dAvg=0.0;
             double dRms=0.0;
             double dStd;
-
+            int nConcurrent = 1;
             List<double> dTemp = new List<double>();
-            foreach (cKPAlocs ckpal in KPAlocs)
-            {
-                
-                foreach (cKPAproj ckpap in ckpal.KPAproj)
+
+            Last_sProj = sProj;
+            Last_sApp = sApp;
+            btnApply.Visible = true;
+
+            if(bMakeTable)
+                SystemsCompared.Clear();
+            foreach (cKPAlocs ckpal in KPAlocs)                                             // for every system
+            {                
+                foreach (cKPAproj ckpap in ckpal.KPAproj)                                   // for each project in system
                 {
-                    if (sProj == ckpap.sProjName)
+                    if (sProj == ckpap.sProjName)                                           // if it is the project we want
                     {
-                        foreach (cKPAapps ckpaa in ckpap.KPAapps)
+                        foreach (cKPAapps ckpaa in ckpap.KPAapps)                           // for each app in the project
                         {
-                            if (ckpaa.sAppName == sApp)
+                            if (ckpaa.sAppName == sApp)                                     // if it is the app we want then do analysis
                             {
+                                if (ckpaa.dLelapsedTime.Count == 0)
+                                    continue;
                                 strLoc = Systems[ckpaa.iSystem];
+                                if (bMakeTable)
+                                    SystemsCompared.Add(strLoc);
+                                else nConcurrent = GetConcurrency(strLoc);
                                 foreach (double d in ckpaa.dLelapsedTime)
                                 {
-                                    dTemp.Add(d);
-                                    dAvg += d;
-                                    string strValue = d.ToString("###,##0.00").PadLeft(12);
+                                    double dd = d / nConcurrent;
+                                    dTemp.Add(dd);
+                                    dAvg += dd;
+                                    string strValue = dd.ToString("###,##0.00").PadLeft(12);
                                     sTemp += (strValue +"   " + strLoc +  "\r\n");
                                 }
                             }
@@ -217,10 +243,42 @@ namespace BTHistoryReader
         private void LBoxApps_SelectedIndexChanged(object sender, EventArgs e)
         {
             string strAppSelected = LBoxApps.Text;
+            string[] strSysConc;
+            ListViewItem itm;
+            LViewConc.Items.Clear();
             // probably need a better way to keep track of both items
             int iString = strAppSelected.IndexOf(")");
             if (iString <= 0) return;   // probably should assert this
-            CalcAllValues(LBoxProjects.Text, strAppSelected.Substring(iString+2));
+            ShowPBar(true);
+            CalcAllValues(LBoxProjects.Text, strAppSelected.Substring(iString+2), true);
+            foreach(string s in SystemsCompared)
+            {
+                strSysConc = new string[2];
+                strSysConc[0] = "1";
+                strSysConc[1] = s;
+                itm = new ListViewItem(strSysConc);
+                LViewConc.Items.Add(itm);
+            }
+            ShowPBar(false);
+        }
+
+        public int GetConcurrency(string strSystem)
+        {
+            foreach (ListViewItem itm in LViewConc.Items)
+            {
+                if(itm.SubItems[1].Text == strSystem)
+                {
+                    int n = Convert.ToInt32(itm.SubItems[0].Text);
+                    return n;
+                }
+            }
+            return 1;
+        }
+
+        public void ShowPBar(bool bShow)
+        {
+            lbEditTab.Text = bShow ? "...working on it..." : "ASSUMES ONE WU PER GPU UNLESS YOU EDIT FIRST COLUMN IN TABLE BDLOW";
+            Update();
         }
 
         // the following was not used after all
@@ -247,5 +305,9 @@ namespace BTHistoryReader
             }
         }
 
+        private void button1_Click(object sender, EventArgs e)
+        {
+            CalcAllValues(Last_sProj, Last_sApp, false);
+        }
     }
 }

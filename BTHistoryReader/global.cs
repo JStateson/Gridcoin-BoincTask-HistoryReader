@@ -368,6 +368,8 @@ namespace BTHistoryReader
             foreach(cAppName AppName in KnownApps)
             {
                 AppName.LineLoc.Clear();
+                AppName.dElapsedTime.Clear();
+                AppName.bIsValid.Clear();
                 AppName.NumberBadWorkUnits = 0;
             }
         }

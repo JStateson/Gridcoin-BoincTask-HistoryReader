@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.panel1 = new System.Windows.Forms.Panel();
+            this.lbEditTab = new System.Windows.Forms.Label();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.LBoxApps = new System.Windows.Forms.ListBox();
             this.label2 = new System.Windows.Forms.Label();
@@ -41,6 +42,10 @@
             this.rbSelect = new System.Windows.Forms.RadioButton();
             this.TBoxResults = new System.Windows.Forms.TextBox();
             this.TBoxStats = new System.Windows.Forms.TextBox();
+            this.LViewConc = new System.Windows.Forms.ListView();
+            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.btnApply = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -52,6 +57,7 @@
             // 
             this.panel1.BackColor = System.Drawing.Color.Ivory;
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel1.Controls.Add(this.lbEditTab);
             this.panel1.Controls.Add(this.groupBox4);
             this.panel1.Controls.Add(this.label2);
             this.panel1.Controls.Add(this.groupBox3);
@@ -61,15 +67,25 @@
             this.panel1.ForeColor = System.Drawing.Color.Blue;
             this.panel1.Location = new System.Drawing.Point(12, 29);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(776, 206);
+            this.panel1.Size = new System.Drawing.Size(937, 206);
             this.panel1.TabIndex = 1;
+            // 
+            // lbEditTab
+            // 
+            this.lbEditTab.AutoSize = true;
+            this.lbEditTab.ForeColor = System.Drawing.Color.Crimson;
+            this.lbEditTab.Location = new System.Drawing.Point(352, 164);
+            this.lbEditTab.Name = "lbEditTab";
+            this.lbEditTab.Size = new System.Drawing.Size(435, 13);
+            this.lbEditTab.TabIndex = 7;
+            this.lbEditTab.Text = "ASSUMES ONE WU PER GPU UNLESS YOU EDIT FIRST COLUMN IN TABLE BDLOW";
             // 
             // groupBox4
             // 
             this.groupBox4.Controls.Add(this.LBoxApps);
             this.groupBox4.Location = new System.Drawing.Point(511, 3);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(246, 143);
+            this.groupBox4.Size = new System.Drawing.Size(307, 143);
             this.groupBox4.TabIndex = 6;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Applications";
@@ -81,7 +97,7 @@
             this.LBoxApps.HorizontalScrollbar = true;
             this.LBoxApps.Location = new System.Drawing.Point(19, 19);
             this.LBoxApps.Name = "LBoxApps";
-            this.LBoxApps.Size = new System.Drawing.Size(221, 108);
+            this.LBoxApps.Size = new System.Drawing.Size(257, 108);
             this.LBoxApps.Sorted = true;
             this.LBoxApps.TabIndex = 2;
             this.LBoxApps.SelectedIndexChanged += new System.EventHandler(this.LBoxApps_SelectedIndexChanged);
@@ -173,7 +189,7 @@
             // TBoxResults
             // 
             this.TBoxResults.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TBoxResults.Location = new System.Drawing.Point(143, 282);
+            this.TBoxResults.Location = new System.Drawing.Point(378, 273);
             this.TBoxResults.Multiline = true;
             this.TBoxResults.Name = "TBoxResults";
             this.TBoxResults.ReadOnly = true;
@@ -184,7 +200,7 @@
             // TBoxStats
             // 
             this.TBoxStats.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TBoxStats.Location = new System.Drawing.Point(594, 282);
+            this.TBoxStats.Location = new System.Drawing.Point(773, 273);
             this.TBoxStats.Multiline = true;
             this.TBoxStats.Name = "TBoxStats";
             this.TBoxStats.ReadOnly = true;
@@ -192,11 +208,54 @@
             this.TBoxStats.Size = new System.Drawing.Size(176, 133);
             this.TBoxStats.TabIndex = 9;
             // 
+            // LViewConc
+            // 
+            this.LViewConc.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader1,
+            this.columnHeader2});
+            this.LViewConc.FullRowSelect = true;
+            this.LViewConc.GridLines = true;
+            this.LViewConc.LabelEdit = true;
+            this.LViewConc.LabelWrap = false;
+            this.LViewConc.Location = new System.Drawing.Point(133, 273);
+            this.LViewConc.Name = "LViewConc";
+            this.LViewConc.Size = new System.Drawing.Size(219, 133);
+            this.LViewConc.TabIndex = 10;
+            this.LViewConc.UseCompatibleStateImageBehavior = false;
+            this.LViewConc.View = System.Windows.Forms.View.Details;
+            // 
+            // columnHeader1
+            // 
+            this.columnHeader1.Text = "Concurrent Tasks";
+            this.columnHeader1.Width = 96;
+            // 
+            // columnHeader2
+            // 
+            this.columnHeader2.Text = "System Name";
+            this.columnHeader2.Width = 118;
+            // 
+            // btnApply
+            // 
+            this.btnApply.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.btnApply.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnApply.ForeColor = System.Drawing.Color.Black;
+            this.btnApply.Location = new System.Drawing.Point(21, 334);
+            this.btnApply.Name = "btnApply";
+            this.btnApply.Size = new System.Drawing.Size(75, 23);
+            this.btnApply.TabIndex = 11;
+            this.btnApply.Text = "APPLY";
+            this.btnApply.UseVisualStyleBackColor = false;
+            this.btnApply.Visible = false;
+            this.btnApply.Click += new System.EventHandler(this.button1_Click);
+            // 
             // CompareHistories
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.SystemColors.Control;
             this.ClientSize = new System.Drawing.Size(961, 450);
+            this.Controls.Add(this.btnApply);
+            this.Controls.Add(this.LViewConc);
             this.Controls.Add(this.TBoxStats);
             this.Controls.Add(this.TBoxResults);
             this.Controls.Add(this.panel1);
@@ -231,5 +290,10 @@
         private System.Windows.Forms.RadioButton rbSelect;
         private System.Windows.Forms.TextBox TBoxResults;
         private System.Windows.Forms.TextBox TBoxStats;
+        private System.Windows.Forms.Label lbEditTab;
+        private System.Windows.Forms.ListView LViewConc;
+        private System.Windows.Forms.ColumnHeader columnHeader1;
+        private System.Windows.Forms.ColumnHeader columnHeader2;
+        private System.Windows.Forms.Button btnApply;
     }
 }

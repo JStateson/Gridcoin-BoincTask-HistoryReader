@@ -251,7 +251,7 @@
             this.tb_Results.Multiline = true;
             this.tb_Results.Name = "tb_Results";
             this.tb_Results.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.tb_Results.Size = new System.Drawing.Size(268, 103);
+            this.tb_Results.Size = new System.Drawing.Size(268, 134);
             this.tb_Results.TabIndex = 4;
             // 
             // rbThroughput
