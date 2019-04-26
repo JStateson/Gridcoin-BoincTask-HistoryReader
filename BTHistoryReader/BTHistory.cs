@@ -653,6 +653,7 @@ namespace BTHistoryReader
             tb_Results.Text += "Number Work Units: " + nItems + "\r\n";
             tb_Results.Text += "Units per second(system): " + dUnitsPerSecond.ToString("###,##0.0000\r\n");
             tb_Results.Text += "Secs per work unit per devices: " + (nDevices / dUnitsPerSecond).ToString("###,##0\r\n");
+            tb_Results.Text += "Secs per work unit this system: " + (1.0 / dUnitsPerSecond).ToString("###,##0\r\n");
             dAvgCreditPerUnit = Convert.ToDouble(tb_AvgCredit.Text);
             tb_Results.Text += "Credits/sec (system): " + (dUnitsPerSecond * dAvgCreditPerUnit).ToString("#,##0.00\r\n");
 

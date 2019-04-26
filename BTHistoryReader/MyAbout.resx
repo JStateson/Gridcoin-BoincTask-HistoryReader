@@ -131,7 +131,8 @@ Steps
       sorted by completion time.
 4 - Select a start and a stop date for analysis purpose
 5 - Click "Check Continunity" and look for any unusual break in
-      the completion time else your statistics may be inaccurate
+      the completion time else your statistics may be inaccurate.
+      Try to reduce the gap size down to the STD using "next"
 6 - Enter the average credits given per work unit if you know it
 7 - Enter number of GPUs or CPU cores
 8 - Click the select fileter button to get results

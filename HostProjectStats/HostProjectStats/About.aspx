@@ -7,7 +7,7 @@
     <title>ABOUT</title>
     <style type="text/css">
         #form1 {
-            height: 547px;
+            height: 566px;
             width: 792px;
         }
     </style>
@@ -34,6 +34,18 @@
 &nbsp; This calculates the average credit for the specified host and project<br />
         <br />
         <asp:Button ID="btnCPID" runat="server" OnClick="btnCPID_Click" Text="GRC earnings" />
-&nbsp;This uses the gridcoinstats.eu web page to calculate the approximate GRC per project</form>
+&nbsp;This uses the gridcoinstats.eu web page to calculate the approximate GRC per project<br />
+        BTHistoryreader is a Windows app you must install on your PC.&nbsp; It analyzes the BoincTasks history files. Build using<br />
+        VS2017.&nbsp; Sample results are
+        <asp:HyperLink ID="HyperLink1" runat="server" NavigateUrl="https://github.com/BeemerBiker/Gridcoin/blob/master/BTHistoryReader/BTHistory_Demo.png" Target="_blank">here</asp:HyperLink>
+        ,
+        <asp:HyperLink ID="HyperLink2" runat="server" NavigateUrl="https://github.com/BeemerBiker/Gridcoin/blob/master/BTHistoryReader/BTHistory_Demo1.png" Target="_blank">here</asp:HyperLink>
+        ,
+        <asp:HyperLink ID="HyperLink3" runat="server" NavigateUrl="https://github.com/BeemerBiker/Gridcoin/blob/master/BTHistoryReader/BTHistory_Demo2.png" Target="_blank">here</asp:HyperLink>
+        , and
+        <asp:HyperLink ID="HyperLink4" runat="server" NavigateUrl="https://github.com/BeemerBiker/Gridcoin/blob/master/BTHistoryReader/BTHistory_Usage.png" Target="_blank">here</asp:HyperLink>
+&nbsp;<br />
+        A wiring diagram and pictures for an inexpensive wattmeter (P06S-20 or 100)&nbsp; are here, here and here.<br />
+    </form>
 </body>
 </html>
