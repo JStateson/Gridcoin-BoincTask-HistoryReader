@@ -45,7 +45,13 @@
         , and
         <asp:HyperLink ID="HyperLink4" runat="server" NavigateUrl="https://github.com/BeemerBiker/Gridcoin/blob/master/BTHistoryReader/BTHistory_Usage.png" Target="_blank">here</asp:HyperLink>
 &nbsp;<br />
-        A wiring diagram and pictures for an inexpensive wattmeter (P06S-20 or 100)&nbsp; are here, here and here.<br />
+        A wiring diagram and pictures for an inexpensive wattmeter (P06S-20 or 100)&nbsp; are
+        <asp:HyperLink ID="HyperLink5" runat="server" NavigateUrl="https://github.com/BeemerBiker/Gridcoin/blob/master/HostProjectStats\wmeter_wiring.jpg" Target="_blank">here</asp:HyperLink>
+        ,
+        <asp:HyperLink ID="HyperLink6" runat="server" NavigateUrl="https://github.com/BeemerBiker/Gridcoin/blob/master/HostProjectStats\wmeter_assembled.jpg" Target="_blank">here</asp:HyperLink>
+        , and
+        <asp:HyperLink ID="HyperLink7" runat="server" NavigateUrl="https://github.com/BeemerBiker/Gridcoin/blob/master/HostProjectStats\HP_Z400_3_S9000_5T.jpg" Target="_blank">here</asp:HyperLink>
+&nbsp;<br />
     </form>
 </body>
 </html>
