@@ -18,7 +18,7 @@ namespace BTHistoryReader
 
         public int AnalysisType;
         public string ThisSystem;
-        public cSplitHistoryValues OneSplitLine;    // use this for processing each line in history file
+        public cSplitHistoryValues OneSplitLine;    // use this for processing each line in history file;
 
         public BTHistory()
         {
@@ -776,7 +776,9 @@ namespace BTHistoryReader
 
             int NumUnits = lb_SelWorkUnits.SelectedItems.Count; ;
             int i, j, k, nItems;
+            long tStop, tStart, iHoursAgo;
             double a, b, c, MaxDiff = 0.0;
+            string strUnits = "";
 
             iLocMaxDiff = 0;
             lb_LocMax.Text = "";
@@ -807,8 +809,22 @@ namespace BTHistoryReader
             if (lb_LocMax.Visible)
             {
                 string strLine = lb_SelWorkUnits.Items[iLocMaxDiff].ToString().TrimStart();
+                tStop = ThisProjectInfo[iSortIndex[j]].time_t_Completed;
+                tStart = ThisProjectInfo[iSortIndex[iLocMaxDiff]].time_t_Completed;
+                tStart -= Convert.ToInt64(ThisProjectInfo[iSortIndex[iLocMaxDiff]].dElapsedTime);
+                iHoursAgo = (tStop - tStart) / 3600;
+                if(iHoursAgo == 0)
+                {
+                    iHoursAgo = (tStop - tStart) / 60;
+                    strUnits = " (" + iHoursAgo.ToString() + " minutes ago)";
+
+                }
+                else
+                {
+                    strUnits = " (" + iHoursAgo.ToString() + " hours ago)";
+                }
                 i = strLine.IndexOf(' ');
-                lb_LocMax.Text = "Near line# " + strLine.Substring(0, i);
+                lb_LocMax.Text = "Near # " + strLine.Substring(0, i) + strUnits;
             }
             btnCheckNext.Visible = lb_history_loc.Visible;
         }

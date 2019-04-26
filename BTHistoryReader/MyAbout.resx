@@ -126,7 +126,7 @@ Steps
 1 - Click "Open History" and select a file
 2 - Chose a project name and an App name from
       the combo boxes.  Try not to edit the text in the box.
-3 - Click "fetch" and the filter will give a list you can view
+3 - Click "DisplayHistory" and the filter will give a list you can view
       Note that numbers may not be sequential as they were
       sorted by completion time.
 4 - Select a start and a stop date for analysis purpose
@@ -135,7 +135,7 @@ Steps
       Try to reduce the gap size down to the STD using "next"
 6 - Enter the average credits given per work unit if you know it
 7 - Enter number of GPUs or CPU cores
-8 - Click the select fileter button to get results
+8 - Click the "Run Filter" button to get results
 9 - If statistics is selected then instead of throughput the avg
      and std of the elapsed time is calculated.</value>
   </data>

@@ -33,6 +33,7 @@
             this.btnAbout = new System.Windows.Forms.Button();
             this.btnShowProjectTree = new System.Windows.Forms.Button();
             this.gb_filter = new System.Windows.Forms.GroupBox();
+            this.btnCheckNext = new System.Windows.Forms.Button();
             this.lb_NumSel = new System.Windows.Forms.Label();
             this.bt_all = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
@@ -63,7 +64,6 @@
             this.btn_OpenHistory = new System.Windows.Forms.Button();
             this.ofd_history = new System.Windows.Forms.OpenFileDialog();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.btnCheckNext = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.gb_filter.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -125,6 +125,19 @@
             this.gb_filter.TabIndex = 6;
             this.gb_filter.TabStop = false;
             this.gb_filter.Text = "Filter";
+            // 
+            // btnCheckNext
+            // 
+            this.btnCheckNext.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
+            this.btnCheckNext.Location = new System.Drawing.Point(19, 401);
+            this.btnCheckNext.Name = "btnCheckNext";
+            this.btnCheckNext.Size = new System.Drawing.Size(114, 23);
+            this.btnCheckNext.TabIndex = 15;
+            this.btnCheckNext.Text = "Check Next";
+            this.toolTip1.SetToolTip(this.btnCheckNext, "avoid any large change in time");
+            this.btnCheckNext.UseVisualStyleBackColor = false;
+            this.btnCheckNext.Visible = false;
+            this.btnCheckNext.Click += new System.EventHandler(this.btnCheckNext_Click);
             // 
             // lb_NumSel
             // 
@@ -218,7 +231,7 @@
             this.btn_Filter.Name = "btn_Filter";
             this.btn_Filter.Size = new System.Drawing.Size(114, 23);
             this.btn_Filter.TabIndex = 6;
-            this.btn_Filter.Text = "Filter Selected";
+            this.btn_Filter.Text = "Run Filter";
             this.toolTip1.SetToolTip(this.btn_Filter, "Select items in box then apply filter");
             this.btn_Filter.UseVisualStyleBackColor = true;
             this.btn_Filter.Click += new System.EventHandler(this.btn_Filter_Click);
@@ -243,7 +256,7 @@
             this.rbElapsed.Size = new System.Drawing.Size(111, 17);
             this.rbElapsed.TabIndex = 5;
             this.rbElapsed.Text = "Avg Elapsed Time";
-            this.toolTip1.SetToolTip(this.rbElapsed, "Number of tasks and time interval from first to last");
+            this.toolTip1.SetToolTip(this.rbElapsed, "Average and std of completion time");
             this.rbElapsed.UseVisualStyleBackColor = true;
             this.rbElapsed.CheckedChanged += new System.EventHandler(this.rbElapsed_CheckedChanged);
             // 
@@ -418,6 +431,7 @@
             this.btn_OpenHistory.Size = new System.Drawing.Size(97, 23);
             this.btn_OpenHistory.TabIndex = 0;
             this.btn_OpenHistory.Text = "Open History";
+            this.toolTip1.SetToolTip(this.btn_OpenHistory, "After opening, perform \"Dkisplay History\" then select and run filter");
             this.btn_OpenHistory.UseVisualStyleBackColor = true;
             this.btn_OpenHistory.Click += new System.EventHandler(this.btn_OpenHistory_Click);
             // 
@@ -425,19 +439,6 @@
             // 
             this.ofd_history.Filter = "CVS Files|*.cvs";
             this.ofd_history.Multiselect = true;
-            // 
-            // btnCheckNext
-            // 
-            this.btnCheckNext.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
-            this.btnCheckNext.Location = new System.Drawing.Point(19, 401);
-            this.btnCheckNext.Name = "btnCheckNext";
-            this.btnCheckNext.Size = new System.Drawing.Size(114, 23);
-            this.btnCheckNext.TabIndex = 15;
-            this.btnCheckNext.Text = "Check Next";
-            this.toolTip1.SetToolTip(this.btnCheckNext, "avoid any large change in time");
-            this.btnCheckNext.UseVisualStyleBackColor = false;
-            this.btnCheckNext.Visible = false;
-            this.btnCheckNext.Click += new System.EventHandler(this.btnCheckNext_Click);
             // 
             // BTHistory
             // 
