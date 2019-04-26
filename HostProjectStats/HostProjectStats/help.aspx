@@ -15,13 +15,13 @@
     <form id="form1" runat="server">
         This program can be used to compare different GPUs and CPUs and obtain the cost in KWH you are contributing to the project.<br />
         For this program to work you must be able access a BOINC project.&nbsp; If you have enabled &quot;Remember Me&quot; on your project account<br />
-        then, except for WCG, you can accesss your own data.&nbsp; Some projects have not restructed anomymous access so possibly you<br />
+        then, except for WCG, you can accesss your own data.&nbsp; Some projects have not restricted anomymous access so possibly you<br />
         could access the data without signing in.&nbsp; Normally, &quot;Top participants&quot; have allowed their statistics to be searched.<br />
         <br />
         When this program starts up, Milkyway is selected and one of the &quot;Top Computers&quot; is preset into the URL.&nbsp; If Milkyway is online<br />
         then clicking CALCULATE will provide a demo for accessing statistics.&nbsp; Click REVIEW DATA to see the actual data.<br />
-        If Milkyway is offline one will get an OOPS error as I don&#39;t do a lot of error checking.<br />
-        <br />
+        If Milkyway is offline one will get an OOPS error as I don&#39;t do a lot of error checking.&nbsp; If you wait too long then my website<br />
+        times your session out and OOPS shows up.<br />
         <br />
         To calculate the number of watts it takes to do a credit (cost of your contribution to the project) you must know how many watts<br />
         your system is drawing.&nbsp; That can be obtain using an inexpensive A/C ampmeter or wattmeter<br />
