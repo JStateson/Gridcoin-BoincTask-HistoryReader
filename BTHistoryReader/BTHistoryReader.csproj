@@ -118,4 +118,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>if $(ConfigurationName) == Release (
+call "$(SolutionDir)scripts\7zBTReader.bat" $(SolutionDir) $(TargetDir)  $(TargetName) $(TargetPath)
+)</PostBuildEvent>
+  </PropertyGroup>
 </Project>
