@@ -20,6 +20,11 @@ namespace BTHistoryReader
         public string ThisSystem;
         public cSplitHistoryValues OneSplitLine;    // use this for processing each line in history file;
 
+        private List<long> CompletionTimes;
+        private List<double> IdleGap;
+        private double AvgGap;
+        private double StdGap;
+
         public BTHistory()
         {
             InitializeComponent();
@@ -99,6 +104,20 @@ namespace BTHistoryReader
             return LKUP_NOT_FOUND;
         }
 
+        public string BestTimeUnits(long t)
+        {
+            double d = Convert.ToDouble(t);
+            string strOut = " secs";
+            if (t < 60) return t.ToString() + strOut;
+            strOut = " mins";
+            d /= 60.0;
+            if (d < 60) return d.ToString("#0.0") + strOut;
+            strOut = " hours";
+            d /= 60;
+            if (d < 24) return d.ToString("#0.00") + strOut;
+            d /= 24;
+            return d.ToString("##0.0") + " days";
+        }
 
 
         // this is our lookup table
@@ -270,13 +289,13 @@ namespace BTHistoryReader
             foreach (cKnownProjApps kpa in KnownProjApps)
             {
                 kpa.EraseAppInfo();
-                lb_SelWorkUnits.Items.Clear();
-                cb_AppNames.Items.Clear();
-                cb_SelProj.Items.Clear();
-                cb_SelProj.Text = "";
-                cb_AppNames.Text = "";
-                ClearInfoTables();
             }
+            lb_SelWorkUnits.Items.Clear();
+            cb_AppNames.Items.Clear();
+            cb_SelProj.Items.Clear();
+            cb_SelProj.Text = "";
+            cb_AppNames.Text = "";
+            ClearInfoTables();
         }
 
         private void ShowNumberApps()
@@ -316,6 +335,7 @@ namespace BTHistoryReader
         {
             CompareHistories MyHistories = new CompareHistories(this);
             MyHistories.ShowDialog();
+            ClearPreviousHistory();
         }
 
         private void btn_OpenHistory_Click(object sender, EventArgs e)
@@ -327,6 +347,7 @@ namespace BTHistoryReader
             if(AllHistories.Length > 1)
             {
                 PerformSelectCompare();
+                return;
             }
             lb_history_loc.Text = ofd_history.FileName;
             if(File.Exists(lb_history_loc.Text))
@@ -743,16 +764,23 @@ namespace BTHistoryReader
         }
 
 
+
         // the first number shown in the selection box is line number in the history file, not the index to the project info table
         private void btn_Filter_Click(object sender, EventArgs e)
         {
             if (rbElapsed.Checked) PerformStats();
             if (rbThroughput.Checked) PerformThruput();
+            if (rbIdle.Checked)
+            {
+                if(PerformIdleAnalysis())
+                    ShowIdleInfo();
+            }
         }
 
         private void btnClear_Click(object sender, EventArgs e)
         {
             lb_SelWorkUnits.SelectedIndices.Clear();
+            btn_Filter.Enabled = false;
         }
 
         private void cb_AppNames_SelectedIndexChanged(object sender, EventArgs e)
@@ -877,6 +905,7 @@ namespace BTHistoryReader
             lb_SelWorkUnits.SetSelected(0, true);
             lb_SelWorkUnits.SetSelected(i-1, true);
             CountSelected();
+            btn_Filter.Enabled = true;
         }
 
         private void lb_SelWorkUnits_SelectedIndexChanged(object sender, EventArgs e)
@@ -897,6 +926,54 @@ namespace BTHistoryReader
             lb_SelWorkUnits.SetSelected(n, true);
             CountSelected();
             RunContinunityCheck();
+        }
+
+        private bool PerformIdleAnalysis()
+        {
+            int i, j, n;
+            long l;
+            double d;
+
+            if (lb_SelWorkUnits.Items.Count < 2) return false;
+            i = lb_SelWorkUnits.SelectedIndices[0]; // difference between this shows the selection
+            j = lb_SelWorkUnits.SelectedIndices[1];
+            n = j - i;
+            if (n < 3) return false;  // need to show two segments at least
+            CompletionTimes = new List<long>(n + 1);
+            IdleGap = new List<double>(n);
+            AvgGap = 0;
+            for (n = i; n <= j; n++)
+            {
+                l = ThisProjectInfo[iSortIndex[n]].time_t_Completed;
+                if (n > i)
+                {
+                    double dd = l - CompletionTimes.Last();
+                    IdleGap.Add(dd);
+                    AvgGap += dd;
+                    StdGap += dd * dd;
+                }
+                CompletionTimes.Add(l);
+            }
+            AvgGap /= IdleGap.Count;
+            StdGap = Math.Sqrt(StdGap / IdleGap.Count);
+            return true;
+        }
+
+        private void ShowIdleInfo()
+        {
+
+            tb_Results.Text = "Number of idle gaps " + IdleGap.Count.ToString() + "\r\n";
+            tb_Results.Text += "Average Gap Size " + BestTimeUnits(Convert.ToInt64(AvgGap)) + "\r\n";
+            tb_Results.Text += "Standard Deviation of Gap " + BestTimeUnits(Convert.ToInt64(StdGap));
+        }
+
+        private void btnPlot_Click(object sender, EventArgs e)
+        {
+            if(PerformIdleAnalysis())
+            {
+                TPchart DrawThruput = new TPchart(ref CompletionTimes, ref IdleGap, AvgGap, StdGap);
+                DrawThruput.ShowDialog();
+            }
         }
     }
 }

@@ -33,6 +33,7 @@
             this.btnAbout = new System.Windows.Forms.Button();
             this.btnShowProjectTree = new System.Windows.Forms.Button();
             this.gb_filter = new System.Windows.Forms.GroupBox();
+            this.btnPlot = new System.Windows.Forms.Button();
             this.btnCheckNext = new System.Windows.Forms.Button();
             this.lb_NumSel = new System.Windows.Forms.Label();
             this.bt_all = new System.Windows.Forms.Button();
@@ -48,6 +49,7 @@
             this.tb_Results = new System.Windows.Forms.TextBox();
             this.rbThroughput = new System.Windows.Forms.RadioButton();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.cb_SelProj = new System.Windows.Forms.ComboBox();
             this.lb_nApps = new System.Windows.Forms.Label();
             this.lb_nProj = new System.Windows.Forms.Label();
             this.tbNDevices = new System.Windows.Forms.TextBox();
@@ -58,12 +60,12 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.cb_AppNames = new System.Windows.Forms.ComboBox();
-            this.cb_SelProj = new System.Windows.Forms.ComboBox();
             this.tb_Info = new System.Windows.Forms.TextBox();
             this.lb_history_loc = new System.Windows.Forms.Label();
             this.btn_OpenHistory = new System.Windows.Forms.Button();
             this.ofd_history = new System.Windows.Forms.OpenFileDialog();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.rbIdle = new System.Windows.Forms.RadioButton();
             this.panel1.SuspendLayout();
             this.gb_filter.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -109,6 +111,7 @@
             // 
             // gb_filter
             // 
+            this.gb_filter.Controls.Add(this.btnPlot);
             this.gb_filter.Controls.Add(this.btnCheckNext);
             this.gb_filter.Controls.Add(this.lb_NumSel);
             this.gb_filter.Controls.Add(this.bt_all);
@@ -125,6 +128,16 @@
             this.gb_filter.TabIndex = 6;
             this.gb_filter.TabStop = false;
             this.gb_filter.Text = "Filter";
+            // 
+            // btnPlot
+            // 
+            this.btnPlot.Location = new System.Drawing.Point(214, 401);
+            this.btnPlot.Name = "btnPlot";
+            this.btnPlot.Size = new System.Drawing.Size(75, 23);
+            this.btnPlot.TabIndex = 16;
+            this.btnPlot.Text = "Plot";
+            this.btnPlot.UseVisualStyleBackColor = true;
+            this.btnPlot.Click += new System.EventHandler(this.btnPlot_Click);
             // 
             // btnCheckNext
             // 
@@ -227,17 +240,19 @@
             // 
             // btn_Filter
             // 
+            this.btn_Filter.Enabled = false;
             this.btn_Filter.Location = new System.Drawing.Point(19, 269);
             this.btn_Filter.Name = "btn_Filter";
             this.btn_Filter.Size = new System.Drawing.Size(114, 23);
             this.btn_Filter.TabIndex = 6;
             this.btn_Filter.Text = "Run Filter";
-            this.toolTip1.SetToolTip(this.btn_Filter, "Select items in box then apply filter");
+            this.toolTip1.SetToolTip(this.btn_Filter, "Must select items first then apply filter");
             this.btn_Filter.UseVisualStyleBackColor = true;
             this.btn_Filter.Click += new System.EventHandler(this.btn_Filter_Click);
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.rbIdle);
             this.groupBox2.Controls.Add(this.rbElapsed);
             this.groupBox2.Controls.Add(this.tb_Results);
             this.groupBox2.Controls.Add(this.rbThroughput);
@@ -286,6 +301,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.cb_SelProj);
             this.groupBox1.Controls.Add(this.lb_nApps);
             this.groupBox1.Controls.Add(this.lb_nProj);
             this.groupBox1.Controls.Add(this.tbNDevices);
@@ -296,13 +312,21 @@
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Controls.Add(this.cb_AppNames);
-            this.groupBox1.Controls.Add(this.cb_SelProj);
             this.groupBox1.Location = new System.Drawing.Point(16, 159);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(500, 162);
             this.groupBox1.TabIndex = 4;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "History Selections";
+            // 
+            // cb_SelProj
+            // 
+            this.cb_SelProj.FormattingEnabled = true;
+            this.cb_SelProj.Location = new System.Drawing.Point(86, 25);
+            this.cb_SelProj.Name = "cb_SelProj";
+            this.cb_SelProj.Size = new System.Drawing.Size(279, 21);
+            this.cb_SelProj.TabIndex = 0;
+            this.cb_SelProj.SelectedIndexChanged += new System.EventHandler(this.cb_SelProj_SelectedIndexChanged);
             // 
             // lb_nApps
             // 
@@ -397,15 +421,6 @@
             this.cb_AppNames.TabIndex = 1;
             this.cb_AppNames.SelectedIndexChanged += new System.EventHandler(this.cb_AppNames_SelectedIndexChanged);
             // 
-            // cb_SelProj
-            // 
-            this.cb_SelProj.FormattingEnabled = true;
-            this.cb_SelProj.Location = new System.Drawing.Point(86, 25);
-            this.cb_SelProj.Name = "cb_SelProj";
-            this.cb_SelProj.Size = new System.Drawing.Size(279, 21);
-            this.cb_SelProj.TabIndex = 0;
-            this.cb_SelProj.SelectedIndexChanged += new System.EventHandler(this.cb_SelProj_SelectedIndexChanged);
-            // 
             // tb_Info
             // 
             this.tb_Info.Location = new System.Drawing.Point(16, 73);
@@ -439,6 +454,17 @@
             // 
             this.ofd_history.Filter = "CVS Files|*.cvs";
             this.ofd_history.Multiselect = true;
+            // 
+            // rbIdle
+            // 
+            this.rbIdle.AutoSize = true;
+            this.rbIdle.Location = new System.Drawing.Point(6, 90);
+            this.rbIdle.Name = "rbIdle";
+            this.rbIdle.Size = new System.Drawing.Size(68, 17);
+            this.rbIdle.TabIndex = 6;
+            this.rbIdle.Text = "Idle Time";
+            this.toolTip1.SetToolTip(this.rbIdle, "Average and std of completion time");
+            this.rbIdle.UseVisualStyleBackColor = true;
             // 
             // BTHistory
             // 
@@ -496,6 +522,8 @@
         private System.Windows.Forms.Label lb_nApps;
         private System.Windows.Forms.Label lb_nProj;
         private System.Windows.Forms.Button btnCheckNext;
+        private System.Windows.Forms.Button btnPlot;
+        private System.Windows.Forms.RadioButton rbIdle;
     }
 }
 
