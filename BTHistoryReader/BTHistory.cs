@@ -295,6 +295,7 @@ namespace BTHistoryReader
             cb_SelProj.Items.Clear();
             cb_SelProj.Text = "";
             cb_AppNames.Text = "";
+            lbSeriesTime.Text = "";
             ClearInfoTables();
         }
 
@@ -881,6 +882,8 @@ namespace BTHistoryReader
         private int CountSelected()
         {
             int i, j, n = lb_SelWorkUnits.SelectedIndices.Count;
+            string strTimeDiff;
+            long tStart, tEnd;
             if (n != 2)
             {
                 lb_NumSel.Visible = false;
@@ -890,9 +893,14 @@ namespace BTHistoryReader
             }
             lb_NumSel.Visible = true;
             i = lb_SelWorkUnits.SelectedIndices[0]; // difference between this shows the selection
+            tStart = ThisProjectInfo[iSortIndex[i]].time_t_Completed - Convert.ToInt64(ThisProjectInfo[iSortIndex[i]].dElapsedTime);
             j = lb_SelWorkUnits.SelectedIndices[1];
+            tEnd = ThisProjectInfo[iSortIndex[j]].time_t_Completed;
+            strTimeDiff = BestTimeUnits(tEnd - tStart);
+            lbSeriesTime.Text = "Total series time: " + strTimeDiff;
             n = 1 + j - i;
             lb_NumSel.Text = "Selected: " + n.ToString();
+            
             return n;
         }
 

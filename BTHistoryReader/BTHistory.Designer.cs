@@ -33,6 +33,7 @@
             this.btnAbout = new System.Windows.Forms.Button();
             this.btnShowProjectTree = new System.Windows.Forms.Button();
             this.gb_filter = new System.Windows.Forms.GroupBox();
+            this.lbSeriesTime = new System.Windows.Forms.Label();
             this.btnPlot = new System.Windows.Forms.Button();
             this.btnCheckNext = new System.Windows.Forms.Button();
             this.lb_NumSel = new System.Windows.Forms.Label();
@@ -45,6 +46,7 @@
             this.lb_SelWorkUnits = new System.Windows.Forms.ListBox();
             this.btn_Filter = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.rbIdle = new System.Windows.Forms.RadioButton();
             this.rbElapsed = new System.Windows.Forms.RadioButton();
             this.tb_Results = new System.Windows.Forms.TextBox();
             this.rbThroughput = new System.Windows.Forms.RadioButton();
@@ -65,7 +67,6 @@
             this.btn_OpenHistory = new System.Windows.Forms.Button();
             this.ofd_history = new System.Windows.Forms.OpenFileDialog();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.rbIdle = new System.Windows.Forms.RadioButton();
             this.panel1.SuspendLayout();
             this.gb_filter.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -111,6 +112,7 @@
             // 
             // gb_filter
             // 
+            this.gb_filter.Controls.Add(this.lbSeriesTime);
             this.gb_filter.Controls.Add(this.btnPlot);
             this.gb_filter.Controls.Add(this.btnCheckNext);
             this.gb_filter.Controls.Add(this.lb_NumSel);
@@ -122,12 +124,21 @@
             this.gb_filter.Controls.Add(this.btnClear);
             this.gb_filter.Controls.Add(this.lb_SelWorkUnits);
             this.gb_filter.Controls.Add(this.btn_Filter);
-            this.gb_filter.Location = new System.Drawing.Point(533, 70);
+            this.gb_filter.Location = new System.Drawing.Point(533, 53);
             this.gb_filter.Name = "gb_filter";
-            this.gb_filter.Size = new System.Drawing.Size(344, 442);
+            this.gb_filter.Size = new System.Drawing.Size(344, 459);
             this.gb_filter.TabIndex = 6;
             this.gb_filter.TabStop = false;
             this.gb_filter.Text = "Filter";
+            // 
+            // lbSeriesTime
+            // 
+            this.lbSeriesTime.AutoSize = true;
+            this.lbSeriesTime.Location = new System.Drawing.Point(59, 16);
+            this.lbSeriesTime.Name = "lbSeriesTime";
+            this.lbSeriesTime.Size = new System.Drawing.Size(145, 13);
+            this.lbSeriesTime.TabIndex = 17;
+            this.lbSeriesTime.Text = "Selected Series Length (time)";
             // 
             // btnPlot
             // 
@@ -230,10 +241,10 @@
             this.lb_SelWorkUnits.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lb_SelWorkUnits.FormattingEnabled = true;
             this.lb_SelWorkUnits.ItemHeight = 14;
-            this.lb_SelWorkUnits.Location = new System.Drawing.Point(19, 25);
+            this.lb_SelWorkUnits.Location = new System.Drawing.Point(19, 39);
             this.lb_SelWorkUnits.Name = "lb_SelWorkUnits";
             this.lb_SelWorkUnits.SelectionMode = System.Windows.Forms.SelectionMode.MultiSimple;
-            this.lb_SelWorkUnits.Size = new System.Drawing.Size(293, 228);
+            this.lb_SelWorkUnits.Size = new System.Drawing.Size(293, 214);
             this.lb_SelWorkUnits.TabIndex = 7;
             this.toolTip1.SetToolTip(this.lb_SelWorkUnits, "Select a start and a stop");
             this.lb_SelWorkUnits.SelectedIndexChanged += new System.EventHandler(this.lb_SelWorkUnits_SelectedIndexChanged);
@@ -262,6 +273,17 @@
             this.groupBox2.TabIndex = 5;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Type Analysis";
+            // 
+            // rbIdle
+            // 
+            this.rbIdle.AutoSize = true;
+            this.rbIdle.Location = new System.Drawing.Point(6, 90);
+            this.rbIdle.Name = "rbIdle";
+            this.rbIdle.Size = new System.Drawing.Size(68, 17);
+            this.rbIdle.TabIndex = 6;
+            this.rbIdle.Text = "Idle Time";
+            this.toolTip1.SetToolTip(this.rbIdle, "Average and std of completion time");
+            this.rbIdle.UseVisualStyleBackColor = true;
             // 
             // rbElapsed
             // 
@@ -455,17 +477,6 @@
             this.ofd_history.Filter = "CVS Files|*.cvs";
             this.ofd_history.Multiselect = true;
             // 
-            // rbIdle
-            // 
-            this.rbIdle.AutoSize = true;
-            this.rbIdle.Location = new System.Drawing.Point(6, 90);
-            this.rbIdle.Name = "rbIdle";
-            this.rbIdle.Size = new System.Drawing.Size(68, 17);
-            this.rbIdle.TabIndex = 6;
-            this.rbIdle.Text = "Idle Time";
-            this.toolTip1.SetToolTip(this.rbIdle, "Average and std of completion time");
-            this.rbIdle.UseVisualStyleBackColor = true;
-            // 
             // BTHistory
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -524,6 +535,7 @@
         private System.Windows.Forms.Button btnCheckNext;
         private System.Windows.Forms.Button btnPlot;
         private System.Windows.Forms.RadioButton rbIdle;
+        private System.Windows.Forms.Label lbSeriesTime;
     }
 }
 

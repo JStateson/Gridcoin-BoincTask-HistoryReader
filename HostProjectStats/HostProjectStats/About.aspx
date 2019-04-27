@@ -44,9 +44,11 @@
         <asp:HyperLink ID="HyperLink2" runat="server" NavigateUrl="https://github.com/BeemerBiker/Gridcoin/blob/master/BTHistoryReader/BTHistory_Demo1.png" Target="_blank">here</asp:HyperLink>
         ,
         <asp:HyperLink ID="HyperLink3" runat="server" NavigateUrl="https://github.com/BeemerBiker/Gridcoin/blob/master/BTHistoryReader/BTHistory_Demo2.png" Target="_blank">here</asp:HyperLink>
-        , and
+        ,
+        <asp:HyperLink ID="HyperLink8" runat="server" NavigateUrl="https://github.com/BeemerBiker/Gridcoin/blob/master/BTHistoryReader/BTHistory_Demo3.png" Target="_blank">here</asp:HyperLink>
+&nbsp;and
         <asp:HyperLink ID="HyperLink4" runat="server" NavigateUrl="https://github.com/BeemerBiker/Gridcoin/blob/master/BTHistoryReader/BTHistory_Usage.png" Target="_blank">here</asp:HyperLink>
-&nbsp;Can be used to measure throughput.<br />
+&nbsp;Use to measure throughput.<br />
         A wiring diagram and pictures for an inexpensive wattmeter (P06S-20 or 100)&nbsp; are
         <asp:HyperLink ID="HyperLink5" runat="server" NavigateUrl="https://github.com/BeemerBiker/Gridcoin/blob/master/HostProjectStats\wmeter_wiring.jpg" Target="_blank">here</asp:HyperLink>
         ,
