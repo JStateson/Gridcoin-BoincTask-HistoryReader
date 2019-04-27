@@ -1,5 +1,5 @@
 set SRC=%2
-set ARC=%1..\BTexecutables.7z
+set ARC=%1\BTHistoryReader\BTexecutables.7z
 set IS_64=%Src:~-12,-9%
 rem "C:\Program Files\7-Zip\7z.exe -u"
 echo %IS_64% >>  D:\Projects\VSrepository\BTresults.txt
