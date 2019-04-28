@@ -151,6 +151,8 @@
             this.Controls.Add(this.gb_Reveal);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.label1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.MaximizeBox = false;
             this.Name = "InfoForm";
             this.Text = "InfoForm";
             this.HelpButtonClicked += new System.ComponentModel.CancelEventHandler(this.InfoForm_HelpButtonClicked);

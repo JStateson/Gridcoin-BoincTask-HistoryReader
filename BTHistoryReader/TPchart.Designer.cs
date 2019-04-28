@@ -28,9 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.rbLookBack = new System.Windows.Forms.RadioButton();
@@ -45,29 +45,29 @@
             // 
             // chart1
             // 
-            chartArea1.AxisX.Interval = 2D;
-            chartArea1.AxisX.LabelStyle.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            chartArea1.AxisX.LabelStyle.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Auto;
-            chartArea1.AxisX.MajorGrid.Enabled = false;
-            chartArea1.AxisX.MajorTickMark.Enabled = false;
-            chartArea1.AxisX.MajorTickMark.Interval = 0D;
-            chartArea1.AxisX.MajorTickMark.IntervalOffset = 0D;
-            chartArea1.AxisX.MajorTickMark.IntervalOffsetType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Auto;
-            chartArea1.AxisX.MajorTickMark.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Auto;
-            chartArea1.AxisX.Minimum = 0D;
-            chartArea1.AxisX.Title = "Hours Back";
-            chartArea1.Name = "ChartArea1";
-            this.chart1.ChartAreas.Add(chartArea1);
-            legend1.Name = "Legend1";
-            this.chart1.Legends.Add(legend1);
+            chartArea2.AxisX.Interval = 2D;
+            chartArea2.AxisX.LabelStyle.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            chartArea2.AxisX.LabelStyle.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Auto;
+            chartArea2.AxisX.MajorGrid.Enabled = false;
+            chartArea2.AxisX.MajorTickMark.Enabled = false;
+            chartArea2.AxisX.MajorTickMark.Interval = 0D;
+            chartArea2.AxisX.MajorTickMark.IntervalOffset = 0D;
+            chartArea2.AxisX.MajorTickMark.IntervalOffsetType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Auto;
+            chartArea2.AxisX.MajorTickMark.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Auto;
+            chartArea2.AxisX.Minimum = 0D;
+            chartArea2.AxisX.Title = "Hours Back";
+            chartArea2.Name = "ChartArea1";
+            this.chart1.ChartAreas.Add(chartArea2);
+            legend2.Name = "Legend1";
+            this.chart1.Legends.Add(legend2);
             this.chart1.Location = new System.Drawing.Point(207, 25);
             this.chart1.Name = "chart1";
-            series1.ChartArea = "ChartArea1";
-            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Point;
-            series1.Legend = "Legend1";
-            series1.MarkerSize = 1;
-            series1.Name = "Series1";
-            this.chart1.Series.Add(series1);
+            series2.ChartArea = "ChartArea1";
+            series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Point;
+            series2.Legend = "Legend1";
+            series2.MarkerSize = 1;
+            series2.Name = "Series1";
+            this.chart1.Series.Add(series2);
             this.chart1.Size = new System.Drawing.Size(537, 305);
             this.chart1.TabIndex = 0;
             this.chart1.Text = "chart";
@@ -142,6 +142,8 @@
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.chart1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.MaximizeBox = false;
             this.Name = "TPchart";
             this.Text = "Throughput Chart";
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).EndInit();
