@@ -881,11 +881,13 @@ namespace BTHistoryReader
             long tStart, tEnd;
             if (n != 2)
             {
+                btn_Filter.Enabled = false;
                 lb_NumSel.Visible = false;
                 lb_LocMax.Visible = false;
                 lbTimeContinunity.Text = "not calculated yet";
                 return 0;
             }
+            btn_Filter.Enabled = true;
             lb_NumSel.Visible = true;
             i = lb_SelWorkUnits.SelectedIndices[0]; // difference between this shows the selection
             tStart = ThisProjectInfo[iSortIndex[i]].time_t_Completed - Convert.ToInt64(ThisProjectInfo[iSortIndex[i]].dElapsedTime);
@@ -908,7 +910,7 @@ namespace BTHistoryReader
             lb_SelWorkUnits.SetSelected(0, true);
             lb_SelWorkUnits.SetSelected(i-1, true);
             CountSelected();
-            btn_Filter.Enabled = true;
+
         }
 
         private void lb_SelWorkUnits_SelectedIndexChanged(object sender, EventArgs e)
