@@ -904,6 +904,8 @@ namespace BTHistoryReader
                 lb_NumSel.Visible = false;
                 lb_LocMax.Visible = false;
                 lbTimeContinunity.Text = "not calculated yet";
+                if (n == 0)
+                    return 0;
                 i = 0;
                 j = iSortIndex.Last();
                 tStart = ThisProjectInfo[iSortIndex[i]].time_t_Completed - Convert.ToInt64(ThisProjectInfo[iSortIndex[i]].dElapsedTime);
