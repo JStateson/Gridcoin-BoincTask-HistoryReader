@@ -35,7 +35,7 @@
             this.rbLookBack = new System.Windows.Forms.RadioButton();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.DetailFilter = new System.Windows.Forms.NumericUpDown();
-            this.label1 = new System.Windows.Forms.Label();
+            this.lbChart = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -97,33 +97,29 @@
             this.groupBox2.TabIndex = 4;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Detail Filter (0 is more)";
+            this.groupBox2.Enter += new System.EventHandler(this.groupBox2_Enter);
             // 
             // DetailFilter
             // 
             this.DetailFilter.Location = new System.Drawing.Point(38, 48);
             this.DetailFilter.Maximum = new decimal(new int[] {
-            3,
+            4,
             0,
             0,
             0});
             this.DetailFilter.Name = "DetailFilter";
             this.DetailFilter.Size = new System.Drawing.Size(47, 20);
             this.DetailFilter.TabIndex = 4;
-            this.DetailFilter.Value = new decimal(new int[] {
-            2,
-            0,
-            0,
-            0});
             this.DetailFilter.ValueChanged += new System.EventHandler(this.DetailFilter_ValueChanged);
             // 
-            // label1
+            // lbChart
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(293, 352);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(197, 39);
-            this.label1.TabIndex = 5;
-            this.label1.Text = "Plot show idle time between processing.\r\nThe taller the line the longer the idle " +
+            this.lbChart.AutoSize = true;
+            this.lbChart.Location = new System.Drawing.Point(293, 352);
+            this.lbChart.Name = "lbChart";
+            this.lbChart.Size = new System.Drawing.Size(197, 39);
+            this.lbChart.TabIndex = 5;
+            this.lbChart.Text = "Plot show idle time between processing.\r\nThe taller the line the longer the idle " +
     "time\r\nbetween data fill-ups.";
             // 
             // TPchart
@@ -131,7 +127,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 424);
-            this.Controls.Add(this.label1);
+            this.Controls.Add(this.lbChart);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.chart1);
@@ -157,6 +153,6 @@
         private System.Windows.Forms.RadioButton rbLookBack;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.NumericUpDown DetailFilter;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label lbChart;
     }
 }

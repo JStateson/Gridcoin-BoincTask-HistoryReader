@@ -33,6 +33,7 @@
             this.btnAbout = new System.Windows.Forms.Button();
             this.btnShowProjectTree = new System.Windows.Forms.Button();
             this.gb_filter = new System.Windows.Forms.GroupBox();
+            this.btnPlotET = new System.Windows.Forms.Button();
             this.lbSeriesTime = new System.Windows.Forms.Label();
             this.btnPlot = new System.Windows.Forms.Button();
             this.btnCheckNext = new System.Windows.Forms.Button();
@@ -67,7 +68,6 @@
             this.btn_OpenHistory = new System.Windows.Forms.Button();
             this.ofd_history = new System.Windows.Forms.OpenFileDialog();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.btnPlotET = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.gb_filter.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -132,6 +132,17 @@
             this.gb_filter.TabIndex = 6;
             this.gb_filter.TabStop = false;
             this.gb_filter.Text = "Filter";
+            // 
+            // btnPlotET
+            // 
+            this.btnPlotET.Location = new System.Drawing.Point(237, 414);
+            this.btnPlotET.Name = "btnPlotET";
+            this.btnPlotET.Size = new System.Drawing.Size(75, 23);
+            this.btnPlotET.TabIndex = 18;
+            this.btnPlotET.Text = "Plot Elapsed";
+            this.toolTip1.SetToolTip(this.btnPlotET, "Not working yet");
+            this.btnPlotET.UseVisualStyleBackColor = true;
+            this.btnPlotET.Click += new System.EventHandler(this.btnPlotET_Click);
             // 
             // lbSeriesTime
             // 
@@ -479,18 +490,6 @@
             // 
             this.ofd_history.Filter = "CVS Files|*.cvs";
             this.ofd_history.Multiselect = true;
-            // 
-            // btnPlotET
-            // 
-            this.btnPlotET.Enabled = false;
-            this.btnPlotET.Location = new System.Drawing.Point(237, 414);
-            this.btnPlotET.Name = "btnPlotET";
-            this.btnPlotET.Size = new System.Drawing.Size(75, 23);
-            this.btnPlotET.TabIndex = 18;
-            this.btnPlotET.Text = "Plot Elapsed";
-            this.toolTip1.SetToolTip(this.btnPlotET, "Not working yet");
-            this.btnPlotET.UseVisualStyleBackColor = true;
-            this.btnPlotET.Click += new System.EventHandler(this.btnPlotET_Click);
             // 
             // BTHistory
             // 

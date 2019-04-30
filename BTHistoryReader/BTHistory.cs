@@ -1035,7 +1035,7 @@ namespace BTHistoryReader
         {
             int i, j, n, h, lPtr;
             long l;
-            double d, dValues;
+            double d, d1;
             int k; // Seturge's rule for histograms
 
             if (lb_SelWorkUnits.Items.Count < 2) return false;
@@ -1064,7 +1064,8 @@ namespace BTHistoryReader
                 hist.IncrementCount(dd);
             }
             d = 1.0 + 3.22 * Math.Log10(hist.Count);
-            k =  Convert.ToInt32(d);
+            d1 = 1.0 + 3.22 * Math.Log10(IdleGap.Count);
+            k = hist.Count; // Convert.ToInt32(d);
             CompletionTimes = new List<long>(k);
             for (i = 0; i < k; i++) CompletionTimes.Add(0);
             IdleGap = new List<double>(k);
@@ -1074,19 +1075,28 @@ namespace BTHistoryReader
             j = Convert.ToInt32(d);
             lPtr = 0;
             h = 0;
-            dValues = 0;
+            /*
+                        foreach (KeyValuePair<double, uint> histEntry in hist.AsEnumerable())
+                        {
+                            IdleGap[lPtr]+= histEntry.Key;
+                            CompletionTimes[lPtr] += histEntry.Value;
+                            h++;
+                            if(h == j)
+                            {
+                                IdleGap[lPtr] /= h;
+                                CompletionTimes[lPtr] /= h;
+                                lPtr++;
+                                h = 0;
+                            }
+                        }
+
+            */
+
             foreach (KeyValuePair<double, uint> histEntry in hist.AsEnumerable())
             {
-                IdleGap[lPtr]+= histEntry.Key;
-                CompletionTimes[lPtr] += histEntry.Value;
-                h++;
-                if(h == j)
-                {
-                    IdleGap[lPtr] /= h;
-                    CompletionTimes[lPtr] /= h;
-                    lPtr++;
-                    h = 0;
-                }
+                IdleGap[lPtr] = histEntry.Value;
+                CompletionTimes[lPtr] = Convert.ToInt64( histEntry.Key);
+                lPtr++;
             }
 
             return true;
@@ -1094,7 +1104,6 @@ namespace BTHistoryReader
 
         private void btnPlot_Click(object sender, EventArgs e)
         {
-            CalculateETdistribution();
             if(PerformIdleAnalysis())
             {
                 TPchart DrawThruput = new TPchart(ref CompletionTimes, ref IdleGap, AvgGap, StdGap);

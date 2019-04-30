@@ -21,6 +21,7 @@ namespace BTHistoryReader
         private int iSig;
         private Series sCT = new Series("CompletionTime");
         private Series sET = new Series("ElapsedTime");
+        private bool bDoingHist = false;
 
         public TPchart(ref List<long> refCT, ref List<double> refIT, double rAvgGap, double rStdGap)
         {
@@ -30,6 +31,7 @@ namespace BTHistoryReader
             StdGap = rStdGap;
             ct = refCT;
             it = refIT;
+            bDoingHist = (AvgGap == 0);
             if (AvgGap != 0.0)
             {
                 i = Convert.ToInt32(StdGap / AvgGap);
@@ -44,20 +46,44 @@ namespace BTHistoryReader
             DrawHist();
         }
 
+        private double GetBestScaleingBottom(double a)
+        {
+            if (a < 100) return 0;
+            if (a < 1000) return 100;
+            return 1000;
+        }
+
+        private double GetBestScaleingUpper(double a)
+        {
+            double r = 1.0 / (1 + iSig);
+            if (a < 10) return Math.Max(a, 10*r);
+            if (a < 100) return Math.Max(a,100*r);
+            if (a < 1000) return Math.Max(a,1000*r);
+            return a;
+        }
+
         private void DrawHist()
         {
             int i, n;
+            double d;
             List<double> xAxis = new List<double>();
             List<double> yAxis = new List<double>();
             chart1.Series.Add(sET);
-            chart1.Series["ElapsedTime"].LegendText = "Elapsed Time (minutes)";
+            chart1.Series["ElapsedTime"].AxisLabel = "";
+            chart1.ChartAreas["ChartArea1"].AxisX.Title = "Elapsed Time(sec)";
+            chart1.ChartAreas["ChartArea1"].AxisY.Title = "Number Samples";
+            lbChart.Text = "Distribution of elapsed time";
             n = ct.Count;
             for(i = 0; i < n; i++)
             {
                 xAxis.Add(ct[i]);
                 yAxis.Add(it[i]);
             }
-            //chart1.ChartAreas["ChartArea1"].AxisX.Maximum = xAxis.Last();
+            d = GetBestScaleingUpper(xAxis.Last());
+            chart1.ChartAreas["ChartArea1"].AxisX.Maximum = d; xAxis.Last();
+            d = GetBestScaleingBottom(xAxis.First());
+            chart1.ChartAreas["ChartArea1"].AxisX.Minimum = d; // xAxis.First();
+            chart1.ChartAreas["ChartArea1"].AxisX.Interval = i; 
             chart1.Series["ElapsedTime"].Points.DataBindXY(xAxis.ToArray(), yAxis.ToArray());
         }
 
@@ -115,6 +141,12 @@ namespace BTHistoryReader
         private void DetailFilter_ValueChanged(object sender, EventArgs e)
         {
             iSig = Convert.ToInt32(DetailFilter.Value);
+            if(bDoingHist)
+            {
+                chart1.Series.Remove(sET);
+                DrawHist();
+                return;
+            }
             chart1.Series.Remove(sCT);
             DrawStuff();
         }
@@ -123,6 +155,11 @@ namespace BTHistoryReader
         {
             chart1.Series.Remove(sCT);
             chart1.Series.Remove(sET);
+        }
+
+        private void groupBox2_Enter(object sender, EventArgs e)
+        {
+
         }
     }
 }
