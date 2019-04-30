@@ -67,6 +67,7 @@
             this.btn_OpenHistory = new System.Windows.Forms.Button();
             this.ofd_history = new System.Windows.Forms.OpenFileDialog();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.btnPlotET = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.gb_filter.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -112,6 +113,7 @@
             // 
             // gb_filter
             // 
+            this.gb_filter.Controls.Add(this.btnPlotET);
             this.gb_filter.Controls.Add(this.lbSeriesTime);
             this.gb_filter.Controls.Add(this.btnPlot);
             this.gb_filter.Controls.Add(this.btnCheckNext);
@@ -142,11 +144,12 @@
             // 
             // btnPlot
             // 
-            this.btnPlot.Location = new System.Drawing.Point(214, 401);
+            this.btnPlot.Location = new System.Drawing.Point(237, 373);
             this.btnPlot.Name = "btnPlot";
             this.btnPlot.Size = new System.Drawing.Size(75, 23);
             this.btnPlot.TabIndex = 16;
-            this.btnPlot.Text = "Plot";
+            this.btnPlot.Text = "Plot Idle";
+            this.toolTip1.SetToolTip(this.btnPlot, "Plots IDLE time of items selected");
             this.btnPlot.UseVisualStyleBackColor = true;
             this.btnPlot.Click += new System.EventHandler(this.btnPlot_Click);
             // 
@@ -477,6 +480,18 @@
             this.ofd_history.Filter = "CVS Files|*.cvs";
             this.ofd_history.Multiselect = true;
             // 
+            // btnPlotET
+            // 
+            this.btnPlotET.Enabled = false;
+            this.btnPlotET.Location = new System.Drawing.Point(237, 414);
+            this.btnPlotET.Name = "btnPlotET";
+            this.btnPlotET.Size = new System.Drawing.Size(75, 23);
+            this.btnPlotET.TabIndex = 18;
+            this.btnPlotET.Text = "Plot Elapsed";
+            this.toolTip1.SetToolTip(this.btnPlotET, "Not working yet");
+            this.btnPlotET.UseVisualStyleBackColor = true;
+            this.btnPlotET.Click += new System.EventHandler(this.btnPlotET_Click);
+            // 
             // BTHistory
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -538,6 +553,7 @@
         private System.Windows.Forms.Button btnPlot;
         private System.Windows.Forms.RadioButton rbIdle;
         private System.Windows.Forms.Label lbSeriesTime;
+        private System.Windows.Forms.Button btnPlotET;
     }
 }
 

@@ -552,6 +552,7 @@ namespace BTHistoryReader
             for(i=0; i<nSort; i++)
             {
                 j = iSortIndex[i];
+                if (!ThisProjectInfo[j].bState) continue;
                 sTemp = ThisProjectInfo[j].strOutput;
                 lb_SelWorkUnits.Items.Add(sTemp);
             }
@@ -572,6 +573,7 @@ namespace BTHistoryReader
             int j = 0;
             bool bState;
             long n, nElapsedTime;
+            int RunNumber;  // the line number in the history
 
             if (AppName.LineLoc.Count == 0) return 0;
 
@@ -584,6 +586,7 @@ namespace BTHistoryReader
                 }
                 strSymbols = LinesHistory[i].Split('\t');
                 ThisProjectInfo[j].strLineNum = strSymbols[(int)eHindex.Run];
+                //RunNumber = Convert.ToInt32(ThisProjectInfo[j].strLineNum);
                 sTemp = strSymbols[(int)eHindex.CompletedTime];                             // this is completed time in seconds based on 1970    
                 n = Convert.ToInt64(sTemp);                         // want to convert to time stamp
                 ThisProjectInfo[j].time_t_Completed = n;
@@ -604,9 +607,10 @@ namespace BTHistoryReader
                 // try to find which history entries are bad and mark them out of statistical calculations for "avg" 
                 // they still count in thruput
 
-                bState &= strSymbols[(int)eHindex.State].ToString() != "3";
-                bState &= (nElapsedTime > 0);
-                bState &= (ThisProjectInfo[j].dElapsedCPU > 0.0);
+                if (strSymbols[(int)eHindex.State].ToString() == "3") bState = false;
+                if (strSymbols[(int)eHindex.State].ToString() == "6") bState = false;
+                if(nElapsedTime == 0)bState = false;
+                if(ThisProjectInfo[j].dElapsedCPU == 0.0)bState = false;
                 ThisProjectInfo[j].bState = bState;
                 if(!bState)
                 {
@@ -698,8 +702,14 @@ namespace BTHistoryReader
             n = 0;
             for(k=i; k <= j; k++)
             {
-                d = ThisProjectInfo[k].dElapsedTime / 60.0;
-                if (d == 0.0) continue;
+                if (!ThisProjectInfo[k].bState) continue;
+                d = ThisProjectInfo[k].dElapsedTime;
+                if (d == 0.0)
+                {
+                    Debug.Assert(false);
+                    continue; // bad or missing data
+                }
+                d /= 60.0;
                 n++;
                 Avg += d;
                 strOut += d.ToString("###,##0.00") + "\r\n";
@@ -709,8 +719,14 @@ namespace BTHistoryReader
             Std = 0;
             for (k = i; k <= j; k++)
             {
-                d = ThisProjectInfo[k].dElapsedTime/ 60.0 - Avg;
-                if (d == 0.0) continue;
+                if (!ThisProjectInfo[k].bState) continue;
+                d = ThisProjectInfo[k].dElapsedTime;
+                if (d == 0.0)
+                {
+                    Debug.Assert(false);
+                    continue;
+                }
+                d = d/60.0 - Avg;
                 Std += d*d;
             }
             Std = Math.Sqrt(Std / n);
@@ -735,6 +751,7 @@ namespace BTHistoryReader
                 if (cb_SelProj.Tag == null) return;
                 strProjName = KnownProjApps[(int)cb_SelProj.Tag].ProjName;
                 cb_SelProj.Text = strProjName;
+                cb_SelProj.Text = strProjName;
                 return;
             }
             strProjName = cb_SelProj.Items[i].ToString();
@@ -757,6 +774,7 @@ namespace BTHistoryReader
                 ThisProjectInfo.Add(cpi);
             }
             FillProjectInfo(AppName);
+            CountSelected();
         }
 
 
@@ -818,6 +836,7 @@ namespace BTHistoryReader
             nItems = 1 + j - i;
             for (k = 0; k < nItems - 1; k++)
             {
+                // do not discard bad data as it was processed and time consumed
                 a = ThisProjectInfo[iSortIndex[i + k]].time_t_Completed;
                 b = ThisProjectInfo[iSortIndex[i + k + 1]].time_t_Completed;
                 c = b - a;
@@ -885,6 +904,12 @@ namespace BTHistoryReader
                 lb_NumSel.Visible = false;
                 lb_LocMax.Visible = false;
                 lbTimeContinunity.Text = "not calculated yet";
+                i = 0;
+                j = iSortIndex.Last();
+                tStart = ThisProjectInfo[iSortIndex[i]].time_t_Completed - Convert.ToInt64(ThisProjectInfo[iSortIndex[i]].dElapsedTime);
+                tEnd = ThisProjectInfo[iSortIndex[j]].time_t_Completed;
+                strTimeDiff = BestTimeUnits(tEnd - tStart);
+                lbSeriesTime.Text = "total series time: " + strTimeDiff;
                 return 0;
             }
             btn_Filter.Enabled = true;
@@ -894,7 +919,7 @@ namespace BTHistoryReader
             j = lb_SelWorkUnits.SelectedIndices[1];
             tEnd = ThisProjectInfo[iSortIndex[j]].time_t_Completed;
             strTimeDiff = BestTimeUnits(tEnd - tStart);
-            lbSeriesTime.Text = "Total series time: " + strTimeDiff;
+            lbSeriesTime.Text = "Selected series time: " + strTimeDiff;
             n = 1 + j - i;
             lb_NumSel.Text = "Selected: " + n.ToString();
             
@@ -933,6 +958,19 @@ namespace BTHistoryReader
             RunContinunityCheck();
         }
 
+        public double CalcStd(double avg, ref List<double>Values)
+        {
+            double  dd;
+            double std=0, rms=0;
+            foreach(double d in Values)
+            {
+                dd = d - avg;
+                rms += (dd * dd);
+            }
+            std = Math.Sqrt(rms / Values.Count);
+            return std;
+        }
+
         private bool PerformIdleAnalysis()
         {
             int i, j, n;
@@ -950,18 +988,20 @@ namespace BTHistoryReader
             AvgGap = 0;
             for (n = i; n <= j; n++)
             {
-                l = ThisProjectInfo[iSortIndex[n]].time_t_Completed;
+                //todo need to evaluate if data was bad ???
+                int k = iSortIndex[n];
+                if (!ThisProjectInfo[k].bState) continue;
+                l = ThisProjectInfo[k].time_t_Completed;
                 if (n > i)
                 {
                     double dd = l - CompletionTimes.Last();
                     IdleGap.Add(dd);
                     AvgGap += dd;
-                    StdGap += dd * dd;
                 }
                 CompletionTimes.Add(l);
             }
             AvgGap /= IdleGap.Count;
-            StdGap = Math.Sqrt(StdGap / IdleGap.Count);
+            StdGap = CalcStd(AvgGap, ref IdleGap);
             return true;
         }
 
@@ -973,11 +1013,99 @@ namespace BTHistoryReader
             tb_Results.Text += "Standard Deviation of Gap " + BestTimeUnits(Convert.ToInt64(StdGap));
         }
 
+        public class Histogram<TVal> : SortedDictionary<TVal, uint>
+        {
+            public void IncrementCount(TVal binToIncrement)
+            {
+                if (ContainsKey(binToIncrement))
+                {
+                    this[binToIncrement]++;
+                }
+                else
+                {
+                    Add(binToIncrement, 1);
+                }
+            }
+        }
+
+        // calculate the distribution of elapsed time
+        private bool CalculateETdistribution()
+        {
+            int i, j, n, h, lPtr;
+            long l;
+            double d, dValues;
+            int k; // Seturge's rule for histograms
+
+            if (lb_SelWorkUnits.Items.Count < 2) return false;
+            if (lb_SelWorkUnits.SelectedIndices.Count != 2) return false;
+            i = lb_SelWorkUnits.SelectedIndices[0]; // difference between this shows the selection
+            j = lb_SelWorkUnits.SelectedIndices[1];
+            n = j - i;
+            if (n < 3) return false;  // need to show two segments at least    
+            IdleGap = new List<double>(n);
+            AvgGap = 0;
+            for (n = i; n <= j; n++)
+            {
+                k = iSortIndex[n];
+                if (!ThisProjectInfo[k].bState) continue;
+                d = ThisProjectInfo[k].dElapsedTime;
+                IdleGap.Add(d);
+                AvgGap += d;
+            }
+            AvgGap /= IdleGap.Count;
+            StdGap = CalcStd(AvgGap, ref IdleGap);
+
+            Histogram<double> hist = new Histogram<double>();
+            h = 0;
+            foreach(double dd in IdleGap)
+            {
+                hist.IncrementCount(dd);
+            }
+            d = 1.0 + 3.22 * Math.Log10(hist.Count);
+            k =  Convert.ToInt32(d);
+            CompletionTimes = new List<long>(k);
+            for (i = 0; i < k; i++) CompletionTimes.Add(0);
+            IdleGap = new List<double>(k);
+            for (i = 0; i < k; i++) IdleGap.Add(0);
+            d = hist.Count / (k-1);
+            d = Math.Ceiling(d);
+            j = Convert.ToInt32(d);
+            lPtr = 0;
+            h = 0;
+            dValues = 0;
+            foreach (KeyValuePair<double, uint> histEntry in hist.AsEnumerable())
+            {
+                IdleGap[lPtr]+= histEntry.Key;
+                CompletionTimes[lPtr] += histEntry.Value;
+                h++;
+                if(h == j)
+                {
+                    IdleGap[lPtr] /= h;
+                    CompletionTimes[lPtr] /= h;
+                    lPtr++;
+                    h = 0;
+                }
+            }
+
+            return true;
+        }
+
         private void btnPlot_Click(object sender, EventArgs e)
         {
+            CalculateETdistribution();
             if(PerformIdleAnalysis())
             {
                 TPchart DrawThruput = new TPchart(ref CompletionTimes, ref IdleGap, AvgGap, StdGap);
+                DrawThruput.ShowDialog();
+                DrawThruput.Dispose();
+            }
+        }
+
+        private void btnPlotET_Click(object sender, EventArgs e)
+        {
+            if (CalculateETdistribution())
+            {
+                TPchart DrawThruput = new TPchart(ref CompletionTimes, ref IdleGap, 0, 0);
                 DrawThruput.ShowDialog();
                 DrawThruput.Dispose();
             }

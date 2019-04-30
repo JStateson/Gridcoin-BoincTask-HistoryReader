@@ -20,6 +20,7 @@ namespace BTHistoryReader
         private double SigGap;
         private int iSig;
         private Series sCT = new Series("CompletionTime");
+        private Series sET = new Series("ElapsedTime");
 
         public TPchart(ref List<long> refCT, ref List<double> refIT, double rAvgGap, double rStdGap)
         {
@@ -27,15 +28,37 @@ namespace BTHistoryReader
             InitializeComponent();
             AvgGap = rAvgGap;
             StdGap = rStdGap;
-            i = Convert.ToInt32(StdGap / AvgGap);
-            DetailFilter.ValueChanged -= new System.EventHandler(this.DetailFilter_ValueChanged);
-            if (i < 1) DetailFilter.Value = 0;
-            else if (i < 2) DetailFilter.Value = 1;
-            DetailFilter.ValueChanged += new System.EventHandler(this.DetailFilter_ValueChanged);
             ct = refCT;
             it = refIT;
-            iSig = Convert.ToInt32(DetailFilter.Value);
-            DrawStuff();
+            if (AvgGap != 0.0)
+            {
+                i = Convert.ToInt32(StdGap / AvgGap);
+                DetailFilter.ValueChanged -= new System.EventHandler(this.DetailFilter_ValueChanged);
+                if (i < 1) DetailFilter.Value = 0;
+                else if (i < 2) DetailFilter.Value = 1;
+                DetailFilter.ValueChanged += new System.EventHandler(this.DetailFilter_ValueChanged);
+                iSig = Convert.ToInt32(DetailFilter.Value);
+                DrawStuff();
+                return;
+            }
+            DrawHist();
+        }
+
+        private void DrawHist()
+        {
+            int i, n;
+            List<double> xAxis = new List<double>();
+            List<double> yAxis = new List<double>();
+            chart1.Series.Add(sET);
+            chart1.Series["ElapsedTime"].LegendText = "Elapsed Time (minutes)";
+            n = ct.Count;
+            for(i = 0; i < n; i++)
+            {
+                xAxis.Add(ct[i]);
+                yAxis.Add(it[i]);
+            }
+            //chart1.ChartAreas["ChartArea1"].AxisX.Maximum = xAxis.Last();
+            chart1.Series["ElapsedTime"].Points.DataBindXY(xAxis.ToArray(), yAxis.ToArray());
         }
 
         private void DrawStuff()
@@ -99,6 +122,7 @@ namespace BTHistoryReader
         private void TPchart_FormClosing(object sender, FormClosingEventArgs e)
         {
             chart1.Series.Remove(sCT);
+            chart1.Series.Remove(sET);
         }
     }
 }

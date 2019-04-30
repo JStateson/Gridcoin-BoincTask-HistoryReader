@@ -49,7 +49,7 @@ namespace BTHistoryReader
         PlanClass = 5,
         ElapsedTimeCpu = 6,    // if 0 here then dont use
         ElapsedTimeGpu = 7,    // if 0 here then dont use
-        State = 8,              // if 3 then aborted
+        State = 8,              // if 3 or 6 then aborted (6 for user abort)
         ExitStatus = 9,
         ReportedTime = 10,
         CompletedTime = 11,
