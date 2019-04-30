@@ -64,7 +64,7 @@ namespace BTHistoryReader
             tMinutes = (tSecs / 60.0);
             tHours = tSecs / 3600;
             SigGap = AvgGap + (iSig * StdGap);
-            chart1.ChartAreas["ChartArea1"].AxisX.Maximum =tHours;
+            chart1.ChartAreas["ChartArea1"].AxisX.Maximum = (tHours == 0) ? 1 : tHours;
             // chart1.ChartAreas["ChartArea1"].AxisX.IsLabelAutoFit = true;
             for ( i = iStartIndex; i < n; i ++)
             {
