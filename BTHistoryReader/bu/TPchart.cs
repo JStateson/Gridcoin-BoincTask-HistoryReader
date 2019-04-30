@@ -25,15 +25,13 @@ namespace BTHistoryReader
         {
             int i;
             InitializeComponent();
+            ct = refCT;
+            it = refIT;
             AvgGap = rAvgGap;
             StdGap = rStdGap;
             i = Convert.ToInt32(StdGap / AvgGap);
-            DetailFilter.ValueChanged -= new System.EventHandler(this.DetailFilter_ValueChanged);
             if (i < 1) DetailFilter.Value = 0;
             else if (i < 2) DetailFilter.Value = 1;
-            DetailFilter.ValueChanged += new System.EventHandler(this.DetailFilter_ValueChanged);
-            ct = refCT;
-            it = refIT;
             iSig = Convert.ToInt32(DetailFilter.Value);
             DrawStuff();
         }
@@ -72,7 +70,6 @@ namespace BTHistoryReader
             tHours = tSecs / 3600;
             SigGap = AvgGap + (iSig * StdGap);
             chart1.ChartAreas["ChartArea1"].AxisX.Maximum = (tHours == 0) ? 1 : tHours;
-            //chart1.Series["CompletionTime"].MarkerSize = 1;
             // chart1.ChartAreas["ChartArea1"].AxisX.IsLabelAutoFit = true;
 
             for ( i = iStartIndex; i < n; i ++)

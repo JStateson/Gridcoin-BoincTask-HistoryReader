@@ -940,6 +940,7 @@ namespace BTHistoryReader
             double d;
 
             if (lb_SelWorkUnits.Items.Count < 2) return false;
+            if (lb_SelWorkUnits.SelectedIndices.Count != 2) return false;
             i = lb_SelWorkUnits.SelectedIndices[0]; // difference between this shows the selection
             j = lb_SelWorkUnits.SelectedIndices[1];
             n = j - i;
@@ -978,6 +979,7 @@ namespace BTHistoryReader
             {
                 TPchart DrawThruput = new TPchart(ref CompletionTimes, ref IdleGap, AvgGap, StdGap);
                 DrawThruput.ShowDialog();
+                DrawThruput.Dispose();
             }
         }
     }
