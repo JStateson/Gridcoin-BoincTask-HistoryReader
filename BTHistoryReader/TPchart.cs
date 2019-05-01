@@ -23,7 +23,7 @@ namespace BTHistoryReader
         private Series sET = new Series("ElapsedTime");
         private bool bDoingHist = false;
 
-        public TPchart(ref List<long> refCT, ref List<double> refIT, double rAvgGap, double rStdGap)
+        public TPchart(ref List<long> refCT, ref List<double> refIT, double rAvgGap, double rStdGap, string strProject)
         {
             int i;
             InitializeComponent();
@@ -31,6 +31,7 @@ namespace BTHistoryReader
             StdGap = rStdGap;
             ct = refCT;
             it = refIT;
+            lbl_sysname.Text = "System: " + strProject;
             bDoingHist = (AvgGap == 0);
             if (AvgGap != 0.0)
             {
@@ -65,7 +66,7 @@ namespace BTHistoryReader
         private void DrawHist()
         {
             int i, n;
-            double d;
+            double d, dFirst, dLast ;
             List<double> xAxis = new List<double>();
             List<double> yAxis = new List<double>();
             chart1.Series.Add(sET);
@@ -79,11 +80,15 @@ namespace BTHistoryReader
                 xAxis.Add(ct[i]);
                 yAxis.Add(it[i]);
             }
-            d = GetBestScaleingUpper(xAxis.Last());
-            chart1.ChartAreas["ChartArea1"].AxisX.Maximum = d; xAxis.Last();
-            d = GetBestScaleingBottom(xAxis.First());
-            chart1.ChartAreas["ChartArea1"].AxisX.Minimum = d; // xAxis.First();
-            chart1.ChartAreas["ChartArea1"].AxisX.Interval = i; 
+            dLast = GetBestScaleingUpper(xAxis.Last());
+            chart1.ChartAreas["ChartArea1"].AxisX.Maximum = dLast;
+            dFirst = GetBestScaleingBottom(xAxis.First());
+            chart1.ChartAreas["ChartArea1"].AxisX.Minimum = dFirst;
+            d = dLast - dFirst;
+            d = Math.Floor(Math.Log10(d));
+            n = Convert.ToInt32(Math.Pow(10, d));
+            chart1.ChartAreas["ChartArea1"].AxisX.Interval = n; 
+            //chart1.ChartAreas["ChartArea1"].AxisX.IntervalAutoMode = IntervalAutoMode.VariableCount;
             chart1.Series["ElapsedTime"].Points.DataBindXY(xAxis.ToArray(), yAxis.ToArray());
         }
 

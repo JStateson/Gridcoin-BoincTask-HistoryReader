@@ -36,6 +36,7 @@
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.DetailFilter = new System.Windows.Forms.NumericUpDown();
             this.lbChart = new System.Windows.Forms.Label();
+            this.lbl_sysname = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -115,18 +116,28 @@
             // lbChart
             // 
             this.lbChart.AutoSize = true;
-            this.lbChart.Location = new System.Drawing.Point(293, 352);
+            this.lbChart.Location = new System.Drawing.Point(547, 354);
             this.lbChart.Name = "lbChart";
             this.lbChart.Size = new System.Drawing.Size(197, 39);
             this.lbChart.TabIndex = 5;
             this.lbChart.Text = "Plot show idle time between processing.\r\nThe taller the line the longer the idle " +
     "time\r\nbetween data fill-ups.";
             // 
+            // lbl_sysname
+            // 
+            this.lbl_sysname.AutoSize = true;
+            this.lbl_sysname.Location = new System.Drawing.Point(12, 354);
+            this.lbl_sysname.Name = "lbl_sysname";
+            this.lbl_sysname.Size = new System.Drawing.Size(35, 13);
+            this.lbl_sysname.TabIndex = 6;
+            this.lbl_sysname.Text = "label1";
+            // 
             // TPchart
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 424);
+            this.Controls.Add(this.lbl_sysname);
             this.Controls.Add(this.lbChart);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
@@ -154,5 +165,6 @@
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.NumericUpDown DetailFilter;
         private System.Windows.Forms.Label lbChart;
+        private System.Windows.Forms.Label lbl_sysname;
     }
 }

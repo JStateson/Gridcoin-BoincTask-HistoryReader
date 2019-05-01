@@ -45,7 +45,8 @@ namespace BTHistoryReader
         const int LKUP_INVALID_LINE = -3;   // line in history is invalid 
 
 
-        public string CurrentSystem;   // computer name 
+        public string CurrentSystem;    // computer name
+        public string CurrentProject;   // project being looked at
         public List<cProjectInfo> ThisProjectInfo;
 
         // pad right side with spaces to fill
@@ -755,6 +756,7 @@ namespace BTHistoryReader
                 return;
             }
             strProjName = cb_SelProj.Items[i].ToString();
+            CurrentProject = strProjName;
             iProject = LookupProject(strProjName);
             Debug.Assert(iProject >= 0);
             iApp = cb_AppNames.SelectedIndex;
@@ -1106,7 +1108,7 @@ namespace BTHistoryReader
         {
             if(PerformIdleAnalysis())
             {
-                TPchart DrawThruput = new TPchart(ref CompletionTimes, ref IdleGap, AvgGap, StdGap);
+                TPchart DrawThruput = new TPchart(ref CompletionTimes, ref IdleGap, AvgGap, StdGap,CurrentProject);
                 DrawThruput.ShowDialog();
                 DrawThruput.Dispose();
             }
@@ -1116,7 +1118,7 @@ namespace BTHistoryReader
         {
             if (CalculateETdistribution())
             {
-                TPchart DrawThruput = new TPchart(ref CompletionTimes, ref IdleGap, 0, 0);
+                TPchart DrawThruput = new TPchart(ref CompletionTimes, ref IdleGap, 0, 0, CurrentProject);
                 DrawThruput.ShowDialog();
                 DrawThruput.Dispose();
             }
