@@ -15,6 +15,9 @@ namespace BTHistoryReader
     {
         private List<long> ct;    // completion times in seconds since 1970
         private List<double> it;  // idle time in seconds
+        private long[] WORKct;    // completion times in seconds since 1970
+        private double[] WORKit;  // idle time in seconds
+        private int ValidWork;
         private double AvgGap;
         private double StdGap;
         private double SigGap;
@@ -23,6 +26,73 @@ namespace BTHistoryReader
         private Series sET = new Series("ElapsedTime");
         private bool bDoingHist = false;
         private long LKBhours = 24;
+        private int iBinCnt = 2;   // 2 (show in spinner box) raised to power of 1 (spinner value) 
+
+        private void ShowOrHideHist(bool bValue)
+        {
+            lbBinSize.Visible = bValue;
+            tbSpinBinValue.Visible = bValue;
+            SpinBin.Visible = bValue;
+            bDoingHist = bValue;
+            cbHours.Enabled = !bValue;
+        }
+
+        private void SaveWorking(int n)
+        {
+            int i;
+            WORKit = new double[n];
+            WORKct = new long[n];
+            for (i = 0; i < n; i++)
+            {
+                WORKct[i] = ct[i];
+                WORKit[i] = it[i];
+            }
+            ValidWork = n;
+        }
+
+        // bin original data then put into working area
+        // iBinCnt is the number of bins
+        private int NewBins()
+        {
+            int iPtr=0;   // traverse the entire array
+            int iCnt=0;   // number in the current transversal (0..iBinCnt-1)
+            int jBinCnt = 0;   //traversal for the working bin
+            int nInBin=0; // actual number in bin
+            int nExpected = 1 +( ct.Count / iBinCnt);
+            if (nExpected < 2) nExpected = 2;   // put this many in each bin
+            WORKct = new long[iBinCnt+1];
+            WORKit = new double[iBinCnt+1];
+            do
+            {
+                if (iCnt == 0)
+                {
+                    WORKct[jBinCnt] = 0;
+                    WORKit[jBinCnt] = 0;
+                    nInBin = 0;  // need to count actual since last bin may not be full;
+                }
+                WORKct[jBinCnt]+= ct[iPtr];
+                WORKit[jBinCnt]+= it[iPtr];
+                iPtr++;
+                iCnt++;
+                nInBin++;
+                if(iCnt == nExpected || iPtr == ct.Count)
+                {
+                    WORKct[jBinCnt] /= nInBin;
+                    iCnt = 0;   // start next bin
+                    jBinCnt++;
+                    nInBin = 0;
+                    if (iPtr == ct.Count) break;
+                }
+            } while (true);
+            ValidWork = WORKct.Length;
+            for(int i = WORKct.Length-1; i >= 0;i--)
+            {
+                if (WORKct[i] == 0)
+                    ValidWork--;
+            }
+            // could have a 0 in the last bin due to my expedient algorithm
+            return ValidWork;
+        }
 
         public TPchart(ref List<long> refCT, ref List<double> refIT, double rAvgGap, double rStdGap, string strProject)
         {
@@ -33,8 +103,8 @@ namespace BTHistoryReader
             ct = refCT;
             it = refIT;
             lbl_sysname.Text = "System: " + strProject;
-            bDoingHist = (AvgGap == 0);
-            cbHours.Enabled = !bDoingHist;
+            ShowOrHideHist(AvgGap == 0);
+            
             if (AvgGap != 0.0)
             {
                 i = Convert.ToInt32(StdGap / AvgGap);
@@ -46,7 +116,9 @@ namespace BTHistoryReader
                 DrawStuff();
                 return;
             }
+            SaveWorking(ct.Count);
             toolTip1.SetToolTip(DetailFilter, "Change x-axis scale");
+            lbSpinFilter.Text = "adj xAxis scale";
             DrawHist();
         }
 
@@ -83,11 +155,11 @@ namespace BTHistoryReader
             chart1.ChartAreas["ChartArea1"].AxisX.Title = "Elapsed Time(sec)";
             chart1.ChartAreas["ChartArea1"].AxisY.Title = "Number Samples";
             lbChart.Text = "Distribution of elapsed time";
-            n = ct.Count;
+            n = ValidWork; // WORKct.Length ;
             for(i = 0; i < n; i++)
             {
-                xAxis.Add(ct[i]);
-                yAxis.Add(it[i]);
+                xAxis.Add(WORKct[i]);
+                yAxis.Add(WORKit[i]);
             }
             dLast = GetBestScaleingUpper(xAxis.Last());
             chart1.ChartAreas["ChartArea1"].AxisX.Maximum = dLast;
@@ -100,6 +172,7 @@ namespace BTHistoryReader
             //chart1.ChartAreas["ChartArea1"].AxisX.IntervalAutoMode = IntervalAutoMode.VariableCount;
             chart1.Series["ElapsedTime"].Points.DataBindXY(xAxis.ToArray(), yAxis.ToArray());
         }
+
 
         private double GetSigGap()
         {
@@ -160,10 +233,17 @@ namespace BTHistoryReader
             chart1.Series["CompletionTime"].Points.DataBindXY(xAxis.ToArray(), yAxis.ToArray());
         }
 
-        private void DrawValuesChanged()
+        private void DrawIdleChanged()
         {
             chart1.Series.Remove(sCT);
             DrawStuff();
+        }
+
+        private void DrawHistChanged()
+        {
+            chart1.Series.Remove(sET);
+            if(NewBins() > 0)
+                DrawHist();
         }
 
         private void DetailFilter_ValueChanged(object sender, EventArgs e)
@@ -171,11 +251,10 @@ namespace BTHistoryReader
             iSig = Convert.ToInt32(DetailFilter.Value);
             if(bDoingHist)
             {
-                chart1.Series.Remove(sET);
-                DrawHist();
+                DrawHistChanged();
                 return;
             }
-            DrawValuesChanged();
+            DrawIdleChanged();
         }
 
         private void TPchart_FormClosing(object sender, FormClosingEventArgs e)
@@ -184,15 +263,19 @@ namespace BTHistoryReader
             chart1.Series.Remove(sET);
         }
 
-        private void groupBox2_Enter(object sender, EventArgs e)
-        {
-
-        }
-
         private void cbHours_SelectedIndexChanged(object sender, EventArgs e)
         {
             GetLKHours();
-            DrawValuesChanged();
+            DrawIdleChanged();
+        }
+
+        private void SpinBin_ValueChanged(object sender, EventArgs e)
+        {
+            int i = Convert.ToInt32(SpinBin.Value);
+            int j = Convert.ToInt32( Math.Pow(2.0, i));
+            tbSpinBinValue.Text = j.ToString();
+            iBinCnt = j;
+            DrawHistChanged();
         }
     }
 }
