@@ -22,6 +22,7 @@ namespace BTHistoryReader
         private Series sCT = new Series("CompletionTime");
         private Series sET = new Series("ElapsedTime");
         private bool bDoingHist = false;
+        private long LKBhours = 24;
 
         public TPchart(ref List<long> refCT, ref List<double> refIT, double rAvgGap, double rStdGap, string strProject)
         {
@@ -33,6 +34,7 @@ namespace BTHistoryReader
             it = refIT;
             lbl_sysname.Text = "System: " + strProject;
             bDoingHist = (AvgGap == 0);
+            cbHours.Enabled = !bDoingHist;
             if (AvgGap != 0.0)
             {
                 i = Convert.ToInt32(StdGap / AvgGap);
@@ -44,7 +46,14 @@ namespace BTHistoryReader
                 DrawStuff();
                 return;
             }
+            toolTip1.SetToolTip(DetailFilter, "Change x-axis scale");
             DrawHist();
+        }
+
+        private void GetLKHours()
+        {
+            LKBhours = Convert.ToInt64(cbHours.Text);
+            if (LKBhours < 1) LKBhours = 1;
         }
 
         private double GetBestScaleingBottom(double a)
@@ -92,6 +101,15 @@ namespace BTHistoryReader
             chart1.Series["ElapsedTime"].Points.DataBindXY(xAxis.ToArray(), yAxis.ToArray());
         }
 
+        private double GetSigGap()
+        {
+            if (iSig == 0) return 0;
+            return AvgGap + ((iSig-1) * StdGap);
+        }
+
+
+        // this is a plot (histogram) of the gap in completion time
+        // if the elapsed time is smaller than the gap, then the gap is project idle time
         private void DrawStuff()
         {
             List<double> xAxis = new List<double>();
@@ -111,8 +129,7 @@ namespace BTHistoryReader
             double tStop = ct[n];
 
 
-            // go back 24 hours maximum
-            tMax = 24 * 3600;
+            tMax = LKBhours * 3600;
             tSecs = ct[n - 1];
             for(iStartIndex=0;iStartIndex<n;iStartIndex++)
             {
@@ -124,7 +141,7 @@ namespace BTHistoryReader
             tSecs = ct[n] - ct[iStartIndex];
             tMinutes = (tSecs / 60.0);
             tHours = tSecs / 3600;
-            SigGap = AvgGap + (iSig * StdGap);
+            SigGap = GetSigGap();
             chart1.ChartAreas["ChartArea1"].AxisX.Maximum = (tHours == 0) ? 1 : tHours;
             //chart1.Series["CompletionTime"].MarkerSize = 1;
             // chart1.ChartAreas["ChartArea1"].AxisX.IsLabelAutoFit = true;
@@ -143,6 +160,12 @@ namespace BTHistoryReader
             chart1.Series["CompletionTime"].Points.DataBindXY(xAxis.ToArray(), yAxis.ToArray());
         }
 
+        private void DrawValuesChanged()
+        {
+            chart1.Series.Remove(sCT);
+            DrawStuff();
+        }
+
         private void DetailFilter_ValueChanged(object sender, EventArgs e)
         {
             iSig = Convert.ToInt32(DetailFilter.Value);
@@ -152,8 +175,7 @@ namespace BTHistoryReader
                 DrawHist();
                 return;
             }
-            chart1.Series.Remove(sCT);
-            DrawStuff();
+            DrawValuesChanged();
         }
 
         private void TPchart_FormClosing(object sender, FormClosingEventArgs e)
@@ -165,6 +187,12 @@ namespace BTHistoryReader
         private void groupBox2_Enter(object sender, EventArgs e)
         {
 
+        }
+
+        private void cbHours_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            GetLKHours();
+            DrawValuesChanged();
         }
     }
 }

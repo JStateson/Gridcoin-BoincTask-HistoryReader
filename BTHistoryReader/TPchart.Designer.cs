@@ -28,15 +28,18 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            this.components = new System.ComponentModel.Container();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea4 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend4 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TPchart));
             this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.rbLookBack = new System.Windows.Forms.RadioButton();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.DetailFilter = new System.Windows.Forms.NumericUpDown();
             this.lbChart = new System.Windows.Forms.Label();
             this.lbl_sysname = new System.Windows.Forms.Label();
+            this.cbHours = new System.Windows.Forms.ComboBox();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -45,21 +48,21 @@
             // 
             // chart1
             // 
-            chartArea1.AxisX.Interval = 2D;
-            chartArea1.AxisX.LabelStyle.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            chartArea1.AxisX.LabelStyle.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Auto;
-            chartArea1.AxisX.MajorGrid.Enabled = false;
-            chartArea1.AxisX.MajorTickMark.Enabled = false;
-            chartArea1.AxisX.MajorTickMark.Interval = 0D;
-            chartArea1.AxisX.MajorTickMark.IntervalOffset = 0D;
-            chartArea1.AxisX.MajorTickMark.IntervalOffsetType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Auto;
-            chartArea1.AxisX.MajorTickMark.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Auto;
-            chartArea1.AxisX.Minimum = 0D;
-            chartArea1.AxisX.Title = "Hours Back";
-            chartArea1.Name = "ChartArea1";
-            this.chart1.ChartAreas.Add(chartArea1);
-            legend1.Name = "Legend1";
-            this.chart1.Legends.Add(legend1);
+            chartArea4.AxisX.Interval = 2D;
+            chartArea4.AxisX.LabelStyle.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            chartArea4.AxisX.LabelStyle.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Auto;
+            chartArea4.AxisX.MajorGrid.Enabled = false;
+            chartArea4.AxisX.MajorTickMark.Enabled = false;
+            chartArea4.AxisX.MajorTickMark.Interval = 0D;
+            chartArea4.AxisX.MajorTickMark.IntervalOffset = 0D;
+            chartArea4.AxisX.MajorTickMark.IntervalOffsetType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Auto;
+            chartArea4.AxisX.MajorTickMark.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Auto;
+            chartArea4.AxisX.Minimum = 0D;
+            chartArea4.AxisX.Title = "Hours Back";
+            chartArea4.Name = "ChartArea1";
+            this.chart1.ChartAreas.Add(chartArea4);
+            legend4.Name = "Legend1";
+            this.chart1.Legends.Add(legend4);
             this.chart1.Location = new System.Drawing.Point(207, 25);
             this.chart1.Name = "chart1";
             this.chart1.Size = new System.Drawing.Size(537, 305);
@@ -68,26 +71,13 @@
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.rbLookBack);
+            this.groupBox1.Controls.Add(this.cbHours);
             this.groupBox1.Location = new System.Drawing.Point(12, 25);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(150, 131);
             this.groupBox1.TabIndex = 2;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Max Lookback";
-            // 
-            // rbLookBack
-            // 
-            this.rbLookBack.AutoSize = true;
-            this.rbLookBack.Checked = true;
-            this.rbLookBack.Cursor = System.Windows.Forms.Cursors.Cross;
-            this.rbLookBack.Location = new System.Drawing.Point(17, 34);
-            this.rbLookBack.Name = "rbLookBack";
-            this.rbLookBack.Size = new System.Drawing.Size(68, 17);
-            this.rbLookBack.TabIndex = 2;
-            this.rbLookBack.TabStop = true;
-            this.rbLookBack.Text = "24 Hours";
-            this.rbLookBack.UseVisualStyleBackColor = true;
             // 
             // groupBox2
             // 
@@ -97,7 +87,7 @@
             this.groupBox2.Size = new System.Drawing.Size(150, 116);
             this.groupBox2.TabIndex = 4;
             this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Detail Filter (0 is more)";
+            this.groupBox2.Text = "Detail Filter (0 is all)";
             this.groupBox2.Enter += new System.EventHandler(this.groupBox2_Enter);
             // 
             // DetailFilter
@@ -111,17 +101,17 @@
             this.DetailFilter.Name = "DetailFilter";
             this.DetailFilter.Size = new System.Drawing.Size(47, 20);
             this.DetailFilter.TabIndex = 4;
+            this.toolTip1.SetToolTip(this.DetailFilter, "Removes AVG plus STD from plot");
             this.DetailFilter.ValueChanged += new System.EventHandler(this.DetailFilter_ValueChanged);
             // 
             // lbChart
             // 
             this.lbChart.AutoSize = true;
-            this.lbChart.Location = new System.Drawing.Point(547, 354);
+            this.lbChart.Location = new System.Drawing.Point(466, 345);
             this.lbChart.Name = "lbChart";
-            this.lbChart.Size = new System.Drawing.Size(197, 39);
+            this.lbChart.Size = new System.Drawing.Size(278, 52);
             this.lbChart.TabIndex = 5;
-            this.lbChart.Text = "Plot show idle time between processing.\r\nThe taller the line the longer the idle " +
-    "time\r\nbetween data fill-ups.";
+            this.lbChart.Text = resources.GetString("lbChart.Text");
             // 
             // lbl_sysname
             // 
@@ -131,6 +121,25 @@
             this.lbl_sysname.Size = new System.Drawing.Size(35, 13);
             this.lbl_sysname.TabIndex = 6;
             this.lbl_sysname.Text = "label1";
+            // 
+            // cbHours
+            // 
+            this.cbHours.FormattingEnabled = true;
+            this.cbHours.Items.AddRange(new object[] {
+            "24",
+            "12",
+            "8",
+            "6",
+            "4",
+            "2",
+            "1"});
+            this.cbHours.Location = new System.Drawing.Point(38, 40);
+            this.cbHours.Name = "cbHours";
+            this.cbHours.Size = new System.Drawing.Size(57, 21);
+            this.cbHours.TabIndex = 0;
+            this.cbHours.Text = "24";
+            this.toolTip1.SetToolTip(this.cbHours, "BoincTasks default is 24 hours maximum");
+            this.cbHours.SelectedIndexChanged += new System.EventHandler(this.cbHours_SelectedIndexChanged);
             // 
             // TPchart
             // 
@@ -149,7 +158,6 @@
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.TPchart_FormClosing);
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).EndInit();
             this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.DetailFilter)).EndInit();
             this.ResumeLayout(false);
@@ -161,10 +169,11 @@
 
         private System.Windows.Forms.DataVisualization.Charting.Chart chart1;
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.RadioButton rbLookBack;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.NumericUpDown DetailFilter;
         private System.Windows.Forms.Label lbChart;
         private System.Windows.Forms.Label lbl_sysname;
+        private System.Windows.Forms.ComboBox cbHours;
+        private System.Windows.Forms.ToolTip toolTip1;
     }
 }
