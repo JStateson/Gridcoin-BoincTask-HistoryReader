@@ -950,6 +950,7 @@ namespace BTHistoryReader
         private void btnCheckNext_Click(object sender, EventArgs e)
         {
             int i, j, n;
+            if (lb_SelWorkUnits.SelectedIndices.Count != 2) return;
             i = lb_SelWorkUnits.SelectedIndices[0]; // difference between this shows the selection
             j = lb_SelWorkUnits.SelectedIndices[1];
             n = j - i;
