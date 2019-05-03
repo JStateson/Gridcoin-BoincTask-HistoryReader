@@ -664,8 +664,9 @@ namespace BTHistoryReader
             k = s2.IndexOf("M ");
             s2 = s2.Substring(0, k + 1);
 
-            t_start = ThisProjectInfo[i].time_t_Started;
-            t_stop = ThisProjectInfo[j].time_t_Completed;
+            t_start = ThisProjectInfo[iSortIndex[i]].time_t_Started;
+            t_stop = ThisProjectInfo[iSortIndex[j]].time_t_Completed;
+
             tb_Results.Text = "Start time " + s1 + "\r\n";
             tb_Results.Text += "Stop  time " + s2 + "\r\n";
             t_diff = t_stop - t_start;  // seconds
