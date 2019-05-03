@@ -135,7 +135,8 @@ namespace BTHistoryReader
             return LKUP_NOT_FOUND;
         }
 
-        // assume max of 32 projects and max of 4 apps
+        // put some projects into the table but unknown (to this program) also get added
+        // there is no limit on projects nor apps
         private void InitLookupTable()
         {
             cKnownProjApps kpa;
@@ -991,6 +992,17 @@ namespace BTHistoryReader
             CompletionTimes = new List<long>(n + 1);
             IdleGap = new List<double>(n);
             AvgGap = 0;
+            // need to make sure the first one valid
+            do
+            {
+                int k = iSortIndex[i];
+                if (ThisProjectInfo[k].bState) break;
+                i++;
+                if (i >= j) return false;
+            }
+            while (true);
+
+
             for (n = i; n <= j; n++)
             {
                 //todo need to evaluate if data was bad ???
