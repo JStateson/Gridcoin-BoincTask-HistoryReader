@@ -105,7 +105,7 @@ namespace BTHistoryReader
             lbl_sysname.Text = "System: " + strProject;
             ShowOrHideHist(AvgGap == 0);
             
-            if (AvgGap != 0.0)
+            if (AvgGap != -1)
             {
                 i = Convert.ToInt32(StdGap / AvgGap);
                 DetailFilter.ValueChanged -= new System.EventHandler(this.DetailFilter_ValueChanged);

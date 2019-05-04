@@ -74,7 +74,6 @@ namespace BTHistoryReader
         }
 
 
-
         public int LookupApp(string strIn, int iLoc)
         {
             int n = 0;
@@ -117,7 +116,7 @@ namespace BTHistoryReader
 
 
         // this is our lookup table
-        public  List<cKnownProjApps> KnownProjApps;
+        public List<cKnownProjApps> KnownProjApps;
 
         // lookup name of project in table
         public int LookupProj(string strProjName)
@@ -255,7 +254,7 @@ namespace BTHistoryReader
             kpa.AddName("Moo! Wrapper");
             kpa.AddApp("Distributed.net Client");
             KnownProjApps.Add(kpa);
-            
+
             kpa = new cKnownProjApps();
             kpa.AddName("Gerasim@home");
             kpa.AddApp("spstarter");
@@ -281,7 +280,7 @@ namespace BTHistoryReader
 
         public void ClearPreviousHistory()
         {
-            if(ThisProjectInfo != null)
+            if (ThisProjectInfo != null)
                 ThisProjectInfo.Clear();
             foreach (cKnownProjApps kpa in KnownProjApps)
             {
@@ -299,7 +298,8 @@ namespace BTHistoryReader
         private void ShowNumberApps()
         {
             lb_nApps.Visible = cb_AppNames.Items.Count > 0;
-            if(lb_nApps.Visible)
+            btnFetchHistory.Enabled = lb_nApps.Visible;
+            if (lb_nApps.Visible)
             {
                 lb_nApps.Text = cb_AppNames.Items.Count.ToString();
             }
@@ -336,26 +336,31 @@ namespace BTHistoryReader
             ClearPreviousHistory();
         }
 
-        private void btn_OpenHistory_Click(object sender, EventArgs e)
+        private bool FetchHistory()
         {
             int nFiles = LocatePathToHistory();
             bool bAny = nFiles > 0;
+
+            lb_nProj.Visible = false;
+            lb_nApps.Visible = false;
+            bt_all.Enabled = false;
+
             ofd_history.ShowDialog();
             AllHistories = ofd_history.FileNames;
-            if(AllHistories.Length > 1)
+            if (AllHistories.Length > 1)
             {
                 PerformSelectCompare();
-                return;
+                return true;
             }
             lb_history_loc.Text = ofd_history.FileName;
-            if(File.Exists(lb_history_loc.Text))
+            if (File.Exists(lb_history_loc.Text))
             {
                 str_PathToHistory = lb_history_loc.Text;
                 if (ValidateHistory(str_PathToHistory) >= 0)
                 {
                     ClearPreviousHistory();
                     CurrentSystem = LinesHistory[1];
-                    if(BTHistory.ActiveForm != null)    // can occur during debugging
+                    if (BTHistory.ActiveForm != null)    // can occur during debugging
                         BTHistory.ActiveForm.Text = CurrentSystem; ;   // this is name of the computer
                     ProcessHistoryFile();
                     FillSelectBoxes();
@@ -363,17 +368,28 @@ namespace BTHistoryReader
                 else
                 {
                     tb_Info.Text += "problem with history file\r\n";
+                    return false;
                 }
             }
             else
             {
                 tb_Info.Text += "file does not exist\r\n";
                 str_PathToHistory = "";
+                return false;
             }
             bAny = cb_SelProj.Items.Count > 0;
             lb_nProj.Visible = bAny;
             lb_nProj.Text = bAny ? cb_SelProj.Items.Count.ToString() : "";
             ShowNumberApps();
+            return true;
+        }
+
+        private void btn_OpenHistory_Click(object sender, EventArgs e)
+        {
+            if(FetchHistory())return;
+            ClearPreviousHistory();
+            ShowContinunities(false);
+            ShowSelectable(false);
         }
 
         public int ValidateHistory(string strFile)
@@ -766,7 +782,10 @@ namespace BTHistoryReader
             i = strAppName.LastIndexOf(" (");
             if (i > 0) strAppName = strAppName.Substring(0, i).TrimEnd();
             if (iProject < 0 || iApp < 0)
+            {
+                ShowContinunities(false);
                 return;
+            }
             //iApp = KnownProjApps[iProject].FindApp(strAppName);
             //AppName = KnownProjApps[iProject].KnownApps[iApp];
             AppName = KnownProjApps[iProject].FindApp(strAppName);
@@ -798,7 +817,7 @@ namespace BTHistoryReader
         private void btnClear_Click(object sender, EventArgs e)
         {
             lb_SelWorkUnits.SelectedIndices.Clear();
-            btn_Filter.Enabled = false;
+            ShowSelectable(false);
         }
 
         private void cb_AppNames_SelectedIndexChanged(object sender, EventArgs e)
@@ -833,6 +852,7 @@ namespace BTHistoryReader
             if (CountSelected() == 0)
             {
                 tb_Results.Text = "you must select exactly two items\r\n";
+                ShowContinunities(false);
                 return;
             }
             i = lb_SelWorkUnits.SelectedIndices[0]; // difference between this shows the selection
@@ -873,7 +893,8 @@ namespace BTHistoryReader
                 i = strLine.IndexOf(' ');
                 lb_LocMax.Text = "Near # " + strLine.Substring(0, i) + strUnits;
             }
-            btnCheckNext.Visible = lb_history_loc.Visible;
+            ShowContinunities(true);
+            
         }
 
         private void btnContinunity_Click(object sender, EventArgs e)
@@ -897,16 +918,36 @@ namespace BTHistoryReader
 
         }
 
+        private void ShowContinunities(bool bShow)
+        {
+            btnCheckNext.Enabled = bShow;
+            btnCheckPrev.Enabled = bShow;
+            lb_history_loc.Visible = bShow;
+        }
+
+        private void ShowSelectable(bool bShow)
+        {
+            btnContinunity.Enabled = bShow;
+            btn_Filter.Enabled = bShow;;
+            lb_NumSel.Visible = bShow;
+            lb_LocMax.Visible = bShow ;
+            btnPlot.Enabled = bShow;
+            btnPlotET.Enabled = bShow;
+            btnCheckNext.Enabled = bShow;
+            btnCheckPrev.Enabled = bShow;
+        }
+
         private int CountSelected()
         {
             int i, j, n = lb_SelWorkUnits.SelectedIndices.Count;
             string strTimeDiff;
             long tStart, tEnd;
+
+            lb_NumSel.Text = "None Selected";
+            bt_all.Enabled = (lb_SelWorkUnits.Items.Count > 0); 
             if (n != 2)
             {
-                btn_Filter.Enabled = false;
-                lb_NumSel.Visible = false;
-                lb_LocMax.Visible = false;
+                ShowSelectable(false);
                 lbTimeContinunity.Text = "not calculated yet";
                 if (n == 0)
                     return 0;
@@ -918,8 +959,7 @@ namespace BTHistoryReader
                 lbSeriesTime.Text = "total series time: " + strTimeDiff;
                 return 0;
             }
-            btn_Filter.Enabled = true;
-            lb_NumSel.Visible = true;
+            ShowSelectable(true);
             i = lb_SelWorkUnits.SelectedIndices[0]; // difference between this shows the selection
             tStart = ThisProjectInfo[iSortIndex[i]].time_t_Completed - Convert.ToInt64(ThisProjectInfo[iSortIndex[i]].dElapsedTime);
             j = lb_SelWorkUnits.SelectedIndices[1];
@@ -947,22 +987,6 @@ namespace BTHistoryReader
         private void lb_SelWorkUnits_SelectedIndexChanged(object sender, EventArgs e)
         {
             CountSelected();
-        }
-
-        private void btnCheckNext_Click(object sender, EventArgs e)
-        {
-            int i, j, n;
-            if (lb_SelWorkUnits.SelectedIndices.Count != 2) return;
-            i = lb_SelWorkUnits.SelectedIndices[0]; // difference between this shows the selection
-            j = lb_SelWorkUnits.SelectedIndices[1];
-            n = j - i;
-            if (n < 2) return;
-            n = iLocMaxDiff+1;
-            if ((j - n) < 2) return;
-            lb_SelWorkUnits.SetSelected(i, false);
-            lb_SelWorkUnits.SetSelected(n, true);
-            CountSelected();
-            RunContinunityCheck();
         }
 
         public double CalcStd(double avg, ref List<double>Values)
@@ -1132,10 +1156,41 @@ namespace BTHistoryReader
         {
             if (CalculateETdistribution())
             {
-                TPchart DrawThruput = new TPchart(ref CompletionTimes, ref IdleGap, 0, 0, CurrentProject);
+                TPchart DrawThruput = new TPchart(ref CompletionTimes, ref IdleGap, -1, -1, CurrentProject);
                 DrawThruput.ShowDialog();
                 DrawThruput.Dispose();
             }
+        }
+
+        private void btnCheckNext_Click(object sender, EventArgs e)
+        {
+            int i, j, n;
+            if (lb_SelWorkUnits.SelectedIndices.Count != 2) return;
+            i = lb_SelWorkUnits.SelectedIndices[0]; // difference between this shows the selection
+            j = lb_SelWorkUnits.SelectedIndices[1];
+            n = j - i;
+            if (n < 2) return;
+            n = iLocMaxDiff + 1;
+            if ((j - n) < 2) return;
+            lb_SelWorkUnits.SetSelected(i, false);
+            lb_SelWorkUnits.SetSelected(n, true);
+            CountSelected();
+            RunContinunityCheck();
+        }
+
+        private void btnCheckPrev_Click(object sender, EventArgs e)
+        {
+            int i, j, n;
+            if (lb_SelWorkUnits.SelectedIndices.Count != 2) return;
+            i = lb_SelWorkUnits.SelectedIndices[0]; // difference between this shows the selection
+            j = lb_SelWorkUnits.SelectedIndices[1];
+            n = j - i;
+            if (n < 2) return;
+            n = iLocMaxDiff - 1;
+            lb_SelWorkUnits.SetSelected(j, false);
+            lb_SelWorkUnits.SetSelected(n, true);
+            CountSelected();
+            RunContinunityCheck();
         }
     }
 }

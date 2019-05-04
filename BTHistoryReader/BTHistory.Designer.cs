@@ -68,6 +68,7 @@
             this.btn_OpenHistory = new System.Windows.Forms.Button();
             this.ofd_history = new System.Windows.Forms.OpenFileDialog();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.btnCheckPrev = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.gb_filter.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -87,7 +88,7 @@
             this.panel1.Controls.Add(this.btn_OpenHistory);
             this.panel1.Location = new System.Drawing.Point(12, 12);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(908, 527);
+            this.panel1.Size = new System.Drawing.Size(937, 534);
             this.panel1.TabIndex = 0;
             this.panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.panel1_Paint);
             // 
@@ -113,6 +114,8 @@
             // 
             // gb_filter
             // 
+            this.gb_filter.Controls.Add(this.btn_Filter);
+            this.gb_filter.Controls.Add(this.btnCheckPrev);
             this.gb_filter.Controls.Add(this.btnPlotET);
             this.gb_filter.Controls.Add(this.lbSeriesTime);
             this.gb_filter.Controls.Add(this.btnPlot);
@@ -125,17 +128,17 @@
             this.gb_filter.Controls.Add(this.btnContinunity);
             this.gb_filter.Controls.Add(this.btnClear);
             this.gb_filter.Controls.Add(this.lb_SelWorkUnits);
-            this.gb_filter.Controls.Add(this.btn_Filter);
-            this.gb_filter.Location = new System.Drawing.Point(533, 53);
+            this.gb_filter.Location = new System.Drawing.Point(534, 41);
             this.gb_filter.Name = "gb_filter";
-            this.gb_filter.Size = new System.Drawing.Size(344, 459);
+            this.gb_filter.Size = new System.Drawing.Size(372, 478);
             this.gb_filter.TabIndex = 6;
             this.gb_filter.TabStop = false;
             this.gb_filter.Text = "Filter";
             // 
             // btnPlotET
             // 
-            this.btnPlotET.Location = new System.Drawing.Point(237, 414);
+            this.btnPlotET.Enabled = false;
+            this.btnPlotET.Location = new System.Drawing.Point(261, 442);
             this.btnPlotET.Name = "btnPlotET";
             this.btnPlotET.Size = new System.Drawing.Size(75, 23);
             this.btnPlotET.TabIndex = 18;
@@ -155,7 +158,8 @@
             // 
             // btnPlot
             // 
-            this.btnPlot.Location = new System.Drawing.Point(237, 373);
+            this.btnPlot.Enabled = false;
+            this.btnPlot.Location = new System.Drawing.Point(261, 406);
             this.btnPlot.Name = "btnPlot";
             this.btnPlot.Size = new System.Drawing.Size(75, 23);
             this.btnPlot.TabIndex = 16;
@@ -166,32 +170,33 @@
             // 
             // btnCheckNext
             // 
-            this.btnCheckNext.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
-            this.btnCheckNext.Location = new System.Drawing.Point(19, 401);
+            this.btnCheckNext.BackColor = System.Drawing.SystemColors.Control;
+            this.btnCheckNext.Enabled = false;
+            this.btnCheckNext.Location = new System.Drawing.Point(19, 406);
             this.btnCheckNext.Name = "btnCheckNext";
-            this.btnCheckNext.Size = new System.Drawing.Size(114, 23);
+            this.btnCheckNext.Size = new System.Drawing.Size(125, 23);
             this.btnCheckNext.TabIndex = 15;
             this.btnCheckNext.Text = "Check Next";
             this.toolTip1.SetToolTip(this.btnCheckNext, "avoid any large change in time");
-            this.btnCheckNext.UseVisualStyleBackColor = false;
-            this.btnCheckNext.Visible = false;
+            this.btnCheckNext.UseVisualStyleBackColor = true;
             this.btnCheckNext.Click += new System.EventHandler(this.btnCheckNext_Click);
             // 
             // lb_NumSel
             // 
             this.lb_NumSel.AutoSize = true;
-            this.lb_NumSel.Location = new System.Drawing.Point(139, 373);
+            this.lb_NumSel.Location = new System.Drawing.Point(169, 373);
             this.lb_NumSel.Name = "lb_NumSel";
-            this.lb_NumSel.Size = new System.Drawing.Size(51, 13);
+            this.lb_NumSel.Size = new System.Drawing.Size(78, 13);
             this.lb_NumSel.TabIndex = 14;
-            this.lb_NumSel.Text = "unknown";
+            this.lb_NumSel.Text = "None Selected";
             this.lb_NumSel.Visible = false;
             // 
             // bt_all
             // 
-            this.bt_all.Location = new System.Drawing.Point(19, 368);
+            this.bt_all.Enabled = false;
+            this.bt_all.Location = new System.Drawing.Point(19, 303);
             this.bt_all.Name = "bt_all";
-            this.bt_all.Size = new System.Drawing.Size(75, 23);
+            this.bt_all.Size = new System.Drawing.Size(98, 23);
             this.bt_all.TabIndex = 13;
             this.bt_all.Text = "Select All";
             this.bt_all.UseVisualStyleBackColor = true;
@@ -211,7 +216,7 @@
             // 
             this.lb_LocMax.AutoSize = true;
             this.lb_LocMax.CausesValidation = false;
-            this.lb_LocMax.Location = new System.Drawing.Point(139, 312);
+            this.lb_LocMax.Location = new System.Drawing.Point(173, 313);
             this.lb_LocMax.Name = "lb_LocMax";
             this.lb_LocMax.Size = new System.Drawing.Size(74, 13);
             this.lb_LocMax.TabIndex = 11;
@@ -222,7 +227,7 @@
             // 
             this.lbTimeContinunity.AutoSize = true;
             this.lbTimeContinunity.CausesValidation = false;
-            this.lbTimeContinunity.Location = new System.Drawing.Point(139, 339);
+            this.lbTimeContinunity.Location = new System.Drawing.Point(169, 339);
             this.lbTimeContinunity.Name = "lbTimeContinunity";
             this.lbTimeContinunity.Size = new System.Drawing.Size(91, 13);
             this.lbTimeContinunity.TabIndex = 10;
@@ -230,21 +235,22 @@
             // 
             // btnContinunity
             // 
-            this.btnContinunity.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
-            this.btnContinunity.Location = new System.Drawing.Point(19, 334);
+            this.btnContinunity.BackColor = System.Drawing.SystemColors.Control;
+            this.btnContinunity.Enabled = false;
+            this.btnContinunity.Location = new System.Drawing.Point(19, 373);
             this.btnContinunity.Name = "btnContinunity";
-            this.btnContinunity.Size = new System.Drawing.Size(114, 23);
+            this.btnContinunity.Size = new System.Drawing.Size(125, 23);
             this.btnContinunity.TabIndex = 9;
             this.btnContinunity.Text = "Check Continunity";
             this.toolTip1.SetToolTip(this.btnContinunity, "avoid any large change in time");
-            this.btnContinunity.UseVisualStyleBackColor = false;
+            this.btnContinunity.UseVisualStyleBackColor = true;
             this.btnContinunity.Click += new System.EventHandler(this.btnContinunity_Click);
             // 
             // btnClear
             // 
-            this.btnClear.Location = new System.Drawing.Point(19, 302);
+            this.btnClear.Location = new System.Drawing.Point(19, 339);
             this.btnClear.Name = "btnClear";
-            this.btnClear.Size = new System.Drawing.Size(114, 23);
+            this.btnClear.Size = new System.Drawing.Size(98, 23);
             this.btnClear.TabIndex = 8;
             this.btnClear.Text = "Clear Selections";
             this.btnClear.UseVisualStyleBackColor = true;
@@ -258,7 +264,7 @@
             this.lb_SelWorkUnits.Location = new System.Drawing.Point(19, 39);
             this.lb_SelWorkUnits.Name = "lb_SelWorkUnits";
             this.lb_SelWorkUnits.SelectionMode = System.Windows.Forms.SelectionMode.MultiSimple;
-            this.lb_SelWorkUnits.Size = new System.Drawing.Size(293, 214);
+            this.lb_SelWorkUnits.Size = new System.Drawing.Size(317, 214);
             this.lb_SelWorkUnits.TabIndex = 7;
             this.toolTip1.SetToolTip(this.lb_SelWorkUnits, "Select a start and a stop");
             this.lb_SelWorkUnits.SelectedIndexChanged += new System.EventHandler(this.lb_SelWorkUnits_SelectedIndexChanged);
@@ -268,7 +274,7 @@
             this.btn_Filter.Enabled = false;
             this.btn_Filter.Location = new System.Drawing.Point(19, 269);
             this.btn_Filter.Name = "btn_Filter";
-            this.btn_Filter.Size = new System.Drawing.Size(114, 23);
+            this.btn_Filter.Size = new System.Drawing.Size(98, 23);
             this.btn_Filter.TabIndex = 6;
             this.btn_Filter.Text = "Run Filter";
             this.toolTip1.SetToolTip(this.btn_Filter, "Must select items first then apply filter");
@@ -283,7 +289,7 @@
             this.groupBox2.Controls.Add(this.rbThroughput);
             this.groupBox2.Location = new System.Drawing.Point(16, 327);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(500, 185);
+            this.groupBox2.Size = new System.Drawing.Size(500, 192);
             this.groupBox2.TabIndex = 5;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Type Analysis";
@@ -291,7 +297,7 @@
             // rbIdle
             // 
             this.rbIdle.AutoSize = true;
-            this.rbIdle.Location = new System.Drawing.Point(6, 90);
+            this.rbIdle.Location = new System.Drawing.Point(6, 93);
             this.rbIdle.Name = "rbIdle";
             this.rbIdle.Size = new System.Drawing.Size(68, 17);
             this.rbIdle.TabIndex = 6;
@@ -421,6 +427,7 @@
             // 
             // btnFetchHistory
             // 
+            this.btnFetchHistory.Enabled = false;
             this.btnFetchHistory.Location = new System.Drawing.Point(11, 119);
             this.btnFetchHistory.Name = "btnFetchHistory";
             this.btnFetchHistory.Size = new System.Drawing.Size(96, 23);
@@ -491,11 +498,24 @@
             this.ofd_history.Filter = "CVS Files|*.cvs";
             this.ofd_history.Multiselect = true;
             // 
+            // btnCheckPrev
+            // 
+            this.btnCheckPrev.BackColor = System.Drawing.SystemColors.Control;
+            this.btnCheckPrev.Enabled = false;
+            this.btnCheckPrev.Location = new System.Drawing.Point(19, 442);
+            this.btnCheckPrev.Name = "btnCheckPrev";
+            this.btnCheckPrev.Size = new System.Drawing.Size(125, 23);
+            this.btnCheckPrev.TabIndex = 19;
+            this.btnCheckPrev.Text = "Check Prev";
+            this.toolTip1.SetToolTip(this.btnCheckPrev, "avoid any large change in time");
+            this.btnCheckPrev.UseVisualStyleBackColor = true;
+            this.btnCheckPrev.Click += new System.EventHandler(this.btnCheckPrev_Click);
+            // 
             // BTHistory
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(932, 541);
+            this.ClientSize = new System.Drawing.Size(976, 558);
             this.Controls.Add(this.panel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
@@ -553,6 +573,7 @@
         private System.Windows.Forms.RadioButton rbIdle;
         private System.Windows.Forms.Label lbSeriesTime;
         private System.Windows.Forms.Button btnPlotET;
+        private System.Windows.Forms.Button btnCheckPrev;
     }
 }
 
