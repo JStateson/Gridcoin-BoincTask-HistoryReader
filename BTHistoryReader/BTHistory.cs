@@ -614,8 +614,8 @@ namespace BTHistoryReader
                     // may not have finished yet ???
                     continue;  
                 }
-                dt_this = dt_1970.AddSeconds(n);
-                sTemp = fmtLineNumber(strSymbols[(int)eHindex.Run]) + dt_this.ToString();
+                dt_this = DateTime.SpecifyKind(dt_1970.AddSeconds(n),DateTimeKind.Utc);
+                sTemp = fmtLineNumber(strSymbols[(int)eHindex.Run]) + dt_this.ToLocalTime().ToString();
                 ThisProjectInfo[j].strCompletedTime = sTemp;        // save in readable format
                 nElapsedTime = Convert.ToInt64(strSymbols[(int)eHindex.ElapsedTimeCpu].ToString()); // this is actually elapsed time
                 // the below is actually CPU time as it appears headers in history are reversed for these two items
