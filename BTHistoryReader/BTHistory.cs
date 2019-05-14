@@ -1187,6 +1187,7 @@ namespace BTHistoryReader
             n = j - i;
             if (n < 2) return;
             n = iLocMaxDiff - 1;
+            if (n < 0) n = 0;
             lb_SelWorkUnits.SetSelected(j, false);
             lb_SelWorkUnits.SetSelected(n, true);
             CountSelected();
