@@ -329,13 +329,15 @@ namespace HostProjectStats
 
         protected void btnCalc_Click(object sender, EventArgs e)
         {
-            string nexturl;
+            string nexturl = "";
+            string thisurl = "";
             string strPrefix = "", strSuffix = "";
             int iStart=0, iEnd = -1;
             int iOffset = 0;
             int j;
             string strProjUrl = ProjUrl.Text;
 
+            nexturl = strProjUrl;
             bDoNorm = CBoxNorm.Checked;
             NumberToCollect = Convert.ToInt32(tb_num2read.Text);
             if (tb_ntasks.Text == "") tb_ntasks.Text = "1";
@@ -361,7 +363,7 @@ namespace HostProjectStats
                 ResultsBox.Text = "problem with project lookup\n";
                 return;
             }
-            strProjUrl = ValidateUrl(ProjUrl.Text);
+            strProjUrl = ValidateUrl(strProjUrl);
             if(strProjUrl =="")
             {
                 ResultsBox.Text += "url is bad";
@@ -393,9 +395,6 @@ namespace HostProjectStats
 
 
             nPagesToRead = Convert.ToInt32(ddlNumPages.Text); // Convert.ToInt32(txtPagesToRead.Text);
-//            if (nPagesToRead < 0) nPagesToRead = 1;
-//            if (nPagesToRead > NumberMaxPages) nPagesToRead = NumberMaxPages;
-//            txtPagesToRead.Text = nPagesToRead.ToString();
             IssueTitle();
             for (int i = 0; i < nPagesToRead;i++)
             {
@@ -405,29 +404,33 @@ namespace HostProjectStats
                     ((eProjectID) iProjectID == eProjectID.commgrid)
                    )
                 {
-                    nexturl = strPrefix + strSuffix;
+                    thisurl = strPrefix + strSuffix;
                     j = Convert.ToInt32(strSuffix);
                     j++;
                     strSuffix = j.ToString();
                 }
                 else
                 {
+                    thisurl = strProjUrl.Substring(0, iStart) + iOffset.ToString() + strProjUrl.Substring(iEnd);
+                    iOffset += 20;  // this needs to change if I ever figure out how WCG allows read access
                     nexturl = strProjUrl.Substring(0, iStart) + iOffset.ToString() + strProjUrl.Substring(iEnd);
-                    iOffset += 20;
                 }
 
-                ProjUrl.Text = nexturl;
-                if (PerformCalculate(nexturl) < 0)
+                if (PerformCalculate(thisurl) < 0)
                 {
                     ResultsBox.Text += "calculation was bad probably no data\n";
                     return;
                 }
             }
+            if (CBoxAdv.Checked)
+            {
+                ProjUrl.Text = nexturl;
+            }
             ShowData();
             if (bDoNorm)
             {
                 StatsOut += "\nnormalizing can show problems with credit calculations\n";
-                StatsOut += "or which gpu devices are faster than others\n";
+                StatsOut += "or which gpu devices are faster or slower than others\n";
             }
             else
                 FormStats();

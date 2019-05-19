@@ -17,6 +17,8 @@
         For this program to work you must be able access a BOINC project.&nbsp; If you have enabled &quot;Remember Me&quot; on your project account<br />
         then, except for WCG, you can accesss your own data.&nbsp; Some projects have not restricted anomymous access so possibly you<br />
         could access the data without signing in.&nbsp; Normally, &quot;Top participants&quot; have allowed their statistics to be searched.<br />
+        Auto Inc Url:&nbsp; automatically adds 20 to offset of url when checked.&nbsp; Allows one to see 20 averages at a time<br />
+        Normalize Credit:&nbsp; Make all credit 1.0 and adjust the run times proportionally. Useful for problem spotting.<br />
         <br />
         When this program starts up, Milkyway is selected and one of the &quot;Top Computers&quot; is preset into the URL.&nbsp; If Milkyway is online<br />
         then clicking CALCULATE will provide a demo for accessing statistics.&nbsp; Click REVIEW DATA to see the actual data.<br />

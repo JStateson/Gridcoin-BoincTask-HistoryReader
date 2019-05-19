@@ -67,16 +67,18 @@
             <asp:ListItem>9</asp:ListItem>
             <asp:ListItem>10</asp:ListItem>
         </asp:DropDownList>
+        &nbsp;&nbsp;&nbsp;
+        <asp:CheckBox ID="CBoxAdv" runat="server" Text="Auto Inc Url" />
         <br />
         <asp:Label ID="lblProjName" runat="server" Text="UNKNOWN PROJECT"></asp:Label>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<asp:Label ID="Label5" runat="server" Text="Load"></asp:Label>
         &nbsp;Watts
-        <asp:TextBox ID="tb_watts" runat="server" Height="17px" Width="39px">0</asp:TextBox>
+        <asp:TextBox ID="tb_watts" runat="server" Width="39px" Height="17px">0</asp:TextBox>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Idle Watts
         <asp:TextBox ID="tb_idle" runat="server" Width="33px">0</asp:TextBox>
         &nbsp;
         <asp:Button ID="btn_help" runat="server" OnClick="btn_help_Click" OnClientClick="target ='_blank'" Text="HELP" />
-        &nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         <asp:CheckBox ID="CBoxNorm" runat="server" Text="Normalize Credit to 1" />
         <br />
         <asp:TextBox ID="ResultsBox" runat="server" Height="580px" ReadOnly="True" TextMode="MultiLine" Width="699px" ToolTip="sample location: https://milkyway.cs.rpi.edu/milkyway/results.php?hostid=766466&amp;offset=0&amp;show_names=0&amp;state=4&amp;appid="></asp:TextBox>
