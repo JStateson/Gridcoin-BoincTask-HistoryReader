@@ -42,7 +42,7 @@ namespace HostProjectStats
             "drugdiscovery", "enigmaathome", "latinsquares", "lhcathome", "escatter", "theskynet", "setiathome","rosetta", "communitygrid"};
         int iProjectID;
         //return bWasValid ? strTemp : strToday;
-
+        bool bDoNorm = false;
         
 
         int ProjectLookup(string strUrl)
@@ -150,6 +150,13 @@ namespace HostProjectStats
             Rt[iIndex] = GetValue(iLocation, 0) / NumberConcurrent;
             Ct[iIndex] = GetValue(iLocation, 1);    // jys should not have reduced this as CPU time was correct
             Cr[iIndex] = GetValue(iLocation, 2);
+            if(bDoNorm)
+            {
+                double d = Cr[iIndex];
+                Cr[iIndex] = 1.0;
+                Rt[iIndex] /= d;
+                Ct[iIndex] /= d;
+            }
         }
 
         void ShowData()
@@ -328,6 +335,8 @@ namespace HostProjectStats
             int iOffset = 0;
             int j;
             string strProjUrl = ProjUrl.Text;
+
+            bDoNorm = CBoxNorm.Checked;
             NumberToCollect = Convert.ToInt32(tb_num2read.Text);
             if (tb_ntasks.Text == "") tb_ntasks.Text = "1";
             NumberConcurrent = Convert.ToInt32(tb_ntasks.Text);
@@ -415,7 +424,13 @@ namespace HostProjectStats
                 }
             }
             ShowData();
-            FormStats();
+            if (bDoNorm)
+            {
+                StatsOut += "\nnormalizing can show problems with credit calculations\n";
+                StatsOut += "or which gpu devices are faster than others\n";
+            }
+            else
+                FormStats();
 
             ResultsBox.Text = StatsOut;
         }

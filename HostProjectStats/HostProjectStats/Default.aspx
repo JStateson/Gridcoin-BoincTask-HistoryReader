@@ -76,6 +76,8 @@
         <asp:TextBox ID="tb_idle" runat="server" Width="33px">0</asp:TextBox>
         &nbsp;
         <asp:Button ID="btn_help" runat="server" OnClick="btn_help_Click" OnClientClick="target ='_blank'" Text="HELP" />
+        &nbsp;
+        <asp:CheckBox ID="CBoxNorm" runat="server" Text="Normalize Credit to 1" />
         <br />
         <asp:TextBox ID="ResultsBox" runat="server" Height="580px" ReadOnly="True" TextMode="MultiLine" Width="699px" ToolTip="sample location: https://milkyway.cs.rpi.edu/milkyway/results.php?hostid=766466&amp;offset=0&amp;show_names=0&amp;state=4&amp;appid="></asp:TextBox>
 
