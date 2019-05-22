@@ -33,6 +33,8 @@
             this.btnAbout = new System.Windows.Forms.Button();
             this.btnShowProjectTree = new System.Windows.Forms.Button();
             this.gb_filter = new System.Windows.Forms.GroupBox();
+            this.btn_Filter = new System.Windows.Forms.Button();
+            this.btnCheckPrev = new System.Windows.Forms.Button();
             this.btnPlotET = new System.Windows.Forms.Button();
             this.lbSeriesTime = new System.Windows.Forms.Label();
             this.btnPlot = new System.Windows.Forms.Button();
@@ -45,7 +47,6 @@
             this.btnContinunity = new System.Windows.Forms.Button();
             this.btnClear = new System.Windows.Forms.Button();
             this.lb_SelWorkUnits = new System.Windows.Forms.ListBox();
-            this.btn_Filter = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.rbIdle = new System.Windows.Forms.RadioButton();
             this.rbElapsed = new System.Windows.Forms.RadioButton();
@@ -68,7 +69,6 @@
             this.btn_OpenHistory = new System.Windows.Forms.Button();
             this.ofd_history = new System.Windows.Forms.OpenFileDialog();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.btnCheckPrev = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.gb_filter.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -134,6 +134,31 @@
             this.gb_filter.TabIndex = 6;
             this.gb_filter.TabStop = false;
             this.gb_filter.Text = "Filter";
+            // 
+            // btn_Filter
+            // 
+            this.btn_Filter.Enabled = false;
+            this.btn_Filter.Location = new System.Drawing.Point(19, 269);
+            this.btn_Filter.Name = "btn_Filter";
+            this.btn_Filter.Size = new System.Drawing.Size(98, 23);
+            this.btn_Filter.TabIndex = 6;
+            this.btn_Filter.Text = "Run Filter";
+            this.toolTip1.SetToolTip(this.btn_Filter, "Must select items first then apply filter");
+            this.btn_Filter.UseVisualStyleBackColor = true;
+            this.btn_Filter.Click += new System.EventHandler(this.btn_Filter_Click);
+            // 
+            // btnCheckPrev
+            // 
+            this.btnCheckPrev.BackColor = System.Drawing.SystemColors.Control;
+            this.btnCheckPrev.Enabled = false;
+            this.btnCheckPrev.Location = new System.Drawing.Point(19, 442);
+            this.btnCheckPrev.Name = "btnCheckPrev";
+            this.btnCheckPrev.Size = new System.Drawing.Size(125, 23);
+            this.btnCheckPrev.TabIndex = 19;
+            this.btnCheckPrev.Text = "Check Prev";
+            this.toolTip1.SetToolTip(this.btnCheckPrev, "avoid any large change in time");
+            this.btnCheckPrev.UseVisualStyleBackColor = true;
+            this.btnCheckPrev.Click += new System.EventHandler(this.btnCheckPrev_Click);
             // 
             // btnPlotET
             // 
@@ -268,18 +293,6 @@
             this.lb_SelWorkUnits.TabIndex = 7;
             this.toolTip1.SetToolTip(this.lb_SelWorkUnits, "Select a start and a stop");
             this.lb_SelWorkUnits.SelectedIndexChanged += new System.EventHandler(this.lb_SelWorkUnits_SelectedIndexChanged);
-            // 
-            // btn_Filter
-            // 
-            this.btn_Filter.Enabled = false;
-            this.btn_Filter.Location = new System.Drawing.Point(19, 269);
-            this.btn_Filter.Name = "btn_Filter";
-            this.btn_Filter.Size = new System.Drawing.Size(98, 23);
-            this.btn_Filter.TabIndex = 6;
-            this.btn_Filter.Text = "Run Filter";
-            this.toolTip1.SetToolTip(this.btn_Filter, "Must select items first then apply filter");
-            this.btn_Filter.UseVisualStyleBackColor = true;
-            this.btn_Filter.Click += new System.EventHandler(this.btn_Filter_Click);
             // 
             // groupBox2
             // 
@@ -497,19 +510,6 @@
             // 
             this.ofd_history.Filter = "CVS Files|*.cvs";
             this.ofd_history.Multiselect = true;
-            // 
-            // btnCheckPrev
-            // 
-            this.btnCheckPrev.BackColor = System.Drawing.SystemColors.Control;
-            this.btnCheckPrev.Enabled = false;
-            this.btnCheckPrev.Location = new System.Drawing.Point(19, 442);
-            this.btnCheckPrev.Name = "btnCheckPrev";
-            this.btnCheckPrev.Size = new System.Drawing.Size(125, 23);
-            this.btnCheckPrev.TabIndex = 19;
-            this.btnCheckPrev.Text = "Check Prev";
-            this.toolTip1.SetToolTip(this.btnCheckPrev, "avoid any large change in time");
-            this.btnCheckPrev.UseVisualStyleBackColor = true;
-            this.btnCheckPrev.Click += new System.EventHandler(this.btnCheckPrev_Click);
             // 
             // BTHistory
             // 

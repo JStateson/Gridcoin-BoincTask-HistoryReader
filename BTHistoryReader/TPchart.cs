@@ -27,6 +27,7 @@ namespace BTHistoryReader
         private bool bDoingHist = false;
         private long LKBhours = 24;
         private int iBinCnt = 2;   // 2 (show in spinner box) raised to power of 1 (spinner value) 
+        private string strStartDT;  // date and time started (x axis origin)
 
         private void ShowOrHideHist(bool bValue)
         {
@@ -104,22 +105,34 @@ namespace BTHistoryReader
             it = refIT;
             lbl_sysname.Text = "System: " + strProject;
             ShowOrHideHist(AvgGap == 0);
-            
+            long iDT = 0;
+
+            labStartTime.Visible = (AvgGap != -1);  // only for plot of idle time
+
             if (AvgGap != -1)
-            {
+            {   // plotting idle time
                 i = Convert.ToInt32(StdGap / AvgGap);
                 DetailFilter.ValueChanged -= new System.EventHandler(this.DetailFilter_ValueChanged);
                 if (i < 1) DetailFilter.Value = 0;
                 else if (i < 2) DetailFilter.Value = 1;
                 DetailFilter.ValueChanged += new System.EventHandler(this.DetailFilter_ValueChanged);
                 iSig = Convert.ToInt32(DetailFilter.Value);
+                SetStartTime(refCT[0]);
                 DrawStuff();
                 return;
             }
+            // plotting elapsed time
             SaveWorking(ct.Count);
             toolTip1.SetToolTip(DetailFilter, "Change x-axis scale");
             lbSpinFilter.Text = "adj xAxis scale";
             DrawHist();
+        }
+
+        private void SetStartTime(long n)
+        {
+            System.DateTime dt_1970 = new System.DateTime(1970, 1, 1);
+            System.DateTime dt_this = DateTime.SpecifyKind(dt_1970.AddSeconds(n), DateTimeKind.Utc);
+            labStartTime.Text = "Start: " +  dt_this.ToLocalTime().ToString();
         }
 
         private void GetLKHours()

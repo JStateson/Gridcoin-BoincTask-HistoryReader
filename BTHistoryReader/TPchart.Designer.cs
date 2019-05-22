@@ -29,8 +29,8 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea3 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend3 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TPchart));
             this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -44,6 +44,7 @@
             this.lbChart = new System.Windows.Forms.Label();
             this.lbl_sysname = new System.Windows.Forms.Label();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.labStartTime = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -53,22 +54,22 @@
             // 
             // chart1
             // 
-            chartArea3.AxisX.Interval = 2D;
-            chartArea3.AxisX.LabelStyle.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            chartArea3.AxisX.LabelStyle.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Auto;
-            chartArea3.AxisX.MajorGrid.Enabled = false;
-            chartArea3.AxisX.MajorTickMark.Enabled = false;
-            chartArea3.AxisX.MajorTickMark.Interval = 0D;
-            chartArea3.AxisX.MajorTickMark.IntervalOffset = 0D;
-            chartArea3.AxisX.MajorTickMark.IntervalOffsetType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Auto;
-            chartArea3.AxisX.MajorTickMark.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Auto;
-            chartArea3.AxisX.Minimum = 0D;
-            chartArea3.AxisX.Title = "Hours Back";
-            chartArea3.Name = "ChartArea1";
-            this.chart1.ChartAreas.Add(chartArea3);
-            legend3.Name = "Legend1";
-            this.chart1.Legends.Add(legend3);
-            this.chart1.Location = new System.Drawing.Point(207, 25);
+            chartArea1.AxisX.Interval = 2D;
+            chartArea1.AxisX.LabelStyle.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            chartArea1.AxisX.LabelStyle.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Auto;
+            chartArea1.AxisX.MajorGrid.Enabled = false;
+            chartArea1.AxisX.MajorTickMark.Enabled = false;
+            chartArea1.AxisX.MajorTickMark.Interval = 0D;
+            chartArea1.AxisX.MajorTickMark.IntervalOffset = 0D;
+            chartArea1.AxisX.MajorTickMark.IntervalOffsetType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Auto;
+            chartArea1.AxisX.MajorTickMark.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Auto;
+            chartArea1.AxisX.Minimum = 0D;
+            chartArea1.AxisX.Title = "Hours Back";
+            chartArea1.Name = "ChartArea1";
+            this.chart1.ChartAreas.Add(chartArea1);
+            legend1.Name = "Legend1";
+            this.chart1.Legends.Add(legend1);
+            this.chart1.Location = new System.Drawing.Point(222, 25);
             this.chart1.Name = "chart1";
             this.chart1.Size = new System.Drawing.Size(537, 305);
             this.chart1.TabIndex = 0;
@@ -76,10 +77,11 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.labStartTime);
             this.groupBox1.Controls.Add(this.cbHours);
             this.groupBox1.Location = new System.Drawing.Point(12, 25);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(166, 131);
+            this.groupBox1.Size = new System.Drawing.Size(184, 131);
             this.groupBox1.TabIndex = 2;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Max Lookback";
@@ -95,7 +97,7 @@
             "4",
             "2",
             "1"});
-            this.cbHours.Location = new System.Drawing.Point(38, 40);
+            this.cbHours.Location = new System.Drawing.Point(17, 37);
             this.cbHours.Name = "cbHours";
             this.cbHours.Size = new System.Drawing.Size(57, 21);
             this.cbHours.TabIndex = 0;
@@ -112,7 +114,7 @@
             this.groupBox2.Controls.Add(this.DetailFilter);
             this.groupBox2.Location = new System.Drawing.Point(12, 187);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(166, 116);
+            this.groupBox2.Size = new System.Drawing.Size(184, 116);
             this.groupBox2.TabIndex = 4;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Detail Filter (0 is all)";
@@ -199,6 +201,15 @@
             this.lbl_sysname.TabIndex = 6;
             this.lbl_sysname.Text = "label1";
             // 
+            // labStartTime
+            // 
+            this.labStartTime.AutoSize = true;
+            this.labStartTime.Location = new System.Drawing.Point(15, 79);
+            this.labStartTime.Name = "labStartTime";
+            this.labStartTime.Size = new System.Drawing.Size(55, 13);
+            this.labStartTime.TabIndex = 1;
+            this.labStartTime.Text = "Start Time";
+            // 
             // TPchart
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -216,6 +227,7 @@
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.TPchart_FormClosing);
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).EndInit();
             this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.SpinBin)).EndInit();
@@ -239,5 +251,6 @@
         private System.Windows.Forms.TextBox tbSpinBinValue;
         private System.Windows.Forms.NumericUpDown SpinBin;
         private System.Windows.Forms.Label lbBinSize;
+        private System.Windows.Forms.Label labStartTime;
     }
 }
