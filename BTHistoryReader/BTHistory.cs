@@ -232,6 +232,7 @@ namespace BTHistoryReader
             kpa.AddName("Einstein@Home");
             kpa.AddApp("Gravitational Wave Engineering run on LIGO O1 Open Data","");
             kpa.AddApp("Gamma-ray pulsar binary search #1 on GPUs", "FGRPopencl1K-ati");
+            kpa.AddApp("Gamma-ray pulsar binary search #1 on GPUs", "FGRPopencl1K-nvidia");
             KnownProjApps.Add(kpa);
 
 
@@ -717,6 +718,7 @@ namespace BTHistoryReader
             double Avg = 0.0;
             double Std = 0.0;
             double d;
+            long l;
             string strOut = "";
 
             int NumUnits = lb_SelWorkUnits.SelectedItems.Count;
@@ -739,13 +741,16 @@ namespace BTHistoryReader
                     Debug.Assert(false);
                     continue; // bad or missing data
                 }
+                l = Convert.ToInt64(d);
                 d /= 60.0;
                 n++;
                 Avg += d;
-                strOut += d.ToString("###,##0.00") + "\r\n";
+
+                strOut += d.ToString("###,##0.00") + "\t" + fmtHMS(l) + "\r\n";
             }
             if (n == 0) return;
             Avg /= n;
+            l = Convert.ToInt64(Avg * 60.0);
             Std = 0;
             for (k = i; k <= j; k++)
             {
@@ -762,7 +767,7 @@ namespace BTHistoryReader
             Std = Math.Sqrt(Std / n);
             tb_Results.Text = strOut;
             tb_Results.Text += "Number of selections " + n.ToString("#,##0") + "\r\n";
-            tb_Results.Text += "AVG elapsed time (minutes) " + Avg.ToString("###,##0.00") + "\r\n";
+            tb_Results.Text += "AVG elapsed (minutes) " + Avg.ToString("###,##0.00") + "\t" + fmtHMS(l) +  "\r\n";
             tb_Results.Text += "STD of elapsed time " + Std.ToString("###,##0.00") + "\r\n";
         }
 
