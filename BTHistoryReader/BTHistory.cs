@@ -356,7 +356,7 @@ namespace BTHistoryReader
 
             ofd_history.ShowDialog();
             AllHistories = ofd_history.FileNames;
-            if (AllHistories.Length > 1)
+            if (AllHistories.Length > 1 || true)
             {
                 PerformSelectCompare();
                 return true;
@@ -478,8 +478,8 @@ namespace BTHistoryReader
         public int ProcessHistoryFile()
         {
             int iLine = -4;  // if > 4 then 
-            int RtnCode;
-            int eInvalid;   // invalid line in history (not complete or whatever)
+            int RtnCode=0;
+            int eInvalid=0;   // invalid line in history (not complete or whatever)
             cAppName AppName;
             cKnownProjApps kpa;
 
@@ -502,6 +502,10 @@ namespace BTHistoryReader
                         RtnCode = KnownProjApps.Count-1;  // put unknown project here
                     }
                     else continue;
+                }
+                if (OneSplitLine.Project.Contains("Einst"))
+                {
+                    int i = 0;
                 }
                 // if the app is found then point to the line containing the app's info
                 // and put all info also 

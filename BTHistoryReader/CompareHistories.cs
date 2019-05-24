@@ -68,7 +68,8 @@ namespace BTHistoryReader
                 return ckpap;
             }
         }
-
+        // when comparing projects, say "seti" app can be nvidia, amd or cpu
+        // cannot test for full app name else no match unless both systems had same devices
         public CompareHistories(Form refForm)
         {
             InitializeComponent();
@@ -77,6 +78,7 @@ namespace BTHistoryReader
             Systems = new List<string>();;
             SystemsCompared = new List<string>();
             int iSystem = -1;
+            int NumberProjects = 0;
 
             btf = (BTHistory)refForm;
             LBoxApps.Items.Clear();
@@ -101,13 +103,17 @@ namespace BTHistoryReader
                 ckpal.AddNewPath(sProj);    // sProj does not contain the exact name of system that "history" has
                 foreach (cKnownProjApps kpa in btf.KnownProjApps)
                 {
+                    if (kpa.ProjName.Contains("Einst"))
+                    {
+                        int i = 0;
+                    }
                     if (kpa.nAppsUsed == 0) continue;
                     cKPAproj ckpap = ckpal.AddProj(kpa.ProjName);
                     foreach (cAppName AppName in kpa.KnownApps)
                     {
                         int nEntries = AppName.dElapsedTime.Count;  // nEntries from AppName is not valid here
                         if (nEntries == 0) continue;
-
+                        NumberProjects++;
                         cKPAapps ckpaa = ckpap.AddApp(AppName.Name);
                         btf.ThisProjectInfo = new List<cProjectInfo>(nEntries);
                         cProjectInfo cpi = new cProjectInfo();
@@ -119,10 +125,9 @@ namespace BTHistoryReader
                         }
                         btf.ThisProjectInfo.Add(cpi);
                     }
-                    btf.ClearPreviousHistory();
                 }
             }
-
+            btf.ClearPreviousHistory(); // not sure why this was in the above loop ???
             foreach (string s in Projects)
             {
                 LBoxProjects.Items.Add(s);
@@ -134,9 +139,9 @@ namespace BTHistoryReader
             List<string> ProjApps = new List<string>();
             List<int> NumApps = new List<int>();
             int i = 0;
-            foreach(cKPAlocs ckpal in KPAlocs)
+            foreach(cKPAlocs ckpal in KPAlocs)                                  // for each history
             {
-                foreach(cKPAproj ckpap in ckpal.KPAproj)
+                foreach(cKPAproj ckpap in ckpal.KPAproj)                        // for each project
                 {
                     if(sProj == ckpap.sProjName)
                     {
