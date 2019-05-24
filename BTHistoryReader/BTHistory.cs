@@ -356,7 +356,7 @@ namespace BTHistoryReader
 
             ofd_history.ShowDialog();
             AllHistories = ofd_history.FileNames;
-            if (AllHistories.Length > 1 || true)
+            if (AllHistories.Length > 1 )
             {
                 PerformSelectCompare();
                 return true;
@@ -502,10 +502,6 @@ namespace BTHistoryReader
                         RtnCode = KnownProjApps.Count-1;  // put unknown project here
                     }
                     else continue;
-                }
-                if (OneSplitLine.Project.Contains("Einst"))
-                {
-                    int i = 0;
                 }
                 // if the app is found then point to the line containing the app's info
                 // and put all info also 

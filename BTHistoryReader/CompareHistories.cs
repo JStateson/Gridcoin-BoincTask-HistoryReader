@@ -103,10 +103,6 @@ namespace BTHistoryReader
                 ckpal.AddNewPath(sProj);    // sProj does not contain the exact name of system that "history" has
                 foreach (cKnownProjApps kpa in btf.KnownProjApps)
                 {
-                    if (kpa.ProjName.Contains("Einst"))
-                    {
-                        int i = 0;
-                    }
                     if (kpa.nAppsUsed == 0) continue;
                     cKPAproj ckpap = ckpal.AddProj(kpa.ProjName);
                     foreach (cAppName AppName in kpa.KnownApps)
