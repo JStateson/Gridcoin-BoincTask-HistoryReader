@@ -74,7 +74,9 @@ namespace BTHistoryReader
                     if (appName.nAppEntries > 0)     // http://www.99colors.net/dot-net-colors
                     {
                         if (appName.bIsUnknown)
+                        {
                             c.ForeColor = System.Drawing.Color.Red;
+                        }
                         else c.ForeColor = System.Drawing.Color.DarkBlue;
                         if(ShowType == eShowType.eShowStats)
                         {

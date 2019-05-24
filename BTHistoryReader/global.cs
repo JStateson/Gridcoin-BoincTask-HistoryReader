@@ -185,7 +185,9 @@ namespace BTHistoryReader
     public class cAppName
     {
         public string Name;
-        public cKnownProjApps ptrKPA;
+        public cKnownProjApps ptrKPA; 
+        public string strPlanClass;
+        public string strName;
         public string GetInfo
         {
             get { return ptrKPA.ProjName + "\\" + Name; }
@@ -245,6 +247,7 @@ namespace BTHistoryReader
             LineLoc.Clear();
             AvgRunTime = 0.0;
             StdRunTime = 0.0;
+            strPlanClass = "";
         }
         public bool bIsUnknown;
     }
@@ -311,17 +314,20 @@ namespace BTHistoryReader
             bIsUnknown = true;
         }
 
-        public void AddApp(string strIn)
+        public cAppName AddApp(string strName, string strPC)
         {
             cAppName AppName = new cAppName();
             AppName.ptrKPA = this;
-            AppName.Name = strIn;
+            AppName.strName = strName;
             AppName.LineLoc = new List<int>();
             AppName.dElapsedTime = new List<double>();
             AppName.bIsValid = new List<bool>();
+            AppName.strPlanClass = strPC;
+            AppName.Name = strName + " [" + strPC + "]";
             KnownApps.Add(AppName);
             bIgnore = false;  
             bIsUnknown = false;
+            return AppName;
         }
         public cAppName AddUnkApp(string strIn)
         {
@@ -342,16 +348,14 @@ namespace BTHistoryReader
         public cAppName SymbolInsert(string strAppName, int iLoc)
         {
             cAppName UnkAppName;
-            //if(strAppName.Contains( "camb_"))
-            //{
-            //    int i = 0;
-            //}
+
             foreach (cAppName AppName in KnownApps)
             {
                 if (strAppName == AppName.Name)
                 {
                     AppName.LineLoc.Add(iLoc);
-                    AppName.bIsUnknown = false;
+                    if (AppName.LineLoc.Count == 1)
+                        AppName.bIsUnknown = false;
                     return AppName;    // was a known app or was in database
                 }
             }

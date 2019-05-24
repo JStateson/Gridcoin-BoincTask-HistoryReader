@@ -143,87 +143,95 @@ namespace BTHistoryReader
             OneSplitLine = new cSplitHistoryValues();
             kpa = new cKnownProjApps();
             kpa.AddName("Milkyway@Home");
-            kpa.AddApp("Milkyway@home Separation");
+            kpa.AddApp("Milkyway@home Separation", "opencl_ati_101");
+            kpa.AddApp("Milkyway@home Separation", "opencl_nvidia_101");
+            kpa.AddApp("Milkyway@home Separation", "");
             KnownProjApps.Add(kpa);
 
             kpa = new cKnownProjApps();
             kpa.AddName("SETI@home");
-            kpa.AddApp("SETI@home v8");
-            kpa.AddApp("AstroPulse v7");
+            kpa.AddApp("SETI@home v8", "opencl_ati5_SoG_nocal");
+            kpa.AddApp("SETI@home v8", "opencl_atiapu_sah");
+            kpa.AddApp("SETI@home v8", "opencl_ati5_nocal");
+            kpa.AddApp("SETI@home v8", "");
+            kpa.AddApp("AstroPulse v7", "opencl_ati_100");
             KnownProjApps.Add(kpa);
 
             kpa = new cKnownProjApps();
             kpa.AddName("collatz");
-            kpa.AddApp("Collatz Sieve");
+            kpa.AddApp("Collatz Sieve","");
             KnownProjApps.Add(kpa);
 
             kpa = new cKnownProjApps();
             kpa.AddName("Amicable Numbers");
-            kpa.AddApp("Amicable Numbers up to 10^20");
+            kpa.AddApp("Amicable Numbers up to 10^20","opencl_amd");
             KnownProjApps.Add(kpa);
 
             kpa = new cKnownProjApps();
             kpa.AddName("LHC@home");
-            kpa.AddApp("SixTrack");
+            kpa.AddApp("SixTrack","");
+            kpa.AddApp("SixTrack", "avx");
             KnownProjApps.Add(kpa);
 
             kpa = new cKnownProjApps();
             kpa.AddName("World Community Grid");
-            kpa.AddApp("Mapping Cancer Markers");
-            kpa.AddApp("FightAIDS@Home - Phase 1");
-            kpa.AddApp("FightAIDS@Home - Phase 2");
-            kpa.AddApp("OpenZika");
-            kpa.AddApp("Microbiome Immunity Project");
+            kpa.AddApp("Mapping Cancer Markers","");
+            kpa.AddApp("FightAIDS@Home - Phase 1","");
+            kpa.AddApp("FightAIDS@Home - Phase 2","");
+            kpa.AddApp("OpenZika","");
+            kpa.AddApp("Microbiome Immunity Project","");
             KnownProjApps.Add(kpa);
 
             kpa = new cKnownProjApps();
             kpa.AddName("GPUGRID");
-            kpa.AddApp("Short runs (2-3 hours on fastest card)");
-            kpa.AddApp("Long runs (8-12 hours on fastest card)");
+            kpa.AddApp("Short runs (2-3 hours on fastest card)","cuda80");
+            kpa.AddApp("Long runs (8-12 hours on fastest card)","cuda80");
             KnownProjApps.Add(kpa);
 
             kpa = new cKnownProjApps();
             kpa.AddName("NFS@Home");
-            kpa.AddApp("15e Lattice Sieve");
-            kpa.AddApp("16e Lattice Sieve V5");
-            kpa.AddApp("14e Lattice Sieve");
+            kpa.AddApp("15e Lattice Sieve","");
+            kpa.AddApp("15e Lattice Sieve", "notphenomiix6");
+            kpa.AddApp("16e Lattice Sieve V5","");
+            kpa.AddApp("14e Lattice Sieve","");
             KnownProjApps.Add(kpa);
 
             kpa = new cKnownProjApps();
             kpa.AddName("Cosmology@Home");
-            kpa.AddApp("camb_legacy");
+            kpa.AddApp("camb_legacy","");
             KnownProjApps.Add(kpa);
 
             kpa = new cKnownProjApps();
             kpa.AddName("Rosetta@home");
-            kpa.AddApp("Rosetta");
-            kpa.AddApp("Rosetta Mini");
+            kpa.AddApp("Rosetta","");
+            kpa.AddApp("Rosetta Mini","");
             KnownProjApps.Add(kpa);
 
             kpa = new cKnownProjApps();
             kpa.AddName("TN-Grid Platform");
-            kpa.AddApp("gene@home PC-IM");
+            kpa.AddApp("gene@home PC-IM","");
             KnownProjApps.Add(kpa);
 
             kpa = new cKnownProjApps();
             kpa.AddName("NumberFields@home");
-            kpa.AddApp("Get Decic Fields");
+            kpa.AddApp("Get Decic Fields","default");
             KnownProjApps.Add(kpa);
 
             kpa = new cKnownProjApps();
             kpa.AddName("Enigma@Home");
-            kpa.AddApp("Enigma GPU");
+            kpa.AddApp("Enigma GPU","");
+            kpa.AddApp("Enigma GPU", "cuda_fermi");
             KnownProjApps.Add(kpa);
 
             kpa = new cKnownProjApps();
             kpa.AddName("PrimeGrid");
-            kpa.AddApp("PPS (Sieve)");
+            kpa.AddApp("PPS (Sieve)","cudaPPSsieve");
             KnownProjApps.Add(kpa);
 
             kpa = new cKnownProjApps();
             kpa.AddName("Einstein@Home");
-            kpa.AddApp("Gravitational Wave Engineering run on LIGO O1 Open Data");
-            kpa.AddApp("Gamma-ray pulsar binary search #1 on GPUs");
+            kpa.AddApp("Gravitational Wave Engineering run on LIGO O1 Open Data","");
+            kpa.AddApp("Gamma-ray pulsar binary search #1 on GPUs", "FGRPopencl1K-ati");
             KnownProjApps.Add(kpa);
 
 
@@ -234,36 +242,36 @@ namespace BTHistoryReader
 
             kpa = new cKnownProjApps();
             kpa.AddName("latinsquares");
-            kpa.AddApp("odlk3@home");
-            kpa.AddApp("odlkmax@home");
+            kpa.AddApp("odlk3@home","");
+            kpa.AddApp("odlkmax@home","");
             KnownProjApps.Add(kpa);
 
             kpa = new cKnownProjApps();
             kpa.AddName("yoyo@home");
-            kpa.AddApp("Siever");
-            kpa.AddApp("Cruncher ogr");
-            kpa.AddApp("ecm");
+            kpa.AddApp("Siever","");
+            kpa.AddApp("Cruncher ogr","");
+            kpa.AddApp("ecm","");
             KnownProjApps.Add(kpa);
 
             kpa = new cKnownProjApps();
             kpa.AddName("Asteroids@home");
-            kpa.AddApp("Period Search Application");
+            kpa.AddApp("Period Search Application","");
             KnownProjApps.Add(kpa);
 
             kpa = new cKnownProjApps();
             kpa.AddName("Moo! Wrapper");
-            kpa.AddApp("Distributed.net Client");
+            kpa.AddApp("Distributed.net Client","");
             KnownProjApps.Add(kpa);
 
             kpa = new cKnownProjApps();
             kpa.AddName("Gerasim@home");
-            kpa.AddApp("spstarter");
-            kpa.AddApp("Test separator");
+            kpa.AddApp("spstarter","");
+            kpa.AddApp("Test separator","");
             KnownProjApps.Add(kpa);
 
             kpa = new cKnownProjApps();
             kpa.AddName("Universe@Home");
-            kpa.AddApp("Universe BHspin v2");
+            kpa.AddApp("Universe BHspin v2","");
             KnownProjApps.Add(kpa);
 
 
@@ -496,11 +504,14 @@ namespace BTHistoryReader
                 }
                 // if the app is found then point to the line containing the app's info
                 // and put all info also 
-                AppName = KnownProjApps[RtnCode].SymbolInsert(OneSplitLine.Application, 3+iLine);  // first real data is in 5th line (0..4)
+                // jys adding plan class info
+                AppName = KnownProjApps[RtnCode].SymbolInsert(OneSplitLine.Application + " [" + OneSplitLine.PlanClass + "]", 3+iLine);  // first real data is in 5th line (0..4)
                 AppName.dElapsedTime.Add(OneSplitLine.dElapsedTimeCpu); // want to calculate average time this app
                 AppName.bIsValid.Add(eInvalid == (int)eHistoryError.SeemsOK);
-                if(AppName.bIsUnknown)
+                if (AppName.bIsUnknown)
+                {
                     tb_Info.Text += "Unk App " + AppName.GetInfo + " added to database\r\n";
+                }
             }
             PerformCalcAverages();
             return 0;
