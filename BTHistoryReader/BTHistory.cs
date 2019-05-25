@@ -23,7 +23,6 @@ namespace BTHistoryReader
         public BTHistory()
         {
             InitializeComponent();
-            InitLookupTable();
         }
 
         private int iLocMaxDiff;
@@ -171,6 +170,7 @@ namespace BTHistoryReader
             kpa.AddName("LHC@home");
             kpa.AddApp("SixTrack","");
             kpa.AddApp("SixTrack", "avx");
+            kpa.AddApp("SixTrack", "sse2");
             KnownProjApps.Add(kpa);
 
             kpa = new cKnownProjApps();
@@ -209,7 +209,7 @@ namespace BTHistoryReader
 
             kpa = new cKnownProjApps();
             kpa.AddName("TN-Grid Platform");
-            kpa.AddApp("gene@home PC-IM","");
+            kpa.AddApp("gene@home PC-IM","sse2");
             KnownProjApps.Add(kpa);
 
             kpa = new cKnownProjApps();
@@ -395,7 +395,8 @@ namespace BTHistoryReader
 
         private void btn_OpenHistory_Click(object sender, EventArgs e)
         {
-            if(FetchHistory())return;
+            InitLookupTable();
+            if (FetchHistory())return;
             ClearPreviousHistory();
             ShowContinunities(false);
             ShowSelectable(false);

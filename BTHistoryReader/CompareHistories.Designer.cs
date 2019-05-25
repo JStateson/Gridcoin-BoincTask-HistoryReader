@@ -76,9 +76,9 @@
             this.lbEditTab.ForeColor = System.Drawing.Color.Crimson;
             this.lbEditTab.Location = new System.Drawing.Point(352, 164);
             this.lbEditTab.Name = "lbEditTab";
-            this.lbEditTab.Size = new System.Drawing.Size(435, 13);
+            this.lbEditTab.Size = new System.Drawing.Size(434, 13);
             this.lbEditTab.TabIndex = 7;
-            this.lbEditTab.Text = "ASSUMES ONE WU PER GPU UNLESS YOU EDIT FIRST COLUMN IN TABLE BDLOW";
+            this.lbEditTab.Text = "ASSUMES ONE WU PER GPU UNLESS YOU EDIT FIRST COLUMN IN TABLE BELOW";
             // 
             // groupBox4
             // 
@@ -239,11 +239,11 @@
             this.btnApply.BackColor = System.Drawing.SystemColors.ButtonHighlight;
             this.btnApply.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnApply.ForeColor = System.Drawing.Color.Black;
-            this.btnApply.Location = new System.Drawing.Point(21, 334);
+            this.btnApply.Location = new System.Drawing.Point(12, 334);
             this.btnApply.Name = "btnApply";
-            this.btnApply.Size = new System.Drawing.Size(75, 23);
+            this.btnApply.Size = new System.Drawing.Size(107, 23);
             this.btnApply.TabIndex = 11;
-            this.btnApply.Text = "APPLY";
+            this.btnApply.Text = "Apply Changes";
             this.btnApply.UseVisualStyleBackColor = false;
             this.btnApply.Visible = false;
             this.btnApply.Click += new System.EventHandler(this.button1_Click);
