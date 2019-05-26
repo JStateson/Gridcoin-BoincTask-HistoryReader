@@ -69,6 +69,7 @@
             this.btn_OpenHistory = new System.Windows.Forms.Button();
             this.ofd_history = new System.Windows.Forms.OpenFileDialog();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.CBoxLONG = new System.Windows.Forms.CheckBox();
             this.panel1.SuspendLayout();
             this.gb_filter.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -78,6 +79,7 @@
             // panel1
             // 
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel1.Controls.Add(this.CBoxLONG);
             this.panel1.Controls.Add(this.btnAbout);
             this.panel1.Controls.Add(this.btnShowProjectTree);
             this.panel1.Controls.Add(this.gb_filter);
@@ -511,6 +513,20 @@
             this.ofd_history.Filter = "CVS Files|*.cvs";
             this.ofd_history.Multiselect = true;
             // 
+            // CBoxLONG
+            // 
+            this.CBoxLONG.AutoSize = true;
+            this.CBoxLONG.Checked = true;
+            this.CBoxLONG.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.CBoxLONG.Location = new System.Drawing.Point(173, 34);
+            this.CBoxLONG.Name = "CBoxLONG";
+            this.CBoxLONG.Size = new System.Drawing.Size(106, 17);
+            this.CBoxLONG.TabIndex = 9;
+            this.CBoxLONG.Text = "Ignore \"LONGS\"";
+            this.toolTip1.SetToolTip(this.CBoxLONG, "When selecting multiple files, ignore any marked LONG.\r\nSimplifies omitting usual" +
+        "ly empty empty files.");
+            this.CBoxLONG.UseVisualStyleBackColor = true;
+            // 
             // BTHistory
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -574,6 +590,7 @@
         private System.Windows.Forms.Label lbSeriesTime;
         private System.Windows.Forms.Button btnPlotET;
         private System.Windows.Forms.Button btnCheckPrev;
+        private System.Windows.Forms.CheckBox CBoxLONG;
     }
 }
 

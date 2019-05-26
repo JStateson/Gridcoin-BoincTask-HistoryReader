@@ -53,6 +53,12 @@
     <Compile Include="BTHistory.Designer.cs">
       <DependentUpon>BTHistory.cs</DependentUpon>
     </Compile>
+    <Compile Include="CompareHelp.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CompareHelp.Designer.cs">
+      <DependentUpon>CompareHelp.cs</DependentUpon>
+    </Compile>
     <Compile Include="CompareHistories.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -83,6 +89,9 @@
     <EmbeddedResource Include="BTHistory.resx">
       <DependentUpon>BTHistory.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="CompareHelp.resx">
+      <DependentUpon>CompareHelp.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="CompareHistories.resx">
       <DependentUpon>CompareHistories.cs</DependentUpon>
     </EmbeddedResource>
@@ -100,6 +109,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <EmbeddedResource Include="TPchart.resx">
       <DependentUpon>TPchart.cs</DependentUpon>
@@ -116,6 +126,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="CH_image.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

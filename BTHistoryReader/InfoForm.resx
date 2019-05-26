@@ -132,6 +132,7 @@ first incomplete line is parsed.
 
 Project apps in the history file are shown in dark blue.
 The color red is used to show unknown apps or projects
+An unknown projectc or app is n ot coded in the program.
 
 The average elapsed time and its atd are calculated for
 ALL valid entries in the log and shown in the tree.  Avg and 

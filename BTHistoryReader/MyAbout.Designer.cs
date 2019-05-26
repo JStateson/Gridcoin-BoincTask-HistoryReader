@@ -38,18 +38,17 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(25, 9);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(289, 65);
+            this.label1.Size = new System.Drawing.Size(354, 39);
             this.label1.TabIndex = 0;
-            this.label1.Text = "Copyright 2019 Joseph \"Beemer Biker\" Stateson\r\nversion  27-april-2019\r\nIf this pr" +
-    "ogram proves useful send a few gridcoins my way to\r\nSLGw2i8evCmVQq5oqs2FVV6TsrsT" +
-    "KZbAiR\r\n\r\n";
+            this.label1.Text = "Copyright 2019 Joseph \"Beemer Biker\" Stateson\r\nversion  26-May-2019  GRC: SLGw2i8" +
+    "evCmVQq5oqs2FVV6TsrsTKZbAiR\r\n\r\n";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(59, 74);
+            this.label2.Location = new System.Drawing.Point(39, 48);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(315, 260);
+            this.label2.Size = new System.Drawing.Size(328, 273);
             this.label2.TabIndex = 1;
             this.label2.Text = resources.GetString("label2.Text");
             // 
@@ -63,7 +62,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.Name = "MyAbout";
-            this.Text = "Form1";
+            this.Text = "About";
             this.ResumeLayout(false);
             this.PerformLayout();
 
