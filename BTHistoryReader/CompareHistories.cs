@@ -70,7 +70,7 @@ namespace BTHistoryReader
         }
         // when comparing projects, say "seti" app can be nvidia, amd or cpu
         // cannot test for full app name else no match unless both systems had same devices
-        public CompareHistories(Form refForm)
+        public CompareHistories(Form refForm, bool bIgnoreLong)
         {
             InitializeComponent();
             Projects = new List<string>();
@@ -86,7 +86,10 @@ namespace BTHistoryReader
             btf.CurrentSystem = "";
             foreach(string sProj in btf.AllHistories)
             {
-                int RtnCod = btf.ValidateHistory(sProj);
+                int RtnCod;
+                if (bIgnoreLong && sProj.Contains("_long_"))
+                    continue;
+                RtnCod = btf.ValidateHistory(sProj);
                 if (RtnCod < 0) continue;
                 Systems.Add(btf.ThisSystem);
                 iSystem = Systems.Count - 1;    // index into name of system

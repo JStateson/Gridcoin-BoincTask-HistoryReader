@@ -340,7 +340,7 @@ namespace BTHistoryReader
 
         private void PerformSelectCompare()
         {
-            CompareHistories MyHistories = new CompareHistories(this);
+            CompareHistories MyHistories = new CompareHistories(this, CBoxLONG.Checked);
             MyHistories.ShowDialog();
             ClearPreviousHistory();
         }

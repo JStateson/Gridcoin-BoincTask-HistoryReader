@@ -30,6 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.CBoxLONG = new System.Windows.Forms.CheckBox();
             this.btnAbout = new System.Windows.Forms.Button();
             this.btnShowProjectTree = new System.Windows.Forms.Button();
             this.gb_filter = new System.Windows.Forms.GroupBox();
@@ -69,7 +70,6 @@
             this.btn_OpenHistory = new System.Windows.Forms.Button();
             this.ofd_history = new System.Windows.Forms.OpenFileDialog();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.CBoxLONG = new System.Windows.Forms.CheckBox();
             this.panel1.SuspendLayout();
             this.gb_filter.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -93,6 +93,20 @@
             this.panel1.Size = new System.Drawing.Size(937, 534);
             this.panel1.TabIndex = 0;
             this.panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.panel1_Paint);
+            // 
+            // CBoxLONG
+            // 
+            this.CBoxLONG.AutoSize = true;
+            this.CBoxLONG.Checked = true;
+            this.CBoxLONG.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.CBoxLONG.Location = new System.Drawing.Point(173, 34);
+            this.CBoxLONG.Name = "CBoxLONG";
+            this.CBoxLONG.Size = new System.Drawing.Size(106, 17);
+            this.CBoxLONG.TabIndex = 9;
+            this.CBoxLONG.Text = "Ignore \"LONGS\"";
+            this.toolTip1.SetToolTip(this.CBoxLONG, "When selecting multiple files, ignore any with _long_\r\nin the filename.  Simplifi" +
+        "es omitting usually empty empty files.");
+            this.CBoxLONG.UseVisualStyleBackColor = true;
             // 
             // btnAbout
             // 
@@ -512,20 +526,6 @@
             // 
             this.ofd_history.Filter = "CVS Files|*.cvs";
             this.ofd_history.Multiselect = true;
-            // 
-            // CBoxLONG
-            // 
-            this.CBoxLONG.AutoSize = true;
-            this.CBoxLONG.Checked = true;
-            this.CBoxLONG.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.CBoxLONG.Location = new System.Drawing.Point(173, 34);
-            this.CBoxLONG.Name = "CBoxLONG";
-            this.CBoxLONG.Size = new System.Drawing.Size(106, 17);
-            this.CBoxLONG.TabIndex = 9;
-            this.CBoxLONG.Text = "Ignore \"LONGS\"";
-            this.toolTip1.SetToolTip(this.CBoxLONG, "When selecting multiple files, ignore any marked LONG.\r\nSimplifies omitting usual" +
-        "ly empty empty files.");
-            this.CBoxLONG.UseVisualStyleBackColor = true;
             // 
             // BTHistory
             // 
