@@ -35,6 +35,8 @@ namespace BTHistoryReader
             tbSpinBinValue.Visible = bValue;
             SpinBin.Visible = bValue;
             bDoingHist = bValue;
+            nudConcur.Visible = bValue;
+            labConcur.Visible = bValue;
             cbHours.Visible = !bValue;
         }
 
@@ -157,10 +159,19 @@ namespace BTHistoryReader
             return a;
         }
 
+        // resize time by number of concurrent tasks
+        double dConcurrent = 1;
+        long iScaleTime(long l)
+        {
+            double d = Convert.ToDouble(l) / dConcurrent;
+            return Convert.ToInt64( Math.Round(d));
+        }
+
         private void DrawHist()
         {
             int i, n;
             double d, dFirst, dLast ;
+            dConcurrent = Convert.ToDouble(nudConcur.Value);
             List<double> xAxis = new List<double>();
             List<double> yAxis = new List<double>();
             chart1.Series.Add(sET);
@@ -171,7 +182,7 @@ namespace BTHistoryReader
             n = ValidWork; // WORKct.Length ;
             for(i = 0; i < n; i++)
             {
-                xAxis.Add(WORKct[i]);
+                xAxis.Add(iScaleTime(WORKct[i]));
                 yAxis.Add(WORKit[i]);
             }
             dLast = GetBestScaleingUpper(xAxis.Last());
@@ -295,6 +306,12 @@ namespace BTHistoryReader
             int j = Convert.ToInt32( Math.Pow(2.0, i));
             tbSpinBinValue.Text = j.ToString();
             iBinCnt = j;
+            if (bDoingHist) DrawHistChanged();
+            else DrawIdleChanged();
+        }
+
+        private void nudConcur_ValueChanged(object sender, EventArgs e)
+        {
             if (bDoingHist) DrawHistChanged();
             else DrawIdleChanged();
         }

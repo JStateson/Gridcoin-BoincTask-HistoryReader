@@ -29,8 +29,8 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TPchart));
             this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -45,30 +45,33 @@
             this.lbChart = new System.Windows.Forms.Label();
             this.lbl_sysname = new System.Windows.Forms.Label();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.nudConcur = new System.Windows.Forms.NumericUpDown();
+            this.labConcur = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.SpinBin)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.DetailFilter)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudConcur)).BeginInit();
             this.SuspendLayout();
             // 
             // chart1
             // 
-            chartArea1.AxisX.Interval = 2D;
-            chartArea1.AxisX.LabelStyle.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            chartArea1.AxisX.LabelStyle.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Auto;
-            chartArea1.AxisX.MajorGrid.Enabled = false;
-            chartArea1.AxisX.MajorTickMark.Enabled = false;
-            chartArea1.AxisX.MajorTickMark.Interval = 0D;
-            chartArea1.AxisX.MajorTickMark.IntervalOffset = 0D;
-            chartArea1.AxisX.MajorTickMark.IntervalOffsetType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Auto;
-            chartArea1.AxisX.MajorTickMark.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Auto;
-            chartArea1.AxisX.Minimum = 0D;
-            chartArea1.AxisX.Title = "Hours Back";
-            chartArea1.Name = "ChartArea1";
-            this.chart1.ChartAreas.Add(chartArea1);
-            legend1.Name = "Legend1";
-            this.chart1.Legends.Add(legend1);
+            chartArea2.AxisX.Interval = 2D;
+            chartArea2.AxisX.LabelStyle.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            chartArea2.AxisX.LabelStyle.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Auto;
+            chartArea2.AxisX.MajorGrid.Enabled = false;
+            chartArea2.AxisX.MajorTickMark.Enabled = false;
+            chartArea2.AxisX.MajorTickMark.Interval = 0D;
+            chartArea2.AxisX.MajorTickMark.IntervalOffset = 0D;
+            chartArea2.AxisX.MajorTickMark.IntervalOffsetType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Auto;
+            chartArea2.AxisX.MajorTickMark.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Auto;
+            chartArea2.AxisX.Minimum = 0D;
+            chartArea2.AxisX.Title = "Hours Back";
+            chartArea2.Name = "ChartArea1";
+            this.chart1.ChartAreas.Add(chartArea2);
+            legend2.Name = "Legend1";
+            this.chart1.Legends.Add(legend2);
             this.chart1.Location = new System.Drawing.Point(222, 25);
             this.chart1.Name = "chart1";
             this.chart1.Size = new System.Drawing.Size(537, 305);
@@ -116,6 +119,8 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.labConcur);
+            this.groupBox2.Controls.Add(this.nudConcur);
             this.groupBox2.Controls.Add(this.tbSpinBinValue);
             this.groupBox2.Controls.Add(this.SpinBin);
             this.groupBox2.Controls.Add(this.lbBinSize);
@@ -123,7 +128,7 @@
             this.groupBox2.Controls.Add(this.DetailFilter);
             this.groupBox2.Location = new System.Drawing.Point(12, 187);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(184, 116);
+            this.groupBox2.Size = new System.Drawing.Size(184, 143);
             this.groupBox2.TabIndex = 4;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Detail Filter (0 is all)";
@@ -165,9 +170,10 @@
             this.lbBinSize.AutoSize = true;
             this.lbBinSize.Location = new System.Drawing.Point(6, 70);
             this.lbBinSize.Name = "lbBinSize";
-            this.lbBinSize.Size = new System.Drawing.Size(67, 13);
+            this.lbBinSize.Size = new System.Drawing.Size(75, 13);
             this.lbBinSize.TabIndex = 6;
-            this.lbBinSize.Text = "Number Bins";
+            this.lbBinSize.Text = "Binning Factor";
+            this.toolTip1.SetToolTip(this.lbBinSize, "Goes up or down power of 2");
             // 
             // lbSpinFilter
             // 
@@ -210,6 +216,39 @@
             this.lbl_sysname.TabIndex = 6;
             this.lbl_sysname.Text = "label1";
             // 
+            // nudConcur
+            // 
+            this.nudConcur.Location = new System.Drawing.Point(115, 104);
+            this.nudConcur.Maximum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.nudConcur.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.nudConcur.Name = "nudConcur";
+            this.nudConcur.Size = new System.Drawing.Size(36, 20);
+            this.nudConcur.TabIndex = 9;
+            this.toolTip1.SetToolTip(this.nudConcur, "Number of concurrent GPU task (defult 1)");
+            this.nudConcur.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.nudConcur.ValueChanged += new System.EventHandler(this.nudConcur_ValueChanged);
+            // 
+            // labConcur
+            // 
+            this.labConcur.AutoSize = true;
+            this.labConcur.Location = new System.Drawing.Point(6, 111);
+            this.labConcur.Name = "labConcur";
+            this.labConcur.Size = new System.Drawing.Size(86, 13);
+            this.labConcur.TabIndex = 10;
+            this.labConcur.Text = "Concurrent WUs";
+            // 
             // TPchart
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -232,6 +271,7 @@
             this.groupBox2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.SpinBin)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.DetailFilter)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudConcur)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -252,5 +292,7 @@
         private System.Windows.Forms.NumericUpDown SpinBin;
         private System.Windows.Forms.Label lbBinSize;
         private System.Windows.Forms.Label labStartTime;
+        private System.Windows.Forms.Label labConcur;
+        private System.Windows.Forms.NumericUpDown nudConcur;
     }
 }
