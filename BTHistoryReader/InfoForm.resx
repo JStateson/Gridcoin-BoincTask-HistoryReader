@@ -118,24 +118,17 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="label1.Text" xml:space="preserve">
-    <value>This program analyzes the BoincTask history files 
-and calculates the throughput of the system in
-seconds ;per work unit..  This is done by sorting all
-units in ascending order by time completed.   Counting
-the number of units and dividing that into the time.
-The time is calculated by subtracting the start time
-of the first unit from the completion time of the last.
-The user must select a start time and stop time.
-
-The history file is processed to the last line or until the 
-first incomplete line is parsed.  
+    <value>Some background:  The history file is processed to the last 
+ine or until the first incomplete line is parsed.  
 
 Project apps in the history file are shown in dark blue.
 The color red is used to show unknown apps or projects
-An unknown projectc or app is n ot coded in the program.
+An unknown projectc or app is one that was not coded
+in the program and discovred when parsing the data.
 
-The average elapsed time and its atd are calculated for
+The average elapsed time and its STD are calculated for
 ALL valid entries in the log and shown in the tree.  Avg and 
-Std shown in the main form are from the selection only.</value>
+Std shown in the main form are from the selection only 
+and the ones here are all results that completed.</value>
   </data>
 </root>
