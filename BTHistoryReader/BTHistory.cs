@@ -426,7 +426,7 @@ namespace BTHistoryReader
                 tb_Info.Text += (string)e.Data["MSG"] + "\r\n";
                 return -1;
             }
-            if (LinesHistory[0] == ReqVer && LinesHistory[2] == ReqID && LinesHistory[1] != "")
+            if (LinesHistory[2] == ReqID && LinesHistory[1] != "")  // no longer check for version number
             {
                 iPadSize = Convert.ToInt32(Math.Ceiling(Math.Log10(LinesHistory.Length)));
                 // want to know how many digits to format data in combobox view
@@ -436,7 +436,7 @@ namespace BTHistoryReader
             }
             else
             {
-                tb_Info.Text += "cannot find " + ReqVer + " or " + ReqID + " or maybe empty systemn name\r\n";
+                tb_Info.Text += "cannot find " + ReqID + " or maybe empty systemn name\r\n";
                 return -2;
             }
         }
