@@ -122,15 +122,15 @@
 for the ame project and apps.  For example, projects Milkyway and
 SETI have apps for see2, avx, ati and nvidia.  You must have an
 inclusive database (lot of history) for this to be useful  The 
-following example assume SETI
+following example assume LHC and only one system for statistics.
 
-Select SETI
- - You might have 21 ati_SoG_Nnocal and
-    369 atiapu_sah.
-Select the 21 SETIs. The elapsed time is shown in the box.
-If you known tha system is running 4 concurrent tasks then
-put in a 4 and click on the Apply Calculations and copy the 
-results to notepad.
+Select LHC 
+ - You might have 285 sse2 and 77 of the avx.
+Select the 285 LHCs and uncheck all but the systems you want
+ The elapsed time is shown in the box.
+If you known tha system is running 2 concurrent tasks then
+put in a 2 and click on the Apply Calculations and copy the 
+results to notepad.  
 
 - Select the 369 SETIs and compare the results to what you have
 in notepad</value>

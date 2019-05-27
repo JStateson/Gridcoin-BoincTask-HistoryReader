@@ -17,7 +17,7 @@ namespace BTHistoryReader
         public List<string> Systems;
         public List<cKPAlocs> KPAlocs;
         public List<string> SystemsCompared;
-
+        private string strAverageAll = "Average All";
         public List<bool> bItemsToColor = new List<bool>(); // use color to show which apps have values
 
         public class cKPAapps
@@ -177,9 +177,16 @@ namespace BTHistoryReader
             LViewConc.Items.Clear();
         }
 
+        private bool bUseThisSystem(string strProjName, string strListOfUsed)
+        {
+            string strQualifier;
+            if(strListOfUsed == strAverageAll)return true;
+            strQualifier = "-" + strProjName + "-";
+            return strListOfUsed.Contains(strQualifier);
+        }
 
         // if bMakeTable is not true then we are recalculating using number of devices from table
-        private void CalcAllValues(string sProj, string sApp, bool bMakeTable)
+        private void CalcAllValues(string sProj, string sApp, bool bMakeTable, string strSystems)
         {
             TBoxResults.Text = "";
             TBoxStats.Text = "";
@@ -198,7 +205,8 @@ namespace BTHistoryReader
             if(bMakeTable)
                 SystemsCompared.Clear();
             foreach (cKPAlocs ckpal in KPAlocs)                                             // for every system
-            {                
+            {
+                    // project name is not at strSystem !!!
                 foreach (cKPAproj ckpap in ckpal.KPAproj)                                   // for each project in system
                 {
                     if (sProj == ckpap.sProjName)                                           // if it is the project we want
@@ -207,9 +215,10 @@ namespace BTHistoryReader
                         {
                             if (ckpaa.sAppName == sApp)                                     // if it is the app we want then do analysis
                             {
-                                if (ckpaa.dLelapsedTime.Count == 0)
+                                if (ckpaa.dLelapsedTime.Count == 0)                         // must have data
                                     continue;
                                 strLoc = Systems[ckpaa.iSystem];
+                                if (!bUseThisSystem(strLoc, strSystems)) continue;          // not sure why I used systen name here
                                 if (bMakeTable)
                                     SystemsCompared.Add(strLoc);
                                 else nConcurrent = GetConcurrency(strLoc);
@@ -244,7 +253,7 @@ namespace BTHistoryReader
 
 
 
-        private void LBoxApps_SelectedIndexChanged(object sender, EventArgs e)
+        private void UpdateAppInfo()
         {
             string strAppSelected = LBoxApps.Text;
             string[] strSysConc;
@@ -254,16 +263,22 @@ namespace BTHistoryReader
             int iString = strAppSelected.IndexOf(")");
             if (iString <= 0) return;   // probably should assert this
             ShowPBar(true);
-            CalcAllValues(LBoxProjects.Text, strAppSelected.Substring(iString+2), true);
-            foreach(string s in SystemsCompared)
+            CalcAllValues(LBoxProjects.Text, strAppSelected.Substring(iString + 2), true, strAverageAll);
+            foreach (string s in SystemsCompared)
             {
-                strSysConc = new string[2];
+                strSysConc = new string[3];
                 strSysConc[0] = "1";
                 strSysConc[1] = s;
                 itm = new ListViewItem(strSysConc);
+                itm.Checked = true;
                 LViewConc.Items.Add(itm);
             }
             ShowPBar(false);
+        }
+
+        private void LBoxApps_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            UpdateAppInfo();
         }
 
         public int GetConcurrency(string strSystem)
@@ -279,10 +294,12 @@ namespace BTHistoryReader
             return 1;
         }
 
+        // seems I do not need a progress bar after all
         public void ShowPBar(bool bShow)
         {
-            lbEditTab.Text = bShow ? "...working on it..." : "ASSUMES ONE WU PER GPU UNLESS YOU EDIT FIRST COLUMN IN TABLE BDLOW";
-            Update();
+            return;
+            lbEditTab.Text = bShow ? "...working on it..." : "ASSUMES ONE WU PER GPU UNLESS YOU EDIT VALUE IN FIRST COLUMN";
+            lbEditTab.Update();
         }
 
         // the following was not used after all
@@ -311,13 +328,33 @@ namespace BTHistoryReader
 
         private void button1_Click(object sender, EventArgs e)
         {
-            CalcAllValues(Last_sProj, Last_sApp, false);
+            string strWhatToAverage = "";
+            bool bAny = false;
+            foreach(ListViewItem itm in LViewConc.Items)
+            {
+                if(itm.Checked)
+                {
+                    strWhatToAverage += "-" + itm.SubItems[1].Text;
+                    bAny = true;
+                }
+                strWhatToAverage += "-";
+            }
+            if (bAny)
+                CalcAllValues(Last_sProj, Last_sApp, false, strWhatToAverage);
+            else
+                UpdateAppInfo();
         }
 
         private void btnHelp_Click(object sender, EventArgs e)
         {
             CompareHelp MyCompareHelp = new CompareHelp();
             MyCompareHelp.ShowDialog();
+        }
+
+        // form statistics for the selected event
+        private void LViewConc_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

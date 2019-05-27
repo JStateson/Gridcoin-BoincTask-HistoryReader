@@ -43,10 +43,10 @@
             this.TBoxResults = new System.Windows.Forms.TextBox();
             this.TBoxStats = new System.Windows.Forms.TextBox();
             this.LViewConc = new System.Windows.Forms.ListView();
-            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.colUSE = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.btnApply = new System.Windows.Forms.Button();
             this.btnHelp = new System.Windows.Forms.Button();
+            this.colSysName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.panel1.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -77,9 +77,9 @@
             this.lbEditTab.ForeColor = System.Drawing.Color.Crimson;
             this.lbEditTab.Location = new System.Drawing.Point(352, 164);
             this.lbEditTab.Name = "lbEditTab";
-            this.lbEditTab.Size = new System.Drawing.Size(434, 13);
+            this.lbEditTab.Size = new System.Drawing.Size(393, 13);
             this.lbEditTab.TabIndex = 7;
-            this.lbEditTab.Text = "ASSUMES ONE WU PER GPU UNLESS YOU EDIT FIRST COLUMN IN TABLE BELOW";
+            this.lbEditTab.Text = "ASSUMES ONE WU PER GPU UNLESS YOU EDIT VALUE IN FIRST COLUMN";
             // 
             // groupBox4
             // 
@@ -190,12 +190,12 @@
             // TBoxResults
             // 
             this.TBoxResults.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TBoxResults.Location = new System.Drawing.Point(378, 273);
+            this.TBoxResults.Location = new System.Drawing.Point(446, 273);
             this.TBoxResults.Multiline = true;
             this.TBoxResults.Name = "TBoxResults";
             this.TBoxResults.ReadOnly = true;
             this.TBoxResults.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.TBoxResults.Size = new System.Drawing.Size(357, 133);
+            this.TBoxResults.Size = new System.Drawing.Size(306, 133);
             this.TBoxResults.TabIndex = 8;
             // 
             // TBoxStats
@@ -211,29 +211,27 @@
             // 
             // LViewConc
             // 
+            this.LViewConc.CheckBoxes = true;
             this.LViewConc.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader1,
-            this.columnHeader2});
+            this.colUSE,
+            this.colSysName});
             this.LViewConc.FullRowSelect = true;
             this.LViewConc.GridLines = true;
             this.LViewConc.LabelEdit = true;
             this.LViewConc.LabelWrap = false;
             this.LViewConc.Location = new System.Drawing.Point(133, 273);
+            this.LViewConc.MultiSelect = false;
             this.LViewConc.Name = "LViewConc";
-            this.LViewConc.Size = new System.Drawing.Size(219, 133);
+            this.LViewConc.Size = new System.Drawing.Size(290, 133);
             this.LViewConc.TabIndex = 10;
             this.LViewConc.UseCompatibleStateImageBehavior = false;
             this.LViewConc.View = System.Windows.Forms.View.Details;
+            this.LViewConc.SelectedIndexChanged += new System.EventHandler(this.LViewConc_SelectedIndexChanged);
             // 
-            // columnHeader1
+            // colUSE
             // 
-            this.columnHeader1.Text = "Concurrent Tasks";
-            this.columnHeader1.Width = 96;
-            // 
-            // columnHeader2
-            // 
-            this.columnHeader2.Text = "System Name";
-            this.columnHeader2.Width = 118;
+            this.colUSE.Text = "Use In Stats / Num Concurrent";
+            this.colUSE.Width = 182;
             // 
             // btnApply
             // 
@@ -252,13 +250,18 @@
             // btnHelp
             // 
             this.btnHelp.ForeColor = System.Drawing.Color.Black;
-            this.btnHelp.Location = new System.Drawing.Point(12, 284);
+            this.btnHelp.Location = new System.Drawing.Point(12, 273);
             this.btnHelp.Name = "btnHelp";
             this.btnHelp.Size = new System.Drawing.Size(75, 23);
             this.btnHelp.TabIndex = 12;
             this.btnHelp.Text = "HELP";
             this.btnHelp.UseVisualStyleBackColor = true;
             this.btnHelp.Click += new System.EventHandler(this.btnHelp_Click);
+            // 
+            // colSysName
+            // 
+            this.colSysName.Text = "System";
+            this.colSysName.Width = 103;
             // 
             // CompareHistories
             // 
@@ -305,9 +308,9 @@
         private System.Windows.Forms.TextBox TBoxStats;
         private System.Windows.Forms.Label lbEditTab;
         private System.Windows.Forms.ListView LViewConc;
-        private System.Windows.Forms.ColumnHeader columnHeader1;
-        private System.Windows.Forms.ColumnHeader columnHeader2;
+        private System.Windows.Forms.ColumnHeader colUSE;
         private System.Windows.Forms.Button btnApply;
         private System.Windows.Forms.Button btnHelp;
+        private System.Windows.Forms.ColumnHeader colSysName;
     }
 }
