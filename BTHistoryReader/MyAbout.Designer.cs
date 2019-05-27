@@ -38,15 +38,14 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(25, 9);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(354, 39);
+            this.label1.Size = new System.Drawing.Size(354, 52);
             this.label1.TabIndex = 0;
-            this.label1.Text = "Copyright 2019 Joseph \"Beemer Biker\" Stateson\r\nversion  26-May-2019  GRC: SLGw2i8" +
-    "evCmVQq5oqs2FVV6TsrsTKZbAiR\r\n\r\n";
+            this.label1.Text = resources.GetString("label1.Text");
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(39, 48);
+            this.label2.Location = new System.Drawing.Point(34, 83);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(328, 273);
             this.label2.TabIndex = 1;
