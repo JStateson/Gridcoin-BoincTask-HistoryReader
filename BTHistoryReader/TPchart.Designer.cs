@@ -34,6 +34,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TPchart));
             this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.labStartTime = new System.Windows.Forms.Label();
             this.cbHours = new System.Windows.Forms.ComboBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.tbSpinBinValue = new System.Windows.Forms.TextBox();
@@ -44,7 +45,6 @@
             this.lbChart = new System.Windows.Forms.Label();
             this.lbl_sysname = new System.Windows.Forms.Label();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.labStartTime = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -85,6 +85,15 @@
             this.groupBox1.TabIndex = 2;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Max Lookback";
+            // 
+            // labStartTime
+            // 
+            this.labStartTime.AutoSize = true;
+            this.labStartTime.Location = new System.Drawing.Point(15, 79);
+            this.labStartTime.Name = "labStartTime";
+            this.labStartTime.Size = new System.Drawing.Size(55, 13);
+            this.labStartTime.TabIndex = 1;
+            this.labStartTime.Text = "Start Time";
             // 
             // cbHours
             // 
@@ -200,15 +209,6 @@
             this.lbl_sysname.Size = new System.Drawing.Size(35, 13);
             this.lbl_sysname.TabIndex = 6;
             this.lbl_sysname.Text = "label1";
-            // 
-            // labStartTime
-            // 
-            this.labStartTime.AutoSize = true;
-            this.labStartTime.Location = new System.Drawing.Point(15, 79);
-            this.labStartTime.Name = "labStartTime";
-            this.labStartTime.Size = new System.Drawing.Size(55, 13);
-            this.labStartTime.TabIndex = 1;
-            this.labStartTime.Text = "Start Time";
             // 
             // TPchart
             // 

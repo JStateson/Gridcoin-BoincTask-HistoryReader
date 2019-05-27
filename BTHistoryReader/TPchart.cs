@@ -24,7 +24,7 @@ namespace BTHistoryReader
         private int iSig;
         private Series sCT = new Series("CompletionTime");
         private Series sET = new Series("ElapsedTime");
-        private bool bDoingHist = false;
+        static bool bDoingHist = false;
         private long LKBhours = 24;
         private int iBinCnt = 2;   // 2 (show in spinner box) raised to power of 1 (spinner value) 
         private string strStartDT;  // date and time started (x axis origin)
@@ -35,7 +35,7 @@ namespace BTHistoryReader
             tbSpinBinValue.Visible = bValue;
             SpinBin.Visible = bValue;
             bDoingHist = bValue;
-            cbHours.Enabled = !bValue;
+            cbHours.Visible = !bValue;
         }
 
         private void SaveWorking(int n)
@@ -104,7 +104,7 @@ namespace BTHistoryReader
             ct = refCT;
             it = refIT;
             lbl_sysname.Text = "System: " + strProject;
-            ShowOrHideHist(AvgGap == 0);
+            ShowOrHideHist(AvgGap == -1);
             long iDT = 0;
 
             labStartTime.Visible = (AvgGap != -1);  // only for plot of idle time
@@ -255,13 +255,13 @@ namespace BTHistoryReader
         private void DrawHistChanged()
         {
             chart1.Series.Remove(sET);
-            if(NewBins() > 0)
+            if (NewBins() > 0)
                 DrawHist();
         }
 
         private void DetailFilter_ValueChanged(object sender, EventArgs e)
         {
-            iSig = Convert.ToInt32(DetailFilter.Value);
+            iSig  = Convert.ToInt32(DetailFilter.Value);
             if(bDoingHist)
             {
                 DrawHistChanged();
@@ -279,7 +279,14 @@ namespace BTHistoryReader
         private void cbHours_SelectedIndexChanged(object sender, EventArgs e)
         {
             GetLKHours();
-            DrawIdleChanged();
+            if (bDoingHist)
+            {
+                DrawHistChanged();
+            }
+            else
+            {
+                DrawIdleChanged();
+            }
         }
 
         private void SpinBin_ValueChanged(object sender, EventArgs e)
@@ -288,7 +295,8 @@ namespace BTHistoryReader
             int j = Convert.ToInt32( Math.Pow(2.0, i));
             tbSpinBinValue.Text = j.ToString();
             iBinCnt = j;
-            DrawHistChanged();
+            if (bDoingHist) DrawHistChanged();
+            else DrawIdleChanged();
         }
     }
 }

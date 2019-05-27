@@ -1169,7 +1169,7 @@ namespace BTHistoryReader
             }
         }
 
-        private void btnPlotET_Click(object sender, EventArgs e)
+        private void btnPlotET_Click(object sender, EventArgs e) // this is the histogram
         {
             if (CalculateETdistribution())
             {
