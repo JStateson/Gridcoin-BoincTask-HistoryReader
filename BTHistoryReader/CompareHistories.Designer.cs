@@ -50,6 +50,7 @@
             this.btnHelp = new System.Windows.Forms.Button();
             this.BtnCmpSave = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.label3 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -278,12 +279,23 @@
             this.BtnCmpSave.UseVisualStyleBackColor = true;
             this.BtnCmpSave.Click += new System.EventHandler(this.BtnCmpSave_Click);
             // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.ForeColor = System.Drawing.Color.Black;
+            this.label3.Location = new System.Drawing.Point(429, 420);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(228, 13);
+            this.label3.TabIndex = 14;
+            this.label3.Text = "All time values are in minutes or fraction thereof";
+            // 
             // CompareHistories
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
             this.ClientSize = new System.Drawing.Size(961, 450);
+            this.Controls.Add(this.label3);
             this.Controls.Add(this.BtnCmpSave);
             this.Controls.Add(this.btnHelp);
             this.Controls.Add(this.btnApply);
@@ -330,5 +342,6 @@
         private System.Windows.Forms.ColumnHeader colSysName;
         private System.Windows.Forms.Button BtnCmpSave;
         private System.Windows.Forms.ToolTip toolTip1;
+        private System.Windows.Forms.Label label3;
     }
 }

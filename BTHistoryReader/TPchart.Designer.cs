@@ -29,14 +29,14 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea3 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend3 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TPchart));
             this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.labStartTime = new System.Windows.Forms.Label();
             this.cbHours = new System.Windows.Forms.ComboBox();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.gboxFilter = new System.Windows.Forms.GroupBox();
             this.labConcur = new System.Windows.Forms.Label();
             this.nudConcur = new System.Windows.Forms.NumericUpDown();
             this.tbSpinBinValue = new System.Windows.Forms.TextBox();
@@ -49,7 +49,7 @@
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             this.groupBox1.SuspendLayout();
-            this.groupBox2.SuspendLayout();
+            this.gboxFilter.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudConcur)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.SpinBin)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.DetailFilter)).BeginInit();
@@ -57,21 +57,21 @@
             // 
             // chart1
             // 
-            chartArea3.AxisX.Interval = 2D;
-            chartArea3.AxisX.LabelStyle.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            chartArea3.AxisX.LabelStyle.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Auto;
-            chartArea3.AxisX.MajorGrid.Enabled = false;
-            chartArea3.AxisX.MajorTickMark.Enabled = false;
-            chartArea3.AxisX.MajorTickMark.Interval = 0D;
-            chartArea3.AxisX.MajorTickMark.IntervalOffset = 0D;
-            chartArea3.AxisX.MajorTickMark.IntervalOffsetType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Auto;
-            chartArea3.AxisX.MajorTickMark.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Auto;
-            chartArea3.AxisX.Minimum = 0D;
-            chartArea3.AxisX.Title = "Hours Back";
-            chartArea3.Name = "ChartArea1";
-            this.chart1.ChartAreas.Add(chartArea3);
-            legend3.Name = "Legend1";
-            this.chart1.Legends.Add(legend3);
+            chartArea1.AxisX.Interval = 2D;
+            chartArea1.AxisX.LabelStyle.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            chartArea1.AxisX.LabelStyle.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Auto;
+            chartArea1.AxisX.MajorGrid.Enabled = false;
+            chartArea1.AxisX.MajorTickMark.Enabled = false;
+            chartArea1.AxisX.MajorTickMark.Interval = 0D;
+            chartArea1.AxisX.MajorTickMark.IntervalOffset = 0D;
+            chartArea1.AxisX.MajorTickMark.IntervalOffsetType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Auto;
+            chartArea1.AxisX.MajorTickMark.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Auto;
+            chartArea1.AxisX.Minimum = 0D;
+            chartArea1.AxisX.Title = "Hours Back";
+            chartArea1.Name = "ChartArea1";
+            this.chart1.ChartAreas.Add(chartArea1);
+            legend1.Name = "Legend1";
+            this.chart1.Legends.Add(legend1);
             this.chart1.Location = new System.Drawing.Point(222, 25);
             this.chart1.Name = "chart1";
             this.chart1.Size = new System.Drawing.Size(537, 305);
@@ -117,21 +117,21 @@
             this.toolTip1.SetToolTip(this.cbHours, "BoincTasks default is 24 hours maximum");
             this.cbHours.SelectedIndexChanged += new System.EventHandler(this.cbHours_SelectedIndexChanged);
             // 
-            // groupBox2
+            // gboxFilter
             // 
-            this.groupBox2.Controls.Add(this.labConcur);
-            this.groupBox2.Controls.Add(this.nudConcur);
-            this.groupBox2.Controls.Add(this.tbSpinBinValue);
-            this.groupBox2.Controls.Add(this.SpinBin);
-            this.groupBox2.Controls.Add(this.lbBinSize);
-            this.groupBox2.Controls.Add(this.lbSpinFilter);
-            this.groupBox2.Controls.Add(this.DetailFilter);
-            this.groupBox2.Location = new System.Drawing.Point(12, 187);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(184, 143);
-            this.groupBox2.TabIndex = 4;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Detail Filter (0 is all)";
+            this.gboxFilter.Controls.Add(this.labConcur);
+            this.gboxFilter.Controls.Add(this.nudConcur);
+            this.gboxFilter.Controls.Add(this.tbSpinBinValue);
+            this.gboxFilter.Controls.Add(this.SpinBin);
+            this.gboxFilter.Controls.Add(this.lbBinSize);
+            this.gboxFilter.Controls.Add(this.lbSpinFilter);
+            this.gboxFilter.Controls.Add(this.DetailFilter);
+            this.gboxFilter.Location = new System.Drawing.Point(12, 187);
+            this.gboxFilter.Name = "gboxFilter";
+            this.gboxFilter.Size = new System.Drawing.Size(184, 143);
+            this.gboxFilter.TabIndex = 4;
+            this.gboxFilter.TabStop = false;
+            this.gboxFilter.Text = "Detail Filter (0 is all)";
             // 
             // labConcur
             // 
@@ -256,7 +256,7 @@
             this.ClientSize = new System.Drawing.Size(800, 424);
             this.Controls.Add(this.lbl_sysname);
             this.Controls.Add(this.lbChart);
-            this.Controls.Add(this.groupBox2);
+            this.Controls.Add(this.gboxFilter);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.chart1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -266,8 +266,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
-            this.groupBox2.ResumeLayout(false);
-            this.groupBox2.PerformLayout();
+            this.gboxFilter.ResumeLayout(false);
+            this.gboxFilter.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudConcur)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.SpinBin)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.DetailFilter)).EndInit();
@@ -280,7 +280,7 @@
 
         private System.Windows.Forms.DataVisualization.Charting.Chart chart1;
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.GroupBox gboxFilter;
         private System.Windows.Forms.NumericUpDown DetailFilter;
         private System.Windows.Forms.Label lbChart;
         private System.Windows.Forms.Label lbl_sysname;
