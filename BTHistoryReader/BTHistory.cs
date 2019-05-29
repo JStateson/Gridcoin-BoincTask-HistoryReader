@@ -849,6 +849,11 @@ namespace BTHistoryReader
       //frm2.Dispose();   
         private void btnShowProjectTree_Click(object sender, EventArgs e)
         {
+            if (KnownProjApps == null)
+            {
+                tb_Info.Text += "You must first open a history file\r\n";
+                return;
+            }
             InfoForm MyInfo = new InfoForm(this);
             MyInfo.ShowDialog();
             MyInfo.Dispose();

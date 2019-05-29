@@ -43,7 +43,6 @@ namespace BTHistoryReader
         {
             int i = 1;
             TreeNode n, c;
-
             foreach (cKnownProjApps kpa in KnownProjApps)
             {
                 if (kpa.nAppsUsed == 0 && ShowType==eShowType.eShowHis)  // do not show unused projects
