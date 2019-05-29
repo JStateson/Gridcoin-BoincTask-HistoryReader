@@ -29,14 +29,16 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea3 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend3 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TPchart));
             this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.labStartTime = new System.Windows.Forms.Label();
             this.cbHours = new System.Windows.Forms.ComboBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.labConcur = new System.Windows.Forms.Label();
+            this.nudConcur = new System.Windows.Forms.NumericUpDown();
             this.tbSpinBinValue = new System.Windows.Forms.TextBox();
             this.SpinBin = new System.Windows.Forms.NumericUpDown();
             this.lbBinSize = new System.Windows.Forms.Label();
@@ -45,33 +47,31 @@
             this.lbChart = new System.Windows.Forms.Label();
             this.lbl_sysname = new System.Windows.Forms.Label();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.nudConcur = new System.Windows.Forms.NumericUpDown();
-            this.labConcur = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudConcur)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.SpinBin)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.DetailFilter)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudConcur)).BeginInit();
             this.SuspendLayout();
             // 
             // chart1
             // 
-            chartArea2.AxisX.Interval = 2D;
-            chartArea2.AxisX.LabelStyle.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            chartArea2.AxisX.LabelStyle.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Auto;
-            chartArea2.AxisX.MajorGrid.Enabled = false;
-            chartArea2.AxisX.MajorTickMark.Enabled = false;
-            chartArea2.AxisX.MajorTickMark.Interval = 0D;
-            chartArea2.AxisX.MajorTickMark.IntervalOffset = 0D;
-            chartArea2.AxisX.MajorTickMark.IntervalOffsetType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Auto;
-            chartArea2.AxisX.MajorTickMark.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Auto;
-            chartArea2.AxisX.Minimum = 0D;
-            chartArea2.AxisX.Title = "Hours Back";
-            chartArea2.Name = "ChartArea1";
-            this.chart1.ChartAreas.Add(chartArea2);
-            legend2.Name = "Legend1";
-            this.chart1.Legends.Add(legend2);
+            chartArea3.AxisX.Interval = 2D;
+            chartArea3.AxisX.LabelStyle.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            chartArea3.AxisX.LabelStyle.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Auto;
+            chartArea3.AxisX.MajorGrid.Enabled = false;
+            chartArea3.AxisX.MajorTickMark.Enabled = false;
+            chartArea3.AxisX.MajorTickMark.Interval = 0D;
+            chartArea3.AxisX.MajorTickMark.IntervalOffset = 0D;
+            chartArea3.AxisX.MajorTickMark.IntervalOffsetType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Auto;
+            chartArea3.AxisX.MajorTickMark.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Auto;
+            chartArea3.AxisX.Minimum = 0D;
+            chartArea3.AxisX.Title = "Hours Back";
+            chartArea3.Name = "ChartArea1";
+            this.chart1.ChartAreas.Add(chartArea3);
+            legend3.Name = "Legend1";
+            this.chart1.Legends.Add(legend3);
             this.chart1.Location = new System.Drawing.Point(222, 25);
             this.chart1.Name = "chart1";
             this.chart1.Size = new System.Drawing.Size(537, 305);
@@ -132,6 +132,39 @@
             this.groupBox2.TabIndex = 4;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Detail Filter (0 is all)";
+            // 
+            // labConcur
+            // 
+            this.labConcur.AutoSize = true;
+            this.labConcur.Location = new System.Drawing.Point(6, 111);
+            this.labConcur.Name = "labConcur";
+            this.labConcur.Size = new System.Drawing.Size(86, 13);
+            this.labConcur.TabIndex = 10;
+            this.labConcur.Text = "Concurrent WUs";
+            // 
+            // nudConcur
+            // 
+            this.nudConcur.Location = new System.Drawing.Point(115, 104);
+            this.nudConcur.Maximum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.nudConcur.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.nudConcur.Name = "nudConcur";
+            this.nudConcur.Size = new System.Drawing.Size(36, 20);
+            this.nudConcur.TabIndex = 9;
+            this.toolTip1.SetToolTip(this.nudConcur, "Number of concurrent GPU task (defult 1)");
+            this.nudConcur.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.nudConcur.ValueChanged += new System.EventHandler(this.nudConcur_ValueChanged);
             // 
             // tbSpinBinValue
             // 
@@ -216,39 +249,6 @@
             this.lbl_sysname.TabIndex = 6;
             this.lbl_sysname.Text = "label1";
             // 
-            // nudConcur
-            // 
-            this.nudConcur.Location = new System.Drawing.Point(115, 104);
-            this.nudConcur.Maximum = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
-            this.nudConcur.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.nudConcur.Name = "nudConcur";
-            this.nudConcur.Size = new System.Drawing.Size(36, 20);
-            this.nudConcur.TabIndex = 9;
-            this.toolTip1.SetToolTip(this.nudConcur, "Number of concurrent GPU task (defult 1)");
-            this.nudConcur.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.nudConcur.ValueChanged += new System.EventHandler(this.nudConcur_ValueChanged);
-            // 
-            // labConcur
-            // 
-            this.labConcur.AutoSize = true;
-            this.labConcur.Location = new System.Drawing.Point(6, 111);
-            this.labConcur.Name = "labConcur";
-            this.labConcur.Size = new System.Drawing.Size(86, 13);
-            this.labConcur.TabIndex = 10;
-            this.labConcur.Text = "Concurrent WUs";
-            // 
             // TPchart
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -262,16 +262,15 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.Name = "TPchart";
-            this.Text = "Throughput Chart";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.TPchart_FormClosing);
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudConcur)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.SpinBin)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.DetailFilter)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudConcur)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 

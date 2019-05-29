@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.panel1 = new System.Windows.Forms.Panel();
             this.lbEditTab = new System.Windows.Forms.Label();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
@@ -44,9 +45,11 @@
             this.TBoxStats = new System.Windows.Forms.TextBox();
             this.LViewConc = new System.Windows.Forms.ListView();
             this.colUSE = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.colSysName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.btnApply = new System.Windows.Forms.Button();
             this.btnHelp = new System.Windows.Forms.Button();
-            this.colSysName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.BtnCmpSave = new System.Windows.Forms.Button();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.panel1.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -190,24 +193,26 @@
             // TBoxResults
             // 
             this.TBoxResults.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TBoxResults.Location = new System.Drawing.Point(446, 273);
+            this.TBoxResults.Location = new System.Drawing.Point(432, 273);
             this.TBoxResults.Multiline = true;
             this.TBoxResults.Name = "TBoxResults";
             this.TBoxResults.ReadOnly = true;
-            this.TBoxResults.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.TBoxResults.Size = new System.Drawing.Size(306, 133);
+            this.TBoxResults.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.TBoxResults.Size = new System.Drawing.Size(212, 133);
             this.TBoxResults.TabIndex = 8;
+            this.TBoxResults.WordWrap = false;
             // 
             // TBoxStats
             // 
             this.TBoxStats.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TBoxStats.Location = new System.Drawing.Point(773, 273);
+            this.TBoxStats.Location = new System.Drawing.Point(704, 273);
             this.TBoxStats.Multiline = true;
             this.TBoxStats.Name = "TBoxStats";
             this.TBoxStats.ReadOnly = true;
-            this.TBoxStats.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.TBoxStats.Size = new System.Drawing.Size(176, 133);
+            this.TBoxStats.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.TBoxStats.Size = new System.Drawing.Size(245, 133);
             this.TBoxStats.TabIndex = 9;
+            this.TBoxStats.WordWrap = false;
             // 
             // LViewConc
             // 
@@ -219,10 +224,10 @@
             this.LViewConc.GridLines = true;
             this.LViewConc.LabelEdit = true;
             this.LViewConc.LabelWrap = false;
-            this.LViewConc.Location = new System.Drawing.Point(133, 273);
+            this.LViewConc.Location = new System.Drawing.Point(143, 273);
             this.LViewConc.MultiSelect = false;
             this.LViewConc.Name = "LViewConc";
-            this.LViewConc.Size = new System.Drawing.Size(290, 133);
+            this.LViewConc.Size = new System.Drawing.Size(267, 133);
             this.LViewConc.TabIndex = 10;
             this.LViewConc.UseCompatibleStateImageBehavior = false;
             this.LViewConc.View = System.Windows.Forms.View.Details;
@@ -231,7 +236,12 @@
             // colUSE
             // 
             this.colUSE.Text = "Use In Stats / Num Concurrent";
-            this.colUSE.Width = 182;
+            this.colUSE.Width = 167;
+            // 
+            // colSysName
+            // 
+            this.colSysName.Text = "System";
+            this.colSysName.Width = 103;
             // 
             // btnApply
             // 
@@ -258,10 +268,15 @@
             this.btnHelp.UseVisualStyleBackColor = true;
             this.btnHelp.Click += new System.EventHandler(this.btnHelp_Click);
             // 
-            // colSysName
+            // BtnCmpSave
             // 
-            this.colSysName.Text = "System";
-            this.colSysName.Width = 103;
+            this.BtnCmpSave.Location = new System.Drawing.Point(774, 415);
+            this.BtnCmpSave.Name = "BtnCmpSave";
+            this.BtnCmpSave.Size = new System.Drawing.Size(75, 23);
+            this.BtnCmpSave.TabIndex = 13;
+            this.BtnCmpSave.Text = "Save Results";
+            this.BtnCmpSave.UseVisualStyleBackColor = true;
+            this.BtnCmpSave.Click += new System.EventHandler(this.BtnCmpSave_Click);
             // 
             // CompareHistories
             // 
@@ -269,6 +284,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
             this.ClientSize = new System.Drawing.Size(961, 450);
+            this.Controls.Add(this.BtnCmpSave);
             this.Controls.Add(this.btnHelp);
             this.Controls.Add(this.btnApply);
             this.Controls.Add(this.LViewConc);
@@ -312,5 +328,7 @@
         private System.Windows.Forms.Button btnApply;
         private System.Windows.Forms.Button btnHelp;
         private System.Windows.Forms.ColumnHeader colSysName;
+        private System.Windows.Forms.Button BtnCmpSave;
+        private System.Windows.Forms.ToolTip toolTip1;
     }
 }

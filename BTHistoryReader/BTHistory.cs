@@ -851,6 +851,7 @@ namespace BTHistoryReader
         {
             InfoForm MyInfo = new InfoForm(this);
             MyInfo.ShowDialog();
+            MyInfo.Dispose();
         }
 
         private void RunContinunityCheck()

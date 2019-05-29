@@ -7,7 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-
+using System.Runtime.InteropServices;
+using System.Diagnostics;
+using Notepad;
 namespace BTHistoryReader
 {
     public partial class CompareHistories : Form
@@ -19,6 +21,7 @@ namespace BTHistoryReader
         public List<string> SystemsCompared;
         private string strAverageAll = "Average All";
         public List<bool> bItemsToColor = new List<bool>(); // use color to show which apps have values
+
 
         public class cKPAapps
         {
@@ -196,6 +199,8 @@ namespace BTHistoryReader
             double dRms=0.0;
             double dStd;
             int nConcurrent = 1;
+            string strSPAstats = "";
+            int ncnt;
             List<double> dTemp = new List<double>();
 
             Last_sProj = sProj;
@@ -206,11 +211,11 @@ namespace BTHistoryReader
                 SystemsCompared.Clear();
             foreach (cKPAlocs ckpal in KPAlocs)                                             // for every system
             {
-                    // project name is not at strSystem !!!
+                    // system name is not at strSystem !!!
                 foreach (cKPAproj ckpap in ckpal.KPAproj)                                   // for each project in system
                 {
                     if (sProj == ckpap.sProjName)                                           // if it is the project we want
-                    {
+                    {                                             // we may want this in results if has any data
                         foreach (cKPAapps ckpaa in ckpap.KPAapps)                           // for each app in the project
                         {
                             if (ckpaa.sAppName == sApp)                                     // if it is the app we want then do analysis
@@ -218,10 +223,11 @@ namespace BTHistoryReader
                                 if (ckpaa.dLelapsedTime.Count == 0)                         // must have data
                                     continue;
                                 strLoc = Systems[ckpaa.iSystem];
-                                if (!bUseThisSystem(strLoc, strSystems)) continue;          // not sure why I used systen name here
+                                if (!bUseThisSystem(strLoc, strSystems)) continue;          // not sure why I put system name into strloc
                                 if (bMakeTable)
                                     SystemsCompared.Add(strLoc);
                                 else nConcurrent = GetConcurrency(strLoc);
+                                ncnt = 0;
                                 foreach (double d in ckpaa.dLelapsedTime)
                                 {
                                     double dd = d / nConcurrent;
@@ -229,7 +235,9 @@ namespace BTHistoryReader
                                     dAvg += dd;
                                     string strValue = dd.ToString("###,##0.00").PadLeft(12);
                                     sTemp += (strValue +"   " + strLoc +  "\r\n");
+                                    ncnt++;
                                 }
+                                strSPAstats += strLoc + ": " + sProj + "-" + sApp + "(" + ncnt.ToString() + ")\r\n";
                             }
                         }
                     }
@@ -244,11 +252,12 @@ namespace BTHistoryReader
             }
             dRms /= dTemp.Count;   
             dStd = Math.Sqrt(dRms);
-            TBoxResults.Text = sTemp;
+            TBoxResults.Text  = sTemp;
             sTemp = "Num: " + dTemp.Count.ToString("0") + "\r\n";
             sTemp += "AVG: " + dAvg.ToString("#,##0.00").PadLeft(12) + "\r\n";
             sTemp += "STD: " + dStd.ToString("#,##0.00").PadLeft(12) + "\r\n";
-            TBoxStats.Text = sTemp;
+            TBoxStats.Text = strSPAstats +"\r\n" +  sTemp;
+            toolTip1.SetToolTip(BtnCmpSave, strSystems);
         }
 
 
@@ -348,7 +357,6 @@ namespace BTHistoryReader
         private void btnHelp_Click(object sender, EventArgs e)
         {
             CompareHelp MyCompareHelp = new CompareHelp();
-            MyCompareHelp.ShowDialog();
         }
 
         // form statistics for the selected event
@@ -356,5 +364,45 @@ namespace BTHistoryReader
         {
 
         }
+
+        private void BtnCmpSave_Click(object sender, EventArgs e)
+        {
+            NotepadHelper.ShowMessage(TBoxStats.Text, toolTip1.GetToolTip(BtnCmpSave));
+        }
     }
 }
+
+
+namespace Notepad
+{
+    public static class NotepadHelper
+    {
+        [DllImport("user32.dll", EntryPoint = "SetWindowText")]
+        private static extern int SetWindowText(IntPtr hWnd, string text);
+
+        [DllImport("user32.dll", EntryPoint = "FindWindowEx")]
+        private static extern IntPtr FindWindowEx(IntPtr hwndParent, IntPtr hwndChildAfter, string lpszClass, string lpszWindow);
+
+        [DllImport("User32.dll", EntryPoint = "SendMessage")]
+        private static extern int SendMessage(IntPtr hWnd, int uMsg, int wParam, string lParam);
+
+        public static void ShowMessage(string message = null, string title = null)
+        {
+            Process notepad = Process.Start(new ProcessStartInfo("notepad.exe"));
+            if (notepad != null)
+            {
+                notepad.WaitForInputIdle();
+
+                if (!string.IsNullOrEmpty(title))
+                    SetWindowText(notepad.MainWindowHandle, title);
+
+                if (!string.IsNullOrEmpty(message))
+                {
+                    IntPtr child = FindWindowEx(notepad.MainWindowHandle, new IntPtr(0), "Edit", null);
+                    SendMessage(child, 0x000C, 0, message);
+                }
+            }
+        }
+    }
+}
+

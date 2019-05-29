@@ -113,6 +113,7 @@ namespace BTHistoryReader
 
             if (AvgGap != -1)
             {   // plotting idle time
+                this.Text = "Idle Plot";
                 i = Convert.ToInt32(StdGap / AvgGap);
                 DetailFilter.ValueChanged -= new System.EventHandler(this.DetailFilter_ValueChanged);
                 if (i < 1) DetailFilter.Value = 0;
@@ -124,6 +125,7 @@ namespace BTHistoryReader
                 return;
             }
             // plotting elapsed time
+            this.Text = "Elapsed Time";
             SaveWorking(ct.Count);
             toolTip1.SetToolTip(DetailFilter, "Change x-axis scale");
             lbSpinFilter.Text = "adj xAxis scale";
