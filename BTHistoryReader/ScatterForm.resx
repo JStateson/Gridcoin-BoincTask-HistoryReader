@@ -117,34 +117,4 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="label1.Text" xml:space="preserve">
-    <value>Copyright 2019 Joseph "Beemer Biker" Stateson
-version  30-May-2019  GRC: SLGw2i8evCmVQq5oqs2FVV6TsrsTKZbAiR
-contact:  josephy@stateson.net for bug reports, screen shots of bug or
-any comments suggestions.
-</value>
-  </data>
-  <data name="label2.Text" xml:space="preserve">
-    <value>When the program starts up it looks for the Boinctask history file
-Normally that is at AppData\Roaming\efmer\boinctasks\history
-It also looks in the directory the executable program is in.
-
-Steps
-1 - Click "Open History" and select a file
-2 - Chose a project name and then an App name from
-      the combo boxes.  Try not to edit the text in the box.
-3 - Click "DisplayHistory" and the filter will give a list you can view
-      Note that numbers may not be sequential as they were
-      sorted by completion time and slow loading if over 24 hours..
-4 - Selec all ort a start and a stop date for analysis purpose
-5 - Click "Check Continunity" and look for any unusual break in the
-      completion time else your statistics may be misleading.  Try to
-      reduce the gap size down to the STD using "next" or "prev" this
-      is useful when plotting idle or completion time.
-6 - Enter the average credits given per work unit if you know it.  This
-      is usefull for Throughput.
-7 - Enter number of GPUs or CPU cores - useful comparing ET.
-8 - Click the "Run Filter" button to get results
-9 - IIf more then 1 file is selected then a comparisons can be done.</value>
-  </data>
 </root>

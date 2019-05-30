@@ -85,6 +85,12 @@
     <Compile Include="CompareHistories.Designer.cs">
       <DependentUpon>CompareHistories.cs</DependentUpon>
     </Compile>
+    <Compile Include="ScatterForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ScatterForm.Designer.cs">
+      <DependentUpon>ScatterForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="TPchart.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -114,6 +120,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="CompareHistories.resx">
       <DependentUpon>CompareHistories.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ScatterForm.resx">
+      <DependentUpon>ScatterForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MyAbout.resx">
       <DependentUpon>MyAbout.cs</DependentUpon>

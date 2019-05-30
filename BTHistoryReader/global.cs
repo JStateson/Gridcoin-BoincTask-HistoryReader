@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
-using System.Diagnostics;
 
 namespace BTHistoryReader
 {
@@ -37,7 +36,15 @@ namespace BTHistoryReader
         public int iSystem;    // index to system data came from
     }
 
-
+    public class cSeriesData
+    {
+        public string strAppName;
+        public string strProjName;
+        public string strSystemName;
+        public List<double> dValues;
+        public bool bIsShowingApp;
+        public int nConcurrent;
+    }
 
     public enum eHindex
     {

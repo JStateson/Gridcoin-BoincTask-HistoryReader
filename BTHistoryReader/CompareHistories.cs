@@ -22,6 +22,7 @@ namespace BTHistoryReader
         public List<string> SystemsCompared_nConcurrent;
         private string strAverageAll = "Average All";
         public List<bool> bItemsToColor = new List<bool>(); // use color to show which apps have values
+        public List<cSeriesData> MySeriesData;
 
 
         public class cKPAapps
@@ -310,6 +311,7 @@ namespace BTHistoryReader
         private void LBoxApps_SelectedIndexChanged(object sender, EventArgs e)
         {
             UpdateAppInfo();
+            btnShowScatter.Visible = LBoxApps.Items.Count > 0;
         }
 
         public int GetConcurrency(string strSystem)
@@ -357,15 +359,45 @@ namespace BTHistoryReader
             }
         }
 
+        private void BackfitConcurrency(string sysname, string projname, string appname, int value)
+        {
+            foreach (cKPAlocs ckpal in KPAlocs)                          // for each system
+            {
+                foreach (cKPAproj ckpap in ckpal.KPAproj)               // for each project
+                {
+                    if (ckpap.sProjName == projname)               // for the project selected
+                    {
+                        foreach (cKPAapps ckpaa in ckpap.KPAapps)       // for each app in the project
+                        {
+                            if (ckpaa.sAppName == appname)         // is it one of the apps we want?
+                            {
+                                if (Systems[ckpaa.iSystem] == sysname)
+                                {
+                                    ckpaa.nConcurrent = value;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         private void button1_Click(object sender, EventArgs e)
         {
             string strWhatToAverage = "";
             bool bAny = false;
+            string strSysName, strProjName, strAppName;
+            int nConcurrent = 1;
             foreach(ListViewItem itm in LViewConc.Items)
             {
-                if(itm.Checked)
+                strSysName = itm.SubItems[1].Text;
+                nConcurrent = Convert.ToInt32(itm.SubItems[0].Text);
+                strProjName = LBoxProjects.Text;
+                strAppName = LBoxApps.Text;
+                BackfitConcurrency(strSysName, strProjName, strAppName, nConcurrent);
+                if (itm.Checked)
                 {
-                    strWhatToAverage += "-" + itm.SubItems[1].Text;
+                    strWhatToAverage += "-" + strSysName ;
                     bAny = true;
                 }
                 strWhatToAverage += "-";
@@ -401,6 +433,152 @@ namespace BTHistoryReader
                 itm.Text = "1";
             }
             CalcAllValues(Last_sProj, Last_sApp, false, strAverageAll);
+        }
+
+        private bool GetSysProjData(ref cSeriesData sa)
+        {
+            foreach (cKPAlocs ckpal in KPAlocs)                          // for each system
+            {
+                foreach (cKPAproj ckpap in ckpal.KPAproj)               // for each project
+                {
+                    if (ckpap.sProjName == sa.strProjName)               // for the project selected
+                    {
+                        foreach (cKPAapps ckpaa in ckpap.KPAapps)       // for each app in the project
+                        {
+                            if (ckpaa.sAppName == sa.strAppName)         // is it one of the apps we want?
+                            {
+                                if (Systems[ckpaa.iSystem] != sa.strSystemName)
+                                    continue;
+                                if (ckpaa.dLelapsedTime.Count == 0)                         // must have data
+                                    continue;
+                                foreach (double d in ckpaa.dLelapsedTime)
+                                {
+                                    sa.dValues.Add(d);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return (sa.dValues.Count > 0);
+        }
+
+        private bool GetAllAppData(ref cSeriesData sa)
+        {
+            foreach(cKPAlocs ckpal in KPAlocs)                          // for each system
+            {
+                foreach(cKPAproj ckpap in ckpal.KPAproj )               // for each project
+                {
+                    if(ckpap.sProjName == sa.strProjName)               // for the project selected
+                    {
+                        foreach (cKPAapps ckpaa in ckpap.KPAapps)       // for each app in the project
+                        {
+                            if(ckpaa.sAppName == sa.strAppName)         // is it one of the apps we want?
+                            {
+                                if (ckpaa.dLelapsedTime.Count == 0)
+                                    continue;
+                                //sa.nConcurrent = GetConcurrency(Systems[ckpaa.iSystem]);
+                                //this does not work as it uses the box only that one project is in there
+                                foreach(double d in ckpaa.dLelapsedTime)
+                                {
+                                    sa.dValues.Add(d/ ckpaa.nConcurrent);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return (sa.dValues.Count > 0) ;
+        }
+
+        private List<string> strAppsForSeries;
+        private bool FormSeriesFromApps(int n)
+        {
+            strAppsForSeries = new List<string>(n);
+            foreach(string strInfo in LBoxApps.Items)
+            {
+                int i = strInfo.IndexOf(") ");  // really need the name of the app
+                if (i < 2) return false;        // cant be
+                string strApp = strInfo.Substring(i+2);
+                strAppsForSeries.Add(strApp);
+            }
+            MySeriesData = new List<cSeriesData>(n);
+            foreach(string strName in strAppsForSeries)
+            {
+                cSeriesData sa = new cSeriesData();
+                sa.strAppName = strName;
+                sa.strProjName = LBoxProjects.Text;
+                sa.dValues = new List<double>();
+                sa.bIsShowingApp = true;
+                sa.nConcurrent = 1; // this may be overwritten when data is obtain as we dont know the system yet
+                if (GetAllAppData(ref sa))
+                {
+                    MySeriesData.Add(sa);
+                }
+                else sa = null;
+            }
+            return MySeriesData.Count > 0;
+        }
+
+       
+
+        private bool FormSeriesFromProjects(int n)
+        {
+            int NumChecked = 0;
+            MySeriesData = new List<cSeriesData>();                 // must be only those checked, not all
+            foreach (ListViewItem itm in LViewConc.Items)
+            {
+                if(itm.Checked)
+                {
+                    cSeriesData sa = new cSeriesData();
+                    NumChecked++;
+                    sa.strSystemName = itm.SubItems[1].Text;
+                    int i = LBoxApps.Text.IndexOf(") ");  // really need the name of the app
+                    if (i < 3) return false;        // cant be
+                    sa.strAppName = LBoxApps.Text.Substring(i + 2);
+                    sa.strProjName = LBoxProjects.Text;
+                    sa.dValues = new List<double>();
+                    sa.bIsShowingApp = false;
+                    sa.nConcurrent = Convert.ToInt32(itm.SubItems[0].Text);
+                    if (GetSysProjData(ref sa))
+                    {
+                        MySeriesData.Add(sa);
+                    }
+                    else sa = null;
+                }
+            }  
+            return NumChecked > 0;
+        }
+
+        private bool GetScatterData()
+        {
+            int n;
+            if (rbScatApps.Checked)
+            {
+                n = LBoxApps.Items.Count;
+                if (n == 0) return false;
+                return FormSeriesFromApps(n);
+            }
+            else
+            {
+                n = LViewConc.Items.Count;
+                return FormSeriesFromProjects(n);
+            }
+        }
+
+        private void ShowScatter()
+        {
+            ScatterForm PlotScatter = new ScatterForm(ref MySeriesData);
+            PlotScatter.ShowDialog();
+            PlotScatter.Dispose();
+        }
+
+        private void btnShowScatter_Click(object sender, EventArgs e)
+        {
+            if(GetScatterData())
+            {
+                ShowScatter();
+            }
         }
     }
 }

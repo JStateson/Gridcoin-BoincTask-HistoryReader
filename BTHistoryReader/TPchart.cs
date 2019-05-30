@@ -29,6 +29,7 @@ namespace BTHistoryReader
         private int iBinCnt = 2;   // 2 (show in spinner box) raised to power of 1 (spinner value) 
         private string strStartDT;  // date and time started (x axis origin)
 
+
         private void ShowOrHideHist(bool bValue)
         {
             lbBinSize.Visible = bValue;
