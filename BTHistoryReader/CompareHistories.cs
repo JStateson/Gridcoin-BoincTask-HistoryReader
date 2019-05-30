@@ -18,7 +18,8 @@ namespace BTHistoryReader
         public List<string> Projects;
         public List<string> Systems;
         public List<cKPAlocs> KPAlocs;
-        public List<string> SystemsCompared;
+        public List<string> SystemsCompared;    // this and following are paired
+        public List<string> SystemsCompared_nConcurrent;
         private string strAverageAll = "Average All";
         public List<bool> bItemsToColor = new List<bool>(); // use color to show which apps have values
 
@@ -32,6 +33,7 @@ namespace BTHistoryReader
             {
                 dLelapsedTime.Add(d);
             }
+            public int nConcurrent = 1;    // save info to allow restoreing when switching across apps and systems
         }
 
         public string Last_sProj="";
@@ -80,6 +82,7 @@ namespace BTHistoryReader
             KPAlocs = new List<cKPAlocs>();
             Systems = new List<string>();;
             SystemsCompared = new List<string>();
+            SystemsCompared_nConcurrent = new List<string>();
             int iSystem = -1;
             int NumberProjects = 0;
 
@@ -188,6 +191,13 @@ namespace BTHistoryReader
             return strListOfUsed.Contains(strQualifier);
         }
 
+        private string strDivide(int n)
+        {
+            if (n == 1) return "";
+            return "/" + n.ToString();
+        }
+
+
         // if bMakeTable is not true then we are recalculating using number of devices from table
         private void CalcAllValues(string sProj, string sApp, bool bMakeTable, string strSystems)
         {
@@ -198,7 +208,6 @@ namespace BTHistoryReader
             double dAvg=0.0;
             double dRms=0.0;
             double dStd;
-            int nConcurrent = 1;
             string strSPAstats = "";
             int ncnt;
             List<double> dTemp = new List<double>();
@@ -208,7 +217,11 @@ namespace BTHistoryReader
             btnApply.Visible = true;
 
             if(bMakeTable)
+            {
                 SystemsCompared.Clear();
+                SystemsCompared_nConcurrent.Clear();
+            }
+
             foreach (cKPAlocs ckpal in KPAlocs)                                             // for every system
             {
                     // system name is not at strSystem !!!
@@ -225,19 +238,26 @@ namespace BTHistoryReader
                                 strLoc = Systems[ckpaa.iSystem];
                                 if (!bUseThisSystem(strLoc, strSystems)) continue;          // not sure why I put system name into strloc
                                 if (bMakeTable)
+                                {
                                     SystemsCompared.Add(strLoc);
-                                else nConcurrent = GetConcurrency(strLoc);
+                                    SystemsCompared_nConcurrent.Add(ckpaa.nConcurrent.ToString());
+                                }
+
+                                else
+                                {
+                                    ckpaa.nConcurrent = GetConcurrency(strLoc);
+                                }
                                 ncnt = 0;
                                 foreach (double d in ckpaa.dLelapsedTime)
                                 {
-                                    double dd = d / nConcurrent;
+                                    double dd = d / ckpaa.nConcurrent;
                                     dTemp.Add(dd);
                                     dAvg += dd;
                                     string strValue = dd.ToString("###,##0.00").PadLeft(12);
                                     sTemp += (strValue +"   " + strLoc +  "\r\n");
                                     ncnt++;
                                 }
-                                strSPAstats += strLoc + ": " + sProj + "-" + sApp + "(" + ncnt.ToString() + ")\r\n";
+                                strSPAstats += strLoc + ": " + sProj + "-" + sApp + "(" + ncnt.ToString()  + ")" + strDivide(ckpaa.nConcurrent) +"\r\n";
                             }
                         }
                     }
@@ -264,6 +284,7 @@ namespace BTHistoryReader
 
         private void UpdateAppInfo()
         {
+            int i = 0;
             string strAppSelected = LBoxApps.Text;
             string[] strSysConc;
             ListViewItem itm;
@@ -276,11 +297,12 @@ namespace BTHistoryReader
             foreach (string s in SystemsCompared)
             {
                 strSysConc = new string[3];
-                strSysConc[0] = "1";
+                strSysConc[0] = SystemsCompared_nConcurrent[i];
                 strSysConc[1] = s;
                 itm = new ListViewItem(strSysConc);
                 itm.Checked = true;
                 LViewConc.Items.Add(itm);
+                i++;
             }
             ShowPBar(false);
         }
@@ -363,11 +385,22 @@ namespace BTHistoryReader
         private void LViewConc_SelectedIndexChanged(object sender, EventArgs e)
         {
 
+
         }
 
         private void BtnCmpSave_Click(object sender, EventArgs e)
         {
             NotepadHelper.ShowMessage(TBoxStats.Text, toolTip1.GetToolTip(BtnCmpSave));
+        }
+
+        private void btnReset_Click(object sender, EventArgs e)
+        {
+            foreach(ListViewItem itm in LViewConc.Items)
+            {
+                itm.Checked = true;
+                itm.Text = "1";
+            }
+            CalcAllValues(Last_sProj, Last_sApp, false, strAverageAll);
         }
     }
 }

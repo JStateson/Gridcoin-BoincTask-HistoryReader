@@ -51,6 +51,7 @@
             this.BtnCmpSave = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.label3 = new System.Windows.Forms.Label();
+            this.btnReset = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -289,12 +290,26 @@
             this.label3.TabIndex = 14;
             this.label3.Text = "All time values are in minutes or fraction thereof";
             // 
+            // btnReset
+            // 
+            this.btnReset.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.btnReset.ForeColor = System.Drawing.Color.DarkRed;
+            this.btnReset.Location = new System.Drawing.Point(12, 383);
+            this.btnReset.Name = "btnReset";
+            this.btnReset.Size = new System.Drawing.Size(75, 23);
+            this.btnReset.TabIndex = 15;
+            this.btnReset.Text = "Reset";
+            this.toolTip1.SetToolTip(this.btnReset, "check all and set number concurrent to 1");
+            this.btnReset.UseVisualStyleBackColor = false;
+            this.btnReset.Click += new System.EventHandler(this.btnReset_Click);
+            // 
             // CompareHistories
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
             this.ClientSize = new System.Drawing.Size(961, 450);
+            this.Controls.Add(this.btnReset);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.BtnCmpSave);
             this.Controls.Add(this.btnHelp);
@@ -343,5 +358,6 @@
         private System.Windows.Forms.Button BtnCmpSave;
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Button btnReset;
     }
 }
