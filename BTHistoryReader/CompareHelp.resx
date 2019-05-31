@@ -125,14 +125,24 @@ inclusive database (lot of history) for this to be useful  The
 following example assume LHC and only one system for statistics.
 
 Select LHC 
- - You might have 285 sse2 and 77 of the avx.
-Select the 285 LHCs and uncheck all but the systems you want
+ - You might have 127 sse2 and 98 of the avx.
+Select the 127 LHCs and uncheck all but the systems you want
  The elapsed time is shown in the box.
 If you known tha system is running 2 concurrent tasks then
-put in a 2 and click on the Apply Calculations and copy the 
-results to notepad.  
+put in a 2 and click on the Apply Calculations.  Click the SAVE
+button to save to notepad.  
 
-- Select the 369 SETIs and compare the results to what you have
-in notepad</value>
+To do a valid comparion you should only check one system,
+save the results, then uncheck before selecting another system.
+
+Plots: 
+
+       Plot These Apps
+All apps shown in the Applicatins box will be plotted
+irregardless of which one is selected.
+
+        Plot systems
+All systems shown in below will have the application plotted.
+Be sure to select the application you wish to see.</value>
   </data>
 </root>

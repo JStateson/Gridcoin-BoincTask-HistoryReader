@@ -30,7 +30,6 @@
         {
             this.components = new System.ComponentModel.Container();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.CBoxLONG = new System.Windows.Forms.CheckBox();
             this.btnAbout = new System.Windows.Forms.Button();
             this.btnShowProjectTree = new System.Windows.Forms.Button();
             this.gb_filter = new System.Windows.Forms.GroupBox();
@@ -70,16 +69,26 @@
             this.btn_OpenHistory = new System.Windows.Forms.Button();
             this.ofd_history = new System.Windows.Forms.OpenFileDialog();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.rbUseCVS = new System.Windows.Forms.RadioButton();
+            this.rbUseCVS1 = new System.Windows.Forms.RadioButton();
+            this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.rbIgnoreLongs = new System.Windows.Forms.RadioButton();
+            this.rbOnlyLongs = new System.Windows.Forms.RadioButton();
             this.panel1.SuspendLayout();
             this.gb_filter.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
+            this.groupBox3.SuspendLayout();
+            this.groupBox4.SuspendLayout();
+            this.groupBox5.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
             // 
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel1.Controls.Add(this.CBoxLONG);
+            this.panel1.Controls.Add(this.groupBox3);
             this.panel1.Controls.Add(this.btnAbout);
             this.panel1.Controls.Add(this.btnShowProjectTree);
             this.panel1.Controls.Add(this.gb_filter);
@@ -93,20 +102,6 @@
             this.panel1.Size = new System.Drawing.Size(937, 534);
             this.panel1.TabIndex = 0;
             this.panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.panel1_Paint);
-            // 
-            // CBoxLONG
-            // 
-            this.CBoxLONG.AutoSize = true;
-            this.CBoxLONG.Checked = true;
-            this.CBoxLONG.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.CBoxLONG.Location = new System.Drawing.Point(173, 34);
-            this.CBoxLONG.Name = "CBoxLONG";
-            this.CBoxLONG.Size = new System.Drawing.Size(106, 17);
-            this.CBoxLONG.TabIndex = 9;
-            this.CBoxLONG.Text = "Ignore \"LONGS\"";
-            this.toolTip1.SetToolTip(this.CBoxLONG, "When selecting multiple files, ignore any with _long_\r\nin the filename.  Simplifi" +
-        "es omitting usually empty empty files.");
-            this.CBoxLONG.UseVisualStyleBackColor = true;
             // 
             // btnAbout
             // 
@@ -316,9 +311,9 @@
             this.groupBox2.Controls.Add(this.rbElapsed);
             this.groupBox2.Controls.Add(this.tb_Results);
             this.groupBox2.Controls.Add(this.rbThroughput);
-            this.groupBox2.Location = new System.Drawing.Point(16, 327);
+            this.groupBox2.Location = new System.Drawing.Point(16, 352);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(500, 192);
+            this.groupBox2.Size = new System.Drawing.Size(500, 167);
             this.groupBox2.TabIndex = 5;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Type Analysis";
@@ -326,7 +321,7 @@
             // rbIdle
             // 
             this.rbIdle.AutoSize = true;
-            this.rbIdle.Location = new System.Drawing.Point(6, 93);
+            this.rbIdle.Location = new System.Drawing.Point(6, 83);
             this.rbIdle.Name = "rbIdle";
             this.rbIdle.Size = new System.Drawing.Size(68, 17);
             this.rbIdle.TabIndex = 6;
@@ -337,7 +332,7 @@
             // rbElapsed
             // 
             this.rbElapsed.AutoSize = true;
-            this.rbElapsed.Location = new System.Drawing.Point(6, 62);
+            this.rbElapsed.Location = new System.Drawing.Point(6, 52);
             this.rbElapsed.Name = "rbElapsed";
             this.rbElapsed.Size = new System.Drawing.Size(111, 17);
             this.rbElapsed.TabIndex = 5;
@@ -349,7 +344,7 @@
             // tb_Results
             // 
             this.tb_Results.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tb_Results.Location = new System.Drawing.Point(133, 19);
+            this.tb_Results.Location = new System.Drawing.Point(145, 19);
             this.tb_Results.Multiline = true;
             this.tb_Results.Name = "tb_Results";
             this.tb_Results.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
@@ -360,7 +355,7 @@
             // 
             this.rbThroughput.AutoSize = true;
             this.rbThroughput.Checked = true;
-            this.rbThroughput.Location = new System.Drawing.Point(6, 33);
+            this.rbThroughput.Location = new System.Drawing.Point(6, 23);
             this.rbThroughput.Name = "rbThroughput";
             this.rbThroughput.Size = new System.Drawing.Size(80, 17);
             this.rbThroughput.TabIndex = 0;
@@ -383,7 +378,7 @@
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Controls.Add(this.cb_AppNames);
-            this.groupBox1.Location = new System.Drawing.Point(16, 159);
+            this.groupBox1.Location = new System.Drawing.Point(16, 184);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(500, 162);
             this.groupBox1.TabIndex = 4;
@@ -495,7 +490,7 @@
             // 
             // tb_Info
             // 
-            this.tb_Info.Location = new System.Drawing.Point(16, 73);
+            this.tb_Info.Location = new System.Drawing.Point(16, 110);
             this.tb_Info.Multiline = true;
             this.tb_Info.Name = "tb_Info";
             this.tb_Info.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
@@ -505,7 +500,7 @@
             // lb_history_loc
             // 
             this.lb_history_loc.AutoSize = true;
-            this.lb_history_loc.Location = new System.Drawing.Point(3, 12);
+            this.lb_history_loc.Location = new System.Drawing.Point(13, 2);
             this.lb_history_loc.Name = "lb_history_loc";
             this.lb_history_loc.Size = new System.Drawing.Size(189, 13);
             this.lb_history_loc.TabIndex = 1;
@@ -527,6 +522,87 @@
             this.ofd_history.Filter = "CVS Files|*.cvs";
             this.ofd_history.Multiselect = true;
             // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(this.groupBox5);
+            this.groupBox3.Controls.Add(this.groupBox4);
+            this.groupBox3.Location = new System.Drawing.Point(210, 16);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(306, 88);
+            this.groupBox3.TabIndex = 10;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "Open File Settings";
+            this.toolTip1.SetToolTip(this.groupBox3, "Defalt is CVS1 and no longs");
+            // 
+            // groupBox4
+            // 
+            this.groupBox4.Controls.Add(this.rbUseCVS);
+            this.groupBox4.Controls.Add(this.rbUseCVS1);
+            this.groupBox4.Location = new System.Drawing.Point(146, 19);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Size = new System.Drawing.Size(135, 66);
+            this.groupBox4.TabIndex = 11;
+            this.groupBox4.TabStop = false;
+            // 
+            // rbUseCVS
+            // 
+            this.rbUseCVS.AutoSize = true;
+            this.rbUseCVS.Location = new System.Drawing.Point(30, 33);
+            this.rbUseCVS.Name = "rbUseCVS";
+            this.rbUseCVS.Size = new System.Drawing.Size(68, 17);
+            this.rbUseCVS.TabIndex = 14;
+            this.rbUseCVS.Text = "Use CVS";
+            this.toolTip1.SetToolTip(this.rbUseCVS, "Files with this extension will contain active tasks that\r\nhave not completed and " +
+        "thus will generate various\r\nwarning");
+            this.rbUseCVS.UseVisualStyleBackColor = true;
+            // 
+            // rbUseCVS1
+            // 
+            this.rbUseCVS1.AutoSize = true;
+            this.rbUseCVS1.Checked = true;
+            this.rbUseCVS1.Location = new System.Drawing.Point(30, 17);
+            this.rbUseCVS1.Name = "rbUseCVS1";
+            this.rbUseCVS1.Size = new System.Drawing.Size(74, 17);
+            this.rbUseCVS1.TabIndex = 13;
+            this.rbUseCVS1.TabStop = true;
+            this.rbUseCVS1.Text = "Use CVS1";
+            this.toolTip1.SetToolTip(this.rbUseCVS1, "This contains completed work units but\r\nmay not have the most recent depending\r\no" +
+        "n how often history is updated");
+            this.rbUseCVS1.UseVisualStyleBackColor = true;
+            // 
+            // groupBox5
+            // 
+            this.groupBox5.Controls.Add(this.rbOnlyLongs);
+            this.groupBox5.Controls.Add(this.rbIgnoreLongs);
+            this.groupBox5.Location = new System.Drawing.Point(6, 19);
+            this.groupBox5.Name = "groupBox5";
+            this.groupBox5.Size = new System.Drawing.Size(134, 63);
+            this.groupBox5.TabIndex = 12;
+            this.groupBox5.TabStop = false;
+            this.toolTip1.SetToolTip(this.groupBox5, "Selecting IGNORE allows files to show up but not be read");
+            // 
+            // rbIgnoreLongs
+            // 
+            this.rbIgnoreLongs.AutoSize = true;
+            this.rbIgnoreLongs.Checked = true;
+            this.rbIgnoreLongs.Location = new System.Drawing.Point(6, 16);
+            this.rbIgnoreLongs.Name = "rbIgnoreLongs";
+            this.rbIgnoreLongs.Size = new System.Drawing.Size(87, 17);
+            this.rbIgnoreLongs.TabIndex = 0;
+            this.rbIgnoreLongs.TabStop = true;
+            this.rbIgnoreLongs.Text = "Ignore Longs";
+            this.rbIgnoreLongs.UseVisualStyleBackColor = true;
+            // 
+            // rbOnlyLongs
+            // 
+            this.rbOnlyLongs.AutoSize = true;
+            this.rbOnlyLongs.Location = new System.Drawing.Point(6, 39);
+            this.rbOnlyLongs.Name = "rbOnlyLongs";
+            this.rbOnlyLongs.Size = new System.Drawing.Size(108, 17);
+            this.rbOnlyLongs.TabIndex = 1;
+            this.rbOnlyLongs.Text = "Only Long History";
+            this.rbOnlyLongs.UseVisualStyleBackColor = true;
+            // 
             // BTHistory
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -545,6 +621,11 @@
             this.groupBox2.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            this.groupBox3.ResumeLayout(false);
+            this.groupBox4.ResumeLayout(false);
+            this.groupBox4.PerformLayout();
+            this.groupBox5.ResumeLayout(false);
+            this.groupBox5.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -590,7 +671,13 @@
         private System.Windows.Forms.Label lbSeriesTime;
         private System.Windows.Forms.Button btnPlotET;
         private System.Windows.Forms.Button btnCheckPrev;
-        private System.Windows.Forms.CheckBox CBoxLONG;
+        private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.GroupBox groupBox5;
+        private System.Windows.Forms.RadioButton rbOnlyLongs;
+        private System.Windows.Forms.RadioButton rbIgnoreLongs;
+        private System.Windows.Forms.GroupBox groupBox4;
+        private System.Windows.Forms.RadioButton rbUseCVS;
+        private System.Windows.Forms.RadioButton rbUseCVS1;
     }
 }
 

@@ -15,6 +15,10 @@ namespace BTHistoryReader
 
         List<cSeriesData> ThisSeriesData;
 
+        private string SeriesName = "";
+        private double dBig = -1;
+        private string strSeries = "Elapsed Time in ";
+        private string strUnits = "";
 
         public ScatterForm(ref List<cSeriesData> refSD)
         {
@@ -32,7 +36,7 @@ namespace BTHistoryReader
 
         private double GetBestScaleingUpper(double a)
         {
-            int iSig = 1;
+            int iSig = (int) nudXscale.Value;
             double r = 1.0 / (1 + iSig);
             if (a < 10) return Math.Max(a, 10 * r);
             if (a < 100) return Math.Max(a, 100 * r);
@@ -59,9 +63,8 @@ namespace BTHistoryReader
         private void ShowScatter()
         {
             double d=0;
-            string strSeries = "Elapsed Time in ";
-            string strUnits = "";
-            double dSmall = 1e6, dBig = -1;
+
+            double dSmall = 1e6;
             foreach (cSeriesData sd in ThisSeriesData)
             {
                 int n = sd.dValues.Count;
@@ -76,6 +79,7 @@ namespace BTHistoryReader
                 }
 
                 string seriesname = sd.bIsShowingApp ? sd.strAppName : sd.strSystemName;
+                SeriesName = seriesname;
                 ChartScatter.Series.Add(seriesname);
                 ChartScatter.Series[seriesname].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Point;
                 ChartScatter.Series[seriesname].Points.DataBindXY(sd.dValues.ToArray(), yAxis.ToArray());
@@ -86,6 +90,13 @@ namespace BTHistoryReader
             ChartScatter.ChartAreas["ChartArea1"].AxisX.Maximum = GetBestScaleingUpper(dBig);
             ChartScatter.ChartAreas["ChartArea1"].AxisX.Minimum = GetBestScaleingBottom(dSmall);
             ChartScatter.ChartAreas["ChartArea1"].AxisX.LabelStyle.Format = "#.#";
+        }
+
+        private void nudXscale_ValueChanged(object sender, EventArgs e)
+        {
+            strUnits = BestTimeUnits(dBig, ref dBig);
+            ChartScatter.Legends["Legend1"].Title = strSeries + strUnits;
+            ChartScatter.ChartAreas["ChartArea1"].AxisX.Maximum = GetBestScaleingUpper(dBig);
         }
     }
 }

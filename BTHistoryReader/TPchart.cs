@@ -28,7 +28,9 @@ namespace BTHistoryReader
         private long LKBhours = 24;
         private int iBinCnt = 2;   // 2 (show in spinner box) raised to power of 1 (spinner value) 
         private string strStartDT;  // date and time started (x axis origin)
-
+        private double dFirst, dLast;
+        List<double> xAxis;
+        List<double> yAxis;
 
         private void ShowOrHideHist(bool bValue)
         {
@@ -175,10 +177,10 @@ namespace BTHistoryReader
         private void DrawHist()
         {
             int i, n;
-            double d, dFirst, dLast ;
+            double d;
             dConcurrent = Convert.ToDouble(nudConcur.Value);
-            List<double> xAxis = new List<double>();
-            List<double> yAxis = new List<double>();
+            xAxis = new List<double>();
+            yAxis = new List<double>();
             chart1.Series.Add(sET);
             chart1.Series["ElapsedTime"].AxisLabel = "";
             chart1.ChartAreas["ChartArea1"].AxisX.Title = "Elapsed Time(sec)";
@@ -214,8 +216,8 @@ namespace BTHistoryReader
         // if the elapsed time is smaller than the gap, then the gap is project idle time
         private void DrawStuff()
         {
-            List<double> xAxis = new List<double>();
-            List<double> yAxis = new List<double>();
+            xAxis = new List<double>();
+            yAxis = new List<double>();
             double d;
             double tMinutes;    // total minutes
             double tHours;
@@ -277,12 +279,22 @@ namespace BTHistoryReader
 
         private void DetailFilter_ValueChanged(object sender, EventArgs e)
         {
-            iSig  = Convert.ToInt32(DetailFilter.Value);
-            if(bDoingHist)
+            double d;
+            int n;
+            iSig = Convert.ToInt32(DetailFilter.Value);
+            if (bDoingHist)
             {
-                DrawHistChanged();
+                dLast = GetBestScaleingUpper(xAxis.Last());
+                chart1.ChartAreas["ChartArea1"].AxisX.Maximum = dLast;
+                dFirst = GetBestScaleingBottom(xAxis.First());
+                chart1.ChartAreas["ChartArea1"].AxisX.Minimum = dFirst;
+                d = dLast - dFirst;
+                d = Math.Floor(Math.Log10(d));
+                n = Convert.ToInt32(Math.Pow(10, d));
+                chart1.ChartAreas["ChartArea1"].AxisX.Interval = n;
                 return;
             }
+            //TODO: the following needs to be change to avoid a total recalculate
             DrawIdleChanged();
         }
 

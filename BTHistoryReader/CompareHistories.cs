@@ -411,6 +411,8 @@ namespace BTHistoryReader
         private void btnHelp_Click(object sender, EventArgs e)
         {
             CompareHelp MyCompareHelp = new CompareHelp();
+            MyCompareHelp.ShowDialog();
+            MyCompareHelp.Dispose();
         }
 
         // form statistics for the selected event

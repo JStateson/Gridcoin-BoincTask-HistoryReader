@@ -41,7 +41,7 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(12, 9);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(318, 208);
+            this.label1.Size = new System.Drawing.Size(318, 338);
             this.label1.TabIndex = 0;
             this.label1.Text = resources.GetString("label1.Text");
             // 
@@ -61,7 +61,7 @@
             this.pictureBox1.Image = global::BTHistoryReader.Properties.Resources.CH_image;
             this.pictureBox1.Location = new System.Drawing.Point(3, 15);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(965, 484);
+            this.pictureBox1.Size = new System.Drawing.Size(965, 497);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
             this.pictureBox1.TabIndex = 0;
             this.pictureBox1.TabStop = false;

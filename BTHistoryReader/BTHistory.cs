@@ -72,6 +72,15 @@ namespace BTHistoryReader
             return Lpadto(strVal, iPadSize) + " ";
         }
 
+        // this also sets the filter in the file open dialog box
+        private string GetHistoryExtension()
+        {
+            string strExt = rbUseCVS1.Checked ? "*.cvs1" : "*.cvs";
+            string strForceLong = rbOnlyLongs.Checked ? "*_long_" : "" ;
+            ofd_history.Filter = "Histories|" + strForceLong + strExt;
+            return strExt;
+        }
+
 
         public int LookupApp(string strIn, int iLoc)
         {
@@ -320,7 +329,7 @@ namespace BTHistoryReader
             string str_LookHere = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             int nFiles = 0;
 
-            ofd_history.DefaultExt = ".cvs?";
+            ofd_history.DefaultExt = GetHistoryExtension();
             str_PathToHistory = str_LookHere + str_WantedDirectory;
             tb_Results.Text = "";
             if (!Directory.Exists(str_PathToHistory))
@@ -331,7 +340,7 @@ namespace BTHistoryReader
                 str_LookHere = str_PathToHistory + "\r\n";
                 tb_Info.Text += str_LookHere;
             }
-            foreach (string sFile in Directory.GetFiles(str_PathToHistory, "*.cvs"))
+            foreach (string sFile in Directory.GetFiles(str_PathToHistory, GetHistoryExtension()))
                 nFiles++;
 
             ofd_history.InitialDirectory = str_PathToHistory;
@@ -340,7 +349,7 @@ namespace BTHistoryReader
 
         private void PerformSelectCompare()
         {
-            CompareHistories MyHistories = new CompareHistories(this, CBoxLONG.Checked);
+            CompareHistories MyHistories = new CompareHistories(this, rbIgnoreLongs.Checked);
             MyHistories.ShowDialog();
             ClearPreviousHistory();
         }
