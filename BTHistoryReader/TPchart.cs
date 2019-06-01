@@ -168,6 +168,25 @@ namespace BTHistoryReader
         {
             LKBhours = Convert.ToInt64(cbHours.Text);
             if (LKBhours < 1) LKBhours = 1;
+            // the std and average probably changed
+
+        }
+        private void GetChangedStats()
+        {
+            double avg = 0, rms = 0, std;
+            for (int i = 0; i < iLastIndex; i++)
+            {
+                avg += WORKit[i];
+            }
+            avg /= iLastIndex;
+            for (int i = 0; i < iLastIndex; i++)
+            {
+                double d = WORKit[i] - avg;
+                rms += d * d;
+            }
+            std = Math.Sqrt(rms / iLastIndex);
+            AvgGap = avg;
+            StdGap = std;
         }
 
         // used for x axis only
@@ -331,17 +350,13 @@ namespace BTHistoryReader
             chart1.Series.Remove(sET);
         }
 
+        // this only applies to Idle plots
         private void cbHours_SelectedIndexChanged(object sender, EventArgs e)
         {
             GetLKHours();
-            if (bDoingHist)
-            {
-                DrawHistChanged();
-            }
-            else
-            {
-                DrawIdleChanged();
-            }
+            SetLastTimeDisplayed();
+            GetChangedStats();
+            DrawIdleChanged();
         }
 
         private void SpinBin_ValueChanged(object sender, EventArgs e)

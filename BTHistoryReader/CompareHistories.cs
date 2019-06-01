@@ -403,6 +403,21 @@ namespace BTHistoryReader
             }
         }
 
+
+        private void BackfitAllConcurrency(int value)
+        {
+            foreach (cKPAlocs ckpal in KPAlocs)                          // for each system
+            {
+                foreach (cKPAproj ckpap in ckpal.KPAproj)               // for each project
+                {
+                    foreach (cKPAapps ckpaa in ckpap.KPAapps)       // for each app in the project
+                    {
+                        ckpaa.nConcurrent = value;
+                    }
+                }
+            }
+        }
+
         private void button1_Click(object sender, EventArgs e)
         {
             string strWhatToAverage = "";
@@ -455,6 +470,7 @@ namespace BTHistoryReader
                 itm.Checked = true;
                 itm.Text = "1";
             }
+            BackfitAllConcurrency( 1);
             CalcAllValues(Last_sProj, Last_sApp, false, strAverageAll);
         }
 
