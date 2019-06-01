@@ -61,31 +61,53 @@ namespace BTHistoryReader
             return " days";
         }
 
+        /*
+         * if elapsed time is over 60 seconds, scale time to minutes
+         * same for minutes and hours
+        */
+
+        private string SetMinMax(ref double f)
+        {
+            double d = 0;
+            dSmall = 1e6;
+            dBig = -1;
+            foreach(cSeriesData sd in ThisSeriesData)
+            {
+                if (sd.dSmall < dSmall) dSmall = sd.dSmall;
+                if (sd.dBig > dBig) dBig = sd.dBig;                
+            }
+            string strUnits = BestTimeUnits(dBig, ref d);
+            f = d / dBig;
+            dSmall *= f;
+            dBig = d;
+            return strUnits;
+        }
+
+        // draw points vertical one over the other from 1 to n but normalzed to 0.0 to 1.0
+        // the x axis position is the elapsed time.
         private void ShowScatter()
         {
             double d=0;
-            double f, dBworking, dSworking;
-            dSmall = 1e6;
-            dBig = -1;
-
+            double f = 0;
+            string strUnits = SetMinMax(ref f);
             foreach (cSeriesData sd in ThisSeriesData)
             {
                 int n = sd.dValues.Count;
                 List<double> yAxis = new List<double>(n);
-                for(int i = 0; i < n; i++)
+                List<double> xAxis = new List<double>(n);
+                for (int i = 0; i < n; i++)
                 {
-                    d = sd.dValues[i];
-                    dSmall = Math.Min(dSmall,d);
-                    dBig = Math.Max(dBig, d);
                     d = Convert.ToDouble(i) / n;
                     yAxis.Add(d);
+                    d = sd.dValues[i];
+                    xAxis.Add(d * f);
                 }
 
                 string seriesname = sd.bIsShowingApp ? sd.strAppName : sd.strSystemName;
                 SeriesName = seriesname;
                 ChartScatter.Series.Add(seriesname);
                 ChartScatter.Series[seriesname].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Point;
-                ChartScatter.Series[seriesname].Points.DataBindXY(sd.dValues.ToArray(), yAxis.ToArray());
+                ChartScatter.Series[seriesname].Points.DataBindXY(xAxis.ToArray(), yAxis.ToArray());
             }
             /*
                     this was not thought out correctly.  Do not want the scale set, just want to show minutes instread of huge seconds.
@@ -102,6 +124,7 @@ namespace BTHistoryReader
 
         private void nudXscale_ValueChanged(object sender, EventArgs e)
         {
+            ChartScatter.ChartAreas["ChartArea1"].AxisX.Maximum = GetBestScaleingUpper(dBig);
             return;
             /*
              *             double d = 0, f, dBworking, dSworking;

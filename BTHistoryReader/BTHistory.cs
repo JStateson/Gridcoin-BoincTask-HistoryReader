@@ -23,6 +23,16 @@ namespace BTHistoryReader
         public BTHistory()
         {
             InitializeComponent();
+            try
+            {
+                bool b = Properties.Settings.Default.TypeCVS;
+                if (!b) rbUseCVS.Checked = true;
+                else rbUseCVS1.Checked = true;
+            }
+            catch
+            {
+                Properties.Settings.Default.TypeCVS = true;
+            }
         }
 
         private int iLocMaxDiff;
@@ -296,6 +306,12 @@ namespace BTHistoryReader
             tb_Results.Text = "";
         }
 
+        private void ClearForNewProject()
+        {
+            lb_SelWorkUnits.Items.Clear();
+            ClearInfoTables();
+        }
+
         public void ClearPreviousHistory()
         {
             if (ThisProjectInfo != null)
@@ -316,7 +332,6 @@ namespace BTHistoryReader
         private void ShowNumberApps()
         {
             lb_nApps.Visible = cb_AppNames.Items.Count > 0;
-            btnFetchHistory.Enabled = lb_nApps.Visible;
             if (lb_nApps.Visible)
             {
                 lb_nApps.Text = cb_AppNames.Items.Count.ToString();
@@ -561,9 +576,11 @@ namespace BTHistoryReader
         private void cb_SelProj_SelectedIndexChanged(object sender, EventArgs e)
         {
             int i = cb_SelProj.SelectedIndex;
+            ClearForNewProject();
             cb_SelProj.Text = cb_SelProj.Items[i].ToString();
             i = LookupProject(cb_SelProj.Text);
             FillAppBox(i);
+            DisplayHistory();
         }
 
         // standard bubble sort with exchange on index
@@ -784,11 +801,15 @@ namespace BTHistoryReader
         private void btnFetchHistory_Click(object sender, EventArgs e)
         {
 
+        }
+
+        public void DisplayHistory()
+        {
+
             int iProject, iApp, i;
             cAppName AppName;
             string strProjName, strAppName;
 
-            ClearInfoTables();
             i = cb_SelProj.SelectedIndex;
             if (i < 0)   // invalid selection. restore original project name using "tag"
             {
@@ -827,7 +848,6 @@ namespace BTHistoryReader
         }
 
 
-
         // the first number shown in the selection box is line number in the history file, not the index to the project info table
         private void btn_Filter_Click(object sender, EventArgs e)
         {
@@ -850,6 +870,7 @@ namespace BTHistoryReader
         {
             string strTemp = cb_AppNames.Text;
             ShowNumberApps();
+            DisplayHistory();
         }
 
 
@@ -1224,6 +1245,12 @@ namespace BTHistoryReader
             lb_SelWorkUnits.SetSelected(n, true);
             CountSelected();
             RunContinunityCheck();
+        }
+
+        private void BTHistory_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            Properties.Settings.Default.TypeCVS = rbUseCVS1.Checked;
+            Properties.Settings.Default.Save();
         }
     }
 }

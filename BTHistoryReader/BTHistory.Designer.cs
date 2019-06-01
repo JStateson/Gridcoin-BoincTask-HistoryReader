@@ -30,6 +30,13 @@
         {
             this.components = new System.ComponentModel.Container();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.rbOnlyLongs = new System.Windows.Forms.RadioButton();
+            this.rbIgnoreLongs = new System.Windows.Forms.RadioButton();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.rbUseCVS = new System.Windows.Forms.RadioButton();
+            this.rbUseCVS1 = new System.Windows.Forms.RadioButton();
             this.btnAbout = new System.Windows.Forms.Button();
             this.btnShowProjectTree = new System.Windows.Forms.Button();
             this.gb_filter = new System.Windows.Forms.GroupBox();
@@ -60,7 +67,6 @@
             this.label5 = new System.Windows.Forms.Label();
             this.tb_AvgCredit = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
-            this.btnFetchHistory = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.cb_AppNames = new System.Windows.Forms.ComboBox();
@@ -69,20 +75,13 @@
             this.btn_OpenHistory = new System.Windows.Forms.Button();
             this.ofd_history = new System.Windows.Forms.OpenFileDialog();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.groupBox4 = new System.Windows.Forms.GroupBox();
-            this.rbUseCVS = new System.Windows.Forms.RadioButton();
-            this.rbUseCVS1 = new System.Windows.Forms.RadioButton();
-            this.groupBox5 = new System.Windows.Forms.GroupBox();
-            this.rbIgnoreLongs = new System.Windows.Forms.RadioButton();
-            this.rbOnlyLongs = new System.Windows.Forms.RadioButton();
             this.panel1.SuspendLayout();
+            this.groupBox3.SuspendLayout();
+            this.groupBox5.SuspendLayout();
+            this.groupBox4.SuspendLayout();
             this.gb_filter.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
-            this.groupBox3.SuspendLayout();
-            this.groupBox4.SuspendLayout();
-            this.groupBox5.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
@@ -102,6 +101,87 @@
             this.panel1.Size = new System.Drawing.Size(937, 534);
             this.panel1.TabIndex = 0;
             this.panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.panel1_Paint);
+            // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(this.groupBox5);
+            this.groupBox3.Controls.Add(this.groupBox4);
+            this.groupBox3.Location = new System.Drawing.Point(210, 16);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(306, 88);
+            this.groupBox3.TabIndex = 10;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "Open File Settings";
+            this.toolTip1.SetToolTip(this.groupBox3, "Defalt is CVS1 and no longs");
+            // 
+            // groupBox5
+            // 
+            this.groupBox5.Controls.Add(this.rbOnlyLongs);
+            this.groupBox5.Controls.Add(this.rbIgnoreLongs);
+            this.groupBox5.Location = new System.Drawing.Point(6, 19);
+            this.groupBox5.Name = "groupBox5";
+            this.groupBox5.Size = new System.Drawing.Size(134, 63);
+            this.groupBox5.TabIndex = 12;
+            this.groupBox5.TabStop = false;
+            this.toolTip1.SetToolTip(this.groupBox5, "Selecting IGNORE allows files to show up but not be read");
+            // 
+            // rbOnlyLongs
+            // 
+            this.rbOnlyLongs.AutoSize = true;
+            this.rbOnlyLongs.Location = new System.Drawing.Point(6, 39);
+            this.rbOnlyLongs.Name = "rbOnlyLongs";
+            this.rbOnlyLongs.Size = new System.Drawing.Size(108, 17);
+            this.rbOnlyLongs.TabIndex = 1;
+            this.rbOnlyLongs.Text = "Only Long History";
+            this.rbOnlyLongs.UseVisualStyleBackColor = true;
+            // 
+            // rbIgnoreLongs
+            // 
+            this.rbIgnoreLongs.AutoSize = true;
+            this.rbIgnoreLongs.Checked = true;
+            this.rbIgnoreLongs.Location = new System.Drawing.Point(6, 16);
+            this.rbIgnoreLongs.Name = "rbIgnoreLongs";
+            this.rbIgnoreLongs.Size = new System.Drawing.Size(87, 17);
+            this.rbIgnoreLongs.TabIndex = 0;
+            this.rbIgnoreLongs.TabStop = true;
+            this.rbIgnoreLongs.Text = "Ignore Longs";
+            this.rbIgnoreLongs.UseVisualStyleBackColor = true;
+            // 
+            // groupBox4
+            // 
+            this.groupBox4.Controls.Add(this.rbUseCVS);
+            this.groupBox4.Controls.Add(this.rbUseCVS1);
+            this.groupBox4.Location = new System.Drawing.Point(146, 19);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Size = new System.Drawing.Size(135, 66);
+            this.groupBox4.TabIndex = 11;
+            this.groupBox4.TabStop = false;
+            // 
+            // rbUseCVS
+            // 
+            this.rbUseCVS.AutoSize = true;
+            this.rbUseCVS.Location = new System.Drawing.Point(30, 33);
+            this.rbUseCVS.Name = "rbUseCVS";
+            this.rbUseCVS.Size = new System.Drawing.Size(68, 17);
+            this.rbUseCVS.TabIndex = 14;
+            this.rbUseCVS.Text = "Use CVS";
+            this.toolTip1.SetToolTip(this.rbUseCVS, "Files with this extension will contain active tasks that\r\nhave not completed and " +
+        "thus will generate various\r\nwarning");
+            this.rbUseCVS.UseVisualStyleBackColor = true;
+            // 
+            // rbUseCVS1
+            // 
+            this.rbUseCVS1.AutoSize = true;
+            this.rbUseCVS1.Checked = true;
+            this.rbUseCVS1.Location = new System.Drawing.Point(30, 17);
+            this.rbUseCVS1.Name = "rbUseCVS1";
+            this.rbUseCVS1.Size = new System.Drawing.Size(74, 17);
+            this.rbUseCVS1.TabIndex = 13;
+            this.rbUseCVS1.TabStop = true;
+            this.rbUseCVS1.Text = "Use CVS1";
+            this.toolTip1.SetToolTip(this.rbUseCVS1, "This contains completed work units but\r\nmay not have the most recent depending\r\no" +
+        "n how often history is updated");
+            this.rbUseCVS1.UseVisualStyleBackColor = true;
             // 
             // btnAbout
             // 
@@ -220,7 +300,7 @@
             // lb_NumSel
             // 
             this.lb_NumSel.AutoSize = true;
-            this.lb_NumSel.Location = new System.Drawing.Point(169, 373);
+            this.lb_NumSel.Location = new System.Drawing.Point(168, 373);
             this.lb_NumSel.Name = "lb_NumSel";
             this.lb_NumSel.Size = new System.Drawing.Size(78, 13);
             this.lb_NumSel.TabIndex = 14;
@@ -252,7 +332,7 @@
             // 
             this.lb_LocMax.AutoSize = true;
             this.lb_LocMax.CausesValidation = false;
-            this.lb_LocMax.Location = new System.Drawing.Point(173, 313);
+            this.lb_LocMax.Location = new System.Drawing.Point(170, 313);
             this.lb_LocMax.Name = "lb_LocMax";
             this.lb_LocMax.Size = new System.Drawing.Size(74, 13);
             this.lb_LocMax.TabIndex = 11;
@@ -374,7 +454,6 @@
             this.groupBox1.Controls.Add(this.label5);
             this.groupBox1.Controls.Add(this.tb_AvgCredit);
             this.groupBox1.Controls.Add(this.label3);
-            this.groupBox1.Controls.Add(this.btnFetchHistory);
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Controls.Add(this.cb_AppNames);
@@ -449,18 +528,6 @@
             this.label3.TabIndex = 5;
             this.label3.Text = "Estimated Avg Credit Per Unit";
             // 
-            // btnFetchHistory
-            // 
-            this.btnFetchHistory.Enabled = false;
-            this.btnFetchHistory.Location = new System.Drawing.Point(11, 119);
-            this.btnFetchHistory.Name = "btnFetchHistory";
-            this.btnFetchHistory.Size = new System.Drawing.Size(96, 23);
-            this.btnFetchHistory.TabIndex = 4;
-            this.btnFetchHistory.Text = "Display History";
-            this.toolTip1.SetToolTip(this.btnFetchHistory, "Extract all app reslults  from history");
-            this.btnFetchHistory.UseVisualStyleBackColor = true;
-            this.btnFetchHistory.Click += new System.EventHandler(this.btnFetchHistory_Click);
-            // 
             // label2
             // 
             this.label2.AutoSize = true;
@@ -522,87 +589,6 @@
             this.ofd_history.Filter = "CVS Files|*.cvs";
             this.ofd_history.Multiselect = true;
             // 
-            // groupBox3
-            // 
-            this.groupBox3.Controls.Add(this.groupBox5);
-            this.groupBox3.Controls.Add(this.groupBox4);
-            this.groupBox3.Location = new System.Drawing.Point(210, 16);
-            this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(306, 88);
-            this.groupBox3.TabIndex = 10;
-            this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Open File Settings";
-            this.toolTip1.SetToolTip(this.groupBox3, "Defalt is CVS1 and no longs");
-            // 
-            // groupBox4
-            // 
-            this.groupBox4.Controls.Add(this.rbUseCVS);
-            this.groupBox4.Controls.Add(this.rbUseCVS1);
-            this.groupBox4.Location = new System.Drawing.Point(146, 19);
-            this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(135, 66);
-            this.groupBox4.TabIndex = 11;
-            this.groupBox4.TabStop = false;
-            // 
-            // rbUseCVS
-            // 
-            this.rbUseCVS.AutoSize = true;
-            this.rbUseCVS.Location = new System.Drawing.Point(30, 33);
-            this.rbUseCVS.Name = "rbUseCVS";
-            this.rbUseCVS.Size = new System.Drawing.Size(68, 17);
-            this.rbUseCVS.TabIndex = 14;
-            this.rbUseCVS.Text = "Use CVS";
-            this.toolTip1.SetToolTip(this.rbUseCVS, "Files with this extension will contain active tasks that\r\nhave not completed and " +
-        "thus will generate various\r\nwarning");
-            this.rbUseCVS.UseVisualStyleBackColor = true;
-            // 
-            // rbUseCVS1
-            // 
-            this.rbUseCVS1.AutoSize = true;
-            this.rbUseCVS1.Checked = true;
-            this.rbUseCVS1.Location = new System.Drawing.Point(30, 17);
-            this.rbUseCVS1.Name = "rbUseCVS1";
-            this.rbUseCVS1.Size = new System.Drawing.Size(74, 17);
-            this.rbUseCVS1.TabIndex = 13;
-            this.rbUseCVS1.TabStop = true;
-            this.rbUseCVS1.Text = "Use CVS1";
-            this.toolTip1.SetToolTip(this.rbUseCVS1, "This contains completed work units but\r\nmay not have the most recent depending\r\no" +
-        "n how often history is updated");
-            this.rbUseCVS1.UseVisualStyleBackColor = true;
-            // 
-            // groupBox5
-            // 
-            this.groupBox5.Controls.Add(this.rbOnlyLongs);
-            this.groupBox5.Controls.Add(this.rbIgnoreLongs);
-            this.groupBox5.Location = new System.Drawing.Point(6, 19);
-            this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(134, 63);
-            this.groupBox5.TabIndex = 12;
-            this.groupBox5.TabStop = false;
-            this.toolTip1.SetToolTip(this.groupBox5, "Selecting IGNORE allows files to show up but not be read");
-            // 
-            // rbIgnoreLongs
-            // 
-            this.rbIgnoreLongs.AutoSize = true;
-            this.rbIgnoreLongs.Checked = true;
-            this.rbIgnoreLongs.Location = new System.Drawing.Point(6, 16);
-            this.rbIgnoreLongs.Name = "rbIgnoreLongs";
-            this.rbIgnoreLongs.Size = new System.Drawing.Size(87, 17);
-            this.rbIgnoreLongs.TabIndex = 0;
-            this.rbIgnoreLongs.TabStop = true;
-            this.rbIgnoreLongs.Text = "Ignore Longs";
-            this.rbIgnoreLongs.UseVisualStyleBackColor = true;
-            // 
-            // rbOnlyLongs
-            // 
-            this.rbOnlyLongs.AutoSize = true;
-            this.rbOnlyLongs.Location = new System.Drawing.Point(6, 39);
-            this.rbOnlyLongs.Name = "rbOnlyLongs";
-            this.rbOnlyLongs.Size = new System.Drawing.Size(108, 17);
-            this.rbOnlyLongs.TabIndex = 1;
-            this.rbOnlyLongs.Text = "Only Long History";
-            this.rbOnlyLongs.UseVisualStyleBackColor = true;
-            // 
             // BTHistory
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -613,19 +599,20 @@
             this.MaximizeBox = false;
             this.Name = "BTHistory";
             this.Text = "system";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.BTHistory_FormClosing);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
+            this.groupBox3.ResumeLayout(false);
+            this.groupBox5.ResumeLayout(false);
+            this.groupBox5.PerformLayout();
+            this.groupBox4.ResumeLayout(false);
+            this.groupBox4.PerformLayout();
             this.gb_filter.ResumeLayout(false);
             this.gb_filter.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
-            this.groupBox3.ResumeLayout(false);
-            this.groupBox4.ResumeLayout(false);
-            this.groupBox4.PerformLayout();
-            this.groupBox5.ResumeLayout(false);
-            this.groupBox5.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -641,7 +628,6 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ComboBox cb_AppNames;
-        private System.Windows.Forms.Button btnFetchHistory;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.RadioButton rbThroughput;
         private System.Windows.Forms.ToolTip toolTip1;

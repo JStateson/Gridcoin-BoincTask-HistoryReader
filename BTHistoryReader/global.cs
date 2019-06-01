@@ -44,6 +44,8 @@ namespace BTHistoryReader
         public List<double> dValues;
         public bool bIsShowingApp;
         public int nConcurrent;
+        public double dSmall;
+        public double dBig;
     }
 
     public enum eHindex

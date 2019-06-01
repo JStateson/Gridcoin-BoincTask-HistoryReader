@@ -460,6 +460,8 @@ namespace BTHistoryReader
 
         private bool GetSysProjData(ref cSeriesData sa)
         {
+            double dSmall = 1e6;
+            double dBig = -1;
             foreach (cKPAlocs ckpal in KPAlocs)                          // for each system
             {
                 foreach (cKPAproj ckpap in ckpal.KPAproj)               // for each project
@@ -476,6 +478,8 @@ namespace BTHistoryReader
                                     continue;
                                 foreach (double d in ckpaa.dLelapsedTime)
                                 {
+                                    dSmall = Math.Min(dSmall, d);
+                                    dBig = Math.Max(dBig, d);
                                     sa.dValues.Add(d);
                                 }
                             }
@@ -483,12 +487,16 @@ namespace BTHistoryReader
                     }
                 }
             }
+            sa.dBig = dBig;
+            sa.dSmall = dSmall;
             return (sa.dValues.Count > 0);
         }
 
         private bool GetAllAppData(ref cSeriesData sa)
         {
-            foreach(cKPAlocs ckpal in KPAlocs)                          // for each system
+            double dSmall = 1e6;
+            double dBig = -1;
+            foreach (cKPAlocs ckpal in KPAlocs)                          // for each system
             {
                 foreach(cKPAproj ckpap in ckpal.KPAproj )               // for each project
                 {
@@ -504,6 +512,8 @@ namespace BTHistoryReader
                                 //this does not work as it uses the box only that one project is in there
                                 foreach(double d in ckpaa.dLelapsedTime)
                                 {
+                                    dSmall = Math.Min(dSmall, d);
+                                    dBig = Math.Max(dBig, d);
                                     sa.dValues.Add(d/ ckpaa.nConcurrent);
                                 }
                             }
@@ -511,6 +521,8 @@ namespace BTHistoryReader
                     }
                 }
             }
+            sa.dBig = dBig;
+            sa.dSmall = dSmall;
             return (sa.dValues.Count > 0) ;
         }
 

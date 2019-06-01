@@ -61,6 +61,15 @@ namespace BTHistoryReader.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Sat 06/01/2019  1:39:59.59 .
+        /// </summary>
+        internal static string BuildDate {
+            get {
+                return ResourceManager.GetString("BuildDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap CH_image {
