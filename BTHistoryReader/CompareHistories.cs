@@ -74,11 +74,29 @@ namespace BTHistoryReader
                 return ckpap;
             }
         }
+
+        // since system name might be identical in different files then we must change the system name to
+        // as the name is used for the series in the plots and the series names must be unique.
+        private string MustBeUniqueName(string strName, ref int n)
+        {
+            n++;
+            foreach(string strTemp in Systems)
+            {
+                if(strTemp == strName)
+                {
+                    return MustBeUniqueName(strName + "-" + n.ToString(), ref n);
+                }
+            }
+            return strName;
+        }
+
         // when comparing projects, say "seti" app can be nvidia, amd or cpu
         // cannot test for full app name else no match unless both systems had same devices
         public CompareHistories(Form refForm, bool bIgnoreLong)
         {
             InitializeComponent();
+            string ThisSystem = "";
+            int DuplicateNameCnt = 0;
             Projects = new List<string>();
             KPAlocs = new List<cKPAlocs>();
             Systems = new List<string>();;
@@ -96,9 +114,11 @@ namespace BTHistoryReader
                 int RtnCod;
                 if (bIgnoreLong && sProj.Contains("_long_"))
                     continue;
-                RtnCod = btf.ValidateHistory(sProj);
+                RtnCod = btf.ValidateHistory(sProj, ref ThisSystem);
                 if (RtnCod < 0) continue;
-                Systems.Add(btf.ThisSystem);
+                DuplicateNameCnt = 0;
+                ThisSystem = MustBeUniqueName(ThisSystem,ref DuplicateNameCnt);
+                Systems.Add(ThisSystem);
                 iSystem = Systems.Count - 1;    // index into name of system
                 btf.ClearPreviousHistory();
                 btf.ProcessHistoryFile();
@@ -182,6 +202,7 @@ namespace BTHistoryReader
             TBoxStats.Text = "";
             ShowAppsThisProj(strProjSelected);
             LViewConc.Items.Clear();
+            LBoxApps.SetSelected(0, true);
         }
 
         private bool bUseThisSystem(string strProjName, string strListOfUsed)

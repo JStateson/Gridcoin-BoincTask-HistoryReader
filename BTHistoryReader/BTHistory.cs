@@ -12,7 +12,7 @@ namespace BTHistoryReader
     {
 
         public int AnalysisType;
-        public string ThisSystem;
+        public string ThisSystem = "";
         public cSplitHistoryValues OneSplitLine;    // use this for processing each line in history file;
 
         private List<long> CompletionTimes;
@@ -374,7 +374,7 @@ namespace BTHistoryReader
             if (File.Exists(lb_history_loc.Text))
             {
                 str_PathToHistory = lb_history_loc.Text;
-                if (ValidateHistory(str_PathToHistory) >= 0)
+                if (ValidateHistory(str_PathToHistory, ref ThisSystem) >= 0)
                 {
                     ClearPreviousHistory();
                     CurrentSystem = LinesHistory[1];
@@ -411,7 +411,7 @@ namespace BTHistoryReader
             ShowSelectable(false);
         }
 
-        public int ValidateHistory(string strFile)
+        public int ValidateHistory(string strFile, ref string SysName)
         {
             int i = 0;
 
@@ -440,7 +440,7 @@ namespace BTHistoryReader
                 iPadSize = Convert.ToInt32(Math.Ceiling(Math.Log10(LinesHistory.Length)));
                 // want to know how many digits to format data in combobox view
                 //OneSplitLine.StoreLineOfHistory(LinesHistory[3]);    // this was used to look at the header items
-                ThisSystem = LinesHistory[1];
+                SysName = LinesHistory[1];
                 return 0;
             }
             else
