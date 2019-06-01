@@ -13,10 +13,12 @@ namespace BTHistoryReader
 {
     public partial class TPchart : Form
     {
-        private List<long> ct;    // completion times in seconds since 1970
-        private List<double> it;  // idle time in seconds
-        private long[] WORKct;    // completion times in seconds since 1970
-        private double[] WORKit;  // idle time in seconds
+        private List<long> ct;      // completion times in seconds since 1970
+        private List<double> it;    // idle time in seconds
+        private long WORKctStart;   // start time of WORKct in event it is normalized to 0 
+        private int iLastIndex;     // index of last time that is <= the lookback limit
+        private long[] WORKct;      // completion times in seconds since 1970
+        private double[] WORKit;    // idle time in seconds
         private int ValidWork;
         private double AvgGap;
         private double StdGap;
@@ -40,20 +42,37 @@ namespace BTHistoryReader
             bDoingHist = bValue;
             nudConcur.Visible = bValue;
             labConcur.Visible = bValue;
-            cbHours.Visible = !bValue;
+            gboxLKBACK.Visible = !bValue;
         }
 
-        private void SaveWorking(int n)
+        // ctStart if > 0 then normalizing
+        private void SaveWorking(int n, long ctStart)
         {
             int i;
             WORKit = new double[n];
             WORKct = new long[n];
+            WORKctStart = ct[0];
             for (i = 0; i < n; i++)
             {
-                WORKct[i] = ct[i];
+                WORKct[i] = ct[i] - ctStart;
                 WORKit[i] = it[i];
             }
             ValidWork = n;
+        }
+
+        // used by idle plot and returns time in seconds
+        private long SetLastTimeDisplayed()
+        {
+            long tMax = LKBhours * 3600;
+            int i = 0;
+            for (i = 0; i < ValidWork; i++)
+            {
+                if (WORKct[i] >= tMax) break;
+            }
+            if (i >= ValidWork)
+                i = ValidWork - 1;
+            iLastIndex = i;
+            return WORKct[i];
         }
 
         // bin original data then put into working area
@@ -116,6 +135,7 @@ namespace BTHistoryReader
 
             if (AvgGap != -1)
             {   // plotting idle time
+                SaveWorking(ct.Count-1, ct[0]); // since it is difference between ct then there is always one less item
                 gboxFilter.Text = "Detail Filter (0 is all)";
                 this.Text = "Idle Plot";
                 i = Convert.ToInt32(StdGap / AvgGap);
@@ -124,14 +144,14 @@ namespace BTHistoryReader
                 else if (i < 2) DetailFilter.Value = 1;
                 DetailFilter.ValueChanged += new System.EventHandler(this.DetailFilter_ValueChanged);
                 iSig = Convert.ToInt32(DetailFilter.Value);
-                SetStartTime(refCT[0]);
+                SetStartTime(WORKctStart);
                 DrawStuff();
                 return;
             }
             // plotting elapsed time
             this.Text = "Elapsed Time";
             gboxFilter.Text = "Visual Scaling";
-            SaveWorking(ct.Count);
+            SaveWorking(ct.Count,0);
             toolTip1.SetToolTip(DetailFilter, "Change x-axis scale");
             lbSpinFilter.Text = "adj xAxis scale";
             DrawHist();
@@ -150,6 +170,7 @@ namespace BTHistoryReader
             if (LKBhours < 1) LKBhours = 1;
         }
 
+        // used for x axis only
         private double GetBestScaleingBottom(double a)
         {
             if (a < 100) return 0;
@@ -157,12 +178,24 @@ namespace BTHistoryReader
             return 1000;
         }
 
+        // used for x axis only
         private double GetBestScaleingUpper(double a)
         {
             double r = 1.0 / (1 + iSig);
             if (a < 10) return Math.Max(a, 10*r);
             if (a < 100) return Math.Max(a,100*r);
             if (a < 1000) return Math.Max(a,1000*r);
+            return a;
+        }
+
+        // used by idle to truncate outliers when project off line a long time
+        private double GetBestYscale(double a)
+        {
+            double r = 1.0;
+            if (a < 10) return Math.Max(a, 10 * r);
+            if (a < 100) return Math.Max(a, 100 * r);
+            if (a < 1000) return Math.Max(a, 1000 * r);
+            if (a < 10000) return Math.Max(a, 10000 * r);
             return a;
         }
 
@@ -214,6 +247,7 @@ namespace BTHistoryReader
 
         // this is a plot (histogram) of the gap in completion time
         // if the elapsed time is smaller than the gap, then the gap is project idle time
+        //1-jun-2019: simplflying and bug fix as outliers can hide all useful data when project down for hours.
         private void DrawStuff()
         {
             xAxis = new List<double>();
@@ -229,35 +263,28 @@ namespace BTHistoryReader
 
             chart1.Series.Add(sCT);
             chart1.Series["CompletionTime"].LegendText = "Idle Time (minutes)";
-            double tStart = ct[0];
-            double tStop = ct[n];
 
-
-            tMax = LKBhours * 3600;
-            tSecs = ct[n - 1];
-            for(iStartIndex=0;iStartIndex<n;iStartIndex++)
-            {
-                if ((tSecs - ct[iStartIndex]) <= tMax) break;
-            }
-
-
-            //chart1.Series["CompletionTime"].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Point;
-            tSecs = ct[n] - ct[iStartIndex];
+            //normalized(already) and stop after 24 or specified hours.  probably could use binary search here
+            tSecs = SetLastTimeDisplayed();
             tMinutes = (tSecs / 60.0);
             tHours = tSecs / 3600;
             SigGap = GetSigGap();
             chart1.ChartAreas["ChartArea1"].AxisX.Maximum = (tHours == 0) ? 1 : tHours;
+            TryTruncate();
+
             //chart1.Series["CompletionTime"].MarkerSize = 1;
             // chart1.ChartAreas["ChartArea1"].AxisX.IsLabelAutoFit = true;
 
-            for ( i = iStartIndex; i < n; i ++)
+
+            for ( i = 0; i < iLastIndex; i++)
             {
-                d = tStop - ct[i];
+                d = Convert.ToDouble(WORKct[i]);
                 d /= 3600;  // xAxis to be hours behind us
                 xAxis.Add(d);
-                d = it[i];  // seconds between completions "idle " time 
-                if (d < SigGap) d = 0;
+                d = WORKit[i];  // seconds between completions "idle " time 
+                if (d < SigGap) d = 0; 
                 d = d / 60.0;
+                // log scale is screwed with 0, not worth fixing
                 yAxis.Add(d);    // want minutes for y axis
             }
 
@@ -325,6 +352,44 @@ namespace BTHistoryReader
             iBinCnt = j;
             if (bDoingHist) DrawHistChanged();
             else DrawIdleChanged();
+        }
+
+        private void cboxLOG_CheckedChanged(object sender, EventArgs e)
+        {
+            //chart1.ChartAreas["ChartArea1"].AxisY.IsLogarithmic = cboxTruncate.Text
+        }
+
+
+        private double FindLargest()
+        {
+            SetLastTimeDisplayed();    // search no further than this
+            double dBig = -1;
+            for(int i = 0; i < iLastIndex; i++)
+            {
+                dBig = Math.Max(dBig, WORKit[i]);
+            }
+            return dBig;
+        }
+
+        private void TryTruncate()
+        {
+            if (cboxTruncate.Checked)
+            {
+                double dMinutesTrunc = Convert.ToDouble(tBoxTruncValue.Text);
+                double dBiggie = FindLargest();
+                if (dBiggie > 60 * dMinutesTrunc)
+                    chart1.ChartAreas["ChartArea1"].AxisY.Maximum = Convert.ToDouble(dMinutesTrunc);
+                else
+                    chart1.ChartAreas["ChartArea1"].AxisY.Maximum = double.NaN;
+            }
+            else
+                chart1.ChartAreas["ChartArea1"].AxisY.Maximum = double.NaN;
+        }
+
+        private void cboxTruncate_CheckedChanged(object sender, EventArgs e)
+        {
+            //double dlast = chart1.ChartAreas["ChartArea1"].AxisY.Maximum;
+            TryTruncate();
         }
 
         private void nudConcur_ValueChanged(object sender, EventArgs e)

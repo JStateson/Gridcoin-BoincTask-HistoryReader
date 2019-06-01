@@ -29,13 +29,16 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TPchart));
             this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.labStartTime = new System.Windows.Forms.Label();
+            this.gboxLKBACK = new System.Windows.Forms.GroupBox();
+            this.tBoxTruncValue = new System.Windows.Forms.TextBox();
+            this.cboxTruncate = new System.Windows.Forms.CheckBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.cbHours = new System.Windows.Forms.ComboBox();
+            this.labStartTime = new System.Windows.Forms.Label();
             this.gboxFilter = new System.Windows.Forms.GroupBox();
             this.labConcur = new System.Windows.Forms.Label();
             this.nudConcur = new System.Windows.Forms.NumericUpDown();
@@ -48,7 +51,7 @@
             this.lbl_sysname = new System.Windows.Forms.Label();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
-            this.groupBox1.SuspendLayout();
+            this.gboxLKBACK.SuspendLayout();
             this.gboxFilter.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudConcur)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.SpinBin)).BeginInit();
@@ -57,46 +60,68 @@
             // 
             // chart1
             // 
-            chartArea1.AxisX.Interval = 2D;
-            chartArea1.AxisX.LabelStyle.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            chartArea1.AxisX.LabelStyle.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Auto;
-            chartArea1.AxisX.MajorGrid.Enabled = false;
-            chartArea1.AxisX.MajorTickMark.Enabled = false;
-            chartArea1.AxisX.MajorTickMark.Interval = 0D;
-            chartArea1.AxisX.MajorTickMark.IntervalOffset = 0D;
-            chartArea1.AxisX.MajorTickMark.IntervalOffsetType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Auto;
-            chartArea1.AxisX.MajorTickMark.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Auto;
-            chartArea1.AxisX.Minimum = 0D;
-            chartArea1.AxisX.Title = "Hours Back";
-            chartArea1.Name = "ChartArea1";
-            this.chart1.ChartAreas.Add(chartArea1);
-            legend1.Name = "Legend1";
-            this.chart1.Legends.Add(legend1);
+            chartArea2.AxisX.Interval = 2D;
+            chartArea2.AxisX.LabelStyle.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            chartArea2.AxisX.LabelStyle.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Auto;
+            chartArea2.AxisX.MajorGrid.Enabled = false;
+            chartArea2.AxisX.MajorTickMark.Enabled = false;
+            chartArea2.AxisX.MajorTickMark.Interval = 0D;
+            chartArea2.AxisX.MajorTickMark.IntervalOffset = 0D;
+            chartArea2.AxisX.MajorTickMark.IntervalOffsetType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Auto;
+            chartArea2.AxisX.MajorTickMark.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Auto;
+            chartArea2.AxisX.Minimum = 0D;
+            chartArea2.AxisX.Title = "Hours Back";
+            chartArea2.Name = "ChartArea1";
+            this.chart1.ChartAreas.Add(chartArea2);
+            legend2.Name = "Legend1";
+            this.chart1.Legends.Add(legend2);
             this.chart1.Location = new System.Drawing.Point(222, 25);
             this.chart1.Name = "chart1";
             this.chart1.Size = new System.Drawing.Size(537, 305);
             this.chart1.TabIndex = 0;
             this.chart1.Text = "chart";
             // 
-            // groupBox1
+            // gboxLKBACK
             // 
-            this.groupBox1.Controls.Add(this.labStartTime);
-            this.groupBox1.Controls.Add(this.cbHours);
-            this.groupBox1.Location = new System.Drawing.Point(12, 25);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(184, 131);
-            this.groupBox1.TabIndex = 2;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Max Lookback";
+            this.gboxLKBACK.Controls.Add(this.tBoxTruncValue);
+            this.gboxLKBACK.Controls.Add(this.cboxTruncate);
+            this.gboxLKBACK.Controls.Add(this.label1);
+            this.gboxLKBACK.Controls.Add(this.cbHours);
+            this.gboxLKBACK.Location = new System.Drawing.Point(12, 25);
+            this.gboxLKBACK.Name = "gboxLKBACK";
+            this.gboxLKBACK.Size = new System.Drawing.Size(184, 145);
+            this.gboxLKBACK.TabIndex = 2;
+            this.gboxLKBACK.TabStop = false;
+            this.gboxLKBACK.Text = "Max Lookback";
             // 
-            // labStartTime
+            // tBoxTruncValue
             // 
-            this.labStartTime.AutoSize = true;
-            this.labStartTime.Location = new System.Drawing.Point(15, 79);
-            this.labStartTime.Name = "labStartTime";
-            this.labStartTime.Size = new System.Drawing.Size(55, 13);
-            this.labStartTime.TabIndex = 1;
-            this.labStartTime.Text = "Start Time";
+            this.tBoxTruncValue.Location = new System.Drawing.Point(99, 74);
+            this.tBoxTruncValue.Name = "tBoxTruncValue";
+            this.tBoxTruncValue.Size = new System.Drawing.Size(26, 20);
+            this.tBoxTruncValue.TabIndex = 4;
+            this.tBoxTruncValue.Text = "60";
+            // 
+            // cboxTruncate
+            // 
+            this.cboxTruncate.AutoSize = true;
+            this.cboxTruncate.Location = new System.Drawing.Point(12, 76);
+            this.cboxTruncate.Name = "cboxTruncate";
+            this.cboxTruncate.Size = new System.Drawing.Size(81, 17);
+            this.cboxTruncate.TabIndex = 3;
+            this.cboxTruncate.Text = "Truncate to";
+            this.cboxTruncate.UseVisualStyleBackColor = true;
+            this.cboxTruncate.CheckedChanged += new System.EventHandler(this.cboxTruncate_CheckedChanged);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(17, 105);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(158, 39);
+            this.label1.TabIndex = 2;
+            this.label1.Text = "Truncate outliers if project has\r\nbeen off-line for long time. Using\r\n60 means li" +
+    "mit y axis to 1 hour";
             // 
             // cbHours
             // 
@@ -116,6 +141,15 @@
             this.cbHours.Text = "24";
             this.toolTip1.SetToolTip(this.cbHours, "BoincTasks default is 24 hours maximum");
             this.cbHours.SelectedIndexChanged += new System.EventHandler(this.cbHours_SelectedIndexChanged);
+            // 
+            // labStartTime
+            // 
+            this.labStartTime.AutoSize = true;
+            this.labStartTime.Location = new System.Drawing.Point(12, 384);
+            this.labStartTime.Name = "labStartTime";
+            this.labStartTime.Size = new System.Drawing.Size(55, 13);
+            this.labStartTime.TabIndex = 1;
+            this.labStartTime.Text = "Start Time";
             // 
             // gboxFilter
             // 
@@ -254,18 +288,19 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 424);
+            this.Controls.Add(this.labStartTime);
             this.Controls.Add(this.lbl_sysname);
             this.Controls.Add(this.lbChart);
             this.Controls.Add(this.gboxFilter);
-            this.Controls.Add(this.groupBox1);
+            this.Controls.Add(this.gboxLKBACK);
             this.Controls.Add(this.chart1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.Name = "TPchart";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.TPchart_FormClosing);
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).EndInit();
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
+            this.gboxLKBACK.ResumeLayout(false);
+            this.gboxLKBACK.PerformLayout();
             this.gboxFilter.ResumeLayout(false);
             this.gboxFilter.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudConcur)).EndInit();
@@ -279,7 +314,7 @@
         #endregion
 
         private System.Windows.Forms.DataVisualization.Charting.Chart chart1;
-        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.GroupBox gboxLKBACK;
         private System.Windows.Forms.GroupBox gboxFilter;
         private System.Windows.Forms.NumericUpDown DetailFilter;
         private System.Windows.Forms.Label lbChart;
@@ -293,5 +328,8 @@
         private System.Windows.Forms.Label labStartTime;
         private System.Windows.Forms.Label labConcur;
         private System.Windows.Forms.NumericUpDown nudConcur;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TextBox tBoxTruncValue;
+        private System.Windows.Forms.CheckBox cboxTruncate;
     }
 }

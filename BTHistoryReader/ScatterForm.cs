@@ -109,13 +109,7 @@ namespace BTHistoryReader
                 ChartScatter.Series[seriesname].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Point;
                 ChartScatter.Series[seriesname].Points.DataBindXY(xAxis.ToArray(), yAxis.ToArray());
             }
-            /*
-                    this was not thought out correctly.  Do not want the scale set, just want to show minutes instread of huge seconds.
-                        strUnits = BestTimeUnits(dBig, ref d);
-                        f = d / dBig;   // scale factor 60, 360 or full day divided into 1.0
-                        dBig = d;
-                        dSmall *= f;
-             */
+
             ChartScatter.Legends["Legend1"].Title = strSeries + strUnits;
             ChartScatter.ChartAreas["ChartArea1"].AxisX.Maximum = GetBestScaleingUpper(dBig);
             ChartScatter.ChartAreas["ChartArea1"].AxisX.Minimum = GetBestScaleingBottom(dSmall);
@@ -126,18 +120,6 @@ namespace BTHistoryReader
         {
             ChartScatter.ChartAreas["ChartArea1"].AxisX.Maximum = GetBestScaleingUpper(dBig);
             return;
-            /*
-             *             double d = 0, f, dBworking, dSworking;
-                        strUnits = BestTimeUnits(dBig, ref d);
-                        f = d / dBig;
-                        dBworking = d;
-                        dSworking = dSmall * f;
-  
-
-            ChartScatter.Legends["Legend1"].Title = strSeries + strUnits;
-            ChartScatter.ChartAreas["ChartArea1"].AxisX.Maximum = GetBestScaleingUpper(dBworking);
-            ChartScatter.ChartAreas["ChartArea1"].AxisX.Minimum = GetBestScaleingBottom(dSworking);
-                       * */
         }
     }
 }

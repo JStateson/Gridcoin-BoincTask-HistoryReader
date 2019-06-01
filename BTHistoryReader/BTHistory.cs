@@ -19,6 +19,8 @@ namespace BTHistoryReader
         private List<double> IdleGap;
         private double AvgGap;
         private double StdGap;
+        private bool bDoNotLoadA = true; // this is a kluge until I figure out why I cannot remove those events!!!
+        private bool bDoNotLoadP = true;
 
         public BTHistory()
         {
@@ -420,6 +422,8 @@ namespace BTHistoryReader
         private void btn_OpenHistory_Click(object sender, EventArgs e)
         {
             InitLookupTable();
+            bDoNotLoadP = true;          // FIXME 1-JUNE-2019
+            bDoNotLoadA = true;
             if (FetchHistory())return;
             ClearPreviousHistory();
             ShowContinunities(false);
@@ -545,7 +549,7 @@ namespace BTHistoryReader
 
 
 
-
+        
         // fill in the project selection combo box
         void FillSelectBoxes()
         {
@@ -561,6 +565,7 @@ namespace BTHistoryReader
                 }
             }
             if (cb_SelProj.Items.Count == 0) return;
+            bDoNotLoadP = false;    // FIXME
             strProjName = cb_SelProj.Items[0].ToString();
             n = LookupProject(strProjName);
             cb_SelProj.Text = strProjName;
@@ -576,10 +581,17 @@ namespace BTHistoryReader
         private void cb_SelProj_SelectedIndexChanged(object sender, EventArgs e)
         {
             int i = cb_SelProj.SelectedIndex;
+
+            // FIXME WTF THE FOLLOWING DOES NOT WORK "method group"
+            //cb_AppNames_SelectedIndexChanged -= new System.EventHandler(this.cb_AppNames_SelectedIndexChanged);
+
             ClearForNewProject();
             cb_SelProj.Text = cb_SelProj.Items[i].ToString();
             i = LookupProject(cb_SelProj.Text);
             FillAppBox(i);
+            //cb_AppNames_SelectedIndexChanged += new System.EventHandler(this.cb_AppNames_SelectedIndexChanged);
+            bDoNotLoadA = false;
+
             DisplayHistory();
         }
 
@@ -868,15 +880,16 @@ namespace BTHistoryReader
 
         private void cb_AppNames_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (bDoNotLoadA) return;
             string strTemp = cb_AppNames.Text;
             ShowNumberApps();
             DisplayHistory();
         }
 
 
-      //frm2.ShowDialog(); //shows form as a modal dialog
-      //frm2.Show();    //shows form as a non modal dialog
-      //frm2.Dispose();   
+        //frm2.ShowDialog(); //shows form as a modal dialog
+        //frm2.Show();    //shows form as a non modal dialog
+        //frm2.Dispose();   
         private void btnShowProjectTree_Click(object sender, EventArgs e)
         {
             if (KnownProjApps == null)
@@ -1042,6 +1055,8 @@ namespace BTHistoryReader
             CountSelected();
         }
 
+
+
         public double CalcStd(double avg, ref List<double>Values)
         {
             double  dd;
@@ -1096,6 +1111,11 @@ namespace BTHistoryReader
                 CompletionTimes.Add(l);
             }
             AvgGap /= IdleGap.Count;
+            if (AvgGap == 0)
+            {
+                tb_Info.Text = "All are zero:  no gaps, nothing to plot\r\n";
+                return false; 
+            }
             StdGap = CalcStd(AvgGap, ref IdleGap);
             return true;
         }
@@ -1252,5 +1272,7 @@ namespace BTHistoryReader
             Properties.Settings.Default.TypeCVS = rbUseCVS1.Checked;
             Properties.Settings.Default.Save();
         }
+
+
     }
 }
