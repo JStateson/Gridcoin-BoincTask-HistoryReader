@@ -17,8 +17,9 @@ namespace BTHistoryReader
 
         private string SeriesName = "";
         private double dBig = -1;
+        double dSmall = 1e6;
         private string strSeries = "Elapsed Time in ";
-        private string strUnits = "";
+        private string strUnits = "secs";
 
         public ScatterForm(ref List<cSeriesData> refSD)
         {
@@ -63,8 +64,10 @@ namespace BTHistoryReader
         private void ShowScatter()
         {
             double d=0;
+            double f, dBworking, dSworking;
+            dSmall = 1e6;
+            dBig = -1;
 
-            double dSmall = 1e6;
             foreach (cSeriesData sd in ThisSeriesData)
             {
                 int n = sd.dValues.Count;
@@ -84,8 +87,13 @@ namespace BTHistoryReader
                 ChartScatter.Series[seriesname].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Point;
                 ChartScatter.Series[seriesname].Points.DataBindXY(sd.dValues.ToArray(), yAxis.ToArray());
             }
-            strUnits = BestTimeUnits(dBig, ref d);
-            dBig = d;
+            /*
+                    this was not thought out correctly.  Do not want the scale set, just want to show minutes instread of huge seconds.
+                        strUnits = BestTimeUnits(dBig, ref d);
+                        f = d / dBig;   // scale factor 60, 360 or full day divided into 1.0
+                        dBig = d;
+                        dSmall *= f;
+             */
             ChartScatter.Legends["Legend1"].Title = strSeries + strUnits;
             ChartScatter.ChartAreas["ChartArea1"].AxisX.Maximum = GetBestScaleingUpper(dBig);
             ChartScatter.ChartAreas["ChartArea1"].AxisX.Minimum = GetBestScaleingBottom(dSmall);
@@ -94,9 +102,19 @@ namespace BTHistoryReader
 
         private void nudXscale_ValueChanged(object sender, EventArgs e)
         {
-            strUnits = BestTimeUnits(dBig, ref dBig);
+            return;
+            /*
+             *             double d = 0, f, dBworking, dSworking;
+                        strUnits = BestTimeUnits(dBig, ref d);
+                        f = d / dBig;
+                        dBworking = d;
+                        dSworking = dSmall * f;
+  
+
             ChartScatter.Legends["Legend1"].Title = strSeries + strUnits;
-            ChartScatter.ChartAreas["ChartArea1"].AxisX.Maximum = GetBestScaleingUpper(dBig);
+            ChartScatter.ChartAreas["ChartArea1"].AxisX.Maximum = GetBestScaleingUpper(dBworking);
+            ChartScatter.ChartAreas["ChartArea1"].AxisX.Minimum = GetBestScaleingBottom(dSworking);
+                       * */
         }
     }
 }
