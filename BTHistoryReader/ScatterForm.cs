@@ -119,7 +119,6 @@ namespace BTHistoryReader
         private void nudXscale_ValueChanged(object sender, EventArgs e)
         {
             ChartScatter.ChartAreas["ChartArea1"].AxisX.Maximum = GetBestScaleingUpper(dBig);
-            return;
         }
     }
 }

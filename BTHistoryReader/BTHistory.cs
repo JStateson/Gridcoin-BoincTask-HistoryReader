@@ -93,7 +93,8 @@ namespace BTHistoryReader
             return strExt;
         }
 
-
+        // lookup application in the knonwn project app table where loc is index to selected project
+        // if app not there return an error else return index to app
         public int LookupApp(string strIn, int iLoc)
         {
             int n = 0;
@@ -108,6 +109,8 @@ namespace BTHistoryReader
             return -1;
         }
 
+        // look up project and return index into the known project app table
+        // must be in table else return error as not building table at this time
         public int LookupProject(string strName)
         {
             int i = 0;
@@ -119,6 +122,24 @@ namespace BTHistoryReader
             return LKUP_NOT_FOUND;
         }
 
+        // lookup project in table ignore certain projects. we are building the table 
+        // at this sequence in the program
+        public int LookupProj(string strProjName)
+        {
+            int iIndex = 0;
+            foreach (cKnownProjApps kpa in KnownProjApps)
+            {
+                if (strProjName == kpa.ProjName)
+                {
+                    if (kpa.bIgnore) return LKUP_TOBE_IGNORED;
+                    return iIndex;
+                }
+                iIndex++;
+            }
+            return LKUP_NOT_FOUND;
+        }
+
+        // use appropriate units based on the number of seconds
         public string BestTimeUnits(long t)
         {
             double d = Convert.ToDouble(t);
@@ -138,24 +159,11 @@ namespace BTHistoryReader
         // this is our lookup table
         public List<cKnownProjApps> KnownProjApps;
 
-        // lookup name of project in table
-        public int LookupProj(string strProjName)
-        {
-            int iIndex = 0;
-            foreach (cKnownProjApps kpa in KnownProjApps)
-            {
-                if (strProjName == kpa.ProjName)
-                {
-                    if (kpa.bIgnore) return LKUP_TOBE_IGNORED;
-                    return iIndex;
-                }
-                iIndex++;
-            }
-            return LKUP_NOT_FOUND;
-        }
+
 
         // put some projects into the table but unknown (to this program) also get added
-        // there is no limit on projects nor apps
+        // there is no limit on projects nor apps.  Usefull to initialize so as to
+        // see if there are new or really old apps being run.
         private void InitLookupTable()
         {
             cKnownProjApps kpa;
@@ -301,6 +309,7 @@ namespace BTHistoryReader
             LastKnownProject = KnownProjApps.Count;
         }
 
+        // remove old stuff
         public void ClearInfoTables()
         {
             tb_AvgCredit.Text = "0";
@@ -308,12 +317,14 @@ namespace BTHistoryReader
             tb_Results.Text = "";
         }
 
+        // more old stuff to remove
         private void ClearForNewProject()
         {
             lb_SelWorkUnits.Items.Clear();
             ClearInfoTables();
         }
 
+        // ditto onold stuff
         public void ClearPreviousHistory()
         {
             if (ThisProjectInfo != null)
@@ -331,6 +342,7 @@ namespace BTHistoryReader
             ClearInfoTables();
         }
 
+        // show how many apps are associated with the project
         private void ShowNumberApps()
         {
             lb_nApps.Visible = cb_AppNames.Items.Count > 0;
@@ -340,6 +352,7 @@ namespace BTHistoryReader
             }
         }
 
+        // looking for the history files.  "long" are the files that are "saved" when that option in BoincTasks is enabled.
         private int LocatePathToHistory()
         {
             string str_WantedDirectory = "\\EFmer\\BoincTasks\\history";
@@ -364,6 +377,7 @@ namespace BTHistoryReader
             return nFiles;
         }
 
+        // launch the program that compares multiple files
         private void PerformSelectCompare()
         {
             CompareHistories MyHistories = new CompareHistories(this, rbIgnoreLongs.Checked);
@@ -371,6 +385,7 @@ namespace BTHistoryReader
             ClearPreviousHistory();
         }
 
+        // user clicked open files,this program does the reading of single files or hands it off if multiple
         private bool FetchHistory()
         {
             int nFiles = LocatePathToHistory();
@@ -419,6 +434,7 @@ namespace BTHistoryReader
             return true;
         }
 
+
         private void btn_OpenHistory_Click(object sender, EventArgs e)
         {
             InitLookupTable();
@@ -430,6 +446,7 @@ namespace BTHistoryReader
             ShowSelectable(false);
         }
 
+        // see if we have a real history file and not some junk file accidently opened.
         public int ValidateHistory(string strFile, ref string SysName)
         {
             int i = 0;
@@ -486,11 +503,11 @@ namespace BTHistoryReader
                 }
                 i++;
             }
-            Debug.Assert(bAny);
             cb_AppNames.Text = cb_AppNames.Items[0].ToString();
             cb_AppNames.Tag = i;    // use tag to restore any edits to the combo box as I cant make it readonly
         }
 
+        // for all applications over all projects, compute the avg and std of elapsed time
         public void PerformCalcAverages()
         {
             foreach(cKnownProjApps kpa in KnownProjApps)
@@ -551,6 +568,7 @@ namespace BTHistoryReader
 
         
         // fill in the project selection combo box
+        // use semaphore to signal not to unnecessary fill in listbox as I cant seem to remove the event handler
         void FillSelectBoxes()
         {
             int n;
@@ -578,6 +596,7 @@ namespace BTHistoryReader
 
         }
 
+        // if project changed then fill in the associated app box
         private void cb_SelProj_SelectedIndexChanged(object sender, EventArgs e)
         {
             int i = cb_SelProj.SelectedIndex;
@@ -627,12 +646,14 @@ namespace BTHistoryReader
             }
         }
 
+        // put hours minuts secs in a nice concise format
         static string fmtHMS(long seconds)
         {
             TimeSpan time = TimeSpan.FromSeconds(seconds);
             return time.ToString(@"hh\:mm\:ss");
         }
 
+        // this fills in the "ThisProjectInfo" structure with stuff from the single line in the history files of "the app"
         public int FillProjectInfo(cAppName AppName)
         {
             string[] strSymbols;
@@ -642,11 +663,11 @@ namespace BTHistoryReader
             int j = 0;
             bool bState;
             long n, nElapsedTime;
-            int RunNumber;  // the line number in the history
+
 
             if (AppName.LineLoc.Count == 0) return 0;
 
-            foreach (int i in AppName.LineLoc)  // this needs to be re-written to use the SplitLine stuff
+            foreach (int i in AppName.LineLoc)  // this could be rewritten better but WTF, it was done before I got that splitlinestuff to work
             {
                 bState = LinesHistory[i].Length > ExpectedLengthLine;
                 if(!bState)
@@ -699,6 +720,8 @@ namespace BTHistoryReader
             return j;
         }
 
+
+        // calculates amount of credit the system can do
         private void PerformThruput()
         {
 
@@ -751,6 +774,7 @@ namespace BTHistoryReader
             tb_Results.Text += "Credits/sec (one device): " + (dUnitsPerSecond * dAvgCreditPerUnit / nDevices).ToString("##0.00\r\n");
         }
 
+        // using the selected items, take an average and the std and display
         private void PerformStats()
         {
             int i, j, k, n;
@@ -810,11 +834,15 @@ namespace BTHistoryReader
             tb_Results.Text += "STD of elapsed time " + Std.ToString("###,##0.00") + "\r\n";
         }
 
+
+        // no need to read history using a button, it is fetched when the app is selected.
         private void btnFetchHistory_Click(object sender, EventArgs e)
         {
 
         }
 
+
+        // once the project and app are selected then this displays the data
         public void DisplayHistory()
         {
 
@@ -845,8 +873,6 @@ namespace BTHistoryReader
                 ShowContinunities(false);
                 return;
             }
-            //iApp = KnownProjApps[iProject].FindApp(strAppName);
-            //AppName = KnownProjApps[iProject].KnownApps[iApp];
             AppName = KnownProjApps[iProject].FindApp(strAppName);
             ThisProjectInfo = new List<cProjectInfo>(AppName.nAppEntries);
             lb_SelWorkUnits.Items.Clear();
@@ -902,6 +928,8 @@ namespace BTHistoryReader
             MyInfo.Dispose();
         }
 
+        // find the biggest gap in the difference between completion time
+        // only is idle if the elapsed time is less then the gap
         private void RunContinunityCheck()
         {
 
@@ -984,6 +1012,8 @@ namespace BTHistoryReader
 
         }
 
+        // the following two routines make certain object visible depending on whether
+        // the data (if any) allows features to be utilized.
         private void ShowContinunities(bool bShow)
         {
             btnCheckNext.Enabled = bShow;
@@ -1003,6 +1033,8 @@ namespace BTHistoryReader
             btnCheckPrev.Enabled = bShow;
         }
 
+        // see how many items the user selected in the elapsed time list
+        // only allowed to select 2 items, a start and a stop 
         private int CountSelected()
         {
             int i, j, n = lb_SelWorkUnits.SelectedIndices.Count;
@@ -1038,7 +1070,7 @@ namespace BTHistoryReader
             return n;
         }
 
-
+        // quick selection of all items
         private void bt_all_Click(object sender, EventArgs e)
         {
             int i = lb_SelWorkUnits.Items.Count;
@@ -1056,7 +1088,7 @@ namespace BTHistoryReader
         }
 
 
-
+        // we calculated the average somewhere else, but now we need the standard deviation
         public double CalcStd(double avg, ref List<double>Values)
         {
             double  dd;
@@ -1070,6 +1102,8 @@ namespace BTHistoryReader
             return std;
         }
 
+        // user want a plot of the gaps in completion
+        // this forms the data that is eventually plotted
         private bool PerformIdleAnalysis()
         {
             int i, j, n;
@@ -1095,10 +1129,8 @@ namespace BTHistoryReader
             }
             while (true);
 
-
             for (n = i; n <= j; n++)
             {
-                //todo need to evaluate if data was bad ???
                 int k = iSortIndex[n];
                 if (!ThisProjectInfo[k].bState) continue;
                 l = ThisProjectInfo[k].time_t_Completed;
@@ -1120,14 +1152,15 @@ namespace BTHistoryReader
             return true;
         }
 
+        // show results of the continunity test
         private void ShowIdleInfo()
         {
-
             tb_Results.Text = "Number of idle gaps " + IdleGap.Count.ToString() + "\r\n";
             tb_Results.Text += "Average Gap Size " + BestTimeUnits(Convert.ToInt64(AvgGap)) + "\r\n";
             tb_Results.Text += "Standard Deviation of Gap " + BestTimeUnits(Convert.ToInt64(StdGap));
         }
 
+        // use that neat histogram feature
         public class Histogram<TVal> : SortedDictionary<TVal, uint>
         {
             public void IncrementCount(TVal binToIncrement)
@@ -1143,7 +1176,8 @@ namespace BTHistoryReader
             }
         }
 
-        // calculate the distribution of elapsed time
+        // user want a plot of the elapsed time in completion
+        // this forms the data that is eventually plotted
         private bool CalculateETdistribution()
         {
             int i, j, n, h, lPtr;
@@ -1188,33 +1222,16 @@ namespace BTHistoryReader
             j = Convert.ToInt32(d);
             lPtr = 0;
             h = 0;
-            /*
-                        foreach (KeyValuePair<double, uint> histEntry in hist.AsEnumerable())
-                        {
-                            IdleGap[lPtr]+= histEntry.Key;
-                            CompletionTimes[lPtr] += histEntry.Value;
-                            h++;
-                            if(h == j)
-                            {
-                                IdleGap[lPtr] /= h;
-                                CompletionTimes[lPtr] /= h;
-                                lPtr++;
-                                h = 0;
-                            }
-                        }
-
-            */
-
             foreach (KeyValuePair<double, uint> histEntry in hist.AsEnumerable())
             {
                 IdleGap[lPtr] = histEntry.Value;
                 CompletionTimes[lPtr] = Convert.ToInt64( histEntry.Key);
                 lPtr++;
             }
-
             return true;
         }
 
+        // idle plot
         private void btnPlot_Click(object sender, EventArgs e)
         {
             if(PerformIdleAnalysis())
@@ -1225,6 +1242,7 @@ namespace BTHistoryReader
             }
         }
 
+        // elapsed time is identified using the -1 arguments, the vars are misnamed but I prefer reused instead.
         private void btnPlotET_Click(object sender, EventArgs e) // this is the histogram
         {
             if (CalculateETdistribution())
@@ -1235,6 +1253,7 @@ namespace BTHistoryReader
             }
         }
 
+        // the next group in ascending order of time
         private void btnCheckNext_Click(object sender, EventArgs e)
         {
             int i, j, n;
@@ -1251,6 +1270,7 @@ namespace BTHistoryReader
             RunContinunityCheck();
         }
 
+        // go backwards in time looking for another group.
         private void btnCheckPrev_Click(object sender, EventArgs e)
         {
             int i, j, n;
@@ -1267,6 +1287,7 @@ namespace BTHistoryReader
             RunContinunityCheck();
         }
 
+        // want to save setting for whether to use CVS or CVS1.  Fred says to use CVS1, not sure why exactly
         private void BTHistory_FormClosing(object sender, FormClosingEventArgs e)
         {
             Properties.Settings.Default.TypeCVS = rbUseCVS1.Checked;

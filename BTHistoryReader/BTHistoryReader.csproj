@@ -159,7 +159,6 @@
   <ItemGroup>
     <Content Include="CH_image.png" />
     <None Include="Resources\BuildDate.txt" />
-    <None Include="Resources\BuildDate.txt.txt" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

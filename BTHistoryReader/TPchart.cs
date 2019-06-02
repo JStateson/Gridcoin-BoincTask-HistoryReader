@@ -46,6 +46,7 @@ namespace BTHistoryReader
         }
 
         // ctStart if > 0 then normalizing
+        // did not want to overwrite the data that was passed by reference
         private void SaveWorking(int n, long ctStart)
         {
             int i;
@@ -119,6 +120,8 @@ namespace BTHistoryReader
             return ValidWork;
         }
 
+
+        //  microsofts neat charting program
         public TPchart(ref List<long> refCT, ref List<double> refIT, double rAvgGap, double rStdGap, string strProject)
         {
             int i;
@@ -129,7 +132,7 @@ namespace BTHistoryReader
             it = refIT;
             lbl_sysname.Text = "System: " + strProject;
             ShowOrHideHist(AvgGap == -1);
-            long iDT = 0;
+
 
             labStartTime.Visible = (AvgGap != -1);  // only for plot of idle time
 
@@ -157,6 +160,7 @@ namespace BTHistoryReader
             DrawHist();
         }
 
+        // uses linux time stuff and I wanted local to match what is displayed by the history tab in boinctasks
         private void SetStartTime(long n)
         {
             System.DateTime dt_1970 = new System.DateTime(1970, 1, 1);
@@ -164,6 +168,7 @@ namespace BTHistoryReader
             labStartTime.Text = "Start: " +  dt_this.ToLocalTime().ToString();
         }
 
+        // need number of seconds (eventualy) in the lookback but for now just select hours 
         private void GetLKHours()
         {
             LKBhours = Convert.ToInt64(cbHours.Text);
@@ -171,6 +176,8 @@ namespace BTHistoryReader
             // the std and average probably changed
 
         }
+
+        // avg and std passed into this form will change when the lookback hours are changed
         private void GetChangedStats()
         {
             double avg = 0, rms = 0, std;
@@ -226,6 +233,8 @@ namespace BTHistoryReader
             return Convert.ToInt64( Math.Round(d));
         }
 
+
+        // this plots our histogram of elapsed time
         private void DrawHist()
         {
             int i, n;
@@ -256,7 +265,7 @@ namespace BTHistoryReader
             chart1.Series["ElapsedTime"].Points.DataBindXY(xAxis.ToArray(), yAxis.ToArray());
         }
 
-
+        // adjustment of filter uses STD to hide small small gaps
         private double GetSigGap()
         {
             if (iSig == 0) return 0;
@@ -310,6 +319,7 @@ namespace BTHistoryReader
             chart1.Series["CompletionTime"].Points.DataBindXY(xAxis.ToArray(), yAxis.ToArray());
         }
 
+        // following two programs redraw the graphcs when changes to the data require it
         private void DrawIdleChanged()
         {
             chart1.Series.Remove(sCT);
@@ -323,6 +333,8 @@ namespace BTHistoryReader
                 DrawHist();
         }
 
+        // changed the filter value so need to either recalculate the whole graph
+        // or change scale factors
         private void DetailFilter_ValueChanged(object sender, EventArgs e)
         {
             double d;
@@ -338,7 +350,7 @@ namespace BTHistoryReader
                 d = Math.Floor(Math.Log10(d));
                 n = Convert.ToInt32(Math.Pow(10, d));
                 chart1.ChartAreas["ChartArea1"].AxisX.Interval = n;
-                return;
+                return; //there was no need to recaculate the enter ET plot
             }
             //TODO: the following needs to be change to avoid a total recalculate
             DrawIdleChanged();
@@ -350,7 +362,7 @@ namespace BTHistoryReader
             chart1.Series.Remove(sET);
         }
 
-        // this only applies to Idle plots
+        // this only applies to Idle plots as it is hidden for elapsed time
         private void cbHours_SelectedIndexChanged(object sender, EventArgs e)
         {
             GetLKHours();
@@ -359,6 +371,7 @@ namespace BTHistoryReader
             DrawIdleChanged();
         }
 
+        // implemented exponential type of filter change.
         private void SpinBin_ValueChanged(object sender, EventArgs e)
         {
             int i = Convert.ToInt32(SpinBin.Value);
@@ -372,9 +385,10 @@ namespace BTHistoryReader
         private void cboxLOG_CheckedChanged(object sender, EventArgs e)
         {
             //chart1.ChartAreas["ChartArea1"].AxisY.IsLogarithmic = cboxTruncate.Text
+            //would have worked nicely but I didnt come up with a good idea on how to handle zero values.
         }
 
-
+        // simple traversal of list to find biggers.  Since sorted, could have used binary search.
         private double FindLargest()
         {
             SetLastTimeDisplayed();    // search no further than this
@@ -386,6 +400,7 @@ namespace BTHistoryReader
             return dBig;
         }
 
+        // try to truncate series, but only if needed to be truncated.
         private void TryTruncate()
         {
             if (cboxTruncate.Checked)

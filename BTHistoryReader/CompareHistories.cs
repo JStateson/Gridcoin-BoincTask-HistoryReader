@@ -75,7 +75,7 @@ namespace BTHistoryReader
             }
         }
 
-        // since system name might be identical in different files then we must change the system name to
+        // since system name might be identical in different files then we must change the system name 
         // as the name is used for the series in the plots and the series names must be unique.
         private string MustBeUniqueName(string strName, ref int n)
         {
@@ -92,6 +92,7 @@ namespace BTHistoryReader
 
         // when comparing projects, say "seti" app can be nvidia, amd or cpu
         // cannot test for full app name else no match unless both systems had same devices
+        // we need to access the callers state (the refForm) and we need whether to read in or to ignore files with "_long_" in name
         public CompareHistories(Form refForm, bool bIgnoreLong)
         {
             InitializeComponent();
@@ -160,6 +161,9 @@ namespace BTHistoryReader
             }
         }
 
+
+        // for the requested project, in all history files, sum up the number of results of any project with that name
+        // and put each app name iknto the ProjApp table along with the sum of all results of that app
         private void ShowAppsThisProj(string sProj)
         {
             List<string> ProjApps = new List<string>();
@@ -205,6 +209,9 @@ namespace BTHistoryReader
             LBoxApps.SetSelected(0, true);
         }
 
+        // systems have unique names but when pasted together they might lose uniquness so we are surrounding them
+        // with a dash.  The checkboxes for which systems to ignore are not always accssible so it is convenient to concatonate. 
+        // file requested systems together and then see if a particular project in the the string
         private bool bUseThisSystem(string strProjName, string strListOfUsed)
         {
             string strQualifier;
@@ -213,10 +220,12 @@ namespace BTHistoryReader
             return strListOfUsed.Contains(strQualifier);
         }
 
+        //if more than on concurrenet task on gpu then the elspsed time was divided by that number.  Remind user of this
+        // using the division sign 
         private string strDivide(int n)
         {
             if (n == 1) return "";
-            return "/" + n.ToString();
+            return "\u00F7" + n.ToString();
         }
 
 
@@ -303,7 +312,7 @@ namespace BTHistoryReader
         }
 
 
-
+        // uses a listview with checkbox to decide which system go into the calculation and which gpu's have multiple tasks runing 
         private void UpdateAppInfo()
         {
             int i = 0;
@@ -311,7 +320,6 @@ namespace BTHistoryReader
             string[] strSysConc;
             ListViewItem itm;
             LViewConc.Items.Clear();
-            // probably need a better way to keep track of both items
             int iString = strAppSelected.IndexOf(")");
             if (iString <= 0) return;   // probably should assert this
             ShowPBar(true);
@@ -335,6 +343,8 @@ namespace BTHistoryReader
             btnShowScatter.Visible = LBoxApps.Items.Count > 0;
         }
 
+        // look in listview for any concurrent gpu tasks
+        // this info needs to be backfit into the actual data tables to be usefull.
         public int GetConcurrency(string strSystem)
         {
             foreach (ListViewItem itm in LViewConc.Items)
@@ -356,7 +366,7 @@ namespace BTHistoryReader
             lbEditTab.Update();
         }
 
-        // the following was not used after all
+        // the following was not used after all.   keeping for a note to myself in case I to show different colors.
         private void LBoxProjects_DrawItem(object sender, DrawItemEventArgs e)
         {
             ListBox lst = (ListBox)sender;
@@ -380,6 +390,7 @@ namespace BTHistoryReader
             }
         }
 
+        // put the number of concurrent items processed by the GPU into the table that has the corresponding data.
         private void BackfitConcurrency(string sysname, string projname, string appname, int value)
         {
             foreach (cKPAlocs ckpal in KPAlocs)                          // for each system
@@ -403,7 +414,7 @@ namespace BTHistoryReader
             }
         }
 
-
+        // same as above but used to set all of them to 1 ie: a reset.
         private void BackfitAllConcurrency(int value)
         {
             foreach (cKPAlocs ckpal in KPAlocs)                          // for each system
@@ -418,6 +429,7 @@ namespace BTHistoryReader
             }
         }
 
+        // this is the "Apply" button, not sure how to rename it w/o design form going crazy on me
         private void button1_Click(object sender, EventArgs e)
         {
             string strWhatToAverage = "";
@@ -474,6 +486,7 @@ namespace BTHistoryReader
             CalcAllValues(Last_sProj, Last_sApp, false, strAverageAll);
         }
 
+        // for each specified app, in each specified system, accumulate elapsed time and find min amd max values.
         private bool GetSysProjData(ref cSeriesData sa)
         {
             double dSmall = 1e6;
@@ -496,7 +509,7 @@ namespace BTHistoryReader
                                 {
                                     dSmall = Math.Min(dSmall, d);
                                     dBig = Math.Max(dBig, d);
-                                    sa.dValues.Add(d);
+                                    sa.dValues.Add(d/ckpaa.nConcurrent);
                                 }
                             }
                         }
@@ -508,6 +521,7 @@ namespace BTHistoryReader
             return (sa.dValues.Count > 0);
         }
 
+        // same as above but we want all systems
         private bool GetAllAppData(ref cSeriesData sa)
         {
             double dSmall = 1e6;
@@ -524,8 +538,6 @@ namespace BTHistoryReader
                             {
                                 if (ckpaa.dLelapsedTime.Count == 0)
                                     continue;
-                                //sa.nConcurrent = GetConcurrency(Systems[ckpaa.iSystem]);
-                                //this does not work as it uses the box only that one project is in there
                                 foreach(double d in ckpaa.dLelapsedTime)
                                 {
                                     dSmall = Math.Min(dSmall, d);
@@ -542,6 +554,9 @@ namespace BTHistoryReader
             return (sa.dValues.Count > 0) ;
         }
 
+        // using the listbox of apps, extract just the name of the app and save the name locally just below
+        // then use what is in the List to add the apps data to the series for graphics
+        // could be rewritten to avoid the little list.
         private List<string> strAppsForSeries;
         private bool FormSeriesFromApps(int n)
         {
@@ -572,7 +587,7 @@ namespace BTHistoryReader
         }
 
        
-
+        // simular to above but by project
         private bool FormSeriesFromProjects(int n)
         {
             int NumChecked = 0;
@@ -601,6 +616,7 @@ namespace BTHistoryReader
             return NumChecked > 0;
         }
 
+        // forms scatter dagta depending on the radio button selected
         private bool GetScatterData()
         {
             int n;
