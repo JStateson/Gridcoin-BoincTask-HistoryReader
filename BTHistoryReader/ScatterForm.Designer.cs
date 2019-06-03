@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
             System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ScatterForm));
@@ -37,6 +38,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.nudXscale = new System.Windows.Forms.NumericUpDown();
             this.label3 = new System.Windows.Forms.Label();
+            this.GetLegendInfo = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.ChartScatter)).BeginInit();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudXscale)).BeginInit();
@@ -46,6 +48,9 @@
             // 
             chartArea1.Name = "ChartArea1";
             this.ChartScatter.ChartAreas.Add(chartArea1);
+            legend1.DockedToChartArea = "ChartArea1";
+            legend1.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Left;
+            legend1.IsDockedInsideChartArea = false;
             legend1.Name = "Legend1";
             this.ChartScatter.Legends.Add(legend1);
             this.ChartScatter.Location = new System.Drawing.Point(224, 23);
@@ -108,7 +113,13 @@
             this.label3.Size = new System.Drawing.Size(259, 39);
             this.label3.TabIndex = 3;
             this.label3.Text = "Clkick on the colored marker near the Legend above \r\nright to view just the desir" +
-    "ed series. Click anywhere \r\na second time to redisplay all the eseries.";
+    "ed series. Click anywhere \r\na second time to redisplay all the series.";
+            // 
+            // GetLegendInfo
+            // 
+            this.GetLegendInfo.Enabled = true;
+            this.GetLegendInfo.Interval = 250;
+            this.GetLegendInfo.Tick += new System.EventHandler(this.GetLegendInfo_Tick);
             // 
             // ScatterForm
             // 
@@ -139,5 +150,6 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.NumericUpDown nudXscale;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Timer GetLegendInfo;
     }
 }

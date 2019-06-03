@@ -20,10 +20,10 @@ namespace BTHistoryReader
         double dSmall = 1e6;
         private string strSeries = "Elapsed Time in ";
         private string strUnits = "secs";
-
+        private int CurrentNumberSeriesDisplayed = 0;
         private int dot_1_offset_y = 34;    // where marker of first system name is
         private int dot_1_offset_x = 516;    // how far across the 640x320 chart
-        private int dot_y_space = 15;
+        private int dot_y_space = 15;           // this needs to be 15 so use kluge1
 
         private List<Point> SeriesMarkers;
 
@@ -73,6 +73,26 @@ namespace BTHistoryReader
             InitializeComponent();
             ThisSeriesData = refSD;
             ShowScatter();
+            GetLegendInfo.Enabled=true;
+        }
+
+        private void FindLegend()
+        {
+            double kluge1 = 2;
+            int kluge2 = 6;
+            double x = ChartScatter.Legends["Legend1"].Position.X;
+            double y = ChartScatter.Legends["Legend1"].Position.Y;
+            x += ChartScatter.ChartAreas["ChartArea1"].Position.X;
+            // following assume 1 characters indent with font size 8 and an image of unknonw size adjacent
+            x += 1.75 * ChartScatter.Legends["Legend1"].Font.SizeInPoints;
+            // assume height in legend and two rows down
+            y += ChartScatter.ChartAreas["ChartArea1"].Position.Y;
+            y += 2 * (ChartScatter.Legends["Legend1"].Font.Height + kluge1);
+            dot_1_offset_x = Convert.ToInt32(x);
+            dot_1_offset_y = Convert.ToInt32(y);
+            dot_1_offset_y += kluge2;
+            dot_y_space = Convert.ToInt32(ChartScatter.Legends["Legend1"].Font.Height + kluge1);
+            WasHereLastTime(CurrentNumberSeriesDisplayed);
         }
 
         private double GetBestScaleingBottom(double a)
@@ -130,6 +150,8 @@ namespace BTHistoryReader
             return strUnits;
         }
 
+
+
         // draw points vertical one over the other from 1 to n but normalzed to 0.0 to 1.0
         // the x axis position is the elapsed time.
         private void ShowScatter()
@@ -137,8 +159,7 @@ namespace BTHistoryReader
             double d=0;
             double f = 0;
             string strUnits = SetMinMax(ref f);
-
-            WasHereLastTime(ThisSeriesData.Count);
+            CurrentNumberSeriesDisplayed = ThisSeriesData.Count;
             foreach (cSeriesData sd in ThisSeriesData)
             {
                 int n = sd.dValues.Count;
@@ -156,6 +177,7 @@ namespace BTHistoryReader
                 ChartScatter.Series.Add(seriesname);
                 ChartScatter.Series[seriesname].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Point;
                 ChartScatter.Series[seriesname].Points.DataBindXY(xAxis.ToArray(), yAxis.ToArray());
+
             }
 
             ChartScatter.Legends["Legend1"].Title = strSeries + strUnits;
@@ -173,7 +195,7 @@ namespace BTHistoryReader
         // click near the series marker then hide all the others series.
         private void ChartScatter_MouseClick(object sender, MouseEventArgs e)
         {
-            int j = AreWeClose(e.Location);
+            int j = AreWeClose(e.Location); // set breakpoint here and made a note of x,y to adjust the "kluge's"
             int n = ThisSeriesData.Count;
             bool bAllEnabled = true;
             for (int i = 0; i < n; i++)
@@ -194,6 +216,13 @@ namespace BTHistoryReader
                     ChartScatter.Series[i].Enabled = (j == i);
                 }
             }
+        }
+
+ 
+        private void GetLegendInfo_Tick(object sender, EventArgs e)
+        {
+            GetLegendInfo.Enabled = false;
+            FindLegend();
         }
     }
 }
