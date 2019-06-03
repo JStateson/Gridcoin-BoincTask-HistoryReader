@@ -19,8 +19,8 @@ namespace BTHistoryReader
         private List<double> IdleGap;
         private double AvgGap;
         private double StdGap;
-        private bool bDoNotLoadA = true; // this is a kluge until I figure out why I cannot remove those events!!!
-        private bool bDoNotLoadP = true;
+        //private bool bDoNotLoadA = true; // this is a kluge until I figure out why I cannot remove those events!!!
+        //private bool bDoNotLoadP = true;
 
         public BTHistory()
         {
@@ -438,12 +438,19 @@ namespace BTHistoryReader
         private void btn_OpenHistory_Click(object sender, EventArgs e)
         {
             InitLookupTable();
-            bDoNotLoadP = true;          // FIXME 1-JUNE-2019
-            bDoNotLoadA = true;
-            if (FetchHistory())return;
+            // bDoNotLoadP = true;          // FIXME 1-JUNE-2019
+            // bDoNotLoadA = true;
+            DisallowCallbacks(true);
+            if (FetchHistory())
+            {
+                DisallowCallbacks(false);
+                cb_AppNames_SelectedIndexChanged(null, null);
+                return;
+            }
             ClearPreviousHistory();
             ShowContinunities(false);
             ShowSelectable(false);
+
         }
 
         // see if we have a real history file and not some junk file accidently opened.
@@ -583,7 +590,7 @@ namespace BTHistoryReader
                 }
             }
             if (cb_SelProj.Items.Count == 0) return;
-            bDoNotLoadP = false;    // FIXME
+            //bDoNotLoadP = false;    // FIXME
             strProjName = cb_SelProj.Items[0].ToString();
             n = LookupProject(strProjName);
             cb_SelProj.Text = strProjName;
@@ -596,21 +603,37 @@ namespace BTHistoryReader
 
         }
 
+        // if true stop callbacks from happening
+        // if false then OK to fall through and trigger other events
+        private void DisallowCallbacks(bool bValue)
+        {
+            if (bValue)
+            {
+                this.cb_SelProj.SelectedIndexChanged -= new System.EventHandler(this.cb_SelProj_SelectedIndexChanged);
+                this.cb_AppNames.SelectedIndexChanged -= new System.EventHandler(this.cb_AppNames_SelectedIndexChanged);
+            }
+            else
+            {
+                this.cb_SelProj.SelectedIndexChanged += new System.EventHandler(this.cb_SelProj_SelectedIndexChanged);
+                this.cb_AppNames.SelectedIndexChanged += new System.EventHandler(this.cb_AppNames_SelectedIndexChanged);
+            }
+        }
+
         // if project changed then fill in the associated app box
         private void cb_SelProj_SelectedIndexChanged(object sender, EventArgs e)
         {
             int i = cb_SelProj.SelectedIndex;
 
             // FIXME WTF THE FOLLOWING DOES NOT WORK "method group"
-            //cb_AppNames_SelectedIndexChanged -= new System.EventHandler(this.cb_AppNames_SelectedIndexChanged);
+            // WTF MY FAULT saw "." but coded up "_" instead
+            // this.cb_AppNames_SelectedIndexChanged -= new System.EventHandler(this.cb_AppNames_SelectedIndexChanged);
+
 
             ClearForNewProject();
             cb_SelProj.Text = cb_SelProj.Items[i].ToString();
             i = LookupProject(cb_SelProj.Text);
             FillAppBox(i);
-            //cb_AppNames_SelectedIndexChanged += new System.EventHandler(this.cb_AppNames_SelectedIndexChanged);
-            bDoNotLoadA = false;
-
+            //bDoNotLoadA = false;
             DisplayHistory();
         }
 
@@ -906,8 +929,10 @@ namespace BTHistoryReader
 
         private void cb_AppNames_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (bDoNotLoadA) return;
+            //if (bDoNotLoadA) return;
             string strTemp = cb_AppNames.Text;
+            if (cb_AppNames.Text == "")
+                return;
             ShowNumberApps();
             DisplayHistory();
         }

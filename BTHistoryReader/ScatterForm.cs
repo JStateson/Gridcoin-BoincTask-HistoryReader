@@ -21,6 +21,53 @@ namespace BTHistoryReader
         private string strSeries = "Elapsed Time in ";
         private string strUnits = "secs";
 
+        private int dot_1_offset_y = 34;    // where marker of first system name is
+        private int dot_1_offset_x = 516;    // how far across the 640x320 chart
+        private int dot_y_space = 15;
+
+        private List<Point> SeriesMarkers;
+
+        // if you resize the chart you must re-calculate the above number
+        private void WasHereLastTime(int nSystems)
+        {
+            SeriesMarkers = new List<Point>();
+            for(int i = 0; i < nSystems;i++)
+            {
+                Point p = new Point();
+                p.Y = dot_1_offset_y + i * dot_y_space;
+                p.X = dot_1_offset_x;
+                SeriesMarkers.Add(p);
+            }
+        }
+
+        private double DistanceTo(Point point1, Point point2)
+        {
+            var a = (double)(point2.X - point1.X);
+            var b = (double)(point2.Y - point1.Y);
+
+            return Math.Sqrt(a * a + b * b);
+        }
+
+        // how close is the mouse click to where the markers are
+        // return marker count (1..whatever) or return -1 for not close at all
+        private int AreWeClose(Point mClick)
+        {
+            double InGalaxy = 1e6;
+            int i=0, iLoc = 0;
+            foreach(Point p in SeriesMarkers)
+            {
+                double d = DistanceTo(p, mClick);
+                if(d < InGalaxy)
+                {
+                    InGalaxy = d;
+                    iLoc = i;
+                }
+                i++;
+            }
+            if (InGalaxy > (dot_y_space / 2))return -1;
+            return iLoc;
+        }
+
         public ScatterForm(ref List<cSeriesData> refSD)
         {
             InitializeComponent();
@@ -90,6 +137,8 @@ namespace BTHistoryReader
             double d=0;
             double f = 0;
             string strUnits = SetMinMax(ref f);
+
+            WasHereLastTime(ThisSeriesData.Count);
             foreach (cSeriesData sd in ThisSeriesData)
             {
                 int n = sd.dValues.Count;
@@ -102,7 +151,6 @@ namespace BTHistoryReader
                     d = sd.dValues[i];
                     xAxis.Add(d * f);
                 }
-
                 string seriesname = sd.bIsShowingApp ? sd.strAppName : sd.strSystemName;
                 SeriesName = seriesname;
                 ChartScatter.Series.Add(seriesname);
@@ -119,6 +167,33 @@ namespace BTHistoryReader
         private void nudXscale_ValueChanged(object sender, EventArgs e)
         {
             ChartScatter.ChartAreas["ChartArea1"].AxisX.Maximum = GetBestScaleingUpper(dBig);
+        }
+
+        // click anywhere and if any are disabled then enable them (make visibls)
+        // click near the series marker then hide all the others series.
+        private void ChartScatter_MouseClick(object sender, MouseEventArgs e)
+        {
+            int j = AreWeClose(e.Location);
+            int n = ThisSeriesData.Count;
+            bool bAllEnabled = true;
+            for (int i = 0; i < n; i++)
+            {
+                bAllEnabled &= ChartScatter.Series[i].Enabled;
+            }
+            if (!bAllEnabled)
+            {
+                for (int i = 0; i < n; i++)
+                {
+                    ChartScatter.Series[i].Enabled = true;
+                }
+            }
+            else if(j >=0)
+            {
+                for (int i = 0; i < n; i++)
+                {
+                    ChartScatter.Series[i].Enabled = (j == i);
+                }
+            }
         }
     }
 }
