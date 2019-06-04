@@ -73,6 +73,7 @@
             this.ClientSize = new System.Drawing.Size(994, 402);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.label1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "CompareHelp";
             this.Text = "CompareHelp";
             this.panel1.ResumeLayout(false);

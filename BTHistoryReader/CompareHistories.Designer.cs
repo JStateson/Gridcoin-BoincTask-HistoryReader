@@ -385,6 +385,8 @@
             this.Controls.Add(this.TBoxResults);
             this.Controls.Add(this.panel1);
             this.ForeColor = System.Drawing.Color.CadetBlue;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
+            this.MaximizeBox = false;
             this.Name = "CompareHistories";
             this.Text = "CompareHistories";
             this.panel1.ResumeLayout(false);
