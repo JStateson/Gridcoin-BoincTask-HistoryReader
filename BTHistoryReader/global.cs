@@ -40,12 +40,14 @@ namespace BTHistoryReader
     {
         public string strAppName;
         public string strProjName;
-        public string strSystemName;
-        public List<double> dValues;
+        public string strSystemName;    // if gathering all data for a specific app then this field may contain multiple system names (scatter apps)
+        public List<double> dValues;    // if scattering systems then only one app can be selected so this collection can only be homogenous
+        public List<int> iSystem;       // would like to know which values above belong to which system        
         public bool bIsShowingApp;
         public int nConcurrent;
         public double dSmall;
         public double dBig;
+        public List<string> TheseSystems;   // those systems that contributed to the elapsed times in the scatter pot
     }
 
     public enum eHindex

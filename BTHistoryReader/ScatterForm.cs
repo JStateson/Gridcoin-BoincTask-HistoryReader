@@ -19,7 +19,7 @@ namespace BTHistoryReader
         private double dBig = -1;
         double dSmall = 1e6;
         private string strSeries = "Elapsed Time in ";
-        private string strUnits = "secs";
+        // note to myself, elspased time is always in minutes
         private int CurrentNumberSeriesDisplayed = 0;
         private bool bScatteringApps;
   
@@ -66,11 +66,11 @@ namespace BTHistoryReader
                 cl.rgb = ChartScatter.Series[seriesname].Color;
                 if(sd.bIsShowingApp)
                 {
-                    cl.strSubItems = "xxxx";
+                    // reserve for possibly subsystems when scattering apps
                 }
                 else
                 {
-                    // append all systems here
+                    // append all systems here (used lbox instead)
                 }
                 MyLegendNames.Add(cl);
             }
@@ -106,12 +106,9 @@ namespace BTHistoryReader
         // use (dOut / d) to scale
         private string BestTimeUnits(double d, ref double dOut)
         {
-            string strOut = " secs";
+            string strOut = " mins";
             dOut = d;
-            if (d < 120.0) return strOut;
-            strOut = " mins";
-            dOut /= 60.0;
-            if (dOut < 60) return  strOut;
+            if (d < 60.0) return strOut;
             strOut = " hours";
             dOut /= 60.0;
             if (dOut < 24) return  strOut;
@@ -152,6 +149,10 @@ namespace BTHistoryReader
             string strUnits = SetMinMax(ref f);
             CurrentNumberSeriesDisplayed = ThisSeriesData.Count;
             bScatteringApps = ThisSeriesData[0].bIsShowingApp;
+            if(!bScatteringApps)
+            {
+                lboxSubseries.Items.Add(ThisSeriesData[0].strAppName);
+            }
             foreach (cSeriesData sd in ThisSeriesData)
             {
                 int n = sd.dValues.Count;
@@ -179,21 +180,20 @@ namespace BTHistoryReader
             ChartScatter.ChartAreas["ChartArea1"].AxisX.LabelStyle.Format = "#.#";
         }
 
+        // for the series index s put the names of the systems into the list box
+        private void ShowSystemNames(int s)
+        {
+            lboxSubseries.Items.Clear();
+            foreach(string str in ThisSeriesData[s].TheseSystems)
+            {
+                lboxSubseries.Items.Add(str);
+            }
+        }
+
         private void nudXscale_ValueChanged(object sender, EventArgs e)
         {
             ChartScatter.ChartAreas["ChartArea1"].AxisX.Maximum = GetBestScaleingUpper(dBig);
         }
-
-        // click anywhere and if any are disabled then enable them (make visibls)
-        // click near the series marker then hide all the others series.
-        // this was no good when legend text wrapped
-        private void ChartScatter_MouseClick(object sender, MouseEventArgs e)
-        {
-            return;
-            //int j = AreWeClose(e.Location); // set breakpoint here and made a note of x,y to adjust the "kluge's"
-            
-        }
-
  
 
         private void GetLegendInfo_Tick(object sender, EventArgs e)
@@ -239,10 +239,16 @@ namespace BTHistoryReader
             {
                 i = 0;  // wrap back to 0
                 nudShowOnly.Value = 0;
+                if(bScatteringApps)
+                    lboxSubseries.Items.Clear();    // do not clear if scatttering projects
             }
             DrawShowingText(i);
             ShowHideSeries(i);
-            // TODO  want to show systems here
+            if (i == 0  | !bScatteringApps)
+            {
+                return; // not showing individual series nor scattering apps
+            }
+            ShowSystemNames(i-1);
         }
 
         private void nudXscale_ValueChanged_1(object sender, EventArgs e)
@@ -260,5 +266,7 @@ namespace BTHistoryReader
                 ChartScatter.ChartAreas["ChartArea1"].AxisX.Maximum = GetBestScaleingUpper(dBig);
             }
         }
+
+
     }
 }

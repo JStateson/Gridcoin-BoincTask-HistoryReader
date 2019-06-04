@@ -32,6 +32,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ScatterForm));
             System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
             System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             this.label1 = new System.Windows.Forms.Label();
             this.GetLegendInfo = new System.Windows.Forms.Timer(this.components);
             this.labelShowSeries = new System.Windows.Forms.Label();
@@ -41,16 +42,19 @@
             this.nudXscale = new System.Windows.Forms.NumericUpDown();
             this.cboxUseLog = new System.Windows.Forms.CheckBox();
             this.ChartScatter = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.lboxSubseries = new System.Windows.Forms.ListBox();
             ((System.ComponentModel.ISupportInitialize)(this.nudShowOnly)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudXscale)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ChartScatter)).BeginInit();
+            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
             // 
             this.label1.AutoSize = true;
             this.label1.BackColor = System.Drawing.SystemColors.Info;
-            this.label1.Location = new System.Drawing.Point(578, 379);
+            this.label1.Location = new System.Drawing.Point(624, 361);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(291, 52);
             this.label1.TabIndex = 1;
@@ -65,7 +69,7 @@
             // labelShowSeries
             // 
             this.labelShowSeries.AutoSize = true;
-            this.labelShowSeries.Location = new System.Drawing.Point(9, 417);
+            this.labelShowSeries.Location = new System.Drawing.Point(18, 372);
             this.labelShowSeries.Name = "labelShowSeries";
             this.labelShowSeries.Size = new System.Drawing.Size(83, 13);
             this.labelShowSeries.TabIndex = 3;
@@ -74,7 +78,7 @@
             // nudShowOnly
             // 
             this.nudShowOnly.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.nudShowOnly.Location = new System.Drawing.Point(101, 400);
+            this.nudShowOnly.Location = new System.Drawing.Point(119, 361);
             this.nudShowOnly.Name = "nudShowOnly";
             this.nudShowOnly.ReadOnly = true;
             this.nudShowOnly.Size = new System.Drawing.Size(20, 38);
@@ -84,7 +88,7 @@
             // tboxShowing
             // 
             this.tboxShowing.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.tboxShowing.Location = new System.Drawing.Point(172, 411);
+            this.tboxShowing.Location = new System.Drawing.Point(157, 369);
             this.tboxShowing.Name = "tboxShowing";
             this.tboxShowing.ReadOnly = true;
             this.tboxShowing.ScrollBars = System.Windows.Forms.ScrollBars.Horizontal;
@@ -95,15 +99,15 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(152, 379);
+            this.label2.Location = new System.Drawing.Point(36, 38);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(47, 13);
+            this.label2.Size = new System.Drawing.Size(41, 13);
             this.label2.TabIndex = 7;
-            this.label2.Text = "X-Factor";
+            this.label2.Text = "Stretch";
             // 
             // nudXscale
             // 
-            this.nudXscale.Location = new System.Drawing.Point(221, 377);
+            this.nudXscale.Location = new System.Drawing.Point(105, 36);
             this.nudXscale.Maximum = new decimal(new int[] {
             9,
             0,
@@ -118,7 +122,7 @@
             // cboxUseLog
             // 
             this.cboxUseLog.AutoSize = true;
-            this.cboxUseLog.Location = new System.Drawing.Point(286, 380);
+            this.cboxUseLog.Location = new System.Drawing.Point(170, 39);
             this.cboxUseLog.Name = "cboxUseLog";
             this.cboxUseLog.Size = new System.Drawing.Size(108, 17);
             this.cboxUseLog.TabIndex = 8;
@@ -133,22 +137,44 @@
             legend1.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Left;
             legend1.IsDockedInsideChartArea = false;
             legend1.Name = "Legend1";
+            legend2.DockedToChartArea = "ChartArea1";
+            legend2.Name = "SysLeg";
             this.ChartScatter.Legends.Add(legend1);
+            this.ChartScatter.Legends.Add(legend2);
             this.ChartScatter.Location = new System.Drawing.Point(21, 22);
             this.ChartScatter.Name = "ChartScatter";
             this.ChartScatter.Size = new System.Drawing.Size(894, 320);
             this.ChartScatter.TabIndex = 0;
             this.ChartScatter.Text = "Scatter Plot";
-            this.ChartScatter.MouseClick += new System.Windows.Forms.MouseEventHandler(this.ChartScatter_MouseClick);
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.cboxUseLog);
+            this.groupBox1.Controls.Add(this.nudXscale);
+            this.groupBox1.Controls.Add(this.label2);
+            this.groupBox1.Location = new System.Drawing.Point(12, 423);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(294, 75);
+            this.groupBox1.TabIndex = 9;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "X-Axis scaling";
+            // 
+            // lboxSubseries
+            // 
+            this.lboxSubseries.FormattingEnabled = true;
+            this.lboxSubseries.HorizontalScrollbar = true;
+            this.lboxSubseries.Location = new System.Drawing.Point(434, 369);
+            this.lboxSubseries.Name = "lboxSubseries";
+            this.lboxSubseries.Size = new System.Drawing.Size(164, 82);
+            this.lboxSubseries.TabIndex = 10;
             // 
             // ScatterForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(958, 450);
-            this.Controls.Add(this.cboxUseLog);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.nudXscale);
+            this.ClientSize = new System.Drawing.Size(958, 510);
+            this.Controls.Add(this.lboxSubseries);
+            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.tboxShowing);
             this.Controls.Add(this.nudShowOnly);
             this.Controls.Add(this.labelShowSeries);
@@ -161,6 +187,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.nudShowOnly)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudXscale)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ChartScatter)).EndInit();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -176,5 +204,7 @@
         private System.Windows.Forms.NumericUpDown nudXscale;
         private System.Windows.Forms.CheckBox cboxUseLog;
         private System.Windows.Forms.DataVisualization.Charting.Chart ChartScatter;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.ListBox lboxSubseries;
     }
 }

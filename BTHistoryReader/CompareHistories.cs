@@ -44,10 +44,11 @@ namespace BTHistoryReader
         {
             public string sProjName;
             public List<cKPAapps> KPAapps = new List<cKPAapps>();
-            public cKPAapps AddApp(string sAppName)
+            public cKPAapps AddApp(string sAppName, int iSystem)
             {
                 cKPAapps ckpaa = new cKPAapps();
                 ckpaa.sAppName = sAppName;
+                ckpaa.iSystem = iSystem;
                 KPAapps.Add(ckpaa);
                 return ckpaa;
             }
@@ -110,12 +111,12 @@ namespace BTHistoryReader
             LBoxApps.Items.Clear();
             LBoxProjects.Items.Clear();
             btf.CurrentSystem = "";
-            foreach(string sProj in btf.AllHistories)
+            foreach(string strHisFile in btf.AllHistories)
             {
                 int RtnCod;
-                if (bIgnoreLong && sProj.Contains("_long_"))
+                if (bIgnoreLong && strHisFile.Contains("_long_"))
                     continue;
-                RtnCod = btf.ValidateHistory(sProj, ref ThisSystem);
+                RtnCod = btf.ValidateHistory(strHisFile, ref ThisSystem);
                 if (RtnCod < 0) continue;
                 DuplicateNameCnt = 0;
                 ThisSystem = MustBeUniqueName(ThisSystem,ref DuplicateNameCnt);
@@ -131,7 +132,8 @@ namespace BTHistoryReader
                 }
                 cKPAlocs ckpal = new cKPAlocs();
                 KPAlocs.Add(ckpal);
-                ckpal.AddNewPath(sProj);    // sProj does not contain the exact name of system that "history" has
+                ckpal.AddNewPath(strHisFile);    // strHisFile does not contain the exact name of system that "history" has
+                ckpal.strSystem = ThisSystem;    // this has the system name
                 foreach (cKnownProjApps kpa in btf.KnownProjApps)
                 {
                     if (kpa.nAppsUsed == 0) continue;
@@ -141,7 +143,7 @@ namespace BTHistoryReader
                         int nEntries = AppName.dElapsedTime.Count;  // nEntries from AppName is not valid here
                         if (nEntries == 0) continue;
                         NumberProjects++;
-                        cKPAapps ckpaa = ckpap.AddApp(AppName.Name);
+                        cKPAapps ckpaa = ckpap.AddApp(AppName.Name, iSystem);
                         btf.ThisProjectInfo = new List<cProjectInfo>(nEntries);
                         cProjectInfo cpi = new cProjectInfo();
                         cpi.iSystem = iSystem;
@@ -185,7 +187,6 @@ namespace BTHistoryReader
                             }
                             ProjApps.Add(ckpaa.sAppName);
                             NumApps.Add(ckpaa.dLelapsedTime.Count);
-                            //bItemsToColor.Add(ckpaa.dLelapsedTime.Count > 0);
                         }
                     }
                 }
@@ -551,8 +552,11 @@ namespace BTHistoryReader
                                     }
                                     dSmall = Math.Min(dSmall, d);
                                     dBig = Math.Max(dBig, d);
-                                    sa.dValues.Add(d/ ckpaa.nConcurrent);
+                                    sa.dValues.Add(d/ckpaa.nConcurrent);
+                                    // the following not implmented yet 
+                                    //sa.iSystem.Add(ckpaa.iSystem);
                                 }
+                                sa.TheseSystems.Add(ckpal.strSystem);
                             }
                         }
                     }
@@ -584,7 +588,10 @@ namespace BTHistoryReader
                 sa.strAppName = strName;
                 sa.strProjName = LBoxProjects.Text;
                 sa.dValues = new List<double>();
+                sa.iSystem = new List<int>();
+                sa.TheseSystems = new List<string>();
                 sa.bIsShowingApp = true;
+                
                 sa.nConcurrent = 1; // this may be revised when data is obtain as we dont know the system yet
                 if (GetAllAppData(ref sa))
                 {
