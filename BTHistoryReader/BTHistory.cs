@@ -400,7 +400,7 @@ namespace BTHistoryReader
             if (AllHistories.Length > 1 )
             {
                 PerformSelectCompare();
-                return true;
+                return false;   // 30jun19 need to clean up, not save stuff
             }
             lb_history_loc.Text = ofd_history.FileName;
             if (File.Exists(lb_history_loc.Text))
@@ -543,6 +543,7 @@ namespace BTHistoryReader
                 if (iLine < 1) continue;    // skip past header
                 // possible sanity check here: iLine is 1 and first token of "s" is also 1
                 eInvalid = OneSplitLine.StoreLineOfHistory(s, ExpectedLengthLine);
+                if (eInvalid != 0) continue;    // do not put 0 elapsed time into our results
                 RtnCode = LookupProj(OneSplitLine.Project);
                 if (RtnCode < 0)
                 {

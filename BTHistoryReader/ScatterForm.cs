@@ -47,27 +47,7 @@ namespace BTHistoryReader
 
             return Math.Sqrt(a * a + b * b);
         }
-
-        // how close is the mouse click to where the markers are
-        // return marker count (1..whatever) or return -1 for not close at all
-        private int AreWeClose(Point mClick)
-        {
-            double InGalaxy = 1e6;
-            int i=0, iLoc = 0;
-            foreach(Point p in SeriesMarkers)
-            {
-                double d = DistanceTo(p, mClick);
-                if(d < InGalaxy)
-                {
-                    InGalaxy = d;
-                    iLoc = i;
-                }
-                i++;
-            }
-            if (InGalaxy > (dot_y_space / 2))return -1;
-            return iLoc;
-        }
-
+       
         public ScatterForm(ref List<cSeriesData> refSD)
         {
             InitializeComponent();
@@ -76,23 +56,40 @@ namespace BTHistoryReader
             GetLegendInfo.Enabled=true;
         }
 
-        private void FindLegend()
+        class cColoredLegends
         {
-            double kluge1 = 2;
-            int kluge2 = 6;
-            double x = ChartScatter.Legends["Legend1"].Position.X;
-            double y = ChartScatter.Legends["Legend1"].Position.Y;
-            x += ChartScatter.ChartAreas["ChartArea1"].Position.X;
-            // following assume 1 characters indent with font size 8 and an image of unknonw size adjacent
-            x += 1.75 * ChartScatter.Legends["Legend1"].Font.SizeInPoints;
-            // assume height in legend and two rows down
-            y += ChartScatter.ChartAreas["ChartArea1"].Position.Y;
-            y += 2 * (ChartScatter.Legends["Legend1"].Font.Height + kluge1);
-            dot_1_offset_x = Convert.ToInt32(x);
-            dot_1_offset_y = Convert.ToInt32(y);
-            dot_1_offset_y += kluge2;
-            dot_y_space = Convert.ToInt32(ChartScatter.Legends["Legend1"].Font.Height + kluge1);
-            WasHereLastTime(CurrentNumberSeriesDisplayed);
+            public string strName;
+            public Color rgb;
+        }
+
+        List<cColoredLegends> MyLegendNames;
+
+        private void FillInSeriesLegends()
+        {
+            int n = ThisSeriesData.Count;
+            MyLegendNames = new List<cColoredLegends>();
+            cColoredLegends cl = new cColoredLegends();
+            ChartScatter.ApplyPaletteColors();
+            cl.strName = "All Series";
+            cl.rgb = Color.Black;
+            MyLegendNames.Add(cl);
+            foreach(cSeriesData sd in ThisSeriesData)
+            {
+                string seriesname = sd.bIsShowingApp ? sd.strAppName : sd.strSystemName;
+                cl = new cColoredLegends();
+                cl.strName = seriesname;
+                cl.rgb = ChartScatter.Series[seriesname].Color;
+                MyLegendNames.Add(cl);
+            }
+            // allow 1 more than actual so we can wrap back to 0
+            nudShowOnly.Maximum = n + 1;
+            DrawShowingText(0);
+        }
+
+        private void DrawShowingText(int i)
+        {
+            tboxShowing.Text = MyLegendNames[i].strName;
+            tboxShowing.ForeColor = MyLegendNames[i].rgb;
         }
 
         private double GetBestScaleingBottom(double a)
@@ -117,7 +114,7 @@ namespace BTHistoryReader
         {
             string strOut = " secs";
             dOut = d;
-            if (d < 60.0) return strOut;
+            if (d < 120.0) return strOut;
             strOut = " mins";
             dOut /= 60.0;
             if (dOut < 60) return  strOut;
@@ -193,36 +190,78 @@ namespace BTHistoryReader
 
         // click anywhere and if any are disabled then enable them (make visibls)
         // click near the series marker then hide all the others series.
+        // this was no good when legend text wrapped
         private void ChartScatter_MouseClick(object sender, MouseEventArgs e)
         {
-            int j = AreWeClose(e.Location); // set breakpoint here and made a note of x,y to adjust the "kluge's"
-            int n = ThisSeriesData.Count;
-            bool bAllEnabled = true;
-            for (int i = 0; i < n; i++)
+            return;
+            //int j = AreWeClose(e.Location); // set breakpoint here and made a note of x,y to adjust the "kluge's"
+            
+        }
+
+ 
+
+        private void GetLegendInfo_Tick(object sender, EventArgs e)
+        {
+            GetLegendInfo.Enabled = false;
+            //FindLegend();
+            if(ThisSeriesData.Count == 1)
             {
-                bAllEnabled &= ChartScatter.Series[i].Enabled;
+                labelShowSeries.Visible = false;
+                tboxShowing.Visible = false;
+                nudShowOnly.Visible = false;
+                return;
             }
-            if (!bAllEnabled)
+            FillInSeriesLegends();
+        }
+    
+        private void ShowHideSeries(int j)
+        {
+            int n = ThisSeriesData.Count;
+
+            if (j == 0 )
             {
                 for (int i = 0; i < n; i++)
                 {
                     ChartScatter.Series[i].Enabled = true;
                 }
             }
-            else if(j >=0)
+            else 
             {
+                j--;
                 for (int i = 0; i < n; i++)
                 {
-                    ChartScatter.Series[i].Enabled = (j == i);
+                    ChartScatter.Series[i].Enabled = (i == j);
                 }
             }
         }
 
- 
-        private void GetLegendInfo_Tick(object sender, EventArgs e)
+        private void nudShowOnly_ValueChanged(object sender, EventArgs e)
         {
-            GetLegendInfo.Enabled = false;
-            FindLegend();
+            int i = Convert.ToInt32(nudShowOnly.Value);
+            int j = MyLegendNames.Count;
+            if (i == j)
+            {
+                i = 0;  // wrap back to 0
+                nudShowOnly.Value = 0;
+            }
+            DrawShowingText(i);
+            ShowHideSeries(i);
+        }
+
+        private void nudXscale_ValueChanged_1(object sender, EventArgs e)
+        {
+            ChartScatter.ChartAreas["ChartArea1"].AxisX.Maximum = GetBestScaleingUpper(dBig);
+        }
+
+        private void cboxUseLog_CheckedChanged(object sender, EventArgs e)
+        {
+            double d = GetBestScaleingBottom(dSmall);
+            ChartScatter.ChartAreas["ChartArea1"].AxisX.Minimum = cboxUseLog.Checked ? Math.Max(0.1, d) : d ;
+            ChartScatter.ChartAreas["ChartArea1"].AxisX.IsLogarithmic = cboxUseLog.Checked;
+            if(!cboxUseLog.Checked)
+            {
+                ChartScatter.ChartAreas["ChartArea1"].AxisX.Maximum = GetBestScaleingUpper(dBig);
+            }
         }
     }
 }

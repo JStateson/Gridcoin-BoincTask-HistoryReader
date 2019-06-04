@@ -106,6 +106,9 @@ namespace BTHistoryReader
             }
         }
 
+
+        // read a line from history file and recored info
+        // if 0 returned then all is ok
         private int ProcessLine()
         {
             RtnCod = (int)eHistoryError.SeemsOK;

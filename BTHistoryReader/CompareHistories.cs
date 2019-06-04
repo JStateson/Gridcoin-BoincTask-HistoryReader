@@ -206,7 +206,8 @@ namespace BTHistoryReader
             TBoxStats.Text = "";
             ShowAppsThisProj(strProjSelected);
             LViewConc.Items.Clear();
-            LBoxApps.SetSelected(0, true);
+            if(LBoxApps.Items.Count != 0)
+                LBoxApps.SetSelected(0, true);  // FIXME  not sure why or how this fired with 0 items
         }
 
         // systems have unique names but when pasted together they might lose uniquness so we are surrounding them
@@ -507,6 +508,10 @@ namespace BTHistoryReader
                                     continue;
                                 foreach (double d in ckpaa.dLelapsedTime)
                                 {
+                                    if (d == 0.0)
+                                    {
+                                        Debug.Assert(false);
+                                    }
                                     dSmall = Math.Min(dSmall, d);
                                     dBig = Math.Max(dBig, d);
                                     sa.dValues.Add(d/ckpaa.nConcurrent);
@@ -540,6 +545,10 @@ namespace BTHistoryReader
                                     continue;
                                 foreach(double d in ckpaa.dLelapsedTime)
                                 {
+                                    if (d == 0.0)
+                                    {
+                                        Debug.Assert(false);
+                                    }
                                     dSmall = Math.Min(dSmall, d);
                                     dBig = Math.Max(dBig, d);
                                     sa.dValues.Add(d/ ckpaa.nConcurrent);
@@ -576,7 +585,7 @@ namespace BTHistoryReader
                 sa.strProjName = LBoxProjects.Text;
                 sa.dValues = new List<double>();
                 sa.bIsShowingApp = true;
-                sa.nConcurrent = 1; // this may be overwritten when data is obtain as we dont know the system yet
+                sa.nConcurrent = 1; // this may be revised when data is obtain as we dont know the system yet
                 if (GetAllAppData(ref sa))
                 {
                     MySeriesData.Add(sa);
@@ -600,7 +609,7 @@ namespace BTHistoryReader
                     NumChecked++;
                     sa.strSystemName = itm.SubItems[1].Text;
                     int i = LBoxApps.Text.IndexOf(") ");  // really need the name of the app
-                    if (i < 3) return false;        // cant be
+                    if (i < 2) return false;        // cant be
                     sa.strAppName = LBoxApps.Text.Substring(i + 2);
                     sa.strProjName = LBoxProjects.Text;
                     sa.dValues = new List<double>();
