@@ -29,10 +29,9 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ScatterForm));
             System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
             System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ScatterForm));
-            this.ChartScatter = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.label1 = new System.Windows.Forms.Label();
             this.GetLegendInfo = new System.Windows.Forms.Timer(this.components);
             this.labelShowSeries = new System.Windows.Forms.Label();
@@ -41,26 +40,11 @@
             this.label2 = new System.Windows.Forms.Label();
             this.nudXscale = new System.Windows.Forms.NumericUpDown();
             this.cboxUseLog = new System.Windows.Forms.CheckBox();
-            ((System.ComponentModel.ISupportInitialize)(this.ChartScatter)).BeginInit();
+            this.ChartScatter = new System.Windows.Forms.DataVisualization.Charting.Chart();
             ((System.ComponentModel.ISupportInitialize)(this.nudShowOnly)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudXscale)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ChartScatter)).BeginInit();
             this.SuspendLayout();
-            // 
-            // ChartScatter
-            // 
-            chartArea1.Name = "ChartArea1";
-            this.ChartScatter.ChartAreas.Add(chartArea1);
-            legend1.DockedToChartArea = "ChartArea1";
-            legend1.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Left;
-            legend1.IsDockedInsideChartArea = false;
-            legend1.Name = "Legend1";
-            this.ChartScatter.Legends.Add(legend1);
-            this.ChartScatter.Location = new System.Drawing.Point(27, 23);
-            this.ChartScatter.Name = "ChartScatter";
-            this.ChartScatter.Size = new System.Drawing.Size(894, 320);
-            this.ChartScatter.TabIndex = 0;
-            this.ChartScatter.Text = "Scatter Plot";
-            this.ChartScatter.MouseClick += new System.Windows.Forms.MouseEventHandler(this.ChartScatter_MouseClick);
             // 
             // label1
             // 
@@ -100,10 +84,10 @@
             // tboxShowing
             // 
             this.tboxShowing.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.tboxShowing.Location = new System.Drawing.Point(144, 411);
-            this.tboxShowing.Multiline = true;
+            this.tboxShowing.Location = new System.Drawing.Point(172, 411);
             this.tboxShowing.Name = "tboxShowing";
             this.tboxShowing.ReadOnly = true;
+            this.tboxShowing.ScrollBars = System.Windows.Forms.ScrollBars.Horizontal;
             this.tboxShowing.Size = new System.Drawing.Size(222, 20);
             this.tboxShowing.TabIndex = 5;
             this.tboxShowing.Text = "Show All";
@@ -142,6 +126,21 @@
             this.cboxUseLog.UseVisualStyleBackColor = true;
             this.cboxUseLog.CheckedChanged += new System.EventHandler(this.cboxUseLog_CheckedChanged);
             // 
+            // ChartScatter
+            // 
+            chartArea1.Name = "ChartArea1";
+            this.ChartScatter.ChartAreas.Add(chartArea1);
+            legend1.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Left;
+            legend1.IsDockedInsideChartArea = false;
+            legend1.Name = "Legend1";
+            this.ChartScatter.Legends.Add(legend1);
+            this.ChartScatter.Location = new System.Drawing.Point(21, 22);
+            this.ChartScatter.Name = "ChartScatter";
+            this.ChartScatter.Size = new System.Drawing.Size(894, 320);
+            this.ChartScatter.TabIndex = 0;
+            this.ChartScatter.Text = "Scatter Plot";
+            this.ChartScatter.MouseClick += new System.Windows.Forms.MouseEventHandler(this.ChartScatter_MouseClick);
+            // 
             // ScatterForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -159,17 +158,15 @@
             this.MaximizeBox = false;
             this.Name = "ScatterForm";
             this.Text = "Scatter Plot";
-            ((System.ComponentModel.ISupportInitialize)(this.ChartScatter)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudShowOnly)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudXscale)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ChartScatter)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
         }
 
         #endregion
-
-        private System.Windows.Forms.DataVisualization.Charting.Chart ChartScatter;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Timer GetLegendInfo;
         private System.Windows.Forms.Label labelShowSeries;
@@ -178,5 +175,6 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.NumericUpDown nudXscale;
         private System.Windows.Forms.CheckBox cboxUseLog;
+        private System.Windows.Forms.DataVisualization.Charting.Chart ChartScatter;
     }
 }

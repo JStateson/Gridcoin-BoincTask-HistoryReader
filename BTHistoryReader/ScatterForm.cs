@@ -21,24 +21,8 @@ namespace BTHistoryReader
         private string strSeries = "Elapsed Time in ";
         private string strUnits = "secs";
         private int CurrentNumberSeriesDisplayed = 0;
-        private int dot_1_offset_y = 34;    // where marker of first system name is
-        private int dot_1_offset_x = 516;    // how far across the 640x320 chart
-        private int dot_y_space = 15;           // this needs to be 15 so use kluge1
-
-        private List<Point> SeriesMarkers;
-
-        // if you resize the chart you must re-calculate the above number
-        private void WasHereLastTime(int nSystems)
-        {
-            SeriesMarkers = new List<Point>();
-            for(int i = 0; i < nSystems;i++)
-            {
-                Point p = new Point();
-                p.Y = dot_1_offset_y + i * dot_y_space;
-                p.X = dot_1_offset_x;
-                SeriesMarkers.Add(p);
-            }
-        }
+        private bool bScatteringApps;
+  
 
         private double DistanceTo(Point point1, Point point2)
         {
@@ -59,6 +43,7 @@ namespace BTHistoryReader
         class cColoredLegends
         {
             public string strName;
+            public string strSubItems;  // for now, we are only showing projects, not apps
             public Color rgb;
         }
 
@@ -79,12 +64,21 @@ namespace BTHistoryReader
                 cl = new cColoredLegends();
                 cl.strName = seriesname;
                 cl.rgb = ChartScatter.Series[seriesname].Color;
+                if(sd.bIsShowingApp)
+                {
+                    cl.strSubItems = "xxxx";
+                }
+                else
+                {
+                    // append all systems here
+                }
                 MyLegendNames.Add(cl);
             }
             // allow 1 more than actual so we can wrap back to 0
             nudShowOnly.Maximum = n + 1;
             DrawShowingText(0);
         }
+
 
         private void DrawShowingText(int i)
         {
@@ -157,6 +151,7 @@ namespace BTHistoryReader
             double f = 0;
             string strUnits = SetMinMax(ref f);
             CurrentNumberSeriesDisplayed = ThisSeriesData.Count;
+            bScatteringApps = ThisSeriesData[0].bIsShowingApp;
             foreach (cSeriesData sd in ThisSeriesData)
             {
                 int n = sd.dValues.Count;
@@ -178,6 +173,7 @@ namespace BTHistoryReader
             }
 
             ChartScatter.Legends["Legend1"].Title = strSeries + strUnits;
+
             ChartScatter.ChartAreas["ChartArea1"].AxisX.Maximum = GetBestScaleingUpper(dBig);
             ChartScatter.ChartAreas["ChartArea1"].AxisX.Minimum = GetBestScaleingBottom(dSmall);
             ChartScatter.ChartAreas["ChartArea1"].AxisX.LabelStyle.Format = "#.#";
@@ -246,6 +242,7 @@ namespace BTHistoryReader
             }
             DrawShowingText(i);
             ShowHideSeries(i);
+            // TODO  want to show systems here
         }
 
         private void nudXscale_ValueChanged_1(object sender, EventArgs e)
