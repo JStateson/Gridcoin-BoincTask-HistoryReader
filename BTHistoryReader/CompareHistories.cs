@@ -95,14 +95,13 @@ namespace BTHistoryReader
         }
 
         //inform the calling program when to incrment the progress bar
-        private void EstimateLineCount(bool bIgnoreLong)
+        private void EstimateLineCount()
         {
             double TotalBytes = 0;
             double d;
             int n, NumLines= 0;
             foreach(string strHisFile in btf.AllHistories)
             {
-                if (bIgnoreLong && strHisFile.Contains("_long_")) continue;
                 d = new FileInfo(strHisFile).Length;
                 TotalBytes += d;
             }
@@ -115,7 +114,7 @@ namespace BTHistoryReader
         // when comparing projects, say "seti" app can be nvidia, amd or cpu
         // cannot test for full app name else no match unless both systems had same devices
         // we need to access the callers state (the refForm) and we need whether to read in or to ignore files with "_long_" in name
-        public CompareHistories(Form refForm, bool bIgnoreLong)
+        public CompareHistories(Form refForm)
         {
             InitializeComponent();
 
@@ -134,7 +133,7 @@ namespace BTHistoryReader
             LBoxProjects.Items.Clear();
             btf.CurrentSystem = "";
 
-            EstimateLineCount(bIgnoreLong);
+            EstimateLineCount();
             foreach (string strHisFile in btf.AllHistories)
             {
                 int RtnCod;

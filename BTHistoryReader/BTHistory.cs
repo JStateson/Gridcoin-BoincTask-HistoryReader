@@ -91,8 +91,7 @@ namespace BTHistoryReader
         private string GetHistoryExtension()
         {
             string strExt = rbUseCVS1.Checked ? "*.cvs1" : "*.cvs";
-            string strForceLong = rbOnlyLongs.Checked ? "*_long_" : "" ;
-            ofd_history.Filter = "Histories|" + strForceLong + strExt;
+            ofd_history.Filter = "Histories|" + strExt;
             return strExt;
         }
 
@@ -402,7 +401,7 @@ namespace BTHistoryReader
         // launch the program that compares multiple files
         private void PerformSelectCompare()
         {
-            CompareHistories MyHistories = new CompareHistories(this, rbIgnoreLongs.Checked);
+            CompareHistories MyHistories = new CompareHistories(this);
             MyHistories.ShowDialog();
             ClearPreviousHistory();
         }

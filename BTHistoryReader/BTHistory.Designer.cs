@@ -32,9 +32,6 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.pbarLoading = new System.Windows.Forms.ProgressBar();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.groupBox5 = new System.Windows.Forms.GroupBox();
-            this.rbOnlyLongs = new System.Windows.Forms.RadioButton();
-            this.rbIgnoreLongs = new System.Windows.Forms.RadioButton();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.rbUseCVS = new System.Windows.Forms.RadioButton();
             this.rbUseCVS1 = new System.Windows.Forms.RadioButton();
@@ -78,7 +75,6 @@
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.panel1.SuspendLayout();
             this.groupBox3.SuspendLayout();
-            this.groupBox5.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.gb_filter.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -116,7 +112,6 @@
             // 
             // groupBox3
             // 
-            this.groupBox3.Controls.Add(this.groupBox5);
             this.groupBox3.Controls.Add(this.groupBox4);
             this.groupBox3.Location = new System.Drawing.Point(210, 16);
             this.groupBox3.Name = "groupBox3";
@@ -125,39 +120,6 @@
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Open File Settings";
             this.toolTip1.SetToolTip(this.groupBox3, "Defalt is CVS1 and no longs");
-            // 
-            // groupBox5
-            // 
-            this.groupBox5.Controls.Add(this.rbOnlyLongs);
-            this.groupBox5.Controls.Add(this.rbIgnoreLongs);
-            this.groupBox5.Location = new System.Drawing.Point(6, 19);
-            this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(134, 63);
-            this.groupBox5.TabIndex = 12;
-            this.groupBox5.TabStop = false;
-            this.toolTip1.SetToolTip(this.groupBox5, "Selecting IGNORE allows files to show up but not be read");
-            // 
-            // rbOnlyLongs
-            // 
-            this.rbOnlyLongs.AutoSize = true;
-            this.rbOnlyLongs.Location = new System.Drawing.Point(6, 39);
-            this.rbOnlyLongs.Name = "rbOnlyLongs";
-            this.rbOnlyLongs.Size = new System.Drawing.Size(108, 17);
-            this.rbOnlyLongs.TabIndex = 1;
-            this.rbOnlyLongs.Text = "Only Long History";
-            this.rbOnlyLongs.UseVisualStyleBackColor = true;
-            // 
-            // rbIgnoreLongs
-            // 
-            this.rbIgnoreLongs.AutoSize = true;
-            this.rbIgnoreLongs.Checked = true;
-            this.rbIgnoreLongs.Location = new System.Drawing.Point(6, 16);
-            this.rbIgnoreLongs.Name = "rbIgnoreLongs";
-            this.rbIgnoreLongs.Size = new System.Drawing.Size(87, 17);
-            this.rbIgnoreLongs.TabIndex = 0;
-            this.rbIgnoreLongs.TabStop = true;
-            this.rbIgnoreLongs.Text = "Ignore Longs";
-            this.rbIgnoreLongs.UseVisualStyleBackColor = true;
             // 
             // groupBox4
             // 
@@ -615,8 +577,6 @@
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.groupBox3.ResumeLayout(false);
-            this.groupBox5.ResumeLayout(false);
-            this.groupBox5.PerformLayout();
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
             this.gb_filter.ResumeLayout(false);
@@ -670,9 +630,6 @@
         private System.Windows.Forms.Button btnPlotET;
         private System.Windows.Forms.Button btnCheckPrev;
         private System.Windows.Forms.GroupBox groupBox3;
-        private System.Windows.Forms.GroupBox groupBox5;
-        private System.Windows.Forms.RadioButton rbOnlyLongs;
-        private System.Windows.Forms.RadioButton rbIgnoreLongs;
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.RadioButton rbUseCVS;
         private System.Windows.Forms.RadioButton rbUseCVS1;
