@@ -39,7 +39,7 @@ namespace BTHistoryReader
 
         private int iLocMaxDiff;
         public string[] AllHistories;
-
+        
         static string str_PathToHistory;
         public string[] LinesHistory;
         static string ReqVer = "1.79";
@@ -176,14 +176,17 @@ namespace BTHistoryReader
             kpa.AddName("Milkyway@Home");
             kpa.AddApp("Milkyway@home Separation", "opencl_ati_101");
             kpa.AddApp("Milkyway@home Separation", "opencl_nvidia_101");
+            kpa.AddApp("Milkyway@home", "opencl_ati_101");
             kpa.AddApp("Milkyway@home Separation", "");
             KnownProjApps.Add(kpa);
 
             kpa = new cKnownProjApps();
             kpa.AddName("SETI@home");
             kpa.AddApp("SETI@home v8", "opencl_ati5_SoG_nocal");
+            kpa.AddApp("SETI@home v8", "opencl_nvidia_SoG");
             kpa.AddApp("SETI@home v8", "opencl_atiapu_sah");
             kpa.AddApp("SETI@home v8", "opencl_ati5_nocal");
+            kpa.AddApp("SETI@home v8", "opencl_ati_nocal");
             kpa.AddApp("SETI@home v8", "");
             kpa.AddApp("AstroPulse v7", "opencl_ati_100");
             KnownProjApps.Add(kpa);
@@ -191,6 +194,20 @@ namespace BTHistoryReader
             kpa = new cKnownProjApps();
             kpa.AddName("collatz");
             kpa.AddApp("Collatz Sieve","");
+            kpa.AddApp("Collatz Sieve", "opencl_nvidia");
+            KnownProjApps.Add(kpa);
+
+
+            kpa = new cKnownProjApps();
+            kpa.AddName("Bitcoin Utopia");
+            kpa.AddApp("cgminer (Campaign #7) (for 1.6+GH/s ASICs)", "");
+            kpa.AddApp("cgminer (Campaign #7) (for 1.6+GH/s ASICs)", "miner_asic");
+            KnownProjApps.Add(kpa);
+
+            kpa = new cKnownProjApps();
+            kpa.AddName("Collatz Conjecture");
+            kpa.AddApp("Collatz Sieve", "");
+            kpa.AddApp("Collatz Sieve", "opencl_intel_gpu");
             KnownProjApps.Add(kpa);
 
             kpa = new cKnownProjApps();
@@ -265,6 +282,7 @@ namespace BTHistoryReader
             kpa.AddApp("Gravitational Wave Engineering run on LIGO O1 Open Data","");
             kpa.AddApp("Gamma-ray pulsar binary search #1 on GPUs", "FGRPopencl1K-ati");
             kpa.AddApp("Gamma-ray pulsar binary search #1 on GPUs", "FGRPopencl1K-nvidia");
+            kpa.AddApp("Gamma-ray pulsar binary search #1 on GPUs", "FGRPopencl-nvidia");
             KnownProjApps.Add(kpa);
 
 
@@ -288,7 +306,8 @@ namespace BTHistoryReader
 
             kpa = new cKnownProjApps();
             kpa.AddName("Asteroids@home");
-            kpa.AddApp("Period Search Application","");
+            kpa.AddApp("Period Search Application","cuda55");
+            kpa.AddApp("Period Search Application", "");
             KnownProjApps.Add(kpa);
 
             kpa = new cKnownProjApps();
@@ -556,6 +575,7 @@ namespace BTHistoryReader
         // save all information in the KnownProjApp table
         public int ProcessHistoryFile()
         {
+            bool bAnyData = false;
             int iLine = -4;  // if > 4 then 
             int RtnCode=0;
             int eInvalid=0;   // invalid line in history (not complete or whatever)
@@ -567,7 +587,7 @@ namespace BTHistoryReader
             {
                 iLine++;
                 LinesWeRead++;
-                if(LinesWeRead > LinesToReadThenIncrement)
+                if(LinesWeRead > LinesToReadThenIncrement & pbarLoading.Visible)
                 {
                     LinesWeRead = 0;
                     IncrementPBAR();
@@ -581,6 +601,12 @@ namespace BTHistoryReader
                 {
                     if(RtnCode == LKUP_NOT_FOUND)
                     {
+                        // if line has 763	Updating...	Updating, please wait	--- then rpc call did not complete good
+                        if (OneSplitLine.Project.Contains("pdating..."))
+                        {
+                            tb_Info.Text += "bad line:" + s.Substring(0, 38) + "\r\n";
+                            continue;
+                        }
                         tb_Info.Text += "Cannot find project: " + OneSplitLine.Project + " adding to database\r\n";
                         kpa = new cKnownProjApps();
                         kpa.AddUnkProj(OneSplitLine.Project);
@@ -589,6 +615,7 @@ namespace BTHistoryReader
                     }
                     else continue;
                 }
+                bAnyData = true;
                 // if the app is found then point to the line containing the app's info
                 // and put all info also 
                 // jys adding plan class info
@@ -601,8 +628,12 @@ namespace BTHistoryReader
                     bInformOnlyOnce = false;    // if project is unknown all apps are unknown
                 }
             }
-            PerformCalcAverages();
-            return 0;
+
+            if (bAnyData)
+                PerformCalcAverages();
+            else
+                tb_Info.Text += "Project has no data or all data is illegal\r\n";
+                return 0;
         }
 
 
@@ -718,7 +749,7 @@ namespace BTHistoryReader
             System.DateTime dt_1970 = new System.DateTime(1970, 1, 1);
             System.DateTime dt_this;
             int j = 0;
-            bool bState;
+            bool bState, bState1;
             long n, nElapsedTime;
 
 
@@ -756,8 +787,14 @@ namespace BTHistoryReader
 
                 if (strSymbols[(int)eHindex.State].ToString() == "3") bState = false;
                 if (strSymbols[(int)eHindex.State].ToString() == "6") bState = false;
-                if(nElapsedTime == 0)bState = false;
-                if(ThisProjectInfo[j].dElapsedCPU == 0.0)bState = false;
+                // problem:  bitcoin utopia has 0 cpu time but we want to show it
+                // if there is gpu time then set cpu time to 1 second
+                if (nElapsedTime == 0) bState = false;
+                else
+                {
+                    if (ThisProjectInfo[j].dElapsedCPU == 0.0)
+                        ThisProjectInfo[j].dElapsedCPU = 1;
+                }
                 ThisProjectInfo[j].bState = bState;
                 if(!bState)
                 {

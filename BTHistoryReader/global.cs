@@ -167,7 +167,7 @@ namespace BTHistoryReader
             //vMem = Convert.ToDouble(SplitHistoryLine[(int)eHindex.VMem]);
             //Mem = Convert.ToDouble(SplitHistoryLine[(int)eHindex.Mem]);
             RtnCod |= (ElapsedTimeCpu == 0) ? (int)eHistoryError.MissingCPUtime : 0;
-            RtnCod |= (ElapsedTimeGpu == 0) ? (int)eHistoryError.MissingGPUtime : 0;
+            //RtnCod |= (ElapsedTimeGpu == 0) ? (int)eHistoryError.MissingGPUtime : 0;
             RtnCod |= (ExitStatus == 3) ? (int)eHistoryError.StateIs_3 : 0;
             RtnCod |= (CompletedTime == 0) ? (int)eHistoryError.NoCompletionTime : 0;
             return RtnCod;
