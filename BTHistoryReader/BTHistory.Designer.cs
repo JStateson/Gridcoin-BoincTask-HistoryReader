@@ -199,9 +199,9 @@
             // 
             this.btnAbout.Location = new System.Drawing.Point(747, 12);
             this.btnAbout.Name = "btnAbout";
-            this.btnAbout.Size = new System.Drawing.Size(75, 23);
+            this.btnAbout.Size = new System.Drawing.Size(99, 23);
             this.btnAbout.TabIndex = 8;
-            this.btnAbout.Text = "ABOUT";
+            this.btnAbout.Text = "ABOUT / HELP";
             this.btnAbout.UseVisualStyleBackColor = true;
             this.btnAbout.Click += new System.EventHandler(this.btnAbout_Click);
             // 

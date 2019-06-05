@@ -30,8 +30,8 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MyAbout));
             this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
             this.labelBuild = new System.Windows.Forms.Label();
+            this.textBox1 = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // label1
@@ -45,15 +45,6 @@
     "ZbAiR\r\ncontact:  josephy@stateson.net for bug reports, screen shots of bug or\r\na" +
     "ny comments suggestions.\r\n";
             // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(22, 122);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(328, 273);
-            this.label2.TabIndex = 1;
-            this.label2.Text = resources.GetString("label2.Text");
-            // 
             // labelBuild
             // 
             this.labelBuild.AutoSize = true;
@@ -63,13 +54,23 @@
             this.labelBuild.TabIndex = 2;
             this.labelBuild.Text = "label3";
             // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(25, 115);
+            this.textBox1.Multiline = true;
+            this.textBox1.Name = "textBox1";
+            this.textBox1.ReadOnly = true;
+            this.textBox1.Size = new System.Drawing.Size(570, 298);
+            this.textBox1.TabIndex = 3;
+            this.textBox1.Text = resources.GetString("textBox1.Text");
+            // 
             // MyAbout
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(493, 459);
+            this.ClientSize = new System.Drawing.Size(647, 459);
+            this.Controls.Add(this.textBox1);
             this.Controls.Add(this.labelBuild);
-            this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
@@ -83,7 +84,7 @@
         #endregion
 
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label labelBuild;
+        private System.Windows.Forms.TextBox textBox1;
     }
 }
