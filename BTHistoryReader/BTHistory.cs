@@ -561,7 +561,7 @@ namespace BTHistoryReader
             int eInvalid=0;   // invalid line in history (not complete or whatever)
             cAppName AppName;
             cKnownProjApps kpa;
-
+            bool bInformOnlyOnce = true;
             // find and identify any project in the file
             foreach (string s in LinesHistory)
             {
@@ -595,9 +595,10 @@ namespace BTHistoryReader
                 AppName = KnownProjApps[RtnCode].SymbolInsert(OneSplitLine.Application + " [" + OneSplitLine.PlanClass + "]", 3+iLine);  // first real data is in 5th line (0..4)
                 AppName.dElapsedTime.Add(OneSplitLine.dElapsedTimeCpu); // want to calculate average time this app
                 AppName.bIsValid.Add(eInvalid == (int)eHistoryError.SeemsOK);
-                if (AppName.bIsUnknown)
+                if (AppName.bIsUnknown & bInformOnlyOnce)
                 {
                     tb_Info.Text += "Unk App " + AppName.GetInfo + " added to database\r\n";
+                    bInformOnlyOnce = false;    // if project is unknown all apps are unknown
                 }
             }
             PerformCalcAverages();
