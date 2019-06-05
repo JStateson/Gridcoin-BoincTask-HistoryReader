@@ -148,7 +148,7 @@ namespace BTHistoryReader
                 DetailFilter.ValueChanged += new System.EventHandler(this.DetailFilter_ValueChanged);
                 iSig = Convert.ToInt32(DetailFilter.Value);
                 SetStartTime(WORKctStart);
-                DrawStuff();
+                DrawCompletion();
                 return;
             }
             // plotting elapsed time
@@ -276,7 +276,7 @@ namespace BTHistoryReader
         // this is a plot (histogram) of the gap in completion time
         // if the elapsed time is smaller than the gap, then the gap is project idle time
         //1-jun-2019: simplflying and bug fix as outliers can hide all useful data when project down for hours.
-        private void DrawStuff()
+        private void DrawCompletion()
         {
             xAxis = new List<double>();
             yAxis = new List<double>();
@@ -298,6 +298,7 @@ namespace BTHistoryReader
             tHours = tSecs / 3600;
             SigGap = GetSigGap();
             chart1.ChartAreas["ChartArea1"].AxisX.Maximum = (tHours == 0) ? 1 : tHours;
+            chart1.ChartAreas["ChartArea1"].AxisX.Minimum = -2;
             TryTruncate();
 
             //chart1.Series["CompletionTime"].MarkerSize = 1;
@@ -308,7 +309,7 @@ namespace BTHistoryReader
             {
                 d = Convert.ToDouble(WORKct[i]);
                 d /= 3600;  // xAxis to be hours behind us
-                xAxis.Add(d);
+                xAxis.Add( d);
                 d = WORKit[i];  // seconds between completions "idle " time 
                 if (d < SigGap) d = 0; 
                 d = d / 60.0;
@@ -317,13 +318,15 @@ namespace BTHistoryReader
             }
 
             chart1.Series["CompletionTime"].Points.DataBindXY(xAxis.ToArray(), yAxis.ToArray());
+            chart1.ChartAreas["ChartArea1"].AxisY.Crossing = -1;
+            //chart1.ChartAreas["ChartArea1"].AxisX.Crossing = -1;
         }
 
         // following two programs redraw the graphcs when changes to the data require it
         private void DrawIdleChanged()
         {
             chart1.Series.Remove(sCT);
-            DrawStuff();
+            DrawCompletion();
         }
 
         private void DrawHistChanged()

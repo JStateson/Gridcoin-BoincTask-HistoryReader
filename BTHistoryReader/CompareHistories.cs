@@ -553,9 +553,9 @@ namespace BTHistoryReader
                                     dSmall = Math.Min(dSmall, d);
                                     dBig = Math.Max(dBig, d);
                                     sa.dValues.Add(d/ckpaa.nConcurrent);
-                                    // the following not implmented yet 
-                                    //sa.iSystem.Add(ckpaa.iSystem);
+                                    sa.iSystem.Add(ckpaa.iSystem);
                                 }
+                                sa.iTheseSystem.Add(ckpaa.iSystem);
                                 sa.TheseSystems.Add(ckpal.strSystem);
                             }
                         }
@@ -590,6 +590,7 @@ namespace BTHistoryReader
                 sa.dValues = new List<double>();
                 sa.iSystem = new List<int>();
                 sa.TheseSystems = new List<string>();
+                sa.iTheseSystem = new List<int>();
                 sa.bIsShowingApp = true;
                 
                 sa.nConcurrent = 1; // this may be revised when data is obtain as we dont know the system yet

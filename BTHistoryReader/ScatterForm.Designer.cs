@@ -43,7 +43,8 @@
             this.cboxUseLog = new System.Windows.Forms.CheckBox();
             this.ChartScatter = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.lboxSubseries = new System.Windows.Forms.ListBox();
+            this.lviewSubSeries = new System.Windows.Forms.ListView();
+            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             ((System.ComponentModel.ISupportInitialize)(this.nudShowOnly)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudXscale)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ChartScatter)).BeginInit();
@@ -159,21 +160,31 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "X-Axis scaling";
             // 
-            // lboxSubseries
+            // lviewSubSeries
             // 
-            this.lboxSubseries.FormattingEnabled = true;
-            this.lboxSubseries.HorizontalScrollbar = true;
-            this.lboxSubseries.Location = new System.Drawing.Point(434, 369);
-            this.lboxSubseries.Name = "lboxSubseries";
-            this.lboxSubseries.Size = new System.Drawing.Size(164, 82);
-            this.lboxSubseries.TabIndex = 10;
+            this.lviewSubSeries.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader1});
+            this.lviewSubSeries.FullRowSelect = true;
+            this.lviewSubSeries.Location = new System.Drawing.Point(411, 369);
+            this.lviewSubSeries.MultiSelect = false;
+            this.lviewSubSeries.Name = "lviewSubSeries";
+            this.lviewSubSeries.ShowGroups = false;
+            this.lviewSubSeries.Size = new System.Drawing.Size(179, 97);
+            this.lviewSubSeries.TabIndex = 9;
+            this.lviewSubSeries.UseCompatibleStateImageBehavior = false;
+            this.lviewSubSeries.View = System.Windows.Forms.View.Details;
+            // 
+            // columnHeader1
+            // 
+            this.columnHeader1.Text = "Showing all unless listed below";
+            this.columnHeader1.Width = 164;
             // 
             // ScatterForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(958, 510);
-            this.Controls.Add(this.lboxSubseries);
+            this.Controls.Add(this.lviewSubSeries);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.tboxShowing);
             this.Controls.Add(this.nudShowOnly);
@@ -205,6 +216,7 @@
         private System.Windows.Forms.CheckBox cboxUseLog;
         private System.Windows.Forms.DataVisualization.Charting.Chart ChartScatter;
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.ListBox lboxSubseries;
+        private System.Windows.Forms.ListView lviewSubSeries;
+        private System.Windows.Forms.ColumnHeader columnHeader1;
     }
 }

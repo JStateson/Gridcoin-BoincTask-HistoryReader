@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Forms.DataVisualization.Charting;
 
 namespace BTHistoryReader
 {
@@ -48,12 +49,13 @@ namespace BTHistoryReader
         }
 
         List<cColoredLegends> MyLegendNames;
-
+        List<DataPoint> SavedColoredPoints;
         private void FillInSeriesLegends()
         {
             int n = ThisSeriesData.Count;
             MyLegendNames = new List<cColoredLegends>();
             cColoredLegends cl = new cColoredLegends();
+            SavedColoredPoints = new List<DataPoint>();
             ChartScatter.ApplyPaletteColors();
             cl.strName = "All Series";
             cl.rgb = Color.Black;
@@ -73,6 +75,12 @@ namespace BTHistoryReader
                     // append all systems here (used lbox instead)
                 }
                 MyLegendNames.Add(cl);
+            }
+            for(int i = 0; i < ThisSeriesData.Count; i++)
+            {
+                DataPoint p = new DataPoint();
+                p.Color = ChartScatter.Series[i].Points[0].Color;
+                SavedColoredPoints.Add(p);  // want to restore this color
             }
             // allow 1 more than actual so we can wrap back to 0
             nudShowOnly.Maximum = n + 1;
@@ -129,7 +137,7 @@ namespace BTHistoryReader
             foreach(cSeriesData sd in ThisSeriesData)
             {
                 if (sd.dSmall < dSmall) dSmall = sd.dSmall;
-                if (sd.dBig > dBig) dBig = sd.dBig;                
+                if (sd.dBig > dBig) dBig = sd.dBig;               
             }
             string strUnits = BestTimeUnits(dBig, ref d);
             f = d / dBig;
@@ -151,7 +159,7 @@ namespace BTHistoryReader
             bScatteringApps = ThisSeriesData[0].bIsShowingApp;
             if(!bScatteringApps)
             {
-                lboxSubseries.Items.Add(ThisSeriesData[0].strAppName);
+                lviewSubSeries.Items.Add(ThisSeriesData[0].strAppName);
             }
             foreach (cSeriesData sd in ThisSeriesData)
             {
@@ -168,9 +176,8 @@ namespace BTHistoryReader
                 string seriesname = sd.bIsShowingApp ? sd.strAppName : sd.strSystemName;
                 SeriesName = seriesname;
                 ChartScatter.Series.Add(seriesname);
-                ChartScatter.Series[seriesname].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Point;
+                ChartScatter.Series[seriesname].ChartType = SeriesChartType.Point;
                 ChartScatter.Series[seriesname].Points.DataBindXY(xAxis.ToArray(), yAxis.ToArray());
-
             }
 
             ChartScatter.Legends["Legend1"].Title = strSeries + strUnits;
@@ -180,13 +187,66 @@ namespace BTHistoryReader
             ChartScatter.ChartAreas["ChartArea1"].AxisX.LabelStyle.Format = "#.#";
         }
 
+        // setup the expected colors for systems for the selcted app
+
+
+        List<Color> MyColors = new List<Color>();
+        List<int> ExpectedOffset = new List<int>();
+        private void SetSysColors(int s)
+        {
+            int n = ThisSeriesData[s].TheseSystems.Count;
+            Random rnd = new Random();
+            MyColors.Clear();
+            ExpectedOffset.Clear();
+            for (int i = 0; i < n; i++)
+            {
+                ListViewItem itm = new ListViewItem();
+                itm.Text = ThisSeriesData[s].TheseSystems[i];
+                itm.ForeColor = Color.FromArgb(rnd.Next(256), rnd.Next(256), rnd.Next(256));
+                lviewSubSeries.Items.Add(itm);
+                MyColors.Add(itm.ForeColor);
+                ExpectedOffset.Add(ThisSeriesData[s].iTheseSystem[i]);
+            }
+        }
+
         // for the series index s put the names of the systems into the list box
+        // and arrange to show the different colors (if any)
         private void ShowSystemNames(int s)
         {
-            lboxSubseries.Items.Clear();
-            foreach(string str in ThisSeriesData[s].TheseSystems)
+            lviewSubSeries.Items.Clear();
+            SetSysColors(s);
+            int n = ExpectedOffset.Count;
+            if(n == 1)
             {
-                lboxSubseries.Items.Add(str);
+                // no need to get random color, reuse the default
+                return;
+            }
+            for (int i = 0; i < ThisSeriesData[s].dValues.Count; i++)
+            {
+                int x = ThisSeriesData[s].iSystem[i];   // index to system for this point
+                DataPoint p = ChartScatter.Series[s].Points[i];
+                for(int j = 0; j < n; j++)
+                {
+                    if( ExpectedOffset[j] == x)
+                    {
+                        p.Color = MyColors[j];
+                        break;
+                    }
+                }
+            }
+        }
+
+        private void RestoreDefaultColors()
+        {
+            int n = ThisSeriesData.Count;
+            for(int i = 0; i <n; i ++)
+            {
+                Color c = SavedColoredPoints[i].Color;; 
+                foreach (DataPoint p in ChartScatter.Series[i].Points)
+                {
+                    p.Color = c;
+                }
+                ChartScatter.Series[i].Color = c;
             }
         }
 
@@ -240,12 +300,13 @@ namespace BTHistoryReader
                 i = 0;  // wrap back to 0
                 nudShowOnly.Value = 0;
                 if(bScatteringApps)
-                    lboxSubseries.Items.Clear();    // do not clear if scatttering projects
+                    lviewSubSeries.Items.Clear();    // do not clear if scatttering projects
             }
             DrawShowingText(i);
             ShowHideSeries(i);
             if (i == 0  | !bScatteringApps)
             {
+                RestoreDefaultColors();
                 return; // not showing individual series nor scattering apps
             }
             ShowSystemNames(i-1);
@@ -266,7 +327,5 @@ namespace BTHistoryReader
                 ChartScatter.ChartAreas["ChartArea1"].AxisX.Maximum = GetBestScaleingUpper(dBig);
             }
         }
-
-
     }
 }

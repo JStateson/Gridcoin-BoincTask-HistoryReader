@@ -48,6 +48,7 @@ namespace BTHistoryReader
         public double dSmall;
         public double dBig;
         public List<string> TheseSystems;   // those systems that contributed to the elapsed times in the scatter pot
+        public List<int> iTheseSystem;      // need to know the index of the system that is associated with iSystem above
     }
 
     public enum eHindex
