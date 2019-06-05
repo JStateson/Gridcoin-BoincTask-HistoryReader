@@ -60,6 +60,9 @@ namespace BTHistoryReader
         public string CurrentProject;   // project being looked at
         public List<cProjectInfo> ThisProjectInfo;
 
+        public int LinesToReadThenIncrement=0;   // after reading this many, increment the progress bar
+        public int LinesWeRead=0;
+
         // pad right side with spaces to fill
         public static string Rpadto(string strIn, int cnt)
         {
@@ -385,6 +388,23 @@ namespace BTHistoryReader
             ClearPreviousHistory();
         }
 
+        public int GetPBARmax()
+        {
+            return pbarLoading.Maximum;
+        }
+        public void SetPBARcnt(int n)
+        {
+            LinesToReadThenIncrement = n;
+        }
+
+        public void IncrementPBAR()
+        {
+            pbarLoading.PerformStep();
+            pbarLoading.Update();
+            pbarLoading.Refresh();
+            Application.DoEvents();
+        }
+
         // user clicked open files,this program does the reading of single files or hands it off if multiple
         private bool FetchHistory()
         {
@@ -399,7 +419,12 @@ namespace BTHistoryReader
             AllHistories = ofd_history.FileNames;
             if (AllHistories.Length > 1 )
             {
+                pbarLoading.Visible = true;
+                BTHistory.ActiveForm.Enabled = false;
+                LinesWeRead = 0;                    // used by progress bar
                 PerformSelectCompare();
+                pbarLoading.Visible = false;
+                BTHistory.ActiveForm.Enabled = true;
                 return false;   // 30jun19 need to clean up, not save stuff
             }
             lb_history_loc.Text = ofd_history.FileName;
@@ -441,6 +466,7 @@ namespace BTHistoryReader
             // bDoNotLoadP = true;          // FIXME 1-JUNE-2019
             // bDoNotLoadA = true;
             DisallowCallbacks(true);
+            LinesToReadThenIncrement = 0;
             if (FetchHistory())
             {
                 DisallowCallbacks(false);
@@ -540,6 +566,12 @@ namespace BTHistoryReader
             foreach (string s in LinesHistory)
             {
                 iLine++;
+                LinesWeRead++;
+                if(LinesWeRead > LinesToReadThenIncrement)
+                {
+                    LinesWeRead = 0;
+                    IncrementPBAR();
+                }
                 if (iLine < 1) continue;    // skip past header
                 // possible sanity check here: iLine is 1 and first token of "s" is also 1
                 eInvalid = OneSplitLine.StoreLineOfHistory(s, ExpectedLengthLine);

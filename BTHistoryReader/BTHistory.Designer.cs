@@ -30,6 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.pbarLoading = new System.Windows.Forms.ProgressBar();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.rbOnlyLongs = new System.Windows.Forms.RadioButton();
@@ -87,6 +88,7 @@
             // panel1
             // 
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel1.Controls.Add(this.pbarLoading);
             this.panel1.Controls.Add(this.groupBox3);
             this.panel1.Controls.Add(this.btnAbout);
             this.panel1.Controls.Add(this.btnShowProjectTree);
@@ -101,6 +103,16 @@
             this.panel1.Size = new System.Drawing.Size(937, 534);
             this.panel1.TabIndex = 0;
             this.panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.panel1_Paint);
+            // 
+            // pbarLoading
+            // 
+            this.pbarLoading.Location = new System.Drawing.Point(16, 68);
+            this.pbarLoading.Maximum = 20;
+            this.pbarLoading.Name = "pbarLoading";
+            this.pbarLoading.Size = new System.Drawing.Size(163, 23);
+            this.pbarLoading.Step = 1;
+            this.pbarLoading.TabIndex = 11;
+            this.pbarLoading.Visible = false;
             // 
             // groupBox3
             // 
@@ -664,6 +676,7 @@
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.RadioButton rbUseCVS;
         private System.Windows.Forms.RadioButton rbUseCVS1;
+        private System.Windows.Forms.ProgressBar pbarLoading;
     }
 }
 

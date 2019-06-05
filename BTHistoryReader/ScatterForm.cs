@@ -157,7 +157,8 @@ namespace BTHistoryReader
             string strUnits = SetMinMax(ref f);
             CurrentNumberSeriesDisplayed = ThisSeriesData.Count;
             bScatteringApps = ThisSeriesData[0].bIsShowingApp;
-            if(!bScatteringApps)
+            lviewSubSeries.Visible = bScatteringApps;
+            if (!bScatteringApps)
             {
                 lviewSubSeries.Items.Add(ThisSeriesData[0].strAppName);
             }

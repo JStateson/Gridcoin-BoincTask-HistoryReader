@@ -10,6 +10,8 @@ using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
 using Notepad;
+using System.IO;
+
 namespace BTHistoryReader
 {
     public partial class CompareHistories : Form
@@ -36,6 +38,7 @@ namespace BTHistoryReader
             }
             public int nConcurrent = 1;    // save info to allow restoreing when switching across apps and systems
         }
+
 
         public string Last_sProj="";
         public string Last_sApp="";
@@ -91,12 +94,31 @@ namespace BTHistoryReader
             return strName;
         }
 
+        //inform the calling program when to incrment the progress bar
+        private void EstimateLineCount(bool bIgnoreLong)
+        {
+            double TotalBytes = 0;
+            double d;
+            int n, NumLines= 0;
+            foreach(string strHisFile in btf.AllHistories)
+            {
+                if (bIgnoreLong && strHisFile.Contains("_long_")) continue;
+                d = new FileInfo(strHisFile).Length;
+                TotalBytes += d;
+            }
+            TotalBytes = 2000.0 * TotalBytes / 500000.0;
+            NumLines = Convert.ToInt32(TotalBytes);
+            n = NumLines / btf.GetPBARmax();
+            btf.SetPBARcnt(n);
+        }
+
         // when comparing projects, say "seti" app can be nvidia, amd or cpu
         // cannot test for full app name else no match unless both systems had same devices
         // we need to access the callers state (the refForm) and we need whether to read in or to ignore files with "_long_" in name
         public CompareHistories(Form refForm, bool bIgnoreLong)
         {
             InitializeComponent();
+
             string ThisSystem = "";
             int DuplicateNameCnt = 0;
             Projects = new List<string>();
@@ -111,11 +133,11 @@ namespace BTHistoryReader
             LBoxApps.Items.Clear();
             LBoxProjects.Items.Clear();
             btf.CurrentSystem = "";
-            foreach(string strHisFile in btf.AllHistories)
+
+            EstimateLineCount(bIgnoreLong);
+            foreach (string strHisFile in btf.AllHistories)
             {
                 int RtnCod;
-                if (bIgnoreLong && strHisFile.Contains("_long_"))
-                    continue;
                 RtnCod = btf.ValidateHistory(strHisFile, ref ThisSystem);
                 if (RtnCod < 0) continue;
                 DuplicateNameCnt = 0;
@@ -124,6 +146,7 @@ namespace BTHistoryReader
                 iSystem = Systems.Count - 1;    // index into name of system
                 btf.ClearPreviousHistory();
                 btf.ProcessHistoryFile();
+                btf.IncrementPBAR();
                 foreach (cKnownProjApps kpa in btf.KnownProjApps)
                 {
                     if (Projects.Contains(kpa.ProjName)) continue;
