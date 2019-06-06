@@ -102,6 +102,7 @@
             this.rbScatProj.Size = new System.Drawing.Size(101, 17);
             this.rbScatProj.TabIndex = 1;
             this.rbScatProj.Text = "Scatter Systems";
+            this.toolTip1.SetToolTip(this.rbScatProj, "Only useful with ore than 1 system ");
             this.rbScatProj.UseVisualStyleBackColor = true;
             // 
             // rbScatApps
@@ -114,6 +115,7 @@
             this.rbScatApps.TabIndex = 0;
             this.rbScatApps.TabStop = true;
             this.rbScatApps.Text = "Scatter Thsse Apps";
+            this.toolTip1.SetToolTip(this.rbScatApps, "Only useful with more than one app");
             this.rbScatApps.UseVisualStyleBackColor = true;
             // 
             // label4

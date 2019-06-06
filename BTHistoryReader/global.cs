@@ -49,6 +49,7 @@ namespace BTHistoryReader
         public double dBig;
         public List<string> TheseSystems;   // those systems that contributed to the elapsed times in the scatter pot
         public List<int> iTheseSystem;      // need to know the index of the system that is associated with iSystem above
+        public List<bool> bIsValid;         // normally true but set to false if suspected outlier (gpu stuck low speed)
     }
 
     public enum eHindex

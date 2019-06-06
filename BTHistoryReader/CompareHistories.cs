@@ -513,8 +513,6 @@ namespace BTHistoryReader
         // for each specified app, in each specified system, accumulate elapsed time and find min amd max values.
         private bool GetSysProjData(ref cSeriesData sa)
         {
-            double dSmall = 1e6;
-            double dBig = -1;
             foreach (cKPAlocs ckpal in KPAlocs)                          // for each system
             {
                 foreach (cKPAproj ckpap in ckpal.KPAproj)               // for each project
@@ -535,25 +533,20 @@ namespace BTHistoryReader
                                     {
                                         Debug.Assert(false);
                                     }
-                                    dSmall = Math.Min(dSmall, d);
-                                    dBig = Math.Max(dBig, d);
                                     sa.dValues.Add(d/ckpaa.nConcurrent);
+                                    sa.bIsValid.Add(true);
                                 }
                             }
                         }
                     }
                 }
             }
-            sa.dBig = dBig;
-            sa.dSmall = dSmall;
             return (sa.dValues.Count > 0);
         }
 
         // same as above but we want all systems
         private bool GetAllAppData(ref cSeriesData sa)
         {
-            double dSmall = 1e6;
-            double dBig = -1;
             foreach (cKPAlocs ckpal in KPAlocs)                          // for each system
             {
                 foreach(cKPAproj ckpap in ckpal.KPAproj )               // for each project
@@ -572,10 +565,9 @@ namespace BTHistoryReader
                                     {
                                         Debug.Assert(false);
                                     }
-                                    dSmall = Math.Min(dSmall, d);
-                                    dBig = Math.Max(dBig, d);
                                     sa.dValues.Add(d/ckpaa.nConcurrent);
                                     sa.iSystem.Add(ckpaa.iSystem);
+                                    sa.bIsValid.Add(true);
                                 }
                                 sa.iTheseSystem.Add(ckpaa.iSystem);
                                 sa.TheseSystems.Add(ckpal.strSystem);
@@ -584,8 +576,6 @@ namespace BTHistoryReader
                     }
                 }
             }
-            sa.dBig = dBig;
-            sa.dSmall = dSmall;
             return (sa.dValues.Count > 0) ;
         }
 
@@ -614,7 +604,7 @@ namespace BTHistoryReader
                 sa.TheseSystems = new List<string>();
                 sa.iTheseSystem = new List<int>();
                 sa.bIsShowingApp = true;
-                
+                sa.bIsValid = new List<bool>();
                 sa.nConcurrent = 1; // this may be revised when data is obtain as we dont know the system yet
                 if (GetAllAppData(ref sa))
                 {
@@ -645,6 +635,7 @@ namespace BTHistoryReader
                     sa.dValues = new List<double>();
                     sa.bIsShowingApp = false;
                     sa.nConcurrent = Convert.ToInt32(itm.SubItems[0].Text);
+                    sa.bIsValid = new List<bool>();
                     if (GetSysProjData(ref sa))
                     {
                         MySeriesData.Add(sa);
@@ -674,7 +665,7 @@ namespace BTHistoryReader
 
         private void ShowScatter()
         {
-            ScatterForm PlotScatter = new ScatterForm(ref MySeriesData);
+            ScatterForm PlotScatter = new ScatterForm(ref MySeriesData, rbScatProj.Checked);
             PlotScatter.ShowDialog();
             PlotScatter.Dispose();
         }

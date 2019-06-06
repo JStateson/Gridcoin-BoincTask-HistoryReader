@@ -45,17 +45,22 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.lviewSubSeries = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.gboxOutlier = new System.Windows.Forms.GroupBox();
+            this.nudHideXoutliers = new System.Windows.Forms.NumericUpDown();
+            this.label3 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.nudShowOnly)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudXscale)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ChartScatter)).BeginInit();
             this.groupBox1.SuspendLayout();
+            this.gboxOutlier.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudHideXoutliers)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
             // 
             this.label1.AutoSize = true;
             this.label1.BackColor = System.Drawing.SystemColors.Info;
-            this.label1.Location = new System.Drawing.Point(624, 361);
+            this.label1.Location = new System.Drawing.Point(653, 361);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(291, 52);
             this.label1.TabIndex = 1;
@@ -144,7 +149,7 @@
             this.ChartScatter.Legends.Add(legend2);
             this.ChartScatter.Location = new System.Drawing.Point(21, 22);
             this.ChartScatter.Name = "ChartScatter";
-            this.ChartScatter.Size = new System.Drawing.Size(894, 320);
+            this.ChartScatter.Size = new System.Drawing.Size(923, 320);
             this.ChartScatter.TabIndex = 0;
             this.ChartScatter.Text = "Scatter Plot";
             // 
@@ -179,11 +184,45 @@
             this.columnHeader1.Text = "Showing all unless listed below";
             this.columnHeader1.Width = 164;
             // 
+            // gboxOutlier
+            // 
+            this.gboxOutlier.Controls.Add(this.nudHideXoutliers);
+            this.gboxOutlier.Controls.Add(this.label3);
+            this.gboxOutlier.Location = new System.Drawing.Point(618, 425);
+            this.gboxOutlier.Name = "gboxOutlier";
+            this.gboxOutlier.Size = new System.Drawing.Size(326, 73);
+            this.gboxOutlier.TabIndex = 12;
+            this.gboxOutlier.TabStop = false;
+            this.gboxOutlier.Text = "Hide Outliers";
+            // 
+            // nudHideXoutliers
+            // 
+            this.nudHideXoutliers.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.nudHideXoutliers.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.nudHideXoutliers.Location = new System.Drawing.Point(38, 20);
+            this.nudHideXoutliers.Name = "nudHideXoutliers";
+            this.nudHideXoutliers.ReadOnly = true;
+            this.nudHideXoutliers.Size = new System.Drawing.Size(15, 34);
+            this.nudHideXoutliers.TabIndex = 12;
+            this.nudHideXoutliers.ValueChanged += new System.EventHandler(this.nudHideXoutliers_ValueChanged);
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.ForeColor = System.Drawing.SystemColors.InfoText;
+            this.label3.Location = new System.Drawing.Point(101, 19);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(202, 39);
+            this.label3.TabIndex = 0;
+            this.label3.Text = "Occasionally a GPU runs at lowest speed\r\nand a  task that normally takes minutes\r" +
+    "\nstretches into days. These are outliers:.";
+            // 
             // ScatterForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(958, 510);
+            this.Controls.Add(this.gboxOutlier);
             this.Controls.Add(this.lviewSubSeries);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.tboxShowing);
@@ -200,6 +239,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.ChartScatter)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            this.gboxOutlier.ResumeLayout(false);
+            this.gboxOutlier.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudHideXoutliers)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -218,5 +260,8 @@
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.ListView lviewSubSeries;
         private System.Windows.Forms.ColumnHeader columnHeader1;
+        private System.Windows.Forms.GroupBox gboxOutlier;
+        private System.Windows.Forms.NumericUpDown nudHideXoutliers;
+        private System.Windows.Forms.Label label3;
     }
 }

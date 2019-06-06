@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
@@ -21,9 +22,21 @@ namespace BTHistoryReader
         double dSmall = 1e6;
         private string strSeries = "Elapsed Time in ";
         // note to myself, elspased time is always in minutes
-        private int CurrentNumberSeriesDisplayed = 0;
+        private int CurrentNumberSeriesDisplayable = 0; // number available to view
+        private int CurrentSeriesDisplayed = -1;        // the one being shown IFF only one series is shown else -1
         private bool bScatteringApps;
-  
+        private bool bShowSystemData;         // scattering systems
+        double fScaleMultiplier;
+        string strScaleUnits;
+
+        private class cSaveOutlier
+        {
+            public string seriesname;
+            public int iWhereRemoved;   // where point on screen was declared an outlier
+            public int iWhereData;      // where data was declared an outlier
+            public double fmpy;         // the restore multiplier
+        }
+        private Stack<cSaveOutlier> UsedOutliers;
 
         private double DistanceTo(Point point1, Point point2)
         {
@@ -32,10 +45,18 @@ namespace BTHistoryReader
 
             return Math.Sqrt(a * a + b * b);
         }
+
+        
        
-        public ScatterForm(ref List<cSeriesData> refSD)
+        // if showning only project data only the project changes. 
+        // the application is the same for all project so it is homogeneous
+        // and there is no need to refresh the default colors so
+        // i can avoid that strange side effect of changing point colors
+        public ScatterForm(ref List<cSeriesData> refSD, bool bShowingSystems)
         {
             InitializeComponent();
+            bShowSystemData = bShowingSystems;
+            gboxOutlier.Visible = bShowSystemData;          // FIXME eliminate side effect on colors to fix problem
             ThisSeriesData = refSD;
             ShowScatter();
             GetLegendInfo.Enabled=true;
@@ -44,7 +65,7 @@ namespace BTHistoryReader
         class cColoredLegends
         {
             public string strName;
-            public string strSubItems;  // for now, we are only showing projects, not apps
+            public string strSubItems;  // for now, we are only showing projects
             public Color rgb;
         }
 
@@ -87,10 +108,38 @@ namespace BTHistoryReader
             DrawShowingText(0);
         }
 
+        // how many valid points in series
+        private int CountOnlyValids(int iSeries)
+        {
+            int n = 0;
+            var stuff = ThisSeriesData[iSeries];
+            {
+               foreach(bool b in stuff.bIsValid)
+                {
+                    if(b)n++;
+                }
+            }
+            return n;
+        }
+
+        private int CountWhatsShowing()
+        {
+            int n = 0;
+            if(CurrentSeriesDisplayed >=0)
+            {
+                return CountOnlyValids(CurrentSeriesDisplayed);
+            }
+            for(int i = 0; i < CurrentNumberSeriesDisplayable;i++)
+            {
+                n += CountOnlyValids(i);
+            }
+            return n;
+        }
 
         private void DrawShowingText(int i)
         {
-            tboxShowing.Text = MyLegendNames[i].strName;
+            int iCountWhatsShowing = CountWhatsShowing();
+            tboxShowing.Text = MyLegendNames[i].strName + " (" + iCountWhatsShowing.ToString() + ")";
             tboxShowing.ForeColor = MyLegendNames[i].rgb;
         }
 
@@ -112,6 +161,7 @@ namespace BTHistoryReader
         }
 
         // use (dOut / d) to scale
+        // the input to this must be in minutes
         private string BestTimeUnits(double d, ref double dOut)
         {
             string strOut = " mins";
@@ -124,6 +174,34 @@ namespace BTHistoryReader
             return " days";
         }
 
+        private double cvtScale2Double(string str)
+        {
+            if (str == " mins") return 1.0;
+            if (str == " hours") return 60.0;
+            return 60*24;
+        }
+
+        private bool CalcMinMax(int iSeries)
+        {
+            double dSmall = 1e6;
+            double dBig = -1;
+            bool bValid = false;
+            cSeriesData sd = ThisSeriesData[iSeries];
+            int n = sd.dValues.Count;
+            double d;
+            for(int i = 0; i < n; i++)
+            {
+                if (!sd.bIsValid[i]) continue;
+                d = sd.dValues[i];
+                dSmall = Math.Min(dSmall, d);
+                dBig = Math.Max(dBig, d);
+                bValid = true;
+            }
+            sd.dSmall = dSmall;
+            sd.dBig = dBig;
+            return bValid;
+        }
+
         /*
          * if elapsed time is over 60 seconds, scale time to minutes
          * same for minutes and hours
@@ -132,10 +210,15 @@ namespace BTHistoryReader
         private string SetMinMax(ref double f)
         {
             double d = 0;
+            int n = ThisSeriesData.Count;
             dSmall = 1e6;
-            dBig = -1;
-            foreach(cSeriesData sd in ThisSeriesData)
+            dBig = -1;           
+            bool bValid;
+            cSeriesData sd;
+            for (int i = 0; i < n;i++)
             {
+                sd = ThisSeriesData[i];
+                bValid = CalcMinMax(i);
                 if (sd.dSmall < dSmall) dSmall = sd.dSmall;
                 if (sd.dBig > dBig) dBig = sd.dBig;               
             }
@@ -146,6 +229,11 @@ namespace BTHistoryReader
             return strUnits;
         }
 
+        private void SetScale()
+        {
+            fScaleMultiplier = 0;
+            strScaleUnits = SetMinMax(ref fScaleMultiplier);
+        }
 
 
         // draw points vertical one over the other from 1 to n but normalzed to 0.0 to 1.0
@@ -153,11 +241,12 @@ namespace BTHistoryReader
         private void ShowScatter()
         {
             double d=0;
-            double f = 0;
-            string strUnits = SetMinMax(ref f);
-            CurrentNumberSeriesDisplayed = ThisSeriesData.Count;
+            int j = 0;
+            CurrentNumberSeriesDisplayable = ThisSeriesData.Count;
+            SetScale();
             bScatteringApps = ThisSeriesData[0].bIsShowingApp;
             lviewSubSeries.Visible = bScatteringApps;
+            
             if (!bScatteringApps)
             {
                 lviewSubSeries.Items.Add(ThisSeriesData[0].strAppName);
@@ -165,32 +254,46 @@ namespace BTHistoryReader
             foreach (cSeriesData sd in ThisSeriesData)
             {
                 int n = sd.dValues.Count;
-                List<double> yAxis = new List<double>(n);
-                List<double> xAxis = new List<double>(n);
+                List<double> yAxis = new List<double>();
+                List<double> xAxis = new List<double>();
                 for (int i = 0; i < n; i++)
                 {
+                    //if (!sd.bIsValid[i]) continue;    // hmm.  not known at this time and this routine runs once
                     d = Convert.ToDouble(i) / n;
                     yAxis.Add(d);
                     d = sd.dValues[i];
-                    xAxis.Add(d * f);
+                    xAxis.Add(d * fScaleMultiplier);
                 }
                 string seriesname = sd.bIsShowingApp ? sd.strAppName : sd.strSystemName;
                 SeriesName = seriesname;
                 ChartScatter.Series.Add(seriesname);
+                ChartScatter.Series[seriesname].EmptyPointStyle.Color = Color.Transparent;
                 ChartScatter.Series[seriesname].ChartType = SeriesChartType.Point;
                 ChartScatter.Series[seriesname].Points.DataBindXY(xAxis.ToArray(), yAxis.ToArray());
             }
-
-            ChartScatter.Legends["Legend1"].Title = strSeries + strUnits;
+            UsedOutliers = new Stack<cSaveOutlier>();
+            ChartScatter.Legends["Legend1"].Title = strSeries + strScaleUnits;
 
             ChartScatter.ChartAreas["ChartArea1"].AxisX.Maximum = GetBestScaleingUpper(dBig);
             ChartScatter.ChartAreas["ChartArea1"].AxisX.Minimum = GetBestScaleingBottom(dSmall);
             ChartScatter.ChartAreas["ChartArea1"].AxisX.LabelStyle.Format = "#.#";
+
+        }
+
+        // we removed an outlier got to rescale
+        private void DoRescaleXaxis(double f)
+        {
+            if (Math.Abs(f - 1.0) < .01) return;    // within rounding
+            for(int i = 0; i < ThisSeriesData.Count;i++)
+            {
+                foreach(DataPoint p in ChartScatter.Series[i].Points)
+                {
+                    p.XValue *= f;
+                }
+            }
         }
 
         // setup the expected colors for systems for the selcted app
-
-
         List<Color> MyColors = new List<Color>();
         List<int> ExpectedOffset = new List<int>();
         private void SetSysColors(int s)
@@ -212,9 +315,14 @@ namespace BTHistoryReader
 
         // for the series index s put the names of the systems into the list box
         // and arrange to show the different colors (if any)
+        // not necessary for scatterning projects, only if scattering data
         private void ShowSystemNames(int s)
         {
             lviewSubSeries.Items.Clear();
+            if(bShowSystemData)
+            {
+
+            }
             SetSysColors(s);
             int n = ExpectedOffset.Count;
             if(n == 1)
@@ -237,12 +345,14 @@ namespace BTHistoryReader
             }
         }
 
+
         private void RestoreDefaultColors()
         {
             int n = ThisSeriesData.Count;
+            if (bShowSystemData) return;
             for(int i = 0; i <n; i ++)
             {
-                Color c = SavedColoredPoints[i].Color;; 
+                Color c = SavedColoredPoints[i].Color;
                 foreach (DataPoint p in ChartScatter.Series[i].Points)
                 {
                     p.Color = c;
@@ -250,6 +360,8 @@ namespace BTHistoryReader
                 ChartScatter.Series[i].Color = c;
             }
         }
+
+        
 
         private void nudXscale_ValueChanged(object sender, EventArgs e)
         {
@@ -277,21 +389,32 @@ namespace BTHistoryReader
 
             if (j == 0 )
             {
+                CurrentSeriesDisplayed = -1;
                 for (int i = 0; i < n; i++)
                 {
                     ChartScatter.Series[i].Enabled = true;
                 }
+                gboxOutlier.Visible = true & bShowSystemData;
             }
             else 
             {
                 j--;
                 for (int i = 0; i < n; i++)
                 {
-                    ChartScatter.Series[i].Enabled = (i == j);
+                    if (i == j)
+                    {
+                        CurrentSeriesDisplayed = i; // showing only this series of "ThisSeriesData[]"
+                        ChartScatter.Series[i].Enabled = true;
+                    }
+                    else
+                        ChartScatter.Series[i].Enabled = false;
                 }
+                gboxOutlier.Visible = false;
             }
         }
 
+        // show each series individually or all
+        //
         private void nudShowOnly_ValueChanged(object sender, EventArgs e)
         {
             int i = Convert.ToInt32(nudShowOnly.Value);
@@ -301,10 +424,10 @@ namespace BTHistoryReader
                 i = 0;  // wrap back to 0
                 nudShowOnly.Value = 0;
                 if(bScatteringApps)
-                    lviewSubSeries.Items.Clear();    // do not clear if scatttering projects
+                    lviewSubSeries.Items.Clear();    // do not clear if scattering projects
             }
-            DrawShowingText(i);
             ShowHideSeries(i);
+            DrawShowingText(i); // ShowHide must be done first
             if (i == 0  | !bScatteringApps)
             {
                 RestoreDefaultColors();
@@ -327,6 +450,161 @@ namespace BTHistoryReader
             {
                 ChartScatter.ChartAreas["ChartArea1"].AxisX.Maximum = GetBestScaleingUpper(dBig);
             }
+        }
+
+        // data is not sorted so we will just traverse and get biggest
+        private bool bGetLastOutlier(int iSeries, ref int iLoc, ref double xValue)
+        {
+            double dBig = -1;
+            int iWhereBig = -1;
+            bool bAny = false;
+            DataPoint p;
+            int n = ChartScatter.Series[iSeries].Points.Count;
+            for(int i = 0; i < n; i++)
+            {
+                p = ChartScatter.Series[iSeries].Points[i];
+                if (p.IsEmpty) continue;
+                if(p.XValue > dBig)
+                {
+                    dBig = p.XValue;
+                    iWhereBig = i;
+                    bAny = true;
+                }
+            }
+            xValue = dBig;
+            iLoc = iWhereBig;
+            return bAny;
+        }
+
+        private double FindOutlier(ref cSaveOutlier sO, ref int iWhereSeries)
+        {
+            double xValue = -1.0, dBig = -1;
+            int iWherePoint = -1;
+            int iLoc = -1;
+            bool bAny = false;
+            if(CurrentSeriesDisplayed >= 0)
+            {
+                bAny = bGetLastOutlier(CurrentSeriesDisplayed, ref iLoc, ref xValue);
+                return xValue;
+            }
+            for (int i = 0; i < CurrentNumberSeriesDisplayable; i++)
+            {
+                bAny = bGetLastOutlier(i, ref iLoc, ref xValue);
+                if (!bAny)
+                {
+                    continue;
+                }
+                if (dBig < xValue)
+                {
+                    dBig = xValue;
+                    iWherePoint = iLoc;
+                    iWhereSeries = i;
+                }
+            }
+            if (iWhereSeries < 0 || iWherePoint < 0) return 0;    // all removed
+            sO.seriesname = ChartScatter.Series[iWhereSeries].Name;
+            sO.iWhereRemoved = iWherePoint;
+            return dBig;
+        }
+
+        // remove the outlier then rescale to next largest
+        // outlier value from chart series is scaled, may not be in minutes
+        private void RemoveOutlier()
+        {
+            double x1Value,x2Value, x2original;   // original means from actual data,not the graphed point values
+            double dNewMax=0; // if we remove a maximum there is a new one unless series is empty
+            int iNewMax = 0;  // where it is
+            bool bAny;      // if no new max
+            double fCurrentScale;   // multiplier that was last used
+            int iWhereSeries = -1;
+            int iWhereData = -1;    // where int the original data 
+            cSaveOutlier sO = new cSaveOutlier();
+            cSaveOutlier sO2;
+            x1Value = FindOutlier(ref sO, ref iWhereSeries );
+            if (iWhereSeries == -1) return; // nothing to remove
+            ChartScatter.Series[iWhereSeries].Points[sO.iWhereRemoved].IsEmpty = true;
+            if (CurrentSeriesDisplayed < 0)
+                iWhereData = iWhereSeries;  // they are one and the same
+            else iWhereData = CurrentSeriesDisplayed;
+            sO.iWhereData = iWhereData;
+            sO.fmpy = 1.0;  // this changes
+            ThisSeriesData[iWhereData].bIsValid[sO.iWhereRemoved] = false;
+            UsedOutliers.Push(sO);
+            sO2 = new cSaveOutlier();
+            // need to recalc the maximum to be consistent
+            bAny = bGetLastOutlier(iWhereSeries, ref iNewMax, ref dNewMax);
+            if(bAny)
+            {
+                ThisSeriesData[iWhereData].dBig = dNewMax;
+                if (dNewMax > dBig)
+                    dBig = dNewMax; // this will change with scaling change
+            }
+            iWhereSeries = -1;
+            x2Value = FindOutlier(ref sO2, ref iWhereSeries);
+            if (iWhereSeries < 0) return;
+            fCurrentScale = cvtScale2Double(strScaleUnits);
+            //SetScale();
+            x2original = ThisSeriesData[iWhereSeries].dValues[sO2.iWhereRemoved];
+            if(x2Value != x2original)
+            {
+                double fRescale = x2original / x2Value;
+                double OriginalValueThere = x1Value * fCurrentScale;
+                ChangeScale(x2original, fCurrentScale, ref sO.fmpy);
+            }
+        }
+
+        private void nudHideXoutliers_ValueChanged(object sender, EventArgs e)
+        {
+            int n = (int) nudHideXoutliers.Value;
+            double x1;
+            if(UsedOutliers.Count < n)
+            {
+                RemoveOutlier();
+            }
+            else
+            {
+                cSaveOutlier sO = UsedOutliers.Pop();
+                ChartScatter.Series[sO.seriesname].Points[sO.iWhereRemoved].IsEmpty = false;
+                x1 = ThisSeriesData[sO.iWhereData].dValues[sO.iWhereRemoved];
+                ThisSeriesData[sO.iWhereData].bIsValid[sO.iWhereRemoved] = true;
+                // x1 was biggest at the time it was removed
+                Debug.Assert(x1 >= ThisSeriesData[sO.iWhereData].dBig);   // got to be true in same series
+                ThisSeriesData[sO.iWhereData].dBig = x1;
+                RestoreScale(x1, sO.fmpy);
+            }
+        }
+
+        // xValue here is original data not fron graph
+        private void RestoreScale(double xValue, double fMpy)
+        {
+            double a,f,d = 0;
+            strScaleUnits = BestTimeUnits(xValue, ref d);
+            f = d / xValue;
+            a = 1.0 / fMpy;
+            DoRescaleXaxis(a);   
+
+            dSmall *= f;
+            dBig = GetBestScaleingUpper(d);
+            ChartScatter.ChartAreas["ChartArea1"].AxisX.Maximum = dBig;
+
+            ChartScatter.Legends["Legend1"].Title = strSeries + strScaleUnits;
+        }
+
+        // fMpy is current scale applied to original data
+        // xAxis points unlikely in minutes
+        private void ChangeScale(double xValue, double fMpy, ref double aUsed)
+        {
+            double a, f, d = 0;
+            strScaleUnits = BestTimeUnits(xValue, ref d);
+            f = d / xValue;
+            a = fMpy * f;
+            DoRescaleXaxis(a);       // chart data was scaled already
+
+            dSmall *= a;
+            dBig = GetBestScaleingUpper(d);
+            ChartScatter.ChartAreas["ChartArea1"].AxisX.Maximum = dBig;
+            ChartScatter.Legends["Legend1"].Title = strSeries + strScaleUnits;
+            aUsed = a;
         }
     }
 }
