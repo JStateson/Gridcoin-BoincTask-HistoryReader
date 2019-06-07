@@ -895,8 +895,8 @@ namespace BTHistoryReader
                 if (d == 0.0)
                 {
                     Debug.Assert(false);
-                    continue; // bad or missing data
-                }
+                    continue; // bad or missing data was finally fixed.  Problem was bitcoin utopia had 0 for cpu
+                }                                                        // so putting in "0.1" for cpu but not if gpu is 0 also
                 l = Convert.ToInt64(d);
                 d /= 60.0;
                 n++;
@@ -914,7 +914,7 @@ namespace BTHistoryReader
                 d = ThisProjectInfo[k].dElapsedTime;
                 if (d == 0.0)
                 {
-                    Debug.Assert(false);
+                    Debug.Assert(false);        // 
                     continue;
                 }
                 d = d/60.0 - Avg;

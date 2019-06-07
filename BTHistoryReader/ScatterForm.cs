@@ -35,6 +35,7 @@ namespace BTHistoryReader
             public int iWhereRemoved;   // where point on screen was declared an outlier
             public int iWhereData;      // where data was declared an outlier
             public double fmpy;         // the restore multiplier
+            public Color c;             // save original color
         }
         private Stack<cSaveOutlier> UsedOutliers;
 
@@ -46,24 +47,27 @@ namespace BTHistoryReader
             return Math.Sqrt(a * a + b * b);
         }
 
-        
-       
-        // if showning only project data only the project changes. 
+
+
+        // if showing only project data only the project changes. 
         // the application is the same for all project so it is homogeneous
         // and there is no need to refresh the default colors so
         // i can avoid that strange side effect of changing point colors
+        // side effect discussed here 
+        // https://stackoverflow.com/questions/56484451/unexpected-side-effect-setting-point-colors-in-chart-xaxis
+        // solution was found:  use color.empty in addition to point.isempty
         public ScatterForm(ref List<cSeriesData> refSD, bool bShowingSystems)
         {
             InitializeComponent();
             bShowSystemData = bShowingSystems;
-            gboxOutlier.Visible = bShowSystemData;          // FIXME eliminate side effect on colors to fix problem
+            //gboxOutlier.Visible = bShowSystemData;          // FIXME eliminate side effect on colors to fix problem [DONE!]
             ThisSeriesData = refSD;
             ShowScatter();
             GetLegendInfo.Enabled=true;
         }
 
         class cColoredLegends
-        {
+        {  
             public string strName;
             public string strSubItems;  // for now, we are only showing projects
             public Color rgb;
@@ -181,6 +185,18 @@ namespace BTHistoryReader
             return 60*24;
         }
 
+        // this from idea at stackoverflow
+        private void HidePoint(DataPoint p)
+        {
+            p.IsEmpty = true;
+            p.Color = Color.Empty;
+        }
+        private void UnHidePoint(DataPoint p, Color c)
+        {
+            p.IsEmpty = false;
+            p.Color = c;
+        }
+
         private bool CalcMinMax(int iSeries)
         {
             double dSmall = 1e6;
@@ -267,7 +283,8 @@ namespace BTHistoryReader
                 string seriesname = sd.bIsShowingApp ? sd.strAppName : sd.strSystemName;
                 SeriesName = seriesname;
                 ChartScatter.Series.Add(seriesname);
-                ChartScatter.Series[seriesname].EmptyPointStyle.Color = Color.Transparent;
+                //ChartScatter.Series[seriesname].EmptyPointStyle.Color = Color.Transparent;
+                // seems not needed but left in to remind of what I tried
                 ChartScatter.Series[seriesname].ChartType = SeriesChartType.Point;
                 ChartScatter.Series[seriesname].Points.DataBindXY(xAxis.ToArray(), yAxis.ToArray());
             }
@@ -345,7 +362,7 @@ namespace BTHistoryReader
             }
         }
 
-
+        // this still does not work even after recommendation from stackoverflow
         private void RestoreDefaultColors()
         {
             int n = ThisSeriesData.Count;
@@ -356,6 +373,7 @@ namespace BTHistoryReader
                 foreach (DataPoint p in ChartScatter.Series[i].Points)
                 {
                     p.Color = c;
+                    p.IsEmpty = false;
                 }
                 ChartScatter.Series[i].Color = c;
             }
@@ -394,7 +412,7 @@ namespace BTHistoryReader
                 {
                     ChartScatter.Series[i].Enabled = true;
                 }
-                gboxOutlier.Visible = true & bShowSystemData;
+                gboxOutlier.Visible = true;// & bShowSystemData;
             }
             else 
             {
@@ -422,15 +440,19 @@ namespace BTHistoryReader
             if (i == j)
             {
                 i = 0;  // wrap back to 0
+                //RestoreDefaultColors();
+                // the above works here but is not needed
                 nudShowOnly.Value = 0;
-                if(bScatteringApps)
-                    lviewSubSeries.Items.Clear();    // do not clear if scattering projects
+                lviewSubSeries.Items.Clear();
             }
             ShowHideSeries(i);
             DrawShowingText(i); // ShowHide must be done first
             if (i == 0  | !bScatteringApps)
             {
-                RestoreDefaultColors();
+                //RestoreDefaultColors();
+                // THERE IS STILL A BUG AS CANNOT RESTORE DEFAULT COLORS
+                // EVEN WITH THAT TRICK FROM STACKOVERFLOW so the above does not work
+                lviewSubSeries.Items.Clear();
                 return; // not showing individual series nor scattering apps
             }
             ShowSystemNames(i-1);
@@ -453,12 +475,14 @@ namespace BTHistoryReader
         }
 
         // data is not sorted so we will just traverse and get biggest
-        private bool bGetLastOutlier(int iSeries, ref int iLoc, ref double xValue)
+        private bool bGetLastOutlier(int iSeries, ref int iLoc, ref double xValue, ref Color OriginalColor)
         {
             double dBig = -1;
             int iWhereBig = -1;
             bool bAny = false;
             DataPoint p;
+            int j = (CurrentSeriesDisplayed == -1) ? 0 : CurrentSeriesDisplayed;
+            Color c = SavedColoredPoints[j].Color;  // just need something here
             int n = ChartScatter.Series[iSeries].Points.Count;
             for(int i = 0; i < n; i++)
             {
@@ -468,11 +492,13 @@ namespace BTHistoryReader
                 {
                     dBig = p.XValue;
                     iWhereBig = i;
+                    c = p.Color;
                     bAny = true;
                 }
             }
             xValue = dBig;
             iLoc = iWhereBig;
+            OriginalColor = c;
             return bAny;
         }
 
@@ -484,12 +510,12 @@ namespace BTHistoryReader
             bool bAny = false;
             if(CurrentSeriesDisplayed >= 0)
             {
-                bAny = bGetLastOutlier(CurrentSeriesDisplayed, ref iLoc, ref xValue);
+                bAny = bGetLastOutlier(CurrentSeriesDisplayed, ref iLoc, ref xValue, ref sO.c);
                 return xValue;
             }
             for (int i = 0; i < CurrentNumberSeriesDisplayable; i++)
             {
-                bAny = bGetLastOutlier(i, ref iLoc, ref xValue);
+                bAny = bGetLastOutlier(i, ref iLoc, ref xValue, ref sO.c);
                 if (!bAny)
                 {
                     continue;
@@ -503,7 +529,7 @@ namespace BTHistoryReader
             }
             if (iWhereSeries < 0 || iWherePoint < 0) return 0;    // all removed
             sO.seriesname = ChartScatter.Series[iWhereSeries].Name;
-            sO.iWhereRemoved = iWherePoint;
+            sO.iWhereRemoved = iWherePoint; 
             return dBig;
         }
 
@@ -522,7 +548,8 @@ namespace BTHistoryReader
             cSaveOutlier sO2;
             x1Value = FindOutlier(ref sO, ref iWhereSeries );
             if (iWhereSeries == -1) return; // nothing to remove
-            ChartScatter.Series[iWhereSeries].Points[sO.iWhereRemoved].IsEmpty = true;
+            HidePoint(ChartScatter.Series[iWhereSeries].Points[sO.iWhereRemoved]);
+
             if (CurrentSeriesDisplayed < 0)
                 iWhereData = iWhereSeries;  // they are one and the same
             else iWhereData = CurrentSeriesDisplayed;
@@ -532,7 +559,7 @@ namespace BTHistoryReader
             UsedOutliers.Push(sO);
             sO2 = new cSaveOutlier();
             // need to recalc the maximum to be consistent
-            bAny = bGetLastOutlier(iWhereSeries, ref iNewMax, ref dNewMax);
+            bAny = bGetLastOutlier(iWhereSeries, ref iNewMax, ref dNewMax, ref sO2.c);
             if(bAny)
             {
                 ThisSeriesData[iWhereData].dBig = dNewMax;
@@ -564,7 +591,8 @@ namespace BTHistoryReader
             else
             {
                 cSaveOutlier sO = UsedOutliers.Pop();
-                ChartScatter.Series[sO.seriesname].Points[sO.iWhereRemoved].IsEmpty = false;
+                //ChartScatter.Series[sO.seriesname].Points[sO.iWhereRemoved].IsEmpty = false;
+                UnHidePoint(ChartScatter.Series[sO.seriesname].Points[sO.iWhereRemoved],sO.c);
                 x1 = ThisSeriesData[sO.iWhereData].dValues[sO.iWhereRemoved];
                 ThisSeriesData[sO.iWhereData].bIsValid[sO.iWhereRemoved] = true;
                 // x1 was biggest at the time it was removed
