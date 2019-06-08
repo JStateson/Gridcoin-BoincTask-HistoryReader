@@ -299,6 +299,7 @@ namespace BTHistoryReader
             SigGap = GetSigGap();
             chart1.ChartAreas["ChartArea1"].AxisX.Maximum = (tHours == 0) ? 1 : tHours;
             chart1.ChartAreas["ChartArea1"].AxisX.Minimum = -2;
+            chart1.ChartAreas["ChartArea1"].AxisX.IntervalAutoMode = IntervalAutoMode.VariableCount;
             TryTruncate();
 
             //chart1.Series["CompletionTime"].MarkerSize = 1;

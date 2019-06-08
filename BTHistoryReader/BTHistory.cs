@@ -91,7 +91,8 @@ namespace BTHistoryReader
         private string GetHistoryExtension()
         {
             string strExt = rbUseCVS1.Checked ? "*.cvs1" : "*.cvs";
-            ofd_history.Filter = "Histories|" + strExt;
+            string strTest = "RecentHistory(" + strExt + ")|" + strExt + "|OldHistory(_long_)|*_long_*" + strExt;
+            ofd_history.Filter = strTest;
             return strExt;
         }
 

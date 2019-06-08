@@ -55,7 +55,8 @@ namespace BTHistoryReader
         // i can avoid that strange side effect of changing point colors
         // side effect discussed here 
         // https://stackoverflow.com/questions/56484451/unexpected-side-effect-setting-point-colors-in-chart-xaxis
-        // solution was found:  use color.empty in addition to point.isempty
+        // solution was found:  use color.transparent in addition to point.isempty and
+        // do not restore color of points that have been hidden
         public ScatterForm(ref List<cSeriesData> refSD, bool bShowingSystems)
         {
             InitializeComponent();
@@ -189,7 +190,7 @@ namespace BTHistoryReader
         private void HidePoint(DataPoint p)
         {
             p.IsEmpty = true;
-            p.Color = Color.Empty;
+            p.Color = Color.Transparent;    // was color.empty            
         }
         private void UnHidePoint(DataPoint p, Color c)
         {
@@ -372,6 +373,7 @@ namespace BTHistoryReader
                 Color c = SavedColoredPoints[i].Color;
                 foreach (DataPoint p in ChartScatter.Series[i].Points)
                 {
+                    if (p.IsEmpty) continue;
                     p.Color = c;
                     p.IsEmpty = false;
                 }
@@ -448,7 +450,7 @@ namespace BTHistoryReader
             DrawShowingText(i); // ShowHide must be done first
             if (i == 0  | !bScatteringApps)
             {
-                //RestoreDefaultColors();
+                RestoreDefaultColors();
                 // THERE IS STILL A BUG AS CANNOT RESTORE DEFAULT COLORS
                 // EVEN WITH THAT TRICK FROM STACKOVERFLOW so the above does not work
                 lviewSubSeries.Items.Clear();
