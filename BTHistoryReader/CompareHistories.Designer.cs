@@ -57,6 +57,8 @@
             this.btnReset = new System.Windows.Forms.Button();
             this.btnShowScatter = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
+            this.lblWarnApply = new System.Windows.Forms.Label();
+            this.colCount = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.panel1.SuspendLayout();
             this.groupBox5.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -246,7 +248,7 @@
             // TBoxResults
             // 
             this.TBoxResults.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TBoxResults.Location = new System.Drawing.Point(432, 273);
+            this.TBoxResults.Location = new System.Drawing.Point(496, 273);
             this.TBoxResults.Multiline = true;
             this.TBoxResults.Name = "TBoxResults";
             this.TBoxResults.ReadOnly = true;
@@ -258,12 +260,12 @@
             // TBoxStats
             // 
             this.TBoxStats.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TBoxStats.Location = new System.Drawing.Point(704, 273);
+            this.TBoxStats.Location = new System.Drawing.Point(730, 273);
             this.TBoxStats.Multiline = true;
             this.TBoxStats.Name = "TBoxStats";
             this.TBoxStats.ReadOnly = true;
             this.TBoxStats.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.TBoxStats.Size = new System.Drawing.Size(245, 142);
+            this.TBoxStats.Size = new System.Drawing.Size(219, 142);
             this.TBoxStats.TabIndex = 9;
             this.TBoxStats.WordWrap = false;
             // 
@@ -272,7 +274,8 @@
             this.LViewConc.CheckBoxes = true;
             this.LViewConc.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.colUSE,
-            this.colSysName});
+            this.colSysName,
+            this.colCount});
             this.LViewConc.FullRowSelect = true;
             this.LViewConc.GridLines = true;
             this.LViewConc.LabelEdit = true;
@@ -280,7 +283,7 @@
             this.LViewConc.Location = new System.Drawing.Point(143, 273);
             this.LViewConc.MultiSelect = false;
             this.LViewConc.Name = "LViewConc";
-            this.LViewConc.Size = new System.Drawing.Size(267, 142);
+            this.LViewConc.Size = new System.Drawing.Size(338, 142);
             this.LViewConc.TabIndex = 10;
             this.LViewConc.UseCompatibleStateImageBehavior = false;
             this.LViewConc.View = System.Windows.Forms.View.Details;
@@ -288,13 +291,13 @@
             // 
             // colUSE
             // 
-            this.colUSE.Text = "Use In Stats / Num Concurrent";
-            this.colUSE.Width = 167;
+            this.colUSE.Text = "UseInStats / NumConcurrent";
+            this.colUSE.Width = 155;
             // 
             // colSysName
             // 
             this.colSysName.Text = "System";
-            this.colSysName.Width = 103;
+            this.colSysName.Width = 115;
             // 
             // btnApply
             // 
@@ -323,7 +326,7 @@
             // 
             // BtnCmpSave
             // 
-            this.BtnCmpSave.Location = new System.Drawing.Point(704, 420);
+            this.BtnCmpSave.Location = new System.Drawing.Point(730, 420);
             this.BtnCmpSave.Name = "BtnCmpSave";
             this.BtnCmpSave.Size = new System.Drawing.Size(75, 23);
             this.BtnCmpSave.TabIndex = 13;
@@ -363,11 +366,27 @@
             // 
             this.label3.AutoSize = true;
             this.label3.ForeColor = System.Drawing.Color.Black;
-            this.label3.Location = new System.Drawing.Point(429, 420);
+            this.label3.Location = new System.Drawing.Point(486, 425);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(228, 13);
             this.label3.TabIndex = 14;
             this.label3.Text = "All time values are in minutes or fraction thereof";
+            // 
+            // lblWarnApply
+            // 
+            this.lblWarnApply.AutoSize = true;
+            this.lblWarnApply.ForeColor = System.Drawing.Color.Red;
+            this.lblWarnApply.Location = new System.Drawing.Point(140, 430);
+            this.lblWarnApply.Name = "lblWarnApply";
+            this.lblWarnApply.Size = new System.Drawing.Size(122, 13);
+            this.lblWarnApply.TabIndex = 17;
+            this.lblWarnApply.Text = "Be sure to apply change";
+            this.lblWarnApply.Visible = false;
+            // 
+            // colCount
+            // 
+            this.colCount.Text = "Count";
+            this.colCount.Width = 57;
             // 
             // CompareHistories
             // 
@@ -375,6 +394,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
             this.ClientSize = new System.Drawing.Size(961, 463);
+            this.Controls.Add(this.lblWarnApply);
             this.Controls.Add(this.btnShowScatter);
             this.Controls.Add(this.lbEditTab);
             this.Controls.Add(this.btnReset);
@@ -436,5 +456,7 @@
         private System.Windows.Forms.RadioButton rbScatApps;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Button btnShowScatter;
+        private System.Windows.Forms.Label lblWarnApply;
+        private System.Windows.Forms.ColumnHeader colCount;
     }
 }

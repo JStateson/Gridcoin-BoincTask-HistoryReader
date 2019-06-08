@@ -283,7 +283,7 @@ namespace BTHistoryReader
                 string seriesname = sd.bIsShowingApp ? sd.strAppName : sd.strSystemName;
                 SeriesName = seriesname;
                 ChartScatter.Series.Add(seriesname);
-                //ChartScatter.Series[seriesname].EmptyPointStyle.Color = Color.Transparent;
+                ChartScatter.Series[seriesname].EmptyPointStyle.Color = Color.Transparent;
                 // seems not needed but left in to remind of what I tried
                 ChartScatter.Series[seriesname].ChartType = SeriesChartType.Point;
                 ChartScatter.Series[seriesname].Points.DataBindXY(xAxis.ToArray(), yAxis.ToArray());

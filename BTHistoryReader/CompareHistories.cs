@@ -22,10 +22,10 @@ namespace BTHistoryReader
         public List<cKPAlocs> KPAlocs;
         public List<string> SystemsCompared;    // this and following are paired
         public List<string> SystemsCompared_nConcurrent;
+        public List<int> SystemsComparedCount;
         private string strAverageAll = "Average All";
         public List<bool> bItemsToColor = new List<bool>(); // use color to show which apps have values
         public List<cSeriesData> MySeriesData;
-
 
         public class cKPAapps
         {
@@ -117,7 +117,6 @@ namespace BTHistoryReader
         public CompareHistories(Form refForm)
         {
             InitializeComponent();
-
             string ThisSystem = "";
             int DuplicateNameCnt = 0;
             Projects = new List<string>();
@@ -125,6 +124,7 @@ namespace BTHistoryReader
             Systems = new List<string>();;
             SystemsCompared = new List<string>();
             SystemsCompared_nConcurrent = new List<string>();
+            SystemsComparedCount = new List<int>();
             int iSystem = -1;
             int NumberProjects = 0;
 
@@ -275,6 +275,7 @@ namespace BTHistoryReader
             {
                 SystemsCompared.Clear();
                 SystemsCompared_nConcurrent.Clear();
+                SystemsComparedCount.Clear();
             }
 
             foreach (cKPAlocs ckpal in KPAlocs)                                             // for every system
@@ -296,6 +297,7 @@ namespace BTHistoryReader
                                 {
                                     SystemsCompared.Add(strLoc);
                                     SystemsCompared_nConcurrent.Add(ckpaa.nConcurrent.ToString());
+                                    SystemsComparedCount.Add(ckpaa.dLelapsedTime.Count);
                                 }
 
                                 else
@@ -336,7 +338,8 @@ namespace BTHistoryReader
         }
 
 
-        // uses a listview with checkbox to decide which system go into the calculation and which gpu's have multiple tasks runing 
+        // uses a listview with checkbox to decide which system go into the calculation and which gpu's have multiple task
+        // running on them and a count of how many results
         private void UpdateAppInfo()
         {
             int i = 0;
@@ -353,6 +356,7 @@ namespace BTHistoryReader
                 strSysConc = new string[3];
                 strSysConc[0] = SystemsCompared_nConcurrent[i];
                 strSysConc[1] = s;
+                strSysConc[2] = SystemsComparedCount[i].ToString();
                 itm = new ListViewItem(strSysConc);
                 itm.Checked = true;
                 LViewConc.Items.Add(itm);
@@ -376,6 +380,7 @@ namespace BTHistoryReader
                 if(itm.SubItems[1].Text == strSystem)
                 {
                     int n = Convert.ToInt32(itm.SubItems[0].Text);
+                    if (n < 1) n = 1;
                     return n;
                 }
             }
@@ -460,6 +465,7 @@ namespace BTHistoryReader
             bool bAny = false;
             string strSysName, strProjName, strAppName;
             int nConcurrent = 1;
+            lblWarnApply.Visible = false;
             foreach(ListViewItem itm in LViewConc.Items)
             {
                 strSysName = itm.SubItems[1].Text;
@@ -487,11 +493,15 @@ namespace BTHistoryReader
             MyCompareHelp.Dispose();
         }
 
+        private void WarnedOnce()
+        {
+            
+        }
+
         // form statistics for the selected event
         private void LViewConc_SelectedIndexChanged(object sender, EventArgs e)
         {
-
-
+            lblWarnApply.Visible = true;
         }
 
         private void BtnCmpSave_Click(object sender, EventArgs e)
