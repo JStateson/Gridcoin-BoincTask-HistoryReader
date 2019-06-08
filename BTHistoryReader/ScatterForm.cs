@@ -396,7 +396,6 @@ namespace BTHistoryReader
                 labelShowSeries.Visible = false;
                 tboxShowing.Visible = false;
                 nudShowOnly.Visible = false;
-                return;
             }
             FillInSeriesLegends();
         }
