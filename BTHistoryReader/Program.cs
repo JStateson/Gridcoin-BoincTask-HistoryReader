@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -14,9 +15,21 @@ namespace BTHistoryReader
         [STAThread]
         static void Main()
         {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new BTHistory());
+            using (Mutex mutex = new Mutex(false, "Global\\" + appGuid))
+            {
+                if (!mutex.WaitOne(0, false))
+                {
+                    MessageBox.Show("Instance already running");
+                    return;
+                }
+
+                Application.EnableVisualStyles();
+                Application.SetCompatibleTextRenderingDefault(false);
+                Application.Run(new BTHistory());
+            }
+
         }
+        private static string appGuid = "c0a76b5a-12ab-45c5-b9d9-d693faa6e7b9";
     }
+
 }
