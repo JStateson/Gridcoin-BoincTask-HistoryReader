@@ -1391,9 +1391,19 @@ namespace BTHistoryReader
             Properties.Settings.Default.Save();
         }
 
+        private string GetSimpleDate(string sDT)
+        {
+            //Sun 06/09/2019 23:33:53.18 
+            int i = sDT.IndexOf(' ');
+            i++;
+            int j = sDT.LastIndexOf('.');
+            return sDT.Substring(i, j - i);
+        }
+
         private void TimerShowBuild_Tick(object sender, EventArgs e)
         {
             BTHistory.ActiveForm.Text = "Build Date:" + Properties.Resources.BuildDate;
+            lblBuildDate.Text = GetSimpleDate(Properties.Resources.BuildDate) + " (v) 1.0";
             TimerShowBuild.Enabled = false;
         }
     }

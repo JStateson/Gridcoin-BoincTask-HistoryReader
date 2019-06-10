@@ -74,6 +74,7 @@
             this.ofd_history = new System.Windows.Forms.OpenFileDialog();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.TimerShowBuild = new System.Windows.Forms.Timer(this.components);
+            this.lblBuildDate = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -85,6 +86,7 @@
             // panel1
             // 
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel1.Controls.Add(this.lblBuildDate);
             this.panel1.Controls.Add(this.pbarLoading);
             this.panel1.Controls.Add(this.groupBox3);
             this.panel1.Controls.Add(this.btnAbout);
@@ -103,10 +105,10 @@
             // 
             // pbarLoading
             // 
-            this.pbarLoading.Location = new System.Drawing.Point(16, 68);
+            this.pbarLoading.Location = new System.Drawing.Point(16, 90);
             this.pbarLoading.Maximum = 20;
             this.pbarLoading.Name = "pbarLoading";
-            this.pbarLoading.Size = new System.Drawing.Size(163, 23);
+            this.pbarLoading.Size = new System.Drawing.Size(163, 11);
             this.pbarLoading.Step = 1;
             this.pbarLoading.TabIndex = 11;
             this.pbarLoading.Visible = false;
@@ -570,6 +572,15 @@
             this.TimerShowBuild.Interval = 250;
             this.TimerShowBuild.Tick += new System.EventHandler(this.TimerShowBuild_Tick);
             // 
+            // lblBuildDate
+            // 
+            this.lblBuildDate.AutoSize = true;
+            this.lblBuildDate.Location = new System.Drawing.Point(19, 63);
+            this.lblBuildDate.Name = "lblBuildDate";
+            this.lblBuildDate.Size = new System.Drawing.Size(56, 13);
+            this.lblBuildDate.TabIndex = 12;
+            this.lblBuildDate.Text = "Build Date";
+            // 
             // BTHistory
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -642,6 +653,7 @@
         private System.Windows.Forms.RadioButton rbUseCVS1;
         private System.Windows.Forms.ProgressBar pbarLoading;
         private System.Windows.Forms.Timer TimerShowBuild;
+        private System.Windows.Forms.Label lblBuildDate;
     }
 }
 
