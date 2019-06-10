@@ -20,7 +20,7 @@ namespace BTHistoryReader
         {
             InitializeComponent();
             labelBuild.Text = "Build Date:" + Properties.Resources.BuildDate;
-
+            // must change or touch this module to get date changed
         }
     }
 }

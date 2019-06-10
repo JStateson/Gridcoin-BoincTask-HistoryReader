@@ -73,6 +73,7 @@
             this.btn_OpenHistory = new System.Windows.Forms.Button();
             this.ofd_history = new System.Windows.Forms.OpenFileDialog();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.TimerShowBuild = new System.Windows.Forms.Timer(this.components);
             this.panel1.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -563,6 +564,12 @@
             this.ofd_history.Filter = "CVS Files|*.cvs";
             this.ofd_history.Multiselect = true;
             // 
+            // TimerShowBuild
+            // 
+            this.TimerShowBuild.Enabled = true;
+            this.TimerShowBuild.Interval = 250;
+            this.TimerShowBuild.Tick += new System.EventHandler(this.TimerShowBuild_Tick);
+            // 
             // BTHistory
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -634,6 +641,7 @@
         private System.Windows.Forms.RadioButton rbUseCVS;
         private System.Windows.Forms.RadioButton rbUseCVS1;
         private System.Windows.Forms.ProgressBar pbarLoading;
+        private System.Windows.Forms.Timer TimerShowBuild;
     }
 }
 

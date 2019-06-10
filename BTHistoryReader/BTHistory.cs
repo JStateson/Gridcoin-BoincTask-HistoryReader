@@ -35,6 +35,7 @@ namespace BTHistoryReader
             {
                 Properties.Settings.Default.TypeCVS = true;
             }
+
         }
 
         private int iLocMaxDiff;
@@ -1390,6 +1391,10 @@ namespace BTHistoryReader
             Properties.Settings.Default.Save();
         }
 
-
+        private void TimerShowBuild_Tick(object sender, EventArgs e)
+        {
+            BTHistory.ActiveForm.Text = "Build Date:" + Properties.Resources.BuildDate;
+            TimerShowBuild.Enabled = false;
+        }
     }
 }
