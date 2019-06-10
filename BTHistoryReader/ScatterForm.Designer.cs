@@ -30,9 +30,9 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ScatterForm));
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend3 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend4 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             this.label1 = new System.Windows.Forms.Label();
             this.GetLegendInfo = new System.Windows.Forms.Timer(this.components);
             this.labelShowSeries = new System.Windows.Forms.Label();
@@ -48,6 +48,8 @@
             this.gboxOutlier = new System.Windows.Forms.GroupBox();
             this.nudHideXoutliers = new System.Windows.Forms.NumericUpDown();
             this.label3 = new System.Windows.Forms.Label();
+            this.lblSysHideUnhide = new System.Windows.Forms.Label();
+            this.lblShowApp = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.nudShowOnly)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudXscale)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ChartScatter)).BeginInit();
@@ -85,6 +87,11 @@
             // 
             this.nudShowOnly.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.nudShowOnly.Location = new System.Drawing.Point(119, 361);
+            this.nudShowOnly.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            -2147483648});
             this.nudShowOnly.Name = "nudShowOnly";
             this.nudShowOnly.ReadOnly = true;
             this.nudShowOnly.Size = new System.Drawing.Size(20, 38);
@@ -138,15 +145,15 @@
             // 
             // ChartScatter
             // 
-            chartArea1.Name = "ChartArea1";
-            this.ChartScatter.ChartAreas.Add(chartArea1);
-            legend1.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Left;
-            legend1.IsDockedInsideChartArea = false;
-            legend1.Name = "Legend1";
-            legend2.DockedToChartArea = "ChartArea1";
-            legend2.Name = "SysLeg";
-            this.ChartScatter.Legends.Add(legend1);
-            this.ChartScatter.Legends.Add(legend2);
+            chartArea2.Name = "ChartArea1";
+            this.ChartScatter.ChartAreas.Add(chartArea2);
+            legend3.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Left;
+            legend3.IsDockedInsideChartArea = false;
+            legend3.Name = "Legend1";
+            legend4.DockedToChartArea = "ChartArea1";
+            legend4.Name = "SysLeg";
+            this.ChartScatter.Legends.Add(legend3);
+            this.ChartScatter.Legends.Add(legend4);
             this.ChartScatter.Location = new System.Drawing.Point(21, 22);
             this.ChartScatter.Name = "ChartScatter";
             this.ChartScatter.Size = new System.Drawing.Size(923, 320);
@@ -170,6 +177,7 @@
             this.lviewSubSeries.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1});
             this.lviewSubSeries.FullRowSelect = true;
+            this.lviewSubSeries.HideSelection = false;
             this.lviewSubSeries.Location = new System.Drawing.Point(411, 369);
             this.lviewSubSeries.MultiSelect = false;
             this.lviewSubSeries.Name = "lviewSubSeries";
@@ -178,6 +186,7 @@
             this.lviewSubSeries.TabIndex = 9;
             this.lviewSubSeries.UseCompatibleStateImageBehavior = false;
             this.lviewSubSeries.View = System.Windows.Forms.View.Details;
+            this.lviewSubSeries.SelectedIndexChanged += new System.EventHandler(this.lviewSubSeries_SelectedIndexChanged);
             // 
             // columnHeader1
             // 
@@ -199,10 +208,10 @@
             // 
             this.nudHideXoutliers.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.nudHideXoutliers.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.nudHideXoutliers.Location = new System.Drawing.Point(38, 20);
+            this.nudHideXoutliers.Location = new System.Drawing.Point(23, 19);
             this.nudHideXoutliers.Name = "nudHideXoutliers";
             this.nudHideXoutliers.ReadOnly = true;
-            this.nudHideXoutliers.Size = new System.Drawing.Size(15, 34);
+            this.nudHideXoutliers.Size = new System.Drawing.Size(42, 34);
             this.nudHideXoutliers.TabIndex = 12;
             this.nudHideXoutliers.ValueChanged += new System.EventHandler(this.nudHideXoutliers_ValueChanged);
             // 
@@ -217,11 +226,31 @@
             this.label3.Text = "Occasionally a GPU runs at lowest speed\r\nand a  task that normally takes minutes\r" +
     "\nstretches into days. These are outliers:.";
             // 
+            // lblSysHideUnhide
+            // 
+            this.lblSysHideUnhide.AutoSize = true;
+            this.lblSysHideUnhide.Location = new System.Drawing.Point(419, 485);
+            this.lblSysHideUnhide.Name = "lblSysHideUnhide";
+            this.lblSysHideUnhide.Size = new System.Drawing.Size(142, 13);
+            this.lblSysHideUnhide.TabIndex = 13;
+            this.lblSysHideUnhide.Text = "select system to hide/unhide";
+            // 
+            // lblShowApp
+            // 
+            this.lblShowApp.AutoSize = true;
+            this.lblShowApp.Location = new System.Drawing.Point(29, 400);
+            this.lblShowApp.Name = "lblShowApp";
+            this.lblShowApp.Size = new System.Drawing.Size(51, 13);
+            this.lblShowApp.TabIndex = 14;
+            this.lblShowApp.Text = "appname";
+            // 
             // ScatterForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(958, 510);
+            this.Controls.Add(this.lblShowApp);
+            this.Controls.Add(this.lblSysHideUnhide);
             this.Controls.Add(this.gboxOutlier);
             this.Controls.Add(this.lviewSubSeries);
             this.Controls.Add(this.groupBox1);
@@ -263,5 +292,7 @@
         private System.Windows.Forms.GroupBox gboxOutlier;
         private System.Windows.Forms.NumericUpDown nudHideXoutliers;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label lblSysHideUnhide;
+        private System.Windows.Forms.Label lblShowApp;
     }
 }
