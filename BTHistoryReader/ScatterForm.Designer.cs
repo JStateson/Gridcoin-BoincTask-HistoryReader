@@ -30,9 +30,9 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ScatterForm));
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend3 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend4 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             this.label1 = new System.Windows.Forms.Label();
             this.GetLegendInfo = new System.Windows.Forms.Timer(this.components);
             this.labelShowSeries = new System.Windows.Forms.Label();
@@ -145,15 +145,15 @@
             // 
             // ChartScatter
             // 
-            chartArea2.Name = "ChartArea1";
-            this.ChartScatter.ChartAreas.Add(chartArea2);
-            legend3.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Left;
-            legend3.IsDockedInsideChartArea = false;
-            legend3.Name = "Legend1";
-            legend4.DockedToChartArea = "ChartArea1";
-            legend4.Name = "SysLeg";
-            this.ChartScatter.Legends.Add(legend3);
-            this.ChartScatter.Legends.Add(legend4);
+            chartArea1.Name = "ChartArea1";
+            this.ChartScatter.ChartAreas.Add(chartArea1);
+            legend1.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Left;
+            legend1.IsDockedInsideChartArea = false;
+            legend1.Name = "Legend1";
+            legend2.DockedToChartArea = "ChartArea1";
+            legend2.Name = "SysLeg";
+            this.ChartScatter.Legends.Add(legend1);
+            this.ChartScatter.Legends.Add(legend2);
             this.ChartScatter.Location = new System.Drawing.Point(21, 22);
             this.ChartScatter.Name = "ChartScatter";
             this.ChartScatter.Size = new System.Drawing.Size(923, 320);
@@ -221,10 +221,11 @@
             this.label3.ForeColor = System.Drawing.SystemColors.InfoText;
             this.label3.Location = new System.Drawing.Point(101, 19);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(202, 39);
+            this.label3.Size = new System.Drawing.Size(209, 52);
             this.label3.TabIndex = 0;
             this.label3.Text = "Occasionally a GPU runs at lowest speed\r\nand a  task that normally takes minutes\r" +
-    "\nstretches into days. These are outliers:.";
+    "\nstretches into days. These are outliers: and\r\nmay cause all other data to be ob" +
+    "scured.";
             // 
             // lblSysHideUnhide
             // 
