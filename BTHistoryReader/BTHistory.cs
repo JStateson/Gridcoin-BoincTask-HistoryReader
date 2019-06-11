@@ -1001,10 +1001,9 @@ namespace BTHistoryReader
 
         private void cb_AppNames_SelectedIndexChanged(object sender, EventArgs e)
         {
-            //if (bDoNotLoadA) return;
             string strTemp = cb_AppNames.Text;
-            if (cb_AppNames.Text == "")
-                return;
+            if (cb_AppNames.Text == "") return;
+            ClearInfoTables();
             ShowNumberApps();
             DisplayHistory();
         }
