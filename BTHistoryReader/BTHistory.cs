@@ -35,9 +35,17 @@ namespace BTHistoryReader
             }
             catch
             {
-                Properties.Settings.Default.TypeCVS = true;
-                Properties.Settings.Default.RecLimit = "40000";
-                Properties.Settings.Default.UseLimit = true;
+                try
+                {
+                    // something may be happening here, just guessing
+                    Properties.Settings.Default.TypeCVS = true;
+                    Properties.Settings.Default.RecLimit = "40000";
+                    Properties.Settings.Default.UseLimit = true;
+                }
+                catch (Exception e)
+                {
+                    tb_Info.Text = "exception: " + e.Message + "\r\n";
+                }
             }
 
         }
@@ -1447,9 +1455,10 @@ namespace BTHistoryReader
 
         private void TimerShowBuild_Tick(object sender, EventArgs e)
         {
-            BTHistory.ActiveForm.Text = "Build Date:" + Properties.Resources.BuildDate;
-            lblBuildDate.Text = GetSimpleDate(Properties.Resources.BuildDate) + " (v) 1.0";
             TimerShowBuild.Enabled = false;
+            // possibly this form is not active ???
+            //BTHistory.ActiveForm.Text = "Build Date:" + Properties.Resources.BuildDate;
+            lblBuildDate.Text = GetSimpleDate(Properties.Resources.BuildDate) + " (v) 1.0";
         }
     }
 }
