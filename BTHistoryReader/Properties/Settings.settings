@@ -5,5 +5,11 @@
     <Setting Name="TypeCVS" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
+    <Setting Name="RecLimit" Type="System.String" Scope="User">
+      <Value Profile="(Default)">40000</Value>
+    </Setting>
+    <Setting Name="UseLimit" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

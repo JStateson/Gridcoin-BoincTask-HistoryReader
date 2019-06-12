@@ -15,7 +15,7 @@ namespace BTHistoryReader
         public string ThisSystem = "";
         public cSplitHistoryValues OneSplitLine;    // use this for processing each line in history file;
 
-        private List<long> CompletionTimes;
+        private List<double> CompletionTimes;       // better to use minutes instead of seconds so change from long
         private List<double> IdleGap;
         private double AvgGap;
         private double StdGap;
@@ -445,7 +445,8 @@ namespace BTHistoryReader
                 PerformSelectCompare();
                 pbarLoading.Visible = false;
                 BTHistory.ActiveForm.Enabled = true;
-                return false;   // 30jun19 need to clean up, not save stuff
+                pbarLoading.Value = 0;
+                return false;  
             }
             lb_history_loc.Text = ofd_history.FileName;
             if (File.Exists(lb_history_loc.Text))
@@ -483,8 +484,6 @@ namespace BTHistoryReader
         private void btn_OpenHistory_Click(object sender, EventArgs e)
         {
             InitLookupTable();
-            // bDoNotLoadP = true;          // FIXME 1-JUNE-2019
-            // bDoNotLoadA = true;
             DisallowCallbacks(true);
             LinesToReadThenIncrement = 0;
             if (FetchHistory())
@@ -656,7 +655,6 @@ namespace BTHistoryReader
                 }
             }
             if (cb_SelProj.Items.Count == 0) return;
-            //bDoNotLoadP = false;    // FIXME
             strProjName = cb_SelProj.Items[0].ToString();
             n = LookupProject(strProjName);
             cb_SelProj.Text = strProjName;
@@ -710,12 +708,27 @@ namespace BTHistoryReader
             int i, j, k;
             int j1, j2;
             string sTemp;
+
+            tb_Info.Text += "sorting " + nSort.ToString() + " items please wait......\r\n";
+            if(nSort > 20000)
+            {
+                pbarLoading.Visible = true;
+                SetPBARcnt(nSort / GetPBARmax());
+                lb_SelWorkUnits.UseWaitCursor = true;
+            }
             k = nSort - 2;
+            tb_Info.Refresh();
             for (i = 0; i < nSort; i++)
                 iSortIndex[i] = i;
             for(i=0; i < k; i++)
             {
-                for(j = 0; j < k; j++)
+                LinesWeRead++;
+                if (LinesWeRead > LinesToReadThenIncrement & pbarLoading.Visible)
+                {
+                    LinesWeRead = 0;
+                    IncrementPBAR();
+                }
+                for (j = 0; j < k; j++)
                 {
                     j1 = iSortIndex[j];
                     j2 = iSortIndex[j + 1];
@@ -726,13 +739,27 @@ namespace BTHistoryReader
                     }
                 }
             }
+            if(pbarLoading.Visible)
+            {
+                pbarLoading.Value = 0;
+                LinesWeRead = 0;
+                tb_Info.Text += "Displaying those items wait moment longer...\r\n";
+            }
             for(i=0; i<nSort; i++)
             {
+                LinesWeRead++;
+                if (LinesWeRead > LinesToReadThenIncrement & pbarLoading.Visible)
+                {
+                    LinesWeRead = 0;
+                    IncrementPBAR();
+                }
                 j = iSortIndex[i];
                 if (!ThisProjectInfo[j].bState) continue;
                 sTemp = ThisProjectInfo[j].strOutput;
                 lb_SelWorkUnits.Items.Add(sTemp);
             }
+            pbarLoading.Visible = false;
+            lb_SelWorkUnits.UseWaitCursor = false;
         }
 
         // put hours minuts secs in a nice concise format
@@ -752,7 +779,8 @@ namespace BTHistoryReader
             int j = 0;
             bool bState, bState1;
             long n, nElapsedTime;
-
+            bool bStopReading = cboxStopLoad.Checked;
+            int nLimit = Convert.ToInt32(tboxLimit.Text);
 
             if (AppName.LineLoc.Count == 0) return 0;
 
@@ -761,6 +789,11 @@ namespace BTHistoryReader
                 bState = LinesHistory[i].Length > ExpectedLengthLine;
                 if(!bState)
                 {
+                    break;
+                }
+                if(bStopReading && i >= nLimit)
+                {
+                    tb_Info.Text += " stopping after reading " + tboxLimit.Text + " out of " + AppName.LineLoc.Count.ToString() + " records\r\n";
                     break;
                 }
                 strSymbols = LinesHistory[i].Split('\t');
@@ -1212,7 +1245,7 @@ namespace BTHistoryReader
             j = lb_SelWorkUnits.SelectedIndices[1];
             n = j - i;
             if (n < 3) return false;  // need to show two segments at least
-            CompletionTimes = new List<long>(n + 1);
+            CompletionTimes = new List<double>(n + 1);
             IdleGap = new List<double>(n);
             AvgGap = 0;
             // need to make sure the first one valid
@@ -1279,7 +1312,7 @@ namespace BTHistoryReader
             int i, j, n, h, lPtr;
             long l;
             double d, d1;
-            int k; // Seturge's rule for histograms
+            int k;
 
             if (lb_SelWorkUnits.Items.Count < 2) return false;
             if (lb_SelWorkUnits.SelectedIndices.Count != 2) return false;
@@ -1293,7 +1326,7 @@ namespace BTHistoryReader
             {
                 k = iSortIndex[n];
                 if (!ThisProjectInfo[k].bState) continue;
-                d = ThisProjectInfo[k].dElapsedTime;
+                d = ThisProjectInfo[k].dElapsedTime / 60.0;
                 IdleGap.Add(d);
                 AvgGap += d;
             }
@@ -1302,14 +1335,12 @@ namespace BTHistoryReader
 
             Histogram<double> hist = new Histogram<double>();
             h = 0;
-            foreach(double dd in IdleGap)
+            foreach (double dd in IdleGap)
             {
                 hist.IncrementCount(dd);
             }
-            d = 1.0 + 3.22 * Math.Log10(hist.Count);
-            d1 = 1.0 + 3.22 * Math.Log10(IdleGap.Count);
             k = hist.Count; // Convert.ToInt32(d);
-            CompletionTimes = new List<long>(k);
+            CompletionTimes = new List<double>(k);
             for (i = 0; i < k; i++) CompletionTimes.Add(0);
             IdleGap = new List<double>(k);
             for (i = 0; i < k; i++) IdleGap.Add(0);
@@ -1321,7 +1352,7 @@ namespace BTHistoryReader
             foreach (KeyValuePair<double, uint> histEntry in hist.AsEnumerable())
             {
                 IdleGap[lPtr] = histEntry.Value;
-                CompletionTimes[lPtr] = Convert.ToInt64( histEntry.Key);
+                CompletionTimes[lPtr] = histEntry.Key;
                 lPtr++;
             }
             return true;
@@ -1387,6 +1418,8 @@ namespace BTHistoryReader
         private void BTHistory_FormClosing(object sender, FormClosingEventArgs e)
         {
             Properties.Settings.Default.TypeCVS = rbUseCVS1.Checked;
+            Properties.Settings.Default.RecLimit = tboxLimit.Text;
+            Properties.Settings.Default.UseLimit = cboxStopLoad.Checked;
             Properties.Settings.Default.Save();
         }
 

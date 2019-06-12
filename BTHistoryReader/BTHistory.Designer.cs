@@ -30,8 +30,13 @@
         {
             this.components = new System.ComponentModel.Container();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.lblBuildDate = new System.Windows.Forms.Label();
             this.pbarLoading = new System.Windows.Forms.ProgressBar();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.tboxLimit = new System.Windows.Forms.TextBox();
+            this.cboxStopLoad = new System.Windows.Forms.CheckBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.rbUseCVS = new System.Windows.Forms.RadioButton();
             this.rbUseCVS1 = new System.Windows.Forms.RadioButton();
@@ -74,7 +79,6 @@
             this.ofd_history = new System.Windows.Forms.OpenFileDialog();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.TimerShowBuild = new System.Windows.Forms.Timer(this.components);
-            this.lblBuildDate = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -103,6 +107,15 @@
             this.panel1.TabIndex = 0;
             this.panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.panel1_Paint);
             // 
+            // lblBuildDate
+            // 
+            this.lblBuildDate.AutoSize = true;
+            this.lblBuildDate.Location = new System.Drawing.Point(19, 63);
+            this.lblBuildDate.Name = "lblBuildDate";
+            this.lblBuildDate.Size = new System.Drawing.Size(56, 13);
+            this.lblBuildDate.TabIndex = 12;
+            this.lblBuildDate.Text = "Build Date";
+            // 
             // pbarLoading
             // 
             this.pbarLoading.Location = new System.Drawing.Point(16, 90);
@@ -115,20 +128,64 @@
             // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.label7);
+            this.groupBox3.Controls.Add(this.label6);
+            this.groupBox3.Controls.Add(this.tboxLimit);
+            this.groupBox3.Controls.Add(this.cboxStopLoad);
             this.groupBox3.Controls.Add(this.groupBox4);
-            this.groupBox3.Location = new System.Drawing.Point(210, 16);
+            this.groupBox3.Location = new System.Drawing.Point(210, 18);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(306, 88);
+            this.groupBox3.Size = new System.Drawing.Size(306, 86);
             this.groupBox3.TabIndex = 10;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Open File Settings";
             this.toolTip1.SetToolTip(this.groupBox3, "Defalt is CVS1 and no longs");
             // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(64, 63);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(74, 13);
+            this.label7.TabIndex = 15;
+            this.label7.Text = "...records/app";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(6, 41);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(83, 13);
+            this.label6.TabIndex = 14;
+            this.label6.Text = "No more than ...";
+            // 
+            // tboxLimit
+            // 
+            this.tboxLimit.Location = new System.Drawing.Point(9, 60);
+            this.tboxLimit.Name = "tboxLimit";
+            this.tboxLimit.Size = new System.Drawing.Size(49, 20);
+            this.tboxLimit.TabIndex = 13;
+            this.tboxLimit.Text = "40000";
+            this.toolTip1.SetToolTip(this.tboxLimit, "use smaller number if out of memory or system stops responding");
+            // 
+            // cboxStopLoad
+            // 
+            this.cboxStopLoad.AutoSize = true;
+            this.cboxStopLoad.Checked = true;
+            this.cboxStopLoad.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cboxStopLoad.Location = new System.Drawing.Point(21, 19);
+            this.cboxStopLoad.Name = "cboxStopLoad";
+            this.cboxStopLoad.Size = new System.Drawing.Size(95, 17);
+            this.cboxStopLoad.TabIndex = 12;
+            this.cboxStopLoad.Text = "Limit App Data";
+            this.toolTip1.SetToolTip(this.cboxStopLoad, "This limit does NOT apply to comparions");
+            this.cboxStopLoad.UseVisualStyleBackColor = true;
+            // 
             // groupBox4
             // 
             this.groupBox4.Controls.Add(this.rbUseCVS);
             this.groupBox4.Controls.Add(this.rbUseCVS1);
-            this.groupBox4.Location = new System.Drawing.Point(146, 19);
+            this.groupBox4.Location = new System.Drawing.Point(146, 16);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Size = new System.Drawing.Size(135, 66);
             this.groupBox4.TabIndex = 11;
@@ -546,9 +603,9 @@
             this.lb_history_loc.AutoSize = true;
             this.lb_history_loc.Location = new System.Drawing.Point(13, 2);
             this.lb_history_loc.Name = "lb_history_loc";
-            this.lb_history_loc.Size = new System.Drawing.Size(189, 13);
+            this.lb_history_loc.Size = new System.Drawing.Size(332, 13);
             this.lb_history_loc.TabIndex = 1;
-            this.lb_history_loc.Text = "Select multiple files to do a comparison";
+            this.lb_history_loc.Text = "Select multiple files to do a comparison (app data limit does not apply)";
             // 
             // btn_OpenHistory
             // 
@@ -572,15 +629,6 @@
             this.TimerShowBuild.Interval = 250;
             this.TimerShowBuild.Tick += new System.EventHandler(this.TimerShowBuild_Tick);
             // 
-            // lblBuildDate
-            // 
-            this.lblBuildDate.AutoSize = true;
-            this.lblBuildDate.Location = new System.Drawing.Point(19, 63);
-            this.lblBuildDate.Name = "lblBuildDate";
-            this.lblBuildDate.Size = new System.Drawing.Size(56, 13);
-            this.lblBuildDate.TabIndex = 12;
-            this.lblBuildDate.Text = "Build Date";
-            // 
             // BTHistory
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -595,6 +643,7 @@
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.groupBox3.ResumeLayout(false);
+            this.groupBox3.PerformLayout();
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
             this.gb_filter.ResumeLayout(false);
@@ -654,6 +703,10 @@
         private System.Windows.Forms.ProgressBar pbarLoading;
         private System.Windows.Forms.Timer TimerShowBuild;
         private System.Windows.Forms.Label lblBuildDate;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.TextBox tboxLimit;
+        private System.Windows.Forms.CheckBox cboxStopLoad;
     }
 }
 

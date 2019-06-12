@@ -34,5 +34,29 @@ namespace BTHistoryReader.Properties {
                 this["TypeCVS"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("40000")]
+        public string RecLimit {
+            get {
+                return ((string)(this["RecLimit"]));
+            }
+            set {
+                this["RecLimit"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool UseLimit {
+            get {
+                return ((bool)(this["UseLimit"]));
+            }
+            set {
+                this["UseLimit"] = value;
+            }
+        }
     }
 }

@@ -13,11 +13,11 @@ namespace BTHistoryReader
 {
     public partial class TPchart : Form
     {
-        private List<long> ct;      // completion times in seconds since 1970
+        private List<double> ct;      // completion times in seconds since 1970
         private List<double> it;    // idle time in seconds
-        private long WORKctStart;   // start time of WORKct in event it is normalized to 0 
+        private double WORKctStart;   // start time of WORKct in event it is normalized to 0 
         private int iLastIndex;     // index of last time that is <= the lookback limit
-        private long[] WORKct;      // completion times in seconds since 1970
+        private double[] WORKct;      // completion times in seconds since 1970
         private double[] WORKit;    // idle time in seconds
         private int ValidWork;
         private double AvgGap;
@@ -47,11 +47,11 @@ namespace BTHistoryReader
 
         // ctStart if > 0 then normalizing
         // did not want to overwrite the data that was passed by reference
-        private void SaveWorking(int n, long ctStart)
+        private void SaveWorking(int n, double ctStart)
         {
             int i;
             WORKit = new double[n];
-            WORKct = new long[n];
+            WORKct = new double[n];
             WORKctStart = ct[0];
             for (i = 0; i < n; i++)
             {
@@ -62,7 +62,7 @@ namespace BTHistoryReader
         }
 
         // used by idle plot and returns time in seconds
-        private long SetLastTimeDisplayed()
+        private double SetLastTimeDisplayed()
         {
             long tMax = LKBhours * 3600;
             int i = 0;
@@ -86,7 +86,7 @@ namespace BTHistoryReader
             int nInBin=0; // actual number in bin
             int nExpected = 1 +( ct.Count / iBinCnt);
             if (nExpected < 2) nExpected = 2;   // put this many in each bin
-            WORKct = new long[iBinCnt+1];
+            WORKct = new double[iBinCnt+1];
             WORKit = new double[iBinCnt+1];
             do
             {
@@ -122,7 +122,7 @@ namespace BTHistoryReader
 
 
         //  microsofts neat charting program
-        public TPchart(ref List<long> refCT, ref List<double> refIT, double rAvgGap, double rStdGap, string strProject)
+        public TPchart(ref List<double> refCT, ref List<double> refIT, double rAvgGap, double rStdGap, string strProject)
         {
             int i;
             InitializeComponent();
@@ -137,7 +137,7 @@ namespace BTHistoryReader
             labStartTime.Visible = (AvgGap != -1);  // only for plot of idle time
 
             if (AvgGap != -1)
-            {   // plotting idle time
+            {   // plotting idle time and the first arg is in seconds, not minutes
                 SaveWorking(ct.Count-1, ct[0]); // since it is difference between ct then there is always one less item
                 gboxFilter.Text = "Detail Filter (0 is all)";
                 this.Text = "Idle Plot";
@@ -151,7 +151,7 @@ namespace BTHistoryReader
                 DrawCompletion();
                 return;
             }
-            // plotting elapsed time
+            // plotting elapsed time, first arg is in minutes
             this.Text = "Elapsed Time";
             gboxFilter.Text = "Visual Scaling";
             SaveWorking(ct.Count,0);
@@ -161,7 +161,7 @@ namespace BTHistoryReader
         }
 
         // uses linux time stuff and I wanted local to match what is displayed by the history tab in boinctasks
-        private void SetStartTime(long n)
+        private void SetStartTime(double n)
         {
             System.DateTime dt_1970 = new System.DateTime(1970, 1, 1);
             System.DateTime dt_this = DateTime.SpecifyKind(dt_1970.AddSeconds(n), DateTimeKind.Utc);
@@ -227,12 +227,11 @@ namespace BTHistoryReader
 
         // resize time by number of concurrent tasks
         double dConcurrent = 1;
-        long iScaleTime(long l)
+        double iScaleTime(double l)
         {
-            double d = Convert.ToDouble(l) / dConcurrent;
-            return Convert.ToInt64( Math.Round(d));
+            double d = l / dConcurrent;
+            return d;
         }
-
 
         // this plots our histogram of elapsed time
         private void DrawHist()
@@ -244,7 +243,7 @@ namespace BTHistoryReader
             yAxis = new List<double>();
             chart1.Series.Add(sET);
             chart1.Series["ElapsedTime"].AxisLabel = "";
-            chart1.ChartAreas["ChartArea1"].AxisX.Title = "Elapsed Time(sec)";
+            chart1.ChartAreas["ChartArea1"].AxisX.Title = "Elapsed Time(min)";
             chart1.ChartAreas["ChartArea1"].AxisY.Title = "Number Samples";
             lbChart.Text = "Distribution of elapsed time";
             n = ValidWork; // WORKct.Length ;
@@ -283,7 +282,7 @@ namespace BTHistoryReader
             double d;
             double tMinutes;    // total minutes
             double tHours;
-            long tSecs, tMax;
+            double tSecs, tMax;
             double dSum = 0;
             int iStartIndex;
             long iStartValue;
