@@ -30,10 +30,14 @@ namespace BTHistoryReader
                 bool b = Properties.Settings.Default.TypeCVS;
                 if (!b) rbUseCVS.Checked = true;
                 else rbUseCVS1.Checked = true;
+                cboxStopLoad.Checked = Properties.Settings.Default.UseLimit;
+                tboxLimit.Text = Properties.Settings.Default.RecLimit;
             }
             catch
             {
                 Properties.Settings.Default.TypeCVS = true;
+                Properties.Settings.Default.RecLimit = "40000";
+                Properties.Settings.Default.UseLimit = true;
             }
 
         }
@@ -683,21 +687,29 @@ namespace BTHistoryReader
             }
         }
 
+        private void DisallowAppCallbacks(bool bValue)
+        {
+            if (bValue)
+            {
+                this.cb_AppNames.SelectedIndexChanged -= new System.EventHandler(this.cb_AppNames_SelectedIndexChanged);
+            }
+            else
+            {
+                this.cb_AppNames.SelectedIndexChanged += new System.EventHandler(this.cb_AppNames_SelectedIndexChanged);
+            }
+        }
+
+
         // if project changed then fill in the associated app box
         private void cb_SelProj_SelectedIndexChanged(object sender, EventArgs e)
         {
             int i = cb_SelProj.SelectedIndex;
-
-            // FIXME WTF THE FOLLOWING DOES NOT WORK "method group"
-            // WTF MY FAULT saw "." but coded up "_" instead
-            // this.cb_AppNames_SelectedIndexChanged -= new System.EventHandler(this.cb_AppNames_SelectedIndexChanged);
-
-
+            DisallowAppCallbacks(true);
             ClearForNewProject();
             cb_SelProj.Text = cb_SelProj.Items[i].ToString();
             i = LookupProject(cb_SelProj.Text);
             FillAppBox(i);
-            //bDoNotLoadA = false;
+            DisallowAppCallbacks(false);
             DisplayHistory();
         }
 
@@ -708,9 +720,10 @@ namespace BTHistoryReader
             int i, j, k;
             int j1, j2;
             string sTemp;
+            int n = Convert.ToInt32(tboxLimit.Text);
 
             tb_Info.Text += "sorting " + nSort.ToString() + " items please wait......\r\n";
-            if(nSort > 20000)
+            if(nSort > n/2)
             {
                 pbarLoading.Visible = true;
                 SetPBARcnt(nSort / GetPBARmax());
@@ -781,7 +794,7 @@ namespace BTHistoryReader
             long n, nElapsedTime;
             bool bStopReading = cboxStopLoad.Checked;
             int nLimit = Convert.ToInt32(tboxLimit.Text);
-
+            pbarLoading.Value = 0;
             if (AppName.LineLoc.Count == 0) return 0;
 
             foreach (int i in AppName.LineLoc)  // this could be rewritten better but WTF, it was done before I got that splitlinestuff to work
@@ -791,7 +804,7 @@ namespace BTHistoryReader
                 {
                     break;
                 }
-                if(bStopReading && i >= nLimit)
+                if(bStopReading && j >= nLimit)
                 {
                     tb_Info.Text += " stopping after reading " + tboxLimit.Text + " out of " + AppName.LineLoc.Count.ToString() + " records\r\n";
                     break;

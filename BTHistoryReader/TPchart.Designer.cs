@@ -50,6 +50,7 @@
             this.lbChart = new System.Windows.Forms.Label();
             this.lbl_sysname = new System.Windows.Forms.Label();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.labYoffset = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             this.gboxLKBACK.SuspendLayout();
             this.gboxFilter.SuspendLayout();
@@ -283,11 +284,22 @@
             this.lbl_sysname.TabIndex = 6;
             this.lbl_sysname.Text = "label1";
             // 
+            // labYoffset
+            // 
+            this.labYoffset.AutoSize = true;
+            this.labYoffset.Location = new System.Drawing.Point(219, 354);
+            this.labYoffset.Name = "labYoffset";
+            this.labYoffset.Size = new System.Drawing.Size(171, 13);
+            this.labYoffset.TabIndex = 7;
+            this.labYoffset.Text = "Y-Axis offset to left for data visibility";
+            this.labYoffset.Visible = false;
+            // 
             // TPchart
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 424);
+            this.Controls.Add(this.labYoffset);
             this.Controls.Add(this.labStartTime);
             this.Controls.Add(this.lbl_sysname);
             this.Controls.Add(this.lbChart);
@@ -331,5 +343,6 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox tBoxTruncValue;
         private System.Windows.Forms.CheckBox cboxTruncate;
+        private System.Windows.Forms.Label labYoffset;
     }
 }

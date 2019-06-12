@@ -135,6 +135,7 @@ namespace BTHistoryReader
 
 
             labStartTime.Visible = (AvgGap != -1);  // only for plot of idle time
+            labYoffset.Visible = (AvgGap != -1);
 
             if (AvgGap != -1)
             {   // plotting idle time and the first arg is in seconds, not minutes
