@@ -266,6 +266,9 @@ namespace BTHistoryReader
             string strSPAstats = "";
             int ncnt;
             List<double> dTemp = new List<double>();
+            bool bShowFL = cboxFL.Checked;
+            int MaxAllowed = Convert.ToInt32(tbSumCnt.Text);
+            bool bShowSummary = false;
 
             Last_sProj = sProj;
             Last_sApp = sApp;
@@ -305,15 +308,19 @@ namespace BTHistoryReader
                                     ckpaa.nConcurrent = GetConcurrency(strLoc);
                                 }
                                 ncnt = 0;
+                                bShowSummary = bShowFL & (ckpaa.dLelapsedTime.Count > MaxAllowed);
                                 foreach (double d in ckpaa.dLelapsedTime)
                                 {
                                     double dd = d / ckpaa.nConcurrent;
                                     dTemp.Add(dd);
                                     dAvg += dd;
                                     string strValue = dd.ToString("###,##0.00").PadLeft(12);
-                                    sTemp += (strValue +"   " + strLoc +  "\r\n");
+                                    if(!bShowSummary)
+                                        sTemp += (strValue +"   " + strLoc +  "\r\n");
                                     ncnt++;
                                 }
+                                if(bShowSummary)
+                                    sTemp += "Summary: " + strLoc + " " + ncnt.ToString() + "\r\n";
                                 strSPAstats += strLoc + ": " + sProj + "-" + sApp + "(" + ncnt.ToString()  + ")" + strDivide(ckpaa.nConcurrent) +"\r\n";
                             }
                         }

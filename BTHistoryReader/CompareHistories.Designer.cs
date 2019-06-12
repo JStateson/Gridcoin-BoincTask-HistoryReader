@@ -45,26 +45,31 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.rbSelect = new System.Windows.Forms.RadioButton();
             this.lbEditTab = new System.Windows.Forms.Label();
-            this.TBoxResults = new System.Windows.Forms.TextBox();
             this.TBoxStats = new System.Windows.Forms.TextBox();
             this.LViewConc = new System.Windows.Forms.ListView();
             this.colUSE = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.colSysName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.colCount = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.btnApply = new System.Windows.Forms.Button();
             this.btnHelp = new System.Windows.Forms.Button();
             this.BtnCmpSave = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.btnReset = new System.Windows.Forms.Button();
             this.btnShowScatter = new System.Windows.Forms.Button();
+            this.tbSumCnt = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.lblWarnApply = new System.Windows.Forms.Label();
-            this.colCount = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.cboxFL = new System.Windows.Forms.CheckBox();
+            this.TBoxResults = new System.Windows.Forms.TextBox();
             this.panel1.SuspendLayout();
             this.groupBox5.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
+            this.groupBox6.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
@@ -239,33 +244,21 @@
             // 
             this.lbEditTab.AutoSize = true;
             this.lbEditTab.ForeColor = System.Drawing.Color.Crimson;
-            this.lbEditTab.Location = new System.Drawing.Point(140, 246);
+            this.lbEditTab.Location = new System.Drawing.Point(140, 235);
             this.lbEditTab.Name = "lbEditTab";
-            this.lbEditTab.Size = new System.Drawing.Size(393, 13);
+            this.lbEditTab.Size = new System.Drawing.Size(204, 26);
             this.lbEditTab.TabIndex = 7;
-            this.lbEditTab.Text = "ASSUMES ONE WU PER GPU UNLESS YOU EDIT VALUE IN FIRST COLUMN";
-            // 
-            // TBoxResults
-            // 
-            this.TBoxResults.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TBoxResults.Location = new System.Drawing.Point(496, 273);
-            this.TBoxResults.Multiline = true;
-            this.TBoxResults.Name = "TBoxResults";
-            this.TBoxResults.ReadOnly = true;
-            this.TBoxResults.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.TBoxResults.Size = new System.Drawing.Size(212, 142);
-            this.TBoxResults.TabIndex = 8;
-            this.TBoxResults.WordWrap = false;
+            this.lbEditTab.Text = "ASSUMES ONE WU PER GPU UNLESS\r\nYOU EDIT VALUE IN FIRST COLUMN";
             // 
             // TBoxStats
             // 
             this.TBoxStats.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TBoxStats.Location = new System.Drawing.Point(730, 273);
+            this.TBoxStats.Location = new System.Drawing.Point(251, 19);
             this.TBoxStats.Multiline = true;
             this.TBoxStats.Name = "TBoxStats";
             this.TBoxStats.ReadOnly = true;
             this.TBoxStats.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.TBoxStats.Size = new System.Drawing.Size(219, 142);
+            this.TBoxStats.Size = new System.Drawing.Size(178, 150);
             this.TBoxStats.TabIndex = 9;
             this.TBoxStats.WordWrap = false;
             // 
@@ -278,6 +271,7 @@
             this.colCount});
             this.LViewConc.FullRowSelect = true;
             this.LViewConc.GridLines = true;
+            this.LViewConc.HideSelection = false;
             this.LViewConc.LabelEdit = true;
             this.LViewConc.LabelWrap = false;
             this.LViewConc.Location = new System.Drawing.Point(143, 273);
@@ -298,6 +292,11 @@
             // 
             this.colSysName.Text = "System";
             this.colSysName.Width = 115;
+            // 
+            // colCount
+            // 
+            this.colCount.Text = "Count";
+            this.colCount.Width = 57;
             // 
             // btnApply
             // 
@@ -362,11 +361,21 @@
             this.btnShowScatter.Visible = false;
             this.btnShowScatter.Click += new System.EventHandler(this.btnShowScatter_Click);
             // 
+            // tbSumCnt
+            // 
+            this.tbSumCnt.ForeColor = System.Drawing.Color.Blue;
+            this.tbSumCnt.Location = new System.Drawing.Point(132, 19);
+            this.tbSumCnt.Name = "tbSumCnt";
+            this.tbSumCnt.Size = new System.Drawing.Size(45, 20);
+            this.tbSumCnt.TabIndex = 11;
+            this.tbSumCnt.Text = "100";
+            this.toolTip1.SetToolTip(this.tbSumCnt, "If over 1000 your system may not repond for a while");
+            // 
             // label3
             // 
             this.label3.AutoSize = true;
             this.label3.ForeColor = System.Drawing.Color.Black;
-            this.label3.Location = new System.Drawing.Point(486, 425);
+            this.label3.Location = new System.Drawing.Point(493, 441);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(228, 13);
             this.label3.TabIndex = 14;
@@ -383,10 +392,53 @@
             this.lblWarnApply.Text = "Be sure to apply change";
             this.lblWarnApply.Visible = false;
             // 
-            // colCount
+            // groupBox6
             // 
-            this.colCount.Text = "Count";
-            this.colCount.Width = 57;
+            this.groupBox6.Controls.Add(this.label5);
+            this.groupBox6.Controls.Add(this.tbSumCnt);
+            this.groupBox6.Controls.Add(this.cboxFL);
+            this.groupBox6.Controls.Add(this.TBoxResults);
+            this.groupBox6.Controls.Add(this.TBoxStats);
+            this.groupBox6.Location = new System.Drawing.Point(502, 240);
+            this.groupBox6.Name = "groupBox6";
+            this.groupBox6.Size = new System.Drawing.Size(447, 175);
+            this.groupBox6.TabIndex = 18;
+            this.groupBox6.TabStop = false;
+            this.groupBox6.Text = "Values / Summery and Results";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(33, 42);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(115, 13);
+            this.label5.TabIndex = 12;
+            this.label5.Text = "(Clck apply if changed)";
+            // 
+            // cboxFL
+            // 
+            this.cboxFL.AutoSize = true;
+            this.cboxFL.Checked = true;
+            this.cboxFL.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cboxFL.ForeColor = System.Drawing.Color.Blue;
+            this.cboxFL.Location = new System.Drawing.Point(17, 19);
+            this.cboxFL.Name = "cboxFL";
+            this.cboxFL.Size = new System.Drawing.Size(109, 17);
+            this.cboxFL.TabIndex = 10;
+            this.cboxFL.Text = "Summerize if over";
+            this.cboxFL.UseVisualStyleBackColor = true;
+            // 
+            // TBoxResults
+            // 
+            this.TBoxResults.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.TBoxResults.Location = new System.Drawing.Point(17, 65);
+            this.TBoxResults.Multiline = true;
+            this.TBoxResults.Name = "TBoxResults";
+            this.TBoxResults.ReadOnly = true;
+            this.TBoxResults.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.TBoxResults.Size = new System.Drawing.Size(202, 104);
+            this.TBoxResults.TabIndex = 9;
+            this.TBoxResults.WordWrap = false;
             // 
             // CompareHistories
             // 
@@ -394,6 +446,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
             this.ClientSize = new System.Drawing.Size(961, 463);
+            this.Controls.Add(this.groupBox6);
             this.Controls.Add(this.lblWarnApply);
             this.Controls.Add(this.btnShowScatter);
             this.Controls.Add(this.lbEditTab);
@@ -403,8 +456,6 @@
             this.Controls.Add(this.btnHelp);
             this.Controls.Add(this.btnApply);
             this.Controls.Add(this.LViewConc);
-            this.Controls.Add(this.TBoxStats);
-            this.Controls.Add(this.TBoxResults);
             this.Controls.Add(this.panel1);
             this.ForeColor = System.Drawing.Color.CadetBlue;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
@@ -421,6 +472,8 @@
             this.groupBox2.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            this.groupBox6.ResumeLayout(false);
+            this.groupBox6.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -439,7 +492,6 @@
         private System.Windows.Forms.RadioButton rbElapsedTime;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.RadioButton rbSelect;
-        private System.Windows.Forms.TextBox TBoxResults;
         private System.Windows.Forms.TextBox TBoxStats;
         private System.Windows.Forms.Label lbEditTab;
         private System.Windows.Forms.ListView LViewConc;
@@ -458,5 +510,10 @@
         private System.Windows.Forms.Button btnShowScatter;
         private System.Windows.Forms.Label lblWarnApply;
         private System.Windows.Forms.ColumnHeader colCount;
+        private System.Windows.Forms.GroupBox groupBox6;
+        private System.Windows.Forms.TextBox TBoxResults;
+        private System.Windows.Forms.CheckBox cboxFL;
+        private System.Windows.Forms.TextBox tbSumCnt;
+        private System.Windows.Forms.Label label5;
     }
 }
