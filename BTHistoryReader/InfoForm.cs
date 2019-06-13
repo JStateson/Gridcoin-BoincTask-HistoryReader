@@ -42,7 +42,7 @@ namespace BTHistoryReader
         public void ShowTree()
         {
             int i = 1;
-            TreeNode n, c;
+            TreeNode n, c, dn;
             foreach (cKnownProjApps kpa in KnownProjApps)
             {
                 if (kpa.nAppsUsed == 0 && ShowType==eShowType.eShowHis)  // do not show unused projects
@@ -88,6 +88,13 @@ namespace BTHistoryReader
                             c.Text += " (" + appName.nAppEntries.ToString() + ")";
                         }
                     }
+                    foreach (cNameValue nv in appName.DataName.DataNameInfo)
+                    {
+                        dn = new TreeNode();
+                        dn.Text = nv.DataName + " (" + nv.ElapsedTime.Count.ToString() + ")" ;
+                        dn.ForeColor = Color.ForestGreen;
+                        c.Nodes.Add(dn);
+                    }
                     n.Nodes.Add(c);
                 }
                 tv_projapps.Nodes.Add(n);
@@ -95,7 +102,14 @@ namespace BTHistoryReader
             if (ShowType == eShowType.eShowAllcol)
                 mainNode.Collapse(true);
             else
-                foreach (TreeNode node in tv_projapps.Nodes) node.Expand();
+            {
+                foreach (TreeNode node in tv_projapps.Nodes)
+                {
+                    node.Expand();
+                    foreach (TreeNode subnode in node.Nodes)
+                        subnode.Expand();
+                }
+            }
         }
 
         public void RevealApps()
@@ -138,6 +152,11 @@ namespace BTHistoryReader
         }
 
         private void rbShowStats_CheckedChanged(object sender, EventArgs e)
+        {
+            RevealApps();
+        }
+
+        private void rbExpandAll_CheckedChanged(object sender, EventArgs e)
         {
             RevealApps();
         }

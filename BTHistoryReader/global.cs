@@ -36,6 +36,226 @@ namespace BTHistoryReader
         public int iSystem;    // index to system data came from
     }
 
+    public class cNameValue 
+    {
+        public string DataName;
+        public List<double> ElapsedTime;
+        public void init(string sName, double et)
+        {
+            ElapsedTime = new List<double>();
+            ElapsedTime.Add(et);
+            DataName = sName;
+        }
+    }
+
+    // one set of names for each project name, not by app so putting "All" into sAppName
+    // but might want make change later so not removing that field
+    public class cDataName
+    {
+        int i;
+        public string sAppName;
+        public List<cNameValue> DataNameInfo;
+        public void Init(string sApp)
+        {
+            DataNameInfo = new List<cNameValue>();
+            sAppName = sApp;
+        }
+
+        private string GetAppName(string sFullName, string sProj)
+        {
+            int iTerm;
+            string sOut = "";
+            int nUnder = 0;
+            int n = sFullName.Length;
+
+
+            // rosetta does not have identifiable names
+            // collatz and latin squares do not differentiate names, only apps 
+
+            // gpugrid PABLO_DIST2_UCB_goal_KIX_CMY use "pablo" and take first 2 after the underscore
+            //e84s1_e48s72p0f52-PABLO_v3O60885_MOR_31_IDP-1-2-RND3124_1 
+            // web page tracks PABLO under personal bests
+            if(sProj.Contains("GPUGRID"))
+            {
+                //-------------------------0123456789012
+                iTerm = sFullName.IndexOf("_PABLO_");
+                if (iTerm < 0) return "";
+                sOut = sFullName.Substring(iTerm + 1, 8);
+                return sOut;
+            }
+
+            //146733_Hs_T105121-KCNJ15_wu-113_1539963765552_
+            // for TN-Grid use the Hs_ (second underscore)
+            if (sProj.Contains("TN-Grid"))
+            {
+                for (int i = 0; i < n; i++)
+                {
+                    if (sFullName[i] == '_')
+                    {
+                        nUnder++;
+                        if (nUnder == 2)
+                        {
+                            return sFullName.Substring(0, i);
+                        }
+                    }
+                }
+                return "";
+            }
+
+            //ZIKA_000439482_x5hmw_DENV3_NS5pol_s1_0460_0
+            //MCM1_0151633_8911_2
+            if (sProj.Contains("World C"))
+            {                  //go with first 5 chars after the first underscore
+                iTerm = sFullName.IndexOf('_');
+                if (iTerm < 0) return "";
+                return sFullName.Substring(0, iTerm + 5);
+            }
+
+            //universe_bh2_180328_261_3607081393_20000_1-999999_85100_0
+            // go with digits after the second underscore
+            if(sProj.Contains("Universe"))
+            {
+                for(int i = 0; i < n; i++)
+                {
+                    if(sFullName[i] == '_')
+                    {
+                        nUnder++;
+                        if(nUnder == 4)
+                        {
+                            return sFullName.Substring(0, i);
+                        }
+                    }
+                }
+                return "";
+            }
+
+            if (sProj.Contains("Numberfields"))
+            {                  //wu_sf6_DS-7x10_Grp78095of160000_0 use group as id
+                iTerm = sFullName.IndexOf("_Grp");
+                if (iTerm < 0) return "";
+                return sFullName.Substring(0, iTerm);
+            }
+
+
+            if (sProj.Contains("Asteroids"))
+            {                  //ps_190601_input_13257_5_0  go with _input_ and all before
+                iTerm = sFullName.IndexOf("_input_");  
+                if (iTerm < 0) return "";
+                return sFullName.Substring(0, i);
+            }
+
+            if (sProj.Contains("SETI"))
+            {
+                // use decimal point as first guess  01jl11aa.10070.
+                iTerm = sFullName.IndexOf('.');
+                if (iTerm < 0) return "";
+                sOut = sFullName.Substring(0, iTerm);
+                iTerm = sOut.IndexOf("_");
+                if (iTerm < 0) return sOut;
+                // blc25_2bit_guppi_58406_2
+                return sOut.Substring(0, iTerm);
+            }
+            if (sProj.Contains("Einstein"))
+            {
+                // use decimal point LATeah1049ZF_108.0_0_0.0_10547677_0
+                iTerm = sFullName.IndexOf('.');
+                if (iTerm < 0) return "";
+                sOut = sFullName.Substring(0, iTerm);
+                return sOut;
+            }
+            if (sProj.Contains("LHC@home"))
+            {
+                //workspace2_lhc2016_c12_o20_N1.1_e2.3__54__s__64.28_59.31__0_2__6__60_1_sixvf_boinc5255_0
+                //workspace1_hl10_MCBRD_ranID_87_oct_0_B1__12__s__62.31_60.32__10_12__5__7.5_1_sixvf_boinc881_2
+                //w-c0_30.000_job.B1inj.rf_c0_30.000.3012__5__s__64.28_59.31__2.1_6.1__6__27_1_sixvf_boinc4871_4
+                //wfcchtc_job_arctripdipoctu_geb3_inj__5__s__109.28_107.31__3_4__5__4.5_1_sixvf_boinc8069_2 
+                if (sFullName.Contains("lhc201"))
+                {
+                    iTerm = sFullName.IndexOf('.');
+                    if (iTerm < 0) return "";
+                    sOut = sFullName.Substring(0, iTerm);
+                    iTerm = sOut.LastIndexOf('_');
+                    if (iTerm < 0) return sOut;
+                    return sOut.Substring(0, iTerm);
+                }
+                iTerm = sFullName.IndexOf("_job");
+                if(iTerm > 0)
+                {
+                    int i = sFullName.IndexOf('-');
+                    if(i < iTerm)
+                    {
+                        // want to return only the w-c0 and not the _30.000_job
+                        i = sFullName.IndexOf('_');
+                        if (i < 0) return "";
+                        return sFullName.Substring(0, i);
+                    }
+                    return sFullName.Substring(0, iTerm);
+                }
+                iTerm = sFullName.IndexOf('_');
+                if (iTerm < 0) return "";
+                int j = sFullName.Substring(iTerm + 1).IndexOf('_');
+                sOut = sFullName.Substring(0, iTerm + j + 1);
+                return sOut;
+            }
+            if (sProj.Contains("Milky"))
+            {
+                // traverse right to left looking for first alpha char
+                // then move right to first underscore
+                //de_modfit_82_bundle5_3s_NoContraintsWithDisk200_6_1553189073_1614443_1
+                for (int i = n - 1; i >= 0; i--)
+                {
+                    char aCH = sFullName[i];
+                    if (aCH == '_') continue;
+                    if (aCH < '0' || aCH > '9')
+                    {
+                        for (int j = i + 1; j < n; j++)
+                        {
+                            aCH = sFullName[j];
+                            if (aCH == '_')
+                            {
+                                return sFullName.Substring(0, j);
+                            }
+                        }
+                    }
+                }
+                return "";
+            }
+            return "";
+        }
+
+
+        public void Sort()
+        {
+            // todo
+        }
+        public int NameInsert(string sNameFull, double et, string sProj)
+        {
+            int n = DataNameInfo.Count;
+            cNameValue nv;
+            string sName = GetAppName(sNameFull, sProj);
+            if (sName == "") return -1;
+            if(n == 0)
+            {
+                nv = new cNameValue();
+                nv.init(sName, et);
+                DataNameInfo.Add(nv);
+                return 0;
+            }
+            for(i = 0; i < n; i++)
+            {
+                if (sName == DataNameInfo[i].DataName)
+                {
+                    DataNameInfo[i].ElapsedTime.Add(et);
+                    return i;
+                }
+            }
+            nv = new cNameValue();
+            nv.init(sName, et);
+            DataNameInfo.Add(nv);
+            return n;
+        }
+    }
+
     public class cSeriesData
     {
         public string strAppName;
@@ -201,7 +421,8 @@ namespace BTHistoryReader
     public class cAppName
     {
         public string Name;
-        public cKnownProjApps ptrKPA; 
+        public cKnownProjApps ptrKPA;
+        public cDataName DataName;
         public string strPlanClass;
         public string strName;
         public string GetInfo
@@ -258,12 +479,12 @@ namespace BTHistoryReader
         {
             get { return LineLoc.Count; }
         }
-        public void init()
+        // the following is not being used it seems
+        public void init(string sApp)
         {
-            LineLoc.Clear();
-            AvgRunTime = 0.0;
-            StdRunTime = 0.0;
-            strPlanClass = "";
+            Name = sApp;
+            DataName = new cDataName();
+            DataName.Init(sApp);
         }
         public bool bIsUnknown;
     }
@@ -334,7 +555,7 @@ namespace BTHistoryReader
         {
             cAppName AppName = new cAppName();
             AppName.ptrKPA = this;
-            AppName.strName = strName;
+            AppName.init(strName);
             AppName.LineLoc = new List<int>();
             AppName.dElapsedTime = new List<double>();
             AppName.bIsValid = new List<bool>();
@@ -348,7 +569,7 @@ namespace BTHistoryReader
         public cAppName AddUnkApp(string strIn)
         {
             cAppName AppName = new cAppName();
-            AppName.Name = strIn;
+            AppName.init(strIn);
             AppName.ptrKPA = this;
             AppName.LineLoc = new List<int>();
             AppName.dElapsedTime = new List<double>();

@@ -34,7 +34,7 @@
             this.tv_projapps = new System.Windows.Forms.TreeView();
             this.gb_Reveal = new System.Windows.Forms.GroupBox();
             this.rbShowStats = new System.Windows.Forms.RadioButton();
-            this.radioButton1 = new System.Windows.Forms.RadioButton();
+            this.rbExpandAll = new System.Windows.Forms.RadioButton();
             this.rbShowUnk = new System.Windows.Forms.RadioButton();
             this.rbShowHis = new System.Windows.Forms.RadioButton();
             this.rb_ShowAll = new System.Windows.Forms.RadioButton();
@@ -47,7 +47,7 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(12, 9);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(288, 156);
+            this.label1.Size = new System.Drawing.Size(288, 195);
             this.label1.TabIndex = 1;
             this.label1.Text = resources.GetString("label1.Text");
             // 
@@ -70,11 +70,11 @@
             // gb_Reveal
             // 
             this.gb_Reveal.Controls.Add(this.rbShowStats);
-            this.gb_Reveal.Controls.Add(this.radioButton1);
+            this.gb_Reveal.Controls.Add(this.rbExpandAll);
             this.gb_Reveal.Controls.Add(this.rbShowUnk);
             this.gb_Reveal.Controls.Add(this.rbShowHis);
             this.gb_Reveal.Controls.Add(this.rb_ShowAll);
-            this.gb_Reveal.Location = new System.Drawing.Point(34, 210);
+            this.gb_Reveal.Location = new System.Drawing.Point(37, 259);
             this.gb_Reveal.Name = "gb_Reveal";
             this.gb_Reveal.Size = new System.Drawing.Size(203, 164);
             this.gb_Reveal.TabIndex = 1;
@@ -94,16 +94,17 @@
             this.rbShowStats.UseVisualStyleBackColor = true;
             this.rbShowStats.CheckedChanged += new System.EventHandler(this.rbShowStats_CheckedChanged);
             // 
-            // radioButton1
+            // rbExpandAll
             // 
-            this.radioButton1.AutoSize = true;
-            this.radioButton1.Location = new System.Drawing.Point(18, 42);
-            this.radioButton1.Name = "radioButton1";
-            this.radioButton1.Size = new System.Drawing.Size(110, 17);
-            this.radioButton1.TabIndex = 3;
-            this.radioButton1.Tag = "1";
-            this.radioButton1.Text = "Show All (expand)";
-            this.radioButton1.UseVisualStyleBackColor = true;
+            this.rbExpandAll.AutoSize = true;
+            this.rbExpandAll.Location = new System.Drawing.Point(18, 42);
+            this.rbExpandAll.Name = "rbExpandAll";
+            this.rbExpandAll.Size = new System.Drawing.Size(110, 17);
+            this.rbExpandAll.TabIndex = 3;
+            this.rbExpandAll.Tag = "1";
+            this.rbExpandAll.Text = "Show All (expand)";
+            this.rbExpandAll.UseVisualStyleBackColor = true;
+            this.rbExpandAll.CheckedChanged += new System.EventHandler(this.rbExpandAll_CheckedChanged);
             // 
             // rbShowUnk
             // 
@@ -173,7 +174,7 @@
         private System.Windows.Forms.RadioButton rbShowUnk;
         private System.Windows.Forms.RadioButton rbShowHis;
         private System.Windows.Forms.RadioButton rb_ShowAll;
-        private System.Windows.Forms.RadioButton radioButton1;
+        private System.Windows.Forms.RadioButton rbExpandAll;
         private System.Windows.Forms.RadioButton rbShowStats;
     }
 }

@@ -425,7 +425,7 @@
             this.cboxFL.Name = "cboxFL";
             this.cboxFL.Size = new System.Drawing.Size(109, 17);
             this.cboxFL.TabIndex = 10;
-            this.cboxFL.Text = "Summerize if over";
+            this.cboxFL.Text = "Summarize if over";
             this.cboxFL.UseVisualStyleBackColor = true;
             // 
             // TBoxResults

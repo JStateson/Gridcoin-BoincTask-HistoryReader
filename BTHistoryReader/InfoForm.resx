@@ -119,7 +119,7 @@
   </resheader>
   <data name="label1.Text" xml:space="preserve">
     <value>Some background:  The history file is processed to the last 
-ine or until the first incomplete line is parsed.  
+line or until the first incomplete line is parsed.  
 
 Project apps in the history file are shown in dark blue.
 The color red is used to show unknown apps or projects
@@ -129,6 +129,9 @@ in the program and discovred when parsing the data.
 The average elapsed time and its STD are calculated for
 ALL valid entries in the log and shown in the tree.  Avg and 
 Std shown in the main form are from the selection only 
-and the ones here are all results that completed.</value>
+and the ones here are all results that completed.
+
+The color green shows dataset names, if any defined, and
+the number of datasets matching that name</value>
   </data>
 </root>
