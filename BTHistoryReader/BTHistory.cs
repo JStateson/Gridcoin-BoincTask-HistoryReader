@@ -439,6 +439,7 @@ namespace BTHistoryReader
             Application.DoEvents();
         }
 
+        // following stops unwanted side effects if user clicks on certain widgits while the progress bar is moving
         private void CanChangeProjApp(bool b)
         {
             cb_AppNames.Enabled = b;
@@ -446,6 +447,7 @@ namespace BTHistoryReader
             btnScatSets.Enabled = b;
             btn_OpenHistory.Enabled = b;
             gboxOPFsettings.Enabled = b;
+            lb_SelWorkUnits.Enabled = b;
         }
 
         // user clicked open files,this program does the reading of single files or hands it off if multiple
