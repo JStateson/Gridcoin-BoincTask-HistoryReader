@@ -745,6 +745,7 @@ namespace BTHistoryReader
 
         private void InvertSelections()
         {
+            if (lviewSubSeries.Items.Count == 0) return;
             int iRawData = (int)lviewSubSeries.Items[0].Tag;
             int iSeries = CurrentSeriesDisplayed;
             List<int> iSystem = ThisSeriesData[iRawData].iSystem;
@@ -776,7 +777,7 @@ namespace BTHistoryReader
         }
 
   
-        private Int32? FindNearestPoint(ref DataPointCollection points, double x, double y)
+        private Int32? FindNearestPoint(ref DataPointCollection points, double x, double y, int iLoc)
         {
             if (points == null) return null;
             if (points.Count == 0) return null;
@@ -796,7 +797,7 @@ namespace BTHistoryReader
             List<int> idx = sorted.Select(z => z.Value).ToList();
             //double v = getLength(points[0]);
             int j = idx[0];
-            int iGrp = ThisSeriesData[CurrentSeriesDisplayed].iSystem[j];
+            int iGrp = ThisSeriesData[iLoc].iSystem[j];
             points[j].Color = Color.FromArgb(rnd.Next(256), rnd.Next(256), rnd.Next(256));
             MessageBox.Show("member of: "+ lviewSubSeries.Items[iGrp].Text);
             return 0;
@@ -804,18 +805,23 @@ namespace BTHistoryReader
 
         private void ChartScatter_MouseClick(object sender, MouseEventArgs e)
         {
-            int n;
+            int n, UseMe = CurrentSeriesDisplayed;
             if (!bShowDatasests) return;
-            if (CurrentSeriesDisplayed < 0) return;
+            if (CurrentSeriesDisplayed < 0)
+            {
+                // if -1 may still have only one series
+                if (ThisSeriesData.Count > 1) return;
+                UseMe = 0;
+            }
             DataPointCollection Points =
-                    ChartScatter.Series[CurrentSeriesDisplayed].Points;
+                    ChartScatter.Series[UseMe].Points;
             n = Points.Count;
             if (n > 250) return;
             Point p = e.Location;
             // Int32? iLoc = FindNearestPoint(Points, p);
             double x = ChartScatter.ChartAreas[0].AxisX.PixelPositionToValue(e.X);
             double y = ChartScatter.ChartAreas[0].AxisY.PixelPositionToValue(e.Y);
-            FindNearestPoint(ref Points, x, y);
+            FindNearestPoint(ref Points, x, y, UseMe);
         }
     }
 }
