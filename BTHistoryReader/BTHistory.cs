@@ -444,6 +444,8 @@ namespace BTHistoryReader
             cb_AppNames.Enabled = b;
             cb_SelProj.Enabled = b;
             btnScatSets.Enabled = b;
+            btn_OpenHistory.Enabled = b;
+            gboxOPFsettings.Enabled = b;
         }
 
         // user clicked open files,this program does the reading of single files or hands it off if multiple

@@ -32,7 +32,7 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.lblBuildDate = new System.Windows.Forms.Label();
             this.pbarLoading = new System.Windows.Forms.ProgressBar();
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.gboxOPFsettings = new System.Windows.Forms.GroupBox();
             this.label7 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.tboxLimit = new System.Windows.Forms.TextBox();
@@ -82,7 +82,7 @@
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.TimerShowBuild = new System.Windows.Forms.Timer(this.components);
             this.panel1.SuspendLayout();
-            this.groupBox3.SuspendLayout();
+            this.gboxOPFsettings.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.gb_filter.SuspendLayout();
             this.groupBox5.SuspendLayout();
@@ -95,7 +95,7 @@
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel1.Controls.Add(this.lblBuildDate);
             this.panel1.Controls.Add(this.pbarLoading);
-            this.panel1.Controls.Add(this.groupBox3);
+            this.panel1.Controls.Add(this.gboxOPFsettings);
             this.panel1.Controls.Add(this.btnAbout);
             this.panel1.Controls.Add(this.btnShowProjectTree);
             this.panel1.Controls.Add(this.gb_filter);
@@ -129,20 +129,20 @@
             this.pbarLoading.TabIndex = 11;
             this.pbarLoading.Visible = false;
             // 
-            // groupBox3
+            // gboxOPFsettings
             // 
-            this.groupBox3.Controls.Add(this.label7);
-            this.groupBox3.Controls.Add(this.label6);
-            this.groupBox3.Controls.Add(this.tboxLimit);
-            this.groupBox3.Controls.Add(this.cboxStopLoad);
-            this.groupBox3.Controls.Add(this.groupBox4);
-            this.groupBox3.Location = new System.Drawing.Point(210, 18);
-            this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(306, 86);
-            this.groupBox3.TabIndex = 10;
-            this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Open File Settings";
-            this.toolTip1.SetToolTip(this.groupBox3, "Defalt is CVS1 and no longs");
+            this.gboxOPFsettings.Controls.Add(this.label7);
+            this.gboxOPFsettings.Controls.Add(this.label6);
+            this.gboxOPFsettings.Controls.Add(this.tboxLimit);
+            this.gboxOPFsettings.Controls.Add(this.cboxStopLoad);
+            this.gboxOPFsettings.Controls.Add(this.groupBox4);
+            this.gboxOPFsettings.Location = new System.Drawing.Point(210, 18);
+            this.gboxOPFsettings.Name = "gboxOPFsettings";
+            this.gboxOPFsettings.Size = new System.Drawing.Size(306, 86);
+            this.gboxOPFsettings.TabIndex = 10;
+            this.gboxOPFsettings.TabStop = false;
+            this.gboxOPFsettings.Text = "Open File Settings";
+            this.toolTip1.SetToolTip(this.gboxOPFsettings, "Defalt is CVS1 and no longs");
             // 
             // label7
             // 
@@ -667,8 +667,8 @@
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.BTHistory_FormClosing);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
-            this.groupBox3.ResumeLayout(false);
-            this.groupBox3.PerformLayout();
+            this.gboxOPFsettings.ResumeLayout(false);
+            this.gboxOPFsettings.PerformLayout();
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
             this.gb_filter.ResumeLayout(false);
@@ -720,7 +720,7 @@
         private System.Windows.Forms.RadioButton rbIdle;
         private System.Windows.Forms.Label lbSeriesTime;
         private System.Windows.Forms.Button btnCheckPrev;
-        private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.GroupBox gboxOPFsettings;
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.RadioButton rbUseCVS;
         private System.Windows.Forms.RadioButton rbUseCVS1;
