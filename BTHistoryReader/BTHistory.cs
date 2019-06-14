@@ -439,6 +439,13 @@ namespace BTHistoryReader
             Application.DoEvents();
         }
 
+        private void CanChangeProjApp(bool b)
+        {
+            cb_AppNames.Enabled = b;
+            cb_SelProj.Enabled = b;
+            btnScatSets.Enabled = b;
+        }
+
         // user clicked open files,this program does the reading of single files or hands it off if multiple
         private bool FetchHistory()
         {
@@ -743,7 +750,7 @@ namespace BTHistoryReader
             int j1, j2;
             string sTemp;
             int n = Convert.ToInt32(tboxLimit.Text);
-
+            CanChangeProjApp(false);    // cannot allow changes while sorting due to side effects
             tb_Info.Text += "sorting " + nSort.ToString() + " items please wait......\r\n";
             if (nSort > n / 2)
             {
@@ -795,6 +802,7 @@ namespace BTHistoryReader
             }
             pbarLoading.Visible = false;
             lb_SelWorkUnits.UseWaitCursor = false;
+            CanChangeProjApp(true);
         }
 
         // put hours minuts secs in a nice concise format
@@ -820,7 +828,7 @@ namespace BTHistoryReader
             int nLimit = Convert.ToInt32(tboxLimit.Text);
             pbarLoading.Value = 0;
             if (AppName.LineLoc.Count == 0) return 0;
-
+            
 
             foreach (int i in AppName.LineLoc)  // this could be rewritten better but WTF, it was done before I got that splitlinestuff to work
             {
