@@ -26,6 +26,7 @@ namespace BTHistoryReader
         private int CurrentSeriesDisplayed = -1;        // the one being shown IFF only one series is shown else -1
         private bool bScatteringApps;
         private bool bShowSystemData;         // scattering systems
+        private bool bShowDatasests;
         double fScaleMultiplier;
         string strScaleUnits;
 
@@ -53,12 +54,30 @@ namespace BTHistoryReader
         // https://stackoverflow.com/questions/56484451/unexpected-side-effect-setting-point-colors-in-chart-xaxis
         // solution was found:  use color.transparent in addition to point.isempty and
         // do not restore color of points that have been hidden
-        public ScatterForm(ref List<cSeriesData> refSD, bool bShowingSystems)
+        public ScatterForm(ref List<cSeriesData> refSD, string WhatsShowing)
         {
             InitializeComponent();
-            bShowSystemData = bShowingSystems;
-            lviewSubSeries.Visible = !bShowingSystems;
-            lblSysHideUnhide.Visible = !bShowingSystems;
+            switch(WhatsShowing)
+            {
+                case "Datasets":
+                    bShowDatasests = true;
+                    bScatteringApps = false;
+                    bShowSystemData = false;
+                    break;
+                case "Apps" :
+                    bScatteringApps = true;
+                    bShowSystemData = false;
+                    bShowDatasests = false;
+                    break;
+                case "Systems":
+                    bShowSystemData = true;
+                    bShowDatasests = false;
+                    bScatteringApps = false;
+                    break;
+            }
+            lviewSubSeries.Visible = bShowDatasests | bScatteringApps;
+            btnInvSel.Visible = bShowDatasests; // does not work with any other scatter plots!!!
+            lblSysHideUnhide.Visible = lviewSubSeries.Visible;
             ThisSeriesData = refSD;
             ShowScatter();
             GetLegendInfo.Enabled=true;
@@ -74,6 +93,8 @@ namespace BTHistoryReader
             public Color rgb;
         }
 
+ 
+
         List<cColoredLegends> MyLegendNames;
         List<DataPoint> SavedColoredPoints;
         private void FillInSeriesLegends()
@@ -88,18 +109,10 @@ namespace BTHistoryReader
             MyLegendNames.Add(cl);
             foreach(cSeriesData sd in ThisSeriesData)
             {
-                string seriesname = sd.bIsShowingApp ? sd.strAppName : sd.strSystemName;
+                string seriesname = sd.GetNameToShow(sd.ShowType);
                 cl = new cColoredLegends();
                 cl.strName = seriesname;
                 cl.rgb = ChartScatter.Series[seriesname].Color;
-                if(sd.bIsShowingApp)
-                {
-                    // reserve for possibly subsystems when scattering apps
-                }
-                else
-                {
-                    // append all systems here (used lbox instead)
-                }
                 MyLegendNames.Add(cl);
             }
             for(int i = 0; i < ThisSeriesData.Count; i++)
@@ -261,10 +274,10 @@ namespace BTHistoryReader
             int j = 0;
             CurrentNumberSeriesDisplayable = ThisSeriesData.Count;
             SetScale();
-            bScatteringApps = ThisSeriesData[0].bIsShowingApp;
+            //bScatteringApps = ThisSeriesData[0].bIsShowingApp;
             // lviewSubSeries.Visible = bScatteringApps;
 
-            if (!bScatteringApps)
+            if (bShowSystemData)
             {
                 lblShowApp.Text = "You are viewing: " + ThisSeriesData[0].strAppName;
             }
@@ -282,7 +295,7 @@ namespace BTHistoryReader
                     d = sd.dValues[i];
                     xAxis.Add(d * fScaleMultiplier);
                 }
-                string seriesname = sd.bIsShowingApp ? sd.strAppName : sd.strSystemName;
+                string seriesname = sd.GetNameToShow(sd.ShowType);
                 SeriesName = seriesname;
                 ChartScatter.Series.Add(seriesname);
                 ChartScatter.Series[seriesname].EmptyPointStyle.Color = Color.Transparent;
@@ -344,12 +357,27 @@ namespace BTHistoryReader
         {
             lviewSubSeries.Items.Clear();
             bool bAny = false;
-            if(bShowSystemData)
-            {
+            int n = ThisSeriesData[s].TheseSystems.Count;
 
+            if (bShowDatasests)
+            {
+                // no need for colors but need stuff that is in that routine;
+                ExpectedOffset.Clear();
+                MyColors.Clear();
+                for (int i = 0; i < n; i++)
+                {
+                    ListViewItem itm = new ListViewItem();
+                    itm.Text = ThisSeriesData[s].TheseSystems[i];
+                    itm.Tag = s;
+                    lviewSubSeries.Items.Add(itm);
+                    ExpectedOffset.Add(ThisSeriesData[s].iTheseSystem[i]);
+                    SystemsDisplayed.Add(true); // all are drawn at first
+                    MyColors.Add(SavedColoredPoints[s].Color);
+                }
+                return;
             }
             SetSysColors(s);
-            int n = ExpectedOffset.Count;
+            n = ExpectedOffset.Count;
             if(n == 1)
             {
                 // no need to get random color, reuse the default
@@ -463,7 +491,7 @@ namespace BTHistoryReader
             }
             ShowHideSeries(i);  // show or hide entire series (visibility only)
             DrawShowingText(i); // ShowHide must be done first
-            if (i == 0  | !bScatteringApps)
+            if (i == 0  | bShowSystemData)
             {
                 RestoreDefaultColors();
                 lviewSubSeries.Items.Clear();
@@ -657,14 +685,14 @@ namespace BTHistoryReader
             int iSeries = CurrentSeriesDisplayed;
             int i = 0;
             int k = 0;
+            int j;
 
-
-            int J = ExpectedOffset[iShowMe];
+            j = ExpectedOffset[iShowMe];
             List<int> iSystem = ThisSeriesData[iRawData].iSystem;
             foreach (DataPoint p in ChartScatter.Series[iSeries].Points)
             {
                 if (p.IsEmpty) continue;
-                if(iSystem[i] == J)
+                if(iSystem[i] == j)
                 {
                     p.Color = SystemsDisplayed[iShowMe] ?  Color.Transparent : MyColors[iShowMe];  
                 }
@@ -694,13 +722,15 @@ namespace BTHistoryReader
 
                 i++;
             }
+            for ( i = 0; i < SystemsDisplayed.Count; i++)
+                SystemsDisplayed[i] = true;
         }
 
         //hide or show the selected system
         private void lviewSubSeries_SelectedIndexChanged(object sender, EventArgs e)
         {
             // may want to show only certain systems and this applies only to scattering systems
-            if (!bScatteringApps) return;   // does not apply here as data is homogenous
+            if (bShowSystemData) return;   // does not apply here as data is homogenous
             if (lviewSubSeries.Items.Count == 0) return;
             ListView.SelectedIndexCollection indices = lviewSubSeries.SelectedIndices;
             if (indices.Count == 0) return;
@@ -710,6 +740,38 @@ namespace BTHistoryReader
                 TargetSystem(iShowMe);
                 lviewSubSeries.Items[iShowMe].Selected = false;
             }
+        }
+
+        private void InvertSelections()
+        {
+            int iRawData = (int)lviewSubSeries.Items[0].Tag;
+            int iSeries = CurrentSeriesDisplayed;
+            List<int> iSystem = ThisSeriesData[iRawData].iSystem;
+
+            for (int i = 0; i < SystemsDisplayed.Count; i++)
+            {
+                SystemsDisplayed[i] = !SystemsDisplayed[i];
+            }
+            for(int i = 0; i< iSystem.Count;i++)
+            {
+                int g = iSystem[i]; //group number at this point
+                DataPoint p = ChartScatter.Series[iSeries].Points[i];
+                if (p.IsEmpty) continue;
+                if (SystemsDisplayed[g])
+                {
+                    p.Color = MyColors[g];  // all the same color
+                }
+                else
+                {
+                    p.Color = Color.Transparent;
+                }
+            }
+
+        }
+
+        private void btnInvSel_Click(object sender, EventArgs e)
+        {
+            InvertSelections();
         }
     }
 }

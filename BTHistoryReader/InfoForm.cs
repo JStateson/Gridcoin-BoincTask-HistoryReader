@@ -91,7 +91,7 @@ namespace BTHistoryReader
                     foreach (cNameValue nv in appName.DataName.DataNameInfo)
                     {
                         dn = new TreeNode();
-                        dn.Text = nv.DataName + " (" + nv.ElapsedTime.Count.ToString() + ")" ;
+                        dn.Text = nv.DataName + " (" + nv.SizeGroup.ToString() + ")" ;
                         dn.ForeColor = Color.ForestGreen;
                         c.Nodes.Add(dn);
                     }

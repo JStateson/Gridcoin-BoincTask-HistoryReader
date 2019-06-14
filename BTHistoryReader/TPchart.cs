@@ -15,6 +15,8 @@ namespace BTHistoryReader
     {
         private List<double> ct;      // completion times in seconds since 1970
         private List<double> it;    // idle time in seconds
+       // private List<int> gl;       // group list
+       // private cDataName cds;
         private double WORKctStart;   // start time of WORKct in event it is normalized to 0 
         private int iLastIndex;     // index of last time that is <= the lookback limit
         private double[] WORKct;      // completion times in seconds since 1970
@@ -130,6 +132,8 @@ namespace BTHistoryReader
             StdGap = rStdGap;
             ct = refCT;
             it = refIT;
+            // cds = refCDS;
+            // gl = refGL;
             lbl_sysname.Text = "System: " + strProject;
             ShowOrHideHist(AvgGap == -1);
 

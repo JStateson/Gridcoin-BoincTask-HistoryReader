@@ -43,11 +43,13 @@
             this.btnAbout = new System.Windows.Forms.Button();
             this.btnShowProjectTree = new System.Windows.Forms.Button();
             this.gb_filter = new System.Windows.Forms.GroupBox();
+            this.btnScatSets = new System.Windows.Forms.Button();
+            this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.btnPlotET = new System.Windows.Forms.Button();
+            this.btnPlot = new System.Windows.Forms.Button();
             this.btn_Filter = new System.Windows.Forms.Button();
             this.btnCheckPrev = new System.Windows.Forms.Button();
-            this.btnPlotET = new System.Windows.Forms.Button();
             this.lbSeriesTime = new System.Windows.Forms.Label();
-            this.btnPlot = new System.Windows.Forms.Button();
             this.btnCheckNext = new System.Windows.Forms.Button();
             this.lb_NumSel = new System.Windows.Forms.Label();
             this.bt_all = new System.Windows.Forms.Button();
@@ -83,6 +85,7 @@
             this.groupBox3.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.gb_filter.SuspendLayout();
+            this.groupBox5.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -165,7 +168,7 @@
             this.tboxLimit.Name = "tboxLimit";
             this.tboxLimit.Size = new System.Drawing.Size(49, 20);
             this.tboxLimit.TabIndex = 13;
-            this.tboxLimit.Text = "40000";
+            this.tboxLimit.Text = "20000";
             this.toolTip1.SetToolTip(this.tboxLimit, "use smaller number if out of memory or system stops responding");
             // 
             // cboxStopLoad
@@ -239,11 +242,11 @@
             // 
             // gb_filter
             // 
+            this.gb_filter.Controls.Add(this.btnScatSets);
+            this.gb_filter.Controls.Add(this.groupBox5);
             this.gb_filter.Controls.Add(this.btn_Filter);
             this.gb_filter.Controls.Add(this.btnCheckPrev);
-            this.gb_filter.Controls.Add(this.btnPlotET);
             this.gb_filter.Controls.Add(this.lbSeriesTime);
-            this.gb_filter.Controls.Add(this.btnPlot);
             this.gb_filter.Controls.Add(this.btnCheckNext);
             this.gb_filter.Controls.Add(this.lb_NumSel);
             this.gb_filter.Controls.Add(this.bt_all);
@@ -255,10 +258,56 @@
             this.gb_filter.Controls.Add(this.lb_SelWorkUnits);
             this.gb_filter.Location = new System.Drawing.Point(534, 41);
             this.gb_filter.Name = "gb_filter";
-            this.gb_filter.Size = new System.Drawing.Size(372, 478);
+            this.gb_filter.Size = new System.Drawing.Size(382, 478);
             this.gb_filter.TabIndex = 6;
             this.gb_filter.TabStop = false;
             this.gb_filter.Text = "Filter";
+            // 
+            // btnScatSets
+            // 
+            this.btnScatSets.Enabled = false;
+            this.btnScatSets.ForeColor = System.Drawing.SystemColors.HotTrack;
+            this.btnScatSets.Location = new System.Drawing.Point(265, 442);
+            this.btnScatSets.Name = "btnScatSets";
+            this.btnScatSets.Size = new System.Drawing.Size(111, 23);
+            this.btnScatSets.TabIndex = 24;
+            this.btnScatSets.Text = "Plot All Datasets";
+            this.toolTip1.SetToolTip(this.btnScatSets, "Scatter elapsed over all datsets for project selected");
+            this.btnScatSets.UseVisualStyleBackColor = true;
+            this.btnScatSets.Click += new System.EventHandler(this.btnScatSets_Click);
+            // 
+            // groupBox5
+            // 
+            this.groupBox5.Controls.Add(this.btnPlotET);
+            this.groupBox5.Controls.Add(this.btnPlot);
+            this.groupBox5.Location = new System.Drawing.Point(269, 311);
+            this.groupBox5.Name = "groupBox5";
+            this.groupBox5.Size = new System.Drawing.Size(107, 118);
+            this.groupBox5.TabIndex = 21;
+            this.groupBox5.TabStop = false;
+            this.groupBox5.Text = "Above Selections";
+            // 
+            // btnPlotET
+            // 
+            this.btnPlotET.Enabled = false;
+            this.btnPlotET.Location = new System.Drawing.Point(18, 72);
+            this.btnPlotET.Name = "btnPlotET";
+            this.btnPlotET.Size = new System.Drawing.Size(75, 23);
+            this.btnPlotET.TabIndex = 22;
+            this.btnPlotET.Text = "Plot Elapsed";
+            this.toolTip1.SetToolTip(this.btnPlotET, "Histogram of elapsed time");
+            this.btnPlotET.UseVisualStyleBackColor = true;
+            // 
+            // btnPlot
+            // 
+            this.btnPlot.Enabled = false;
+            this.btnPlot.Location = new System.Drawing.Point(18, 33);
+            this.btnPlot.Name = "btnPlot";
+            this.btnPlot.Size = new System.Drawing.Size(75, 23);
+            this.btnPlot.TabIndex = 21;
+            this.btnPlot.Text = "Plot Idle";
+            this.toolTip1.SetToolTip(this.btnPlot, "Plots completion time of items selected");
+            this.btnPlot.UseVisualStyleBackColor = true;
             // 
             // btn_Filter
             // 
@@ -285,18 +334,6 @@
             this.btnCheckPrev.UseVisualStyleBackColor = true;
             this.btnCheckPrev.Click += new System.EventHandler(this.btnCheckPrev_Click);
             // 
-            // btnPlotET
-            // 
-            this.btnPlotET.Enabled = false;
-            this.btnPlotET.Location = new System.Drawing.Point(261, 442);
-            this.btnPlotET.Name = "btnPlotET";
-            this.btnPlotET.Size = new System.Drawing.Size(75, 23);
-            this.btnPlotET.TabIndex = 18;
-            this.btnPlotET.Text = "Plot Elapsed";
-            this.toolTip1.SetToolTip(this.btnPlotET, "Not working yet");
-            this.btnPlotET.UseVisualStyleBackColor = true;
-            this.btnPlotET.Click += new System.EventHandler(this.btnPlotET_Click);
-            // 
             // lbSeriesTime
             // 
             this.lbSeriesTime.AutoSize = true;
@@ -305,18 +342,6 @@
             this.lbSeriesTime.Size = new System.Drawing.Size(145, 13);
             this.lbSeriesTime.TabIndex = 17;
             this.lbSeriesTime.Text = "Selected Series Length (time)";
-            // 
-            // btnPlot
-            // 
-            this.btnPlot.Enabled = false;
-            this.btnPlot.Location = new System.Drawing.Point(261, 406);
-            this.btnPlot.Name = "btnPlot";
-            this.btnPlot.Size = new System.Drawing.Size(75, 23);
-            this.btnPlot.TabIndex = 16;
-            this.btnPlot.Text = "Plot Idle";
-            this.toolTip1.SetToolTip(this.btnPlot, "Plots IDLE time of items selected");
-            this.btnPlot.UseVisualStyleBackColor = true;
-            this.btnPlot.Click += new System.EventHandler(this.btnPlot_Click);
             // 
             // btnCheckNext
             // 
@@ -648,6 +673,7 @@
             this.groupBox4.PerformLayout();
             this.gb_filter.ResumeLayout(false);
             this.gb_filter.PerformLayout();
+            this.groupBox5.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.groupBox1.ResumeLayout(false);
@@ -691,10 +717,8 @@
         private System.Windows.Forms.Label lb_nApps;
         private System.Windows.Forms.Label lb_nProj;
         private System.Windows.Forms.Button btnCheckNext;
-        private System.Windows.Forms.Button btnPlot;
         private System.Windows.Forms.RadioButton rbIdle;
         private System.Windows.Forms.Label lbSeriesTime;
-        private System.Windows.Forms.Button btnPlotET;
         private System.Windows.Forms.Button btnCheckPrev;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.GroupBox groupBox4;
@@ -707,6 +731,10 @@
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.TextBox tboxLimit;
         private System.Windows.Forms.CheckBox cboxStopLoad;
+        private System.Windows.Forms.GroupBox groupBox5;
+        private System.Windows.Forms.Button btnPlotET;
+        private System.Windows.Forms.Button btnPlot;
+        private System.Windows.Forms.Button btnScatSets;
     }
 }
 

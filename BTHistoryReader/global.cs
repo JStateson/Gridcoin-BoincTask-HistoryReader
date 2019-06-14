@@ -34,16 +34,17 @@ namespace BTHistoryReader
         public string strMem;
         public string strOutput;
         public int iSystem;    // index to system data came from
+        public int DatasetGroup;
     }
 
     public class cNameValue 
     {
         public string DataName;
-        public List<double> ElapsedTime;
-        public void init(string sName, double et)
+        // todo dont need following if marking group id to value in points plotted
+        public int SizeGroup;
+        public void init(string sName)
         {
-            ElapsedTime = new List<double>();
-            ElapsedTime.Add(et);
+            SizeGroup=1;
             DataName = sName;
         }
     }
@@ -53,6 +54,7 @@ namespace BTHistoryReader
     public class cDataName
     {
         int i;
+        public string CurrentProject;   // needed by chart program for title
         public string sAppName;
         public List<cNameValue> DataNameInfo;
         public void Init(string sApp)
@@ -228,16 +230,19 @@ namespace BTHistoryReader
         {
             // todo
         }
-        public int NameInsert(string sNameFull, double et, string sProj)
+        public int NameInsert(string sNameFull, string sProj)
         {
             int n = DataNameInfo.Count;
             cNameValue nv;
             string sName = GetAppName(sNameFull, sProj);
-            if (sName == "") return -1;
+            if (sName == "")
+            {
+                sName = "ID Unknown";
+            }
             if(n == 0)
             {
                 nv = new cNameValue();
-                nv.init(sName, et);
+                nv.init(sName);
                 DataNameInfo.Add(nv);
                 return 0;
             }
@@ -245,31 +250,57 @@ namespace BTHistoryReader
             {
                 if (sName == DataNameInfo[i].DataName)
                 {
-                    DataNameInfo[i].ElapsedTime.Add(et);
+                    DataNameInfo[i].SizeGroup++;
                     return i;
                 }
             }
             nv = new cNameValue();
-            nv.init(sName, et);
+            nv.init(sName);
             DataNameInfo.Add(nv);
             return n;
         }
     }
 
-    public class cSeriesData
+    public enum eShowType
+    {
+        DoingApps = 0,
+        DoingSystems = 1,
+        DoingSets = 2
+    }
+
+
+public class cSeriesData
     {
         public string strAppName;
         public string strProjName;
-        public string strSystemName;    // if gathering all data for a specific app then this field may contain multiple system names (scatter apps)
+        public string strSysName;    // if gathering all data for a specific app then this field may contain multiple system names (scatter apps)
         public List<double> dValues;    // if scattering systems then only one app can be selected so this collection can only be homogenous
-        public List<int> iSystem;       // would like to know which values above belong to which system        
-        public bool bIsShowingApp;
+        public List<int> iSystem;       // would like to know which values above belong to which system  (scattering apps) -or-
+                                        // this value will correspond with the elapsed time in the series.  for example
+                                        // 1111222211   the first 2 indicates that system 2 ownes the 5 point in the et array
+        public List<bool> bIsValid;         // normally true but set to false if suspected outlier (gpu stuck low speed)
+        public eShowType ShowType;      // 0 for scatter apps, 1 for scatter systems, 2 for scatter datasets
         public int nConcurrent;
         public double dSmall;
         public double dBig;
-        public List<string> TheseSystems;   // those systems that contributed to the elapsed times in the scatter pot
+        public List<string> TheseSystems;   // those systems that contributed to the elapsed times in the scatter plot
+                                            // or which datasets (the name) that contributed
         public List<int> iTheseSystem;      // need to know the index of the system that is associated with iSystem above
-        public List<bool> bIsValid;         // normally true but set to false if suspected outlier (gpu stuck low speed)
+                                            // which values belong to dataset when scattering datasets.  This is a small list
+                                            // and each number is unique unless the same dataset is used by another app
+                                            // for scattering datasets this is the group number that matches the dataset name
+                                            // and does not correspond to a point
+                                
+        public string GetNameToShow(eShowType eST)
+        {
+            switch (eST)
+            {
+                case eShowType.DoingApps: return strAppName;
+                case eShowType.DoingSystems: return strSysName;
+                case eShowType.DoingSets: return strAppName;
+            }
+            return "";
+        }
     }
 
     public enum eHindex
@@ -425,6 +456,15 @@ namespace BTHistoryReader
         public cDataName DataName;
         public string strPlanClass;
         public string strName;
+        public List<int> LineLoc;
+        public List<double> dElapsedTime;
+        public List<int> DataSetGroup;
+        public List<bool> bIsValid;
+        public void AddETinfo(double d, int n)
+        {
+            dElapsedTime.Add(d);
+            DataSetGroup.Add(n);
+        }
         public string GetInfo
         {
             get { return ptrKPA.ProjName + "\\" + Name; }
@@ -472,19 +512,18 @@ namespace BTHistoryReader
             strAvgStd = nUsed.ToString("##,##0") + "-" +  AvgRunTime.ToString("###,##0.0") + "(" + StdRunTime.ToString("#,##0.0") + ")";
             return true;
         }
-        public List<int> LineLoc;
-        public List<double> dElapsedTime;
-        public List<bool> bIsValid;
+
         public int nAppEntries
         {
             get { return LineLoc.Count; }
         }
         // the following is not being used it seems
-        public void init(string sApp)
+        public void init(string sApp, string strProj)
         {
             Name = sApp;
             DataName = new cDataName();
             DataName.Init(sApp);
+            DataName.CurrentProject = strProj;
         }
         public bool bIsUnknown;
     }
@@ -555,9 +594,10 @@ namespace BTHistoryReader
         {
             cAppName AppName = new cAppName();
             AppName.ptrKPA = this;
-            AppName.init(strName);
+            AppName.init(strName, ProjName);
             AppName.LineLoc = new List<int>();
             AppName.dElapsedTime = new List<double>();
+            AppName.DataSetGroup = new List<int>();
             AppName.bIsValid = new List<bool>();
             AppName.strPlanClass = strPC;
             AppName.Name = strName + " [" + strPC + "]";
@@ -569,10 +609,11 @@ namespace BTHistoryReader
         public cAppName AddUnkApp(string strIn)
         {
             cAppName AppName = new cAppName();
-            AppName.init(strIn);
+            AppName.init(strIn, ProjName);
             AppName.ptrKPA = this;
             AppName.LineLoc = new List<int>();
             AppName.dElapsedTime = new List<double>();
+            AppName.DataSetGroup = new List<int>();
             AppName.bIsValid = new List<bool>();
             KnownApps.Add(AppName);
             bIgnore = false;   

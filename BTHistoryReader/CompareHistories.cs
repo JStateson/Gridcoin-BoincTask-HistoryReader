@@ -25,7 +25,7 @@ namespace BTHistoryReader
         public List<int> SystemsComparedCount;
         private string strAverageAll = "Average All";
         public List<bool> bItemsToColor = new List<bool>(); // use color to show which apps have values
-        public List<cSeriesData> MySeriesData;
+        private List<cSeriesData> MySeriesData;
 
         public class cKPAapps
         {
@@ -187,7 +187,7 @@ namespace BTHistoryReader
 
 
         // for the requested project, in all history files, sum up the number of results of any project with that name
-        // and put each app name iknto the ProjApp table along with the sum of all results of that app
+        // and put each app name into the ProjApp table along with the sum of all results of that app
         private void ShowAppsThisProj(string sProj)
         {
             List<string> ProjApps = new List<string>();
@@ -540,7 +540,7 @@ namespace BTHistoryReader
                         {
                             if (ckpaa.sAppName == sa.strAppName)         // is it one of the apps we want?
                             {
-                                if (Systems[ckpaa.iSystem] != sa.strSystemName)
+                                if (Systems[ckpaa.iSystem] != sa.strSysName)
                                     continue;
                                 if (ckpaa.dLelapsedTime.Count == 0)                         // must have data
                                     continue;
@@ -599,8 +599,9 @@ namespace BTHistoryReader
         // using the listbox of apps, extract just the name of the app and save the name locally just below
         // then use what is in the List to add the apps data to the series for graphics
         // could be rewritten to avoid the little list.
+        // this routine implements the scatter apps
         private List<string> strAppsForSeries;
-        private bool FormSeriesFromApps(int n)
+        private bool FormSeriesFromApps(int n)  // n is number of entries in the listview
         {
             strAppsForSeries = new List<string>(n);
             foreach(string strInfo in LBoxApps.Items)
@@ -616,11 +617,12 @@ namespace BTHistoryReader
                 cSeriesData sa = new cSeriesData();
                 sa.strAppName = strName;
                 sa.strProjName = LBoxProjects.Text;
+                sa.strSysName = ""; // not applicable 
                 sa.dValues = new List<double>();
                 sa.iSystem = new List<int>();
                 sa.TheseSystems = new List<string>();
                 sa.iTheseSystem = new List<int>();
-                sa.bIsShowingApp = true;
+                sa.ShowType = eShowType.DoingApps;
                 sa.bIsValid = new List<bool>();
                 sa.nConcurrent = 1; // this may be revised when data is obtain as we dont know the system yet
                 if (GetAllAppData(ref sa))
@@ -633,8 +635,8 @@ namespace BTHistoryReader
         }
 
        
-        // simular to above but by project
-        private bool FormSeriesFromProjects(int n)
+        // simular to above but scattering systems
+        private bool FormSeriesFromSystems(int n)
         {
             int NumChecked = 0;
             MySeriesData = new List<cSeriesData>();                 // must be only those checked, not all
@@ -644,13 +646,13 @@ namespace BTHistoryReader
                 {
                     cSeriesData sa = new cSeriesData();
                     NumChecked++;
-                    sa.strSystemName = itm.SubItems[1].Text;
+                    sa.strSysName = itm.SubItems[1].Text;   // this will be the first item to be seen in the list view
                     int i = LBoxApps.Text.IndexOf(") ");  // really need the name of the app
                     if (i < 2) return false;        // cant be
                     sa.strAppName = LBoxApps.Text.Substring(i + 2);
                     sa.strProjName = LBoxProjects.Text;
                     sa.dValues = new List<double>();
-                    sa.bIsShowingApp = false;
+                    sa.ShowType = eShowType.DoingSystems;
                     sa.nConcurrent = Convert.ToInt32(itm.SubItems[0].Text);
                     sa.bIsValid = new List<bool>();
                     if (GetSysProjData(ref sa))
@@ -676,13 +678,13 @@ namespace BTHistoryReader
             else
             {
                 n = LViewConc.Items.Count;
-                return FormSeriesFromProjects(n);
+                return FormSeriesFromSystems(n);
             }
         }
 
         private void ShowScatter()
-        {
-            ScatterForm PlotScatter = new ScatterForm(ref MySeriesData, rbScatProj.Checked);
+        {                                                   // radio button was misnamed, should be ScatterSystems
+            ScatterForm PlotScatter = new ScatterForm(ref MySeriesData, rbScatProj.Checked ? "Systems" : "Apps");
             PlotScatter.ShowDialog();
             PlotScatter.Dispose();
         }

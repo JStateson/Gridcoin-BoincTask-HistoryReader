@@ -17,6 +17,7 @@ namespace BTHistoryReader
 
         private List<double> CompletionTimes;       // better to use minutes instead of seconds so change from long
         private List<double> IdleGap;
+        private List<int> GrpList;
         private double AvgGap;
         private double StdGap;
         //private bool bDoNotLoadA = true; // this is a kluge until I figure out why I cannot remove those events!!!
@@ -52,7 +53,7 @@ namespace BTHistoryReader
 
         private int iLocMaxDiff;
         public string[] AllHistories;
-        
+
         static string str_PathToHistory;
         public string[] LinesHistory;
         static string ReqVer = "1.79";
@@ -71,10 +72,11 @@ namespace BTHistoryReader
 
         public string CurrentSystem;    // computer name
         public string CurrentProject;   // project being looked at
+        cDataName CurrentDataset;
         public List<cProjectInfo> ThisProjectInfo;
 
-        public int LinesToReadThenIncrement=0;   // after reading this many, increment the progress bar
-        public int LinesWeRead=0;
+        public int LinesToReadThenIncrement = 0;   // after reading this many, increment the progress bar
+        public int LinesWeRead = 0;
 
         // pad right side with spaces to fill
         public static string Rpadto(string strIn, int cnt)
@@ -206,7 +208,7 @@ namespace BTHistoryReader
 
             kpa = new cKnownProjApps();
             kpa.AddName("collatz");
-            kpa.AddApp("Collatz Sieve","");
+            kpa.AddApp("Collatz Sieve", "");
             kpa.AddApp("Collatz Sieve", "opencl_nvidia");
             KnownProjApps.Add(kpa);
 
@@ -225,74 +227,74 @@ namespace BTHistoryReader
 
             kpa = new cKnownProjApps();
             kpa.AddName("Amicable Numbers");
-            kpa.AddApp("Amicable Numbers up to 10^20","opencl_amd");
+            kpa.AddApp("Amicable Numbers up to 10^20", "opencl_amd");
             KnownProjApps.Add(kpa);
 
             kpa = new cKnownProjApps();
             kpa.AddName("LHC@home");
-            kpa.AddApp("SixTrack","");
+            kpa.AddApp("SixTrack", "");
             kpa.AddApp("SixTrack", "avx");
             kpa.AddApp("SixTrack", "sse2");
             KnownProjApps.Add(kpa);
 
             kpa = new cKnownProjApps();
             kpa.AddName("World Community Grid");
-            kpa.AddApp("Mapping Cancer Markers","");
-            kpa.AddApp("FightAIDS@Home - Phase 1","");
-            kpa.AddApp("FightAIDS@Home - Phase 2","");
-            kpa.AddApp("OpenZika","");
-            kpa.AddApp("Microbiome Immunity Project","");
+            kpa.AddApp("Mapping Cancer Markers", "");
+            kpa.AddApp("FightAIDS@Home - Phase 1", "");
+            kpa.AddApp("FightAIDS@Home - Phase 2", "");
+            kpa.AddApp("OpenZika", "");
+            kpa.AddApp("Microbiome Immunity Project", "");
             KnownProjApps.Add(kpa);
 
             kpa = new cKnownProjApps();
             kpa.AddName("GPUGRID");
-            kpa.AddApp("Short runs (2-3 hours on fastest card)","cuda80");
-            kpa.AddApp("Long runs (8-12 hours on fastest card)","cuda80");
+            kpa.AddApp("Short runs (2-3 hours on fastest card)", "cuda80");
+            kpa.AddApp("Long runs (8-12 hours on fastest card)", "cuda80");
             KnownProjApps.Add(kpa);
 
             kpa = new cKnownProjApps();
             kpa.AddName("NFS@Home");
-            kpa.AddApp("15e Lattice Sieve","");
+            kpa.AddApp("15e Lattice Sieve", "");
             kpa.AddApp("15e Lattice Sieve", "notphenomiix6");
-            kpa.AddApp("16e Lattice Sieve V5","");
-            kpa.AddApp("14e Lattice Sieve","");
+            kpa.AddApp("16e Lattice Sieve V5", "");
+            kpa.AddApp("14e Lattice Sieve", "");
             KnownProjApps.Add(kpa);
 
             kpa = new cKnownProjApps();
             kpa.AddName("Cosmology@Home");
-            kpa.AddApp("camb_legacy","");
+            kpa.AddApp("camb_legacy", "");
             KnownProjApps.Add(kpa);
 
             kpa = new cKnownProjApps();
             kpa.AddName("Rosetta@home");
-            kpa.AddApp("Rosetta","");
-            kpa.AddApp("Rosetta Mini","");
+            kpa.AddApp("Rosetta", "");
+            kpa.AddApp("Rosetta Mini", "");
             KnownProjApps.Add(kpa);
 
             kpa = new cKnownProjApps();
             kpa.AddName("TN-Grid Platform");
-            kpa.AddApp("gene@home PC-IM","sse2");
+            kpa.AddApp("gene@home PC-IM", "sse2");
             KnownProjApps.Add(kpa);
 
             kpa = new cKnownProjApps();
             kpa.AddName("NumberFields@home");
-            kpa.AddApp("Get Decic Fields","default");
+            kpa.AddApp("Get Decic Fields", "default");
             KnownProjApps.Add(kpa);
 
             kpa = new cKnownProjApps();
             kpa.AddName("Enigma@Home");
-            kpa.AddApp("Enigma GPU","");
+            kpa.AddApp("Enigma GPU", "");
             kpa.AddApp("Enigma GPU", "cuda_fermi");
             KnownProjApps.Add(kpa);
 
             kpa = new cKnownProjApps();
             kpa.AddName("PrimeGrid");
-            kpa.AddApp("PPS (Sieve)","cudaPPSsieve");
+            kpa.AddApp("PPS (Sieve)", "cudaPPSsieve");
             KnownProjApps.Add(kpa);
 
             kpa = new cKnownProjApps();
             kpa.AddName("Einstein@Home");
-            kpa.AddApp("Gravitational Wave Engineering run on LIGO O1 Open Data","");
+            kpa.AddApp("Gravitational Wave Engineering run on LIGO O1 Open Data", "");
             kpa.AddApp("Gamma-ray pulsar binary search #1 on GPUs", "FGRPopencl1K-ati");
             kpa.AddApp("Gamma-ray pulsar binary search #1 on GPUs", "FGRPopencl1K-nvidia");
             kpa.AddApp("Gamma-ray pulsar binary search #1 on GPUs", "FGRPopencl-nvidia");
@@ -306,37 +308,37 @@ namespace BTHistoryReader
 
             kpa = new cKnownProjApps();
             kpa.AddName("latinsquares");
-            kpa.AddApp("odlk3@home","");
-            kpa.AddApp("odlkmax@home","");
+            kpa.AddApp("odlk3@home", "");
+            kpa.AddApp("odlkmax@home", "");
             KnownProjApps.Add(kpa);
 
             kpa = new cKnownProjApps();
             kpa.AddName("yoyo@home");
-            kpa.AddApp("Siever","");
-            kpa.AddApp("Cruncher ogr","");
-            kpa.AddApp("ecm","");
+            kpa.AddApp("Siever", "");
+            kpa.AddApp("Cruncher ogr", "");
+            kpa.AddApp("ecm", "");
             KnownProjApps.Add(kpa);
 
             kpa = new cKnownProjApps();
             kpa.AddName("Asteroids@home");
-            kpa.AddApp("Period Search Application","cuda55");
+            kpa.AddApp("Period Search Application", "cuda55");
             kpa.AddApp("Period Search Application", "");
             KnownProjApps.Add(kpa);
 
             kpa = new cKnownProjApps();
             kpa.AddName("Moo! Wrapper");
-            kpa.AddApp("Distributed.net Client","");
+            kpa.AddApp("Distributed.net Client", "");
             KnownProjApps.Add(kpa);
 
             kpa = new cKnownProjApps();
             kpa.AddName("Gerasim@home");
-            kpa.AddApp("spstarter","");
-            kpa.AddApp("Test separator","");
+            kpa.AddApp("spstarter", "");
+            kpa.AddApp("Test separator", "");
             KnownProjApps.Add(kpa);
 
             kpa = new cKnownProjApps();
             kpa.AddName("Universe@Home");
-            kpa.AddApp("Universe BHspin v2","");
+            kpa.AddApp("Universe BHspin v2", "");
             KnownProjApps.Add(kpa);
 
 
@@ -449,7 +451,7 @@ namespace BTHistoryReader
 
             ofd_history.ShowDialog();
             AllHistories = ofd_history.FileNames;
-            if (AllHistories.Length > 1 )
+            if (AllHistories.Length > 1)
             {
                 pbarLoading.Visible = true;
                 BTHistory.ActiveForm.Enabled = false;
@@ -458,7 +460,8 @@ namespace BTHistoryReader
                 pbarLoading.Visible = false;
                 BTHistory.ActiveForm.Enabled = true;
                 pbarLoading.Value = 0;
-                return false;  
+                btnScatSets.Enabled = false;
+                return false;
             }
             lb_history_loc.Text = ofd_history.FileName;
             if (File.Exists(lb_history_loc.Text))
@@ -553,14 +556,14 @@ namespace BTHistoryReader
         // iLoc is index to project table and we need list of apps to show
         void FillAppBox(int iLoc)
         {
-            int i=0, n = 0;
+            int i = 0, n = 0;
             bool bAny = false;
 
             cb_AppNames.Items.Clear();
             foreach (cAppName appName in KnownProjApps[iLoc].KnownApps)
             {
                 n = appName.nAppEntries;
-                if(n > 0)
+                if (n > 0)
                 {
                     bAny = true;
                     cb_AppNames.Items.Add(appName.Name + "  (" + n.ToString() + ")");
@@ -569,14 +572,15 @@ namespace BTHistoryReader
             }
             cb_AppNames.Text = cb_AppNames.Items[0].ToString();
             cb_AppNames.Tag = i;    // use tag to restore any edits to the combo box as I cant make it readonly
+            btnScatSets.Enabled = bAny;
         }
 
         // for all applications over all projects, compute the avg and std of elapsed time
         public void PerformCalcAverages()
         {
-            foreach(cKnownProjApps kpa in KnownProjApps)
+            foreach (cKnownProjApps kpa in KnownProjApps)
             {
-                foreach(cAppName AppName in kpa.KnownApps)
+                foreach (cAppName AppName in kpa.KnownApps)
                 {
                     AppName.DoAverages();
                 }
@@ -589,18 +593,19 @@ namespace BTHistoryReader
         {
             bool bAnyData = false;
             int iLine = -4;  // if > 4 then 
-            int RtnCode=0;
-            int eInvalid=0;   // invalid line in history (not complete or whatever)
+            int RtnCode = 0;
+            int eInvalid = 0;   // invalid line in history (not complete or whatever)
             cAppName AppName;
             cKnownProjApps kpa;
-                                 
+            int iGrp;   // which dataset group the record is in (dataset is the "name" of the data
+
             bool bInformOnlyOnce = true;
             // find and identify any project in the file
             foreach (string s in LinesHistory)
             {
                 iLine++;
                 LinesWeRead++;
-                if(LinesWeRead > LinesToReadThenIncrement & pbarLoading.Visible)
+                if (LinesWeRead > LinesToReadThenIncrement & pbarLoading.Visible)
                 {
                     LinesWeRead = 0;
                     IncrementPBAR();
@@ -612,7 +617,7 @@ namespace BTHistoryReader
                 RtnCode = LookupProj(OneSplitLine.Project);
                 if (RtnCode < 0)
                 {
-                    if(RtnCode == LKUP_NOT_FOUND)
+                    if (RtnCode == LKUP_NOT_FOUND)
                     {
                         // if line has 763	Updating...	Updating, please wait	--- then rpc call did not complete good
                         if (OneSplitLine.Project.Contains("pdating..."))
@@ -624,7 +629,7 @@ namespace BTHistoryReader
                         kpa = new cKnownProjApps();
                         kpa.AddUnkProj(OneSplitLine.Project);
                         KnownProjApps.Add(kpa);
-                        RtnCode = KnownProjApps.Count-1;  // put unknown project here
+                        RtnCode = KnownProjApps.Count - 1;  // put unknown project here
                     }
                     else continue;
                 }
@@ -632,10 +637,14 @@ namespace BTHistoryReader
                 // if the app is found then point to the line containing the app's info
                 // and put all info also 
                 // jys adding plan class info
-                AppName = KnownProjApps[RtnCode].SymbolInsert(OneSplitLine.Application + " [" + OneSplitLine.PlanClass + "]", 3+iLine);  // first real data is in 5th line (0..4)
-                AppName.dElapsedTime.Add(OneSplitLine.dElapsedTimeCpu); // want to calculate average time this app
+                AppName = KnownProjApps[RtnCode].SymbolInsert(OneSplitLine.Application + " [" + OneSplitLine.PlanClass + "]", 3 + iLine);  // first real data is in 5th line (0..4)
+                iGrp = AppName.DataName.NameInsert(OneSplitLine.Name, OneSplitLine.Project);
+                AppName.AddETinfo(OneSplitLine.dElapsedTimeCpu, iGrp);
+                // the above iGrp needs to go into ThisProjectInfo which unfortunately does not exist here
+                // and I do not want to rewrite this code at this time.
+                // going to append that value to the current history line
+                LinesHistory[iLine - 1] += "WTFTODO_" + iGrp.ToString();
                 AppName.bIsValid.Add(eInvalid == (int)eHistoryError.SeemsOK);
-                AppName.DataName.NameInsert(OneSplitLine.Name, OneSplitLine.dElapsedTimeCpu, OneSplitLine.Project);
                 if (AppName.bIsUnknown & bInformOnlyOnce)
                 {
                     tb_Info.Text += "Unk App " + AppName.GetInfo + " added to database\r\n";
@@ -647,12 +656,12 @@ namespace BTHistoryReader
                 PerformCalcAverages();
             else
                 tb_Info.Text += "Project has no data or all data is illegal\r\n";
-                return 0;
+            return 0;
         }
 
 
 
-        
+
         // fill in the project selection combo box
         // use semaphore to signal not to unnecessary fill in listbox as I cant seem to remove the event handler
         void FillSelectBoxes()
@@ -721,6 +730,7 @@ namespace BTHistoryReader
             FillAppBox(i);
             DisallowAppCallbacks(false);
             DisplayHistory();
+            ShowNumberApps();
         }
 
         // standard bubble sort with exchange on index
@@ -735,7 +745,7 @@ namespace BTHistoryReader
             int n = Convert.ToInt32(tboxLimit.Text);
 
             tb_Info.Text += "sorting " + nSort.ToString() + " items please wait......\r\n";
-            if(nSort > n/2)
+            if (nSort > n / 2)
             {
                 pbarLoading.Visible = true;
                 SetPBARcnt(nSort / GetPBARmax());
@@ -745,7 +755,7 @@ namespace BTHistoryReader
             tb_Info.Refresh();
             for (i = 0; i < nSort; i++)
                 iSortIndex[i] = i;
-            for(i=0; i < k; i++)
+            for (i = 0; i < k; i++)
             {
                 LinesWeRead++;
                 if (LinesWeRead > LinesToReadThenIncrement & pbarLoading.Visible)
@@ -757,20 +767,20 @@ namespace BTHistoryReader
                 {
                     j1 = iSortIndex[j];
                     j2 = iSortIndex[j + 1];
-                    if(ThisProjectInfo[j1].time_t_Completed > ThisProjectInfo[j2].time_t_Completed)
+                    if (ThisProjectInfo[j1].time_t_Completed > ThisProjectInfo[j2].time_t_Completed)
                     {
                         iSortIndex[j] = j2;
-                        iSortIndex[j+1] = j1;
+                        iSortIndex[j + 1] = j1;
                     }
                 }
             }
-            if(pbarLoading.Visible)
+            if (pbarLoading.Visible)
             {
                 pbarLoading.Value = 0;
                 LinesWeRead = 0;
                 tb_Info.Text += "Displaying those items wait moment longer...\r\n";
             }
-            for(i=0; i<nSort; i++)
+            for (i = 0; i < nSort; i++)
             {
                 LinesWeRead++;
                 if (LinesWeRead > LinesToReadThenIncrement & pbarLoading.Visible)
@@ -801,7 +811,9 @@ namespace BTHistoryReader
             string sTemp;
             System.DateTime dt_1970 = new System.DateTime(1970, 1, 1);
             System.DateTime dt_this;
+            string strWTF = "";
             int j = 0;
+            int iWTF = 0;
             bool bState, bState1;
             long n, nElapsedTime;
             bool bStopReading = cboxStopLoad.Checked;
@@ -809,17 +821,25 @@ namespace BTHistoryReader
             pbarLoading.Value = 0;
             if (AppName.LineLoc.Count == 0) return 0;
 
+
             foreach (int i in AppName.LineLoc)  // this could be rewritten better but WTF, it was done before I got that splitlinestuff to work
             {
                 bState = LinesHistory[i].Length > ExpectedLengthLine;
-                if(!bState)
+                if (!bState)
                 {
                     break;
                 }
-                if(bStopReading && j >= nLimit)
+                if (bStopReading && j >= nLimit)
                 {
                     tb_Info.Text += " stopping after reading " + tboxLimit.Text + " out of " + AppName.LineLoc.Count.ToString() + " records\r\n";
                     break;
+                }
+                iWTF = LinesHistory[i].IndexOf("WTFTODO_");
+                if (iWTF > 0)
+                {
+                    iWTF += 8;
+                    strWTF = LinesHistory[i].Substring(iWTF);
+                    ThisProjectInfo[j].DatasetGroup = Convert.ToInt32(strWTF);
                 }
                 strSymbols = LinesHistory[i].Split('\t');
                 ThisProjectInfo[j].strLineNum = strSymbols[(int)eHindex.Run];
@@ -829,11 +849,11 @@ namespace BTHistoryReader
                 ThisProjectInfo[j].time_t_Completed = n;
                 if (n <= 0)   // is 0 if not calculated yet
                 {
-                    tb_Info.Text += "No completion time " + AppName.GetInfo + " at line " + i.ToString() + "\r\n" ;
+                    tb_Info.Text += "No completion time " + AppName.GetInfo + " at line " + i.ToString() + "\r\n";
                     // may not have finished yet ???
-                    continue;  
+                    continue;
                 }
-                dt_this = DateTime.SpecifyKind(dt_1970.AddSeconds(n),DateTimeKind.Utc);
+                dt_this = DateTime.SpecifyKind(dt_1970.AddSeconds(n), DateTimeKind.Utc);
                 sTemp = fmtLineNumber(strSymbols[(int)eHindex.Run]) + dt_this.ToLocalTime().ToString();
                 ThisProjectInfo[j].strCompletedTime = sTemp;        // save in readable format
                 nElapsedTime = Convert.ToInt64(strSymbols[(int)eHindex.ElapsedTimeCpu].ToString()); // this is actually elapsed time
@@ -855,7 +875,7 @@ namespace BTHistoryReader
                         ThisProjectInfo[j].dElapsedCPU = 1;
                 }
                 ThisProjectInfo[j].bState = bState;
-                if(!bState)
+                if (!bState)
                 {
                     AppName.NumberBadWorkUnits++;
                     tb_Info.Text += "Bad exit status line " + ThisProjectInfo[j].strLineNum + "\r\n";
@@ -946,9 +966,9 @@ namespace BTHistoryReader
             i = lb_SelWorkUnits.SelectedIndices[0]; // difference between this shows the selection
             j = lb_SelWorkUnits.SelectedIndices[1];
             n = 1 + j - i;  // number of items to average
-            if(n < 2)return;
+            if (n < 2) return;
             n = 0;
-            for(k=i; k <= j; k++)
+            for (k = i; k <= j; k++)
             {
                 if (!ThisProjectInfo[k].bState) continue;
                 d = ThisProjectInfo[k].dElapsedTime;
@@ -977,13 +997,13 @@ namespace BTHistoryReader
                     Debug.Assert(false);        // 
                     continue;
                 }
-                d = d/60.0 - Avg;
-                Std += d*d;
+                d = d / 60.0 - Avg;
+                Std += d * d;
             }
             Std = Math.Sqrt(Std / n);
             tb_Results.Text = strOut;
             tb_Results.Text += "Number of selections " + n.ToString("#,##0") + "\r\n";
-            tb_Results.Text += "AVG elapsed (minutes) " + Avg.ToString("###,##0.00") + "\t" + fmtHMS(l) +  "\r\n";
+            tb_Results.Text += "AVG elapsed (minutes) " + Avg.ToString("###,##0.00") + "\t" + fmtHMS(l) + "\r\n";
             tb_Results.Text += "STD of elapsed time " + Std.ToString("###,##0.00") + "\r\n";
         }
 
@@ -1014,7 +1034,7 @@ namespace BTHistoryReader
                 return;
             }
             strProjName = cb_SelProj.Items[i].ToString();
-            CurrentProject = strProjName;
+            CurrentProject = strProjName;   //replaced by CurrentDataset for use in chart
             iProject = LookupProject(strProjName);
             Debug.Assert(iProject >= 0);
             iApp = cb_AppNames.SelectedIndex;
@@ -1027,6 +1047,7 @@ namespace BTHistoryReader
                 return;
             }
             AppName = KnownProjApps[iProject].FindApp(strAppName);
+            CurrentDataset = AppName.DataName;
             ThisProjectInfo = new List<cProjectInfo>(AppName.nAppEntries);
             lb_SelWorkUnits.Items.Clear();
             for (i = 0; i < AppName.nAppEntries; i++)
@@ -1046,7 +1067,7 @@ namespace BTHistoryReader
             if (rbThroughput.Checked) PerformThruput();
             if (rbIdle.Checked)
             {
-                if(PerformIdleAnalysis())
+                if (PerformIdleAnalysis())
                     ShowIdleInfo();
             }
         }
@@ -1062,7 +1083,6 @@ namespace BTHistoryReader
             string strTemp = cb_AppNames.Text;
             if (cb_AppNames.Text == "") return;
             ClearInfoTables();
-            ShowNumberApps();
             DisplayHistory();
         }
 
@@ -1128,7 +1148,7 @@ namespace BTHistoryReader
                 tStart = ThisProjectInfo[iSortIndex[iLocMaxDiff]].time_t_Completed;
                 tStart -= Convert.ToInt64(ThisProjectInfo[iSortIndex[iLocMaxDiff]].dElapsedTime);
                 iHoursAgo = (tStop - tStart) / 3600;
-                if(iHoursAgo == 0)
+                if (iHoursAgo == 0)
                 {
                     iHoursAgo = (tStop - tStart) / 60;
                     strUnits = " (" + iHoursAgo.ToString() + " minutes ago)";
@@ -1142,7 +1162,7 @@ namespace BTHistoryReader
                 lb_LocMax.Text = "Near # " + strLine.Substring(0, i) + strUnits;
             }
             ShowContinunities(true);
-            
+
         }
 
         private void btnContinunity_Click(object sender, EventArgs e)
@@ -1178,9 +1198,9 @@ namespace BTHistoryReader
         private void ShowSelectable(bool bShow)
         {
             btnContinunity.Enabled = bShow;
-            btn_Filter.Enabled = bShow;;
+            btn_Filter.Enabled = bShow; ;
             lb_NumSel.Visible = bShow;
-            lb_LocMax.Visible = bShow ;
+            lb_LocMax.Visible = bShow;
             btnPlot.Enabled = bShow;
             btnPlotET.Enabled = bShow;
             btnCheckNext.Enabled = bShow;
@@ -1196,7 +1216,7 @@ namespace BTHistoryReader
             long tStart, tEnd;
 
             lb_NumSel.Text = "None Selected";
-            bt_all.Enabled = (lb_SelWorkUnits.Items.Count > 0); 
+            bt_all.Enabled = (lb_SelWorkUnits.Items.Count > 0);
             if (n != 2)
             {
                 ShowSelectable(false);
@@ -1220,7 +1240,7 @@ namespace BTHistoryReader
             lbSeriesTime.Text = "Selected series time: " + strTimeDiff;
             n = 1 + j - i;
             lb_NumSel.Text = "Selected: " + n.ToString();
-            
+
             return n;
         }
 
@@ -1231,7 +1251,7 @@ namespace BTHistoryReader
             if (i == 0) return;
             lb_SelWorkUnits.ClearSelected();
             lb_SelWorkUnits.SetSelected(0, true);
-            lb_SelWorkUnits.SetSelected(i-1, true);
+            lb_SelWorkUnits.SetSelected(i - 1, true);
             CountSelected();
 
         }
@@ -1243,11 +1263,11 @@ namespace BTHistoryReader
 
 
         // we calculated the average somewhere else, but now we need the standard deviation
-        public double CalcStd(double avg, ref List<double>Values)
+        public double CalcStd(double avg, ref List<double> Values)
         {
-            double  dd;
-            double std=0, rms=0;
-            foreach(double d in Values)
+            double dd;
+            double std = 0, rms = 0;
+            foreach (double d in Values)
             {
                 dd = d - avg;
                 rms += (dd * dd);
@@ -1300,7 +1320,7 @@ namespace BTHistoryReader
             if (AvgGap == 0)
             {
                 tb_Info.Text = "All are zero:  no gaps, nothing to plot\r\n";
-                return false; 
+                return false;
             }
             StdGap = CalcStd(AvgGap, ref IdleGap);
             return true;
@@ -1346,6 +1366,7 @@ namespace BTHistoryReader
             n = j - i;
             if (n < 3) return false;  // need to show two segments at least    
             IdleGap = new List<double>(n);
+            //GrpList = new List<int>(n);
             AvgGap = 0;
             for (n = i; n <= j; n++)
             {
@@ -1353,10 +1374,13 @@ namespace BTHistoryReader
                 if (!ThisProjectInfo[k].bState) continue;
                 d = ThisProjectInfo[k].dElapsedTime / 60.0;
                 IdleGap.Add(d);
+                //GrpList.Add(ThisProjectInfo[k].DatasetGroup);
                 AvgGap += d;
             }
             AvgGap /= IdleGap.Count;
             StdGap = CalcStd(AvgGap, ref IdleGap);
+
+            // the histogram stuff needs to be moved to the chart program if we are to do a subset using groups
 
             Histogram<double> hist = new Histogram<double>();
             h = 0;
@@ -1369,7 +1393,7 @@ namespace BTHistoryReader
             for (i = 0; i < k; i++) CompletionTimes.Add(0);
             IdleGap = new List<double>(k);
             for (i = 0; i < k; i++) IdleGap.Add(0);
-            d = hist.Count / (k-1);
+            d = hist.Count / (k - 1);
             d = Math.Ceiling(d);
             j = Convert.ToInt32(d);
             lPtr = 0;
@@ -1386,9 +1410,9 @@ namespace BTHistoryReader
         // idle plot
         private void btnPlot_Click(object sender, EventArgs e)
         {
-            if(PerformIdleAnalysis())
+            if (PerformIdleAnalysis())
             {
-                TPchart DrawThruput = new TPchart(ref CompletionTimes, ref IdleGap, AvgGap, StdGap,CurrentProject);
+                TPchart DrawThruput = new TPchart(ref CompletionTimes, ref IdleGap, AvgGap, StdGap, CurrentProject);
                 DrawThruput.ShowDialog();
                 DrawThruput.Dispose();
             }
@@ -1465,5 +1489,65 @@ namespace BTHistoryReader
             lblBuildDate.Text = GetSimpleDate(Properties.Resources.BuildDate) + " (v) 1.0";
         }
 
+
+        private void ShowScatter()
+        {
+            ScatterForm PlotScatter = new ScatterForm(ref MySeriesData, "Datasets");
+            PlotScatter.ShowDialog();
+            PlotScatter.Dispose();
+        }
+
+
+        private List<cSeriesData> MySeriesData;
+        bool FormSeriesFromSets()
+        {
+            MySeriesData = new List<cSeriesData>();
+            int iLoc = LookupProject(cb_SelProj.Text); //cb_SelProj.SelectedIndex;
+            bool bAny=false;
+            foreach (cAppName appName in KnownProjApps[iLoc].KnownApps)
+            {
+                int n = appName.nAppEntries;
+                if (n > 0)
+                {
+                    bAny = true;
+                    cSeriesData sa = new cSeriesData();
+                    sa.strSysName = CurrentSystem;      // only 1 system as we are not comparing systems
+                    sa.strAppName = appName.Name;       // usually more than one app this must be first in listview
+                    sa.strProjName = CurrentProject;    //only doing one project use this for title info
+                    sa.dValues = new List<double>();
+                    foreach(double d in appName.dElapsedTime)
+                    {
+                        sa.dValues.Add(d / 60.0);   // probably should just use minutes to start with
+                    }
+                    sa.iSystem = appName.DataSetGroup; //  new List<int>();
+
+                    sa.TheseSystems = new List<string>();   // these numbers are the index into the dataset name
+                                                            // each app has list of names which is a duplicate problem maybe
+                    foreach(cNameValue nv in appName.DataName.DataNameInfo)
+                    {
+                        sa.TheseSystems.Add(nv.DataName + " (" + nv.SizeGroup.ToString() + ")");
+                    }
+                    sa.iTheseSystem = new List<int>();  // this needs to match the name of the dataset
+                    for(int i = 0; i < sa.TheseSystems.Count;i++)
+                    {
+                        sa.iTheseSystem.Add(i); // there is no single repository of group numbers, each app
+                            // has its own copy so they are all numbered sequential
+                    }
+                    sa.ShowType = eShowType.DoingSets;
+                    sa.bIsValid = appName.bIsValid; //new List<bool>();
+                    sa.nConcurrent = 1;
+
+                    MySeriesData.Add(sa);
+                }
+            }
+            return bAny;
+        }
+
+        private void btnScatSets_Click(object sender, EventArgs e)
+        {
+            if (FormSeriesFromSets())
+                ShowScatter();
+
+        }
     }
 }

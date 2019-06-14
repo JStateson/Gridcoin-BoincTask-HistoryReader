@@ -50,6 +50,8 @@
             this.label3 = new System.Windows.Forms.Label();
             this.lblSysHideUnhide = new System.Windows.Forms.Label();
             this.lblShowApp = new System.Windows.Forms.Label();
+            this.btnInvSel = new System.Windows.Forms.Button();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.nudShowOnly)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudXscale)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ChartScatter)).BeginInit();
@@ -96,6 +98,7 @@
             this.nudShowOnly.ReadOnly = true;
             this.nudShowOnly.Size = new System.Drawing.Size(20, 38);
             this.nudShowOnly.TabIndex = 4;
+            this.toolTip1.SetToolTip(this.nudShowOnly, "Click up or down to view another series, if any");
             this.nudShowOnly.ValueChanged += new System.EventHandler(this.nudShowOnly_ValueChanged);
             // 
             // tboxShowing
@@ -184,6 +187,7 @@
             this.lviewSubSeries.ShowGroups = false;
             this.lviewSubSeries.Size = new System.Drawing.Size(179, 97);
             this.lviewSubSeries.TabIndex = 9;
+            this.toolTip1.SetToolTip(this.lviewSubSeries, "Click on column header to restore default");
             this.lviewSubSeries.UseCompatibleStateImageBehavior = false;
             this.lviewSubSeries.View = System.Windows.Forms.View.Details;
             this.lviewSubSeries.SelectedIndexChanged += new System.EventHandler(this.lviewSubSeries_SelectedIndexChanged);
@@ -191,7 +195,7 @@
             // columnHeader1
             // 
             this.columnHeader1.Text = "Showing all unless listed below";
-            this.columnHeader1.Width = 164;
+            this.columnHeader1.Width = 300;
             // 
             // gboxOutlier
             // 
@@ -213,6 +217,8 @@
             this.nudHideXoutliers.ReadOnly = true;
             this.nudHideXoutliers.Size = new System.Drawing.Size(42, 34);
             this.nudHideXoutliers.TabIndex = 12;
+            this.toolTip1.SetToolTip(this.nudHideXoutliers, "Click here to remove the largest value in the\r\ndata set to allow other values to " +
+        "be seen");
             this.nudHideXoutliers.ValueChanged += new System.EventHandler(this.nudHideXoutliers_ValueChanged);
             // 
             // label3
@@ -245,11 +251,24 @@
             this.lblShowApp.TabIndex = 14;
             this.lblShowApp.Text = "appname";
             // 
+            // btnInvSel
+            // 
+            this.btnInvSel.Font = new System.Drawing.Font("Arial Narrow", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnInvSel.Location = new System.Drawing.Point(352, 423);
+            this.btnInvSel.Name = "btnInvSel";
+            this.btnInvSel.Size = new System.Drawing.Size(53, 41);
+            this.btnInvSel.TabIndex = 15;
+            this.btnInvSel.Text = "Invert\r\nSelection";
+            this.toolTip1.SetToolTip(this.btnInvSel, "click here to invert the selectoins in the box");
+            this.btnInvSel.UseVisualStyleBackColor = true;
+            this.btnInvSel.Click += new System.EventHandler(this.btnInvSel_Click);
+            // 
             // ScatterForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(958, 510);
+            this.Controls.Add(this.btnInvSel);
             this.Controls.Add(this.lblShowApp);
             this.Controls.Add(this.lblSysHideUnhide);
             this.Controls.Add(this.gboxOutlier);
@@ -295,5 +314,7 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label lblSysHideUnhide;
         private System.Windows.Forms.Label lblShowApp;
+        private System.Windows.Forms.ToolTip toolTip1;
+        private System.Windows.Forms.Button btnInvSel;
     }
 }
