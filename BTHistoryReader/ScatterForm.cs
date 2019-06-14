@@ -63,6 +63,7 @@ namespace BTHistoryReader
                     bShowDatasests = true;
                     bScatteringApps = false;
                     bShowSystemData = false;
+                    lbScatUsage.Text = "If more than one data set listed then clicking\non that name will hide / unhide it\nclick header to reset";
                     break;
                 case "Apps" :
                     bScatteringApps = true;

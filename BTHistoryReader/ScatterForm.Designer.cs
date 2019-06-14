@@ -33,7 +33,7 @@
             System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
             System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            this.label1 = new System.Windows.Forms.Label();
+            this.lbScatUsage = new System.Windows.Forms.Label();
             this.GetLegendInfo = new System.Windows.Forms.Timer(this.components);
             this.labelShowSeries = new System.Windows.Forms.Label();
             this.nudShowOnly = new System.Windows.Forms.NumericUpDown();
@@ -60,15 +60,15 @@
             ((System.ComponentModel.ISupportInitialize)(this.nudHideXoutliers)).BeginInit();
             this.SuspendLayout();
             // 
-            // label1
+            // lbScatUsage
             // 
-            this.label1.AutoSize = true;
-            this.label1.BackColor = System.Drawing.SystemColors.Info;
-            this.label1.Location = new System.Drawing.Point(653, 361);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(291, 52);
-            this.label1.TabIndex = 1;
-            this.label1.Text = resources.GetString("label1.Text");
+            this.lbScatUsage.AutoSize = true;
+            this.lbScatUsage.BackColor = System.Drawing.SystemColors.Info;
+            this.lbScatUsage.Location = new System.Drawing.Point(653, 361);
+            this.lbScatUsage.Name = "lbScatUsage";
+            this.lbScatUsage.Size = new System.Drawing.Size(291, 52);
+            this.lbScatUsage.TabIndex = 1;
+            this.lbScatUsage.Text = resources.GetString("lbScatUsage.Text");
             // 
             // GetLegendInfo
             // 
@@ -277,7 +277,7 @@
             this.Controls.Add(this.tboxShowing);
             this.Controls.Add(this.nudShowOnly);
             this.Controls.Add(this.labelShowSeries);
-            this.Controls.Add(this.label1);
+            this.Controls.Add(this.lbScatUsage);
             this.Controls.Add(this.ChartScatter);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
             this.MaximizeBox = false;
@@ -297,7 +297,7 @@
         }
 
         #endregion
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label lbScatUsage;
         private System.Windows.Forms.Timer GetLegendInfo;
         private System.Windows.Forms.Label labelShowSeries;
         private System.Windows.Forms.NumericUpDown nudShowOnly;

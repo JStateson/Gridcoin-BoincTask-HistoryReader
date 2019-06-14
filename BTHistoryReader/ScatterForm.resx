@@ -117,7 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="label1.Text" xml:space="preserve">
+  <data name="lbScatUsage.Text" xml:space="preserve">
     <value>If any devices (GPU) were processing concurrent tasks then
 you must enter the number of concurrent tasks for that
 project and system and click on apply before displaying
