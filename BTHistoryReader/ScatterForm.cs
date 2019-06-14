@@ -16,7 +16,7 @@ namespace BTHistoryReader
     {
 
         List<cSeriesData> ThisSeriesData;
-
+        static Random rnd;
         private string SeriesName = "";
         private double dBig = -1;
         double dSmall = 1e6;
@@ -335,7 +335,7 @@ namespace BTHistoryReader
         private void SetSysColors(int s)
         {
             int n = ThisSeriesData[s].TheseSystems.Count;
-            Random rnd = new Random();
+            rnd = new Random();
             MyColors.Clear();
             ExpectedOffset.Clear();
             for (int i = 0; i < n; i++)
@@ -773,6 +773,49 @@ namespace BTHistoryReader
         private void btnInvSel_Click(object sender, EventArgs e)
         {
             InvertSelections();
+        }
+
+  
+        private Int32? FindNearestPoint(ref DataPointCollection points, double x, double y)
+        {
+            if (points == null) return null;
+            if (points.Count == 0) return null;
+            DataPoint point = new DataPoint();
+            rnd = new Random();
+            Func<DataPoint, double> getLength = (p) => Math.Sqrt(Math.Pow(p.XValue - x, 2) + Math.Pow(p.YValues[0] - y, 2));
+            List<double> ClosePoint = new List<double>();
+            foreach(DataPoint dp in points)
+            {
+                ClosePoint.Add(getLength(dp));
+            }
+            var sorted = ClosePoint 
+                .Select((z,i) => new KeyValuePair<double,int>(z,i))
+                .OrderBy(z => z.Key)
+                .ToList();
+            //List<double> B = sorted.Select(z => z.Key).ToList();
+            List<int> idx = sorted.Select(z => z.Value).ToList();
+            //double v = getLength(points[0]);
+            int j = idx[0];
+            int iGrp = ThisSeriesData[CurrentSeriesDisplayed].iSystem[j];
+            points[j].Color = Color.FromArgb(rnd.Next(256), rnd.Next(256), rnd.Next(256));
+            MessageBox.Show("member of: "+ lviewSubSeries.Items[iGrp].Text);
+            return 0;
+        }
+
+        private void ChartScatter_MouseClick(object sender, MouseEventArgs e)
+        {
+            int n;
+            if (!bShowDatasests) return;
+            if (CurrentSeriesDisplayed < 0) return;
+            DataPointCollection Points =
+                    ChartScatter.Series[CurrentSeriesDisplayed].Points;
+            n = Points.Count;
+            if (n > 250) return;
+            Point p = e.Location;
+            // Int32? iLoc = FindNearestPoint(Points, p);
+            double x = ChartScatter.ChartAreas[0].AxisX.PixelPositionToValue(e.X);
+            double y = ChartScatter.ChartAreas[0].AxisY.PixelPositionToValue(e.Y);
+            FindNearestPoint(ref Points, x, y);
         }
     }
 }

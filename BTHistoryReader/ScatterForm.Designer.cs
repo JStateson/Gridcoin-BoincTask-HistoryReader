@@ -162,6 +162,7 @@
             this.ChartScatter.Size = new System.Drawing.Size(923, 320);
             this.ChartScatter.TabIndex = 0;
             this.ChartScatter.Text = "Scatter Plot";
+            this.ChartScatter.MouseClick += new System.Windows.Forms.MouseEventHandler(this.ChartScatter_MouseClick);
             // 
             // groupBox1
             // 
