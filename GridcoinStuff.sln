@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HostProjectStats", "HostPro
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BTHistoryReader", "BTHistoryReader\BTHistoryReader.csproj", "{678E5BC2-E16C-4396-909E-37ED92143F4A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InvalidAnalysis", "InvalidAnalysis\InvalidAnalysis.csproj", "{0D2731A1-C247-41AD-9310-773A0E51090C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -40,6 +42,14 @@ Global
 		{678E5BC2-E16C-4396-909E-37ED92143F4A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{678E5BC2-E16C-4396-909E-37ED92143F4A}.Release|x64.ActiveCfg = Release|x64
 		{678E5BC2-E16C-4396-909E-37ED92143F4A}.Release|x64.Build.0 = Release|x64
+		{0D2731A1-C247-41AD-9310-773A0E51090C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D2731A1-C247-41AD-9310-773A0E51090C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D2731A1-C247-41AD-9310-773A0E51090C}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{0D2731A1-C247-41AD-9310-773A0E51090C}.Debug|x64.Build.0 = Debug|Any CPU
+		{0D2731A1-C247-41AD-9310-773A0E51090C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D2731A1-C247-41AD-9310-773A0E51090C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0D2731A1-C247-41AD-9310-773A0E51090C}.Release|x64.ActiveCfg = Release|Any CPU
+		{0D2731A1-C247-41AD-9310-773A0E51090C}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -35,7 +35,7 @@ namespace BTHistoryReader
             mainNode = new TreeNode();
             mainNode.Text = btf.CurrentSystem;
             tv_projapps.Nodes.Add(mainNode);
-            // GetTreeLayout(); // not used as better to show last tree layout and not start over
+            GetTreeLayout();
             ShowTree();
         }
 
@@ -144,11 +144,6 @@ namespace BTHistoryReader
         private void rbShowUnk_CheckedChanged(object sender, EventArgs e)
         {
             RevealApps();
-        }
-
-        private void InfoForm_HelpButtonClicked(object sender, CancelEventArgs e)
-        {
-
         }
 
         private void rbShowStats_CheckedChanged(object sender, EventArgs e)

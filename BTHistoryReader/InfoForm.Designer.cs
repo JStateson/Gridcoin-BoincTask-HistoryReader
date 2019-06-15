@@ -156,7 +156,6 @@
             this.MaximizeBox = false;
             this.Name = "InfoForm";
             this.Text = "InfoForm";
-            this.HelpButtonClicked += new System.ComponentModel.CancelEventHandler(this.InfoForm_HelpButtonClicked);
             this.panel1.ResumeLayout(false);
             this.gb_Reveal.ResumeLayout(false);
             this.gb_Reveal.PerformLayout();
