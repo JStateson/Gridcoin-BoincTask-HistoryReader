@@ -24,11 +24,14 @@ namespace InvalidAnalysis
         private string[] RawLines;
         private int NumberRecsToRead = 20;
         private string MyComputerID = "";
-        private List<cProjPage> ProjectPages;
+        public List<cProjPage> ProjectPages;
 
         public ErrorAnalysis()
         {
             InitializeComponent();
+            nudRecsToRead.Value = Properties.Settings.Default.MaxRecords;
+            ProjUrl.Text = Properties.Settings.Default.InitialUrl;
+            lbVersion.Text = "Build Date:" + GetSimpleDate(Properties.Resources.BuildDate);
         }
 
         private void btnViewData_Click(object sender, EventArgs e)
@@ -36,10 +39,24 @@ namespace InvalidAnalysis
             Process.Start(ProjUrl.Text);
         }
 
+
+        private string GetSimpleDate(string sDT)
+        {
+            //Sun 06/09/2019 23:33:53.18 
+            int i = sDT.IndexOf(' ');
+            i++;
+            int j = sDT.LastIndexOf('.');
+            return sDT.Substring(i, j - i);
+        }
         private void btnStart_Click(object sender, EventArgs e)
         {
+            btnShowUT.Enabled = false;
             LoadProjectPage();
             int i, j, n;
+            int iPage = 1;
+            lvWorkUnits.Items.Clear();
+            tbInfo.Clear();
+
             foreach(cProjPage pp in ProjectPages)
             {
                 myUri = new Uri(pp.urlWorkUnit);
@@ -54,14 +71,26 @@ namespace InvalidAnalysis
                 aLine = FiveTables[3].Substring(i).Split(new string[] { "<tr>", "</tr>" }, StringSplitOptions.RemoveEmptyEntries);
                 j = 2;
                 n = (aLine.Count() - 2) / 2;
-                
+                pp.Wingmen = new List<cWorkUnit>();
                 for(i = 0; i < n; i++)
                 {
                     wu.AddData(ref aLine[j]);
                     pp.Wingmen.Add(wu);
                     j += 2;
+                    wu = new cWorkUnit();
+                    wu.name = pp.Wingmen[0].name;
+                    wu.ets = pp.Wingmen[0].ets;
                 }
+                tbInfo.Text += iPage.ToString("D").PadLeft(4) + " " + pp.strWorkUnit + "\r\n";
+                ListViewItem lvi = new ListViewItem();
+                lvi.Text = pp.strWorkUnit;
+                lvi.Tag = pp.urlWorkUnit;
+                lvWorkUnits.Items.Add(lvi);
+                tbInfo.Refresh();
+                lvWorkUnits.Refresh();
+                iPage++;
             }
+            btnShowUT.Enabled = true;
         }
 
 
@@ -91,11 +120,36 @@ namespace InvalidAnalysis
                 pp = new cProjPage();
                 if(i == 0)
                     MyComputerID = pp.InitProject("https://milkyway.cs.rpi.edu/milkyway", ref RawPage, "tasks for computer ");
+                else
+                {
+                    pp.strProject = ProjectPages[0].strProject; // could not figure another way to get url info here
+                }
                 pp.SetData("Milkyway@home", MyComputerID, ref RawTable[j]);
                 ProjectPages.Add(pp);
                 j += 2;
             }
         }
 
+        private void btnShowUT_Click(object sender, EventArgs e)
+        {
+            InfoForm MyInfo = new InfoForm(this, "UserTasks");
+            MyInfo.ShowDialog();
+            MyInfo.Dispose();
+        }
+
+        private void ErrorAnalysis_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            Properties.Settings.Default.InitialUrl = ProjUrl.Text;
+            Properties.Settings.Default.MaxRecords = (int)nudRecsToRead.Value;
+            Properties.Settings.Default.Save();
+        }
+
+    
+
+        private void lvWorkUnits_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ListViewItem lvi = lvWorkUnits.SelectedItems[0];
+            Process.Start((string)lvi.Tag);
+        }
     }
 }

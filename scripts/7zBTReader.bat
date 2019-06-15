@@ -16,5 +16,5 @@ rem echo copy /y "%4" "%PGM%" >>  D:\Projects\VSrepository\BTresults.txt
 echo "C:\Program Files\7-Zip\7z.exe" u %ARC% %PGM% >>  D:\Projects\VSrepository\BTresults.txt
 rem copy /y "%4" "%PGM%" >>  D:\Projects\VSrepository\BTresults.txt
 copy /y "%4" "%PGM%"
-rem "C:\Program Files\7-Zip\7z.exe" u %ARC% %PGM% >>  D:\Projects\VSrepository\BYresults.txt
+rem "C:\Program Files\7-Zip\7z.exe" u %ARC% %PGM% >>  D:\Projects\VSrepository\BTresults.txt
 "C:\Program Files\7-Zip\7z.exe" u %ARC% %PGM%

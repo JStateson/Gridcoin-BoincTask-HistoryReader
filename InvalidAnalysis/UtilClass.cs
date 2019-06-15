@@ -37,6 +37,7 @@ namespace InvalidAnalysis
         public string strApplication;
         public string strDevice;
         public string strOs;
+        public string strProject;
         public List<cWorkUnit> Wingmen;
 
         public bool SetData(string strKey, string sComputer, ref string strIn)
@@ -52,7 +53,7 @@ namespace InvalidAnalysis
             strOut = strOut.Substring(0, i);
             i = strOut.IndexOf('(');
             if (i < 0) return false;
-            strApplication = strOut.Substring(0, i - 1);    // dont want the space
+            strApplication = strOut.Substring(0, i - 1); 
             strOut = strOut.Substring(i+1);
             i = strOut.IndexOf(')');
             if (i < 0) return false;
@@ -68,7 +69,6 @@ namespace InvalidAnalysis
         {
             get { return strProject + "/show_host_detail.php?hostid=" + strComputer; }
         }
-        private string strProject;
 
         // strKey: " tasks for computer "
         // strProjectName: must be in form: https://milkyway.cs.rpi.edu/milkyway
@@ -104,7 +104,9 @@ namespace InvalidAnalysis
 [3]	"style=\"padding-left:12px\" >de_modfit_85_bundle4_4s_south4s_1_1556550902_16369827"
 [31]	"style=\"padding-left:12px\" >2, 9, 6"	string
 2,4,6 etc for :"<td><a href=\"result.php?resultid=243774122\">243774122</a></td>\n<td><a href=\"show_host_detail.php?hostid=806834\">806834</a></td>\n\n        <td>15 Jun 2019, 3:28:12 UTC</td>\n        <td>15 Jun 2019, 4:47:31 UTC</td>\n        <td>Completed and validated</td>\n        <td align=right>43.34</td>\n        <td align=right>8.77</td>\n        <td align=right>227.53</td>\n        <td>Milkyway@home Separation v1.46 (opencl_ati_101)<br>windows_x86_64</td>\n        "	string
-
+00000000011111111112222
+12345678901234567890123
+Completed and validated
      */
     public class cWorkUnit
     {
@@ -129,8 +131,8 @@ namespace InvalidAnalysis
         { 
             strComputer = GetNumericTarget(ref  s, "?hostid=");
             string[] sTmp = s.Split(new string[] { "<td>", "</td>" }, StringSplitOptions.RemoveEmptyEntries);
-            strStatus = sTmp[8];
-            Application = sTmp[13];
+            strStatus = sTmp[8].PadRight(23);
+            Application = sTmp[13].Replace("<br>", " ");
             return true;
         }
         public string GetNumericTarget(ref string InString, string LookingFor)
