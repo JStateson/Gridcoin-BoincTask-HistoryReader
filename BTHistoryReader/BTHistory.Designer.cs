@@ -297,6 +297,7 @@
             this.btnPlotET.Text = "Plot Elapsed";
             this.toolTip1.SetToolTip(this.btnPlotET, "Histogram of elapsed time");
             this.btnPlotET.UseVisualStyleBackColor = true;
+            this.btnPlotET.Click += new System.EventHandler(this.btnPlotET_Click);
             // 
             // btnPlot
             // 
@@ -308,6 +309,7 @@
             this.btnPlot.Text = "Plot Idle";
             this.toolTip1.SetToolTip(this.btnPlot, "Plots completion time of items selected");
             this.btnPlot.UseVisualStyleBackColor = true;
+            this.btnPlot.Click += new System.EventHandler(this.btnPlot_Click);
             // 
             // btn_Filter
             // 
