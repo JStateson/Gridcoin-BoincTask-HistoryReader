@@ -21,7 +21,8 @@ namespace InvalidAnalysis
             eShowAllcol = 0,    // only one shown as collapsed (default)
             eShowAllexp = 1,    // these must match the "tag" in radio button
             eShowFail = 2,
-            eShowSucc = 3
+            eShowSucc = 3,
+            eShowInc = 4
         }
 
         // following need to come from default settings
@@ -49,6 +50,7 @@ namespace InvalidAnalysis
         private bool bShowAll = true;
         private bool bShowFail = false;
         private bool bExpandAll = false;
+        private bool bShowInconclusive = false;
 
         private int[] PFcnt = new int[4];   // this must correspond to the 4 platforms in order
         private int[] DVcnt = new int[4];   // this must correspond to the 4 devices in order
@@ -92,28 +94,27 @@ namespace InvalidAnalysis
 
         private bool bWantThisDevice(string strIn, ref int iLoc)
         {
-            bool bIsCpu = true;
             if (strIn.Contains("_ati_"))
             {
-                bIsCpu = false;
                 if (bShowATI) return DeviceCount(iLoc=0);
+                return false;
             }
             if (strIn.Contains("_nvidia_"))
             {
-                bIsCpu = false;
                 if (bShowNVI) return DeviceCount(iLoc = 1);
+                return false;
             }
             if (strIn.Contains("_intel_"))  // this is a guess as I have never seen one
             {
-                bIsCpu = false;
                 if (bShowINT) return DeviceCount(iLoc = 2);
+                return false;
             }
-            if (strIn.Contains("_cpu_"))  // this is OBVIOUSLY WRONG NEED TO FIND OUT WHAT IT IS
-            {
-                bIsCpu = false;
-                if (bShowINT) return DeviceCount(iLoc = 3);
-            }
-            return false;  // this is another guess and I need to crunch a  CPU only to see what show  up
+            //if (strIn.Contains("_cpu_"))  // this is OBVIOUSLY WRONG NEED TO FIND OUT WHAT IT IS:  there is no id, just has x6_64 or whatever
+            //{
+             //   bIsCpu = false;
+                if (bShowCPU) return DeviceCount(iLoc = 3);
+            //}
+            return false; 
         }
 
         private bool PlatformCount(int iLoc)
@@ -130,26 +131,25 @@ namespace InvalidAnalysis
 
         private bool bWantThisPlatform(string strIn)
         {
-            bool bIsUnk = true;
             if(strIn.Contains("windows_"))
             {
-                bIsUnk = false;
                 if (bShowWIN) return PlatformCount(0);
+                return false;
             }
             if (strIn.Contains("-linux-"))
             {
-                bIsUnk = false;
                 if (bShowLIN) return PlatformCount(2);
+                return false;
             }
             if (strIn.Contains("-apple-"))
             {
-                bIsUnk = false;
                 if (bShowAPP) return PlatformCount(1);
+                return false;
             }
             if (strIn.Contains("-android-"))  // this is a guess as I have never seen one
             {
-                bIsUnk = false;
                 if (bShowAND) return PlatformCount(3);
+                return false;
             }
             return false;  
         }
@@ -176,6 +176,9 @@ namespace InvalidAnalysis
                         c = new TreeNode();
                         c.Text = wu.strStatus + ": " + wu.strComputer;
                         if (wu.strStatus.Contains("error")) c.ForeColor = Color.Red;
+                        if (wu.strStatus.Contains("Error")) c.ForeColor = Color.Red;
+                        if (wu.strStatus.Contains("Aborted")) c.ForeColor = Color.Red;
+                        if (wu.strStatus.Contains("inconclusive")) c.ForeColor = Color.Red;
                         n.Nodes.Add(c);
                         bShowedSomething = true;
                         if (!bWantThisDevice(wu.Application, ref iUsed)) continue;
@@ -207,12 +210,37 @@ namespace InvalidAnalysis
                                 c.Text = wu.strStatus + ": " + wu.strComputer;
                                 n.Nodes.Add(c);
                                 bShowedSomething = true;
+                                continue;
                             }
+    
                         }
-                        if(bShowFail)
+                        if (bShowInconclusive)
+                        {
+                            if (wu.strStatus.Contains("inconclusive"))
+                            {
+                                if (!bWantThisDevice(wu.Application, ref iUsed)) continue;
+                                // problem:  the above counted a value towared the device but
+                                // it may be excluded if the platform is not wanted
+                                if (!bWantThisPlatform(wu.Application))
+                                {
+                                    Debug.Assert(iUsed >= 0);
+                                    DVcnt[iUsed]--; // fixup code
+                                    continue;
+                                }
+                                c = new TreeNode();
+                                c.Text = wu.strStatus + ": " + wu.strComputer;
+                                n.Nodes.Add(c);
+                                bShowedSomething = true;
+                                continue;
+                            }
+         
+                        }
+                        if (bShowFail)
                         {
                             if (wu.strStatus.Contains("error") ||
-                                wu.strStatus.Contains("no response"))
+                                wu.strStatus.Contains("Error") ||
+                                wu.strStatus.Contains("no response") ||
+                                wu.strStatus.Contains("Aborted"))
                             {
                                 bShowedSomething = true;
                                 if (!bWantThisDevice(wu.Application, ref iUsed)) continue;
@@ -265,10 +293,12 @@ namespace InvalidAnalysis
                     break;
                 }
             }
-            bShowSuccess = (ShowType != eShowType.eShowFail);
-            bShowAll = (ShowType == eShowType.eShowAllcol) || (ShowType == eShowType.eShowAllexp);
+            bShowInconclusive = (ShowType == eShowType.eShowInc);
             bShowFail = (ShowType == eShowType.eShowFail);
+            bShowSuccess = (ShowType == eShowType.eShowSucc);
+            bShowAll = (ShowType == eShowType.eShowAllcol) || (ShowType == eShowType.eShowAllexp);
             bExpandAll = (ShowType != eShowType.eShowAllcol);
+
             tv_projapps.Nodes.Clear();
 
         }
@@ -387,6 +417,11 @@ namespace InvalidAnalysis
             Properties.Settings.Default.bShowINT = bShowINT;
             Properties.Settings.Default.bShowCPU = bShowCPU;
             Properties.Settings.Default.Save();
+        }
+
+        private void rbIncon_CheckedChanged(object sender, EventArgs e)
+        {
+            RevealApps();
         }
     }
 }

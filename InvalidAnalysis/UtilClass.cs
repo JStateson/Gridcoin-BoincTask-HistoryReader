@@ -111,20 +111,20 @@ Completed and validated
     public class cWorkUnit
     {
         public string name;    //de_modfit_83_bundle4_4s_south4s_1_1556550902_16315217
-        public string ets;     // max # of error/total/success tasks	2, 9, 6
+        //public string ets;     // max # of error/total/success tasks	2, 9, 6
                         //Task	Computer	Sent	Time reported	Status	Run time	CPU time	Credit	Application
         public string strComputer;
         public string strStatus;
         public string Application;
 
-        public bool HeaderInit(ref string s3, ref string s31)
+        public bool HeaderInit(ref string s3) // ref string s31)
         {
             int i = s3.IndexOf('>');
             if (i < 0) return false;
             name = s3.Substring(i+1);
-            i = s31.LastIndexOf('>');
-            if (i < 0) return false;
-            ets = s31.Substring(i+1);
+            //i = s31.LastIndexOf('>');
+            //if (i < 0) return false;
+            //ets = s31.Substring(i+1);
             return true;
         }
         public bool AddData(ref string s)

@@ -701,8 +701,11 @@ namespace BTHistoryReader
             }
             SystemsDisplayed[iShowMe] = !SystemsDisplayed[iShowMe];
         }
+
         private void ColumnClick(object sender, EventArgs e)
         {
+            if (lviewSubSeries == null) return;
+            if (lviewSubSeries.Items.Count == 0) return;
             int iRawData = (int)lviewSubSeries.Items[0].Tag;  // all same tag so does not matter which one
             int iSeries = CurrentSeriesDisplayed;
             int i = 0;

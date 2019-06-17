@@ -36,10 +36,10 @@
             this.rbShowFailed = new System.Windows.Forms.RadioButton();
             this.rb_ShowAll = new System.Windows.Forms.RadioButton();
             this.gBoxDevices = new System.Windows.Forms.GroupBox();
-            this.cbATI = new System.Windows.Forms.CheckBox();
-            this.cbNVIDIA = new System.Windows.Forms.CheckBox();
-            this.cbINTEL = new System.Windows.Forms.CheckBox();
             this.cbCPU = new System.Windows.Forms.CheckBox();
+            this.cbINTEL = new System.Windows.Forms.CheckBox();
+            this.cbNVIDIA = new System.Windows.Forms.CheckBox();
+            this.cbATI = new System.Windows.Forms.CheckBox();
             this.gBoxPlatforms = new System.Windows.Forms.GroupBox();
             this.cbAND = new System.Windows.Forms.CheckBox();
             this.cbLINUX = new System.Windows.Forms.CheckBox();
@@ -47,9 +47,10 @@
             this.cbWIN = new System.Windows.Forms.CheckBox();
             this.btnApplyFilter = new System.Windows.Forms.Button();
             this.gBoxFilters = new System.Windows.Forms.GroupBox();
-            this.btnSetFilters = new System.Windows.Forms.Button();
-            this.btnClrFilter = new System.Windows.Forms.Button();
             this.btnSaveFilters = new System.Windows.Forms.Button();
+            this.btnClrFilter = new System.Windows.Forms.Button();
+            this.btnSetFilters = new System.Windows.Forms.Button();
+            this.rbIncon = new System.Windows.Forms.RadioButton();
             this.panel1.SuspendLayout();
             this.gb_Reveal.SuspendLayout();
             this.gBoxDevices.SuspendLayout();
@@ -63,7 +64,7 @@
             this.panel1.Controls.Add(this.tv_projapps);
             this.panel1.Location = new System.Drawing.Point(241, 23);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(608, 526);
+            this.panel1.Size = new System.Drawing.Size(608, 572);
             this.panel1.TabIndex = 2;
             // 
             // tv_projapps
@@ -71,18 +72,19 @@
             this.tv_projapps.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tv_projapps.Location = new System.Drawing.Point(18, 19);
             this.tv_projapps.Name = "tv_projapps";
-            this.tv_projapps.Size = new System.Drawing.Size(568, 487);
+            this.tv_projapps.Size = new System.Drawing.Size(568, 533);
             this.tv_projapps.TabIndex = 0;
             // 
             // gb_Reveal
             // 
+            this.gb_Reveal.Controls.Add(this.rbIncon);
             this.gb_Reveal.Controls.Add(this.rbExpandAll);
             this.gb_Reveal.Controls.Add(this.rbShowSuccess);
             this.gb_Reveal.Controls.Add(this.rbShowFailed);
             this.gb_Reveal.Controls.Add(this.rb_ShowAll);
             this.gb_Reveal.Location = new System.Drawing.Point(12, 23);
             this.gb_Reveal.Name = "gb_Reveal";
-            this.gb_Reveal.Size = new System.Drawing.Size(210, 126);
+            this.gb_Reveal.Size = new System.Drawing.Size(210, 174);
             this.gb_Reveal.TabIndex = 1;
             this.gb_Reveal.TabStop = false;
             this.gb_Reveal.Text = "Display Options";
@@ -150,29 +152,17 @@
             this.gBoxDevices.TabStop = false;
             this.gBoxDevices.Text = "Devices";
             // 
-            // cbATI
+            // cbCPU
             // 
-            this.cbATI.AutoSize = true;
-            this.cbATI.Checked = true;
-            this.cbATI.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbATI.Location = new System.Drawing.Point(21, 24);
-            this.cbATI.Name = "cbATI";
-            this.cbATI.Size = new System.Drawing.Size(43, 17);
-            this.cbATI.TabIndex = 0;
-            this.cbATI.Text = "ATI";
-            this.cbATI.UseVisualStyleBackColor = true;
-            // 
-            // cbNVIDIA
-            // 
-            this.cbNVIDIA.AutoSize = true;
-            this.cbNVIDIA.Checked = true;
-            this.cbNVIDIA.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbNVIDIA.Location = new System.Drawing.Point(21, 47);
-            this.cbNVIDIA.Name = "cbNVIDIA";
-            this.cbNVIDIA.Size = new System.Drawing.Size(55, 17);
-            this.cbNVIDIA.TabIndex = 1;
-            this.cbNVIDIA.Text = "nVidia";
-            this.cbNVIDIA.UseVisualStyleBackColor = true;
+            this.cbCPU.AutoSize = true;
+            this.cbCPU.Checked = true;
+            this.cbCPU.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbCPU.Location = new System.Drawing.Point(21, 93);
+            this.cbCPU.Name = "cbCPU";
+            this.cbCPU.Size = new System.Drawing.Size(48, 17);
+            this.cbCPU.TabIndex = 3;
+            this.cbCPU.Text = "CPU";
+            this.cbCPU.UseVisualStyleBackColor = true;
             // 
             // cbINTEL
             // 
@@ -186,17 +176,29 @@
             this.cbINTEL.Text = "Intel";
             this.cbINTEL.UseVisualStyleBackColor = true;
             // 
-            // cbCPU
+            // cbNVIDIA
             // 
-            this.cbCPU.AutoSize = true;
-            this.cbCPU.Checked = true;
-            this.cbCPU.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbCPU.Location = new System.Drawing.Point(21, 93);
-            this.cbCPU.Name = "cbCPU";
-            this.cbCPU.Size = new System.Drawing.Size(48, 17);
-            this.cbCPU.TabIndex = 3;
-            this.cbCPU.Text = "CPU";
-            this.cbCPU.UseVisualStyleBackColor = true;
+            this.cbNVIDIA.AutoSize = true;
+            this.cbNVIDIA.Checked = true;
+            this.cbNVIDIA.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbNVIDIA.Location = new System.Drawing.Point(21, 47);
+            this.cbNVIDIA.Name = "cbNVIDIA";
+            this.cbNVIDIA.Size = new System.Drawing.Size(55, 17);
+            this.cbNVIDIA.TabIndex = 1;
+            this.cbNVIDIA.Text = "nVidia";
+            this.cbNVIDIA.UseVisualStyleBackColor = true;
+            // 
+            // cbATI
+            // 
+            this.cbATI.AutoSize = true;
+            this.cbATI.Checked = true;
+            this.cbATI.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbATI.Location = new System.Drawing.Point(21, 24);
+            this.cbATI.Name = "cbATI";
+            this.cbATI.Size = new System.Drawing.Size(43, 17);
+            this.cbATI.TabIndex = 0;
+            this.cbATI.Text = "ATI";
+            this.cbATI.UseVisualStyleBackColor = true;
             // 
             // gBoxPlatforms
             // 
@@ -277,32 +279,12 @@
             this.gBoxFilters.Controls.Add(this.btnApplyFilter);
             this.gBoxFilters.Controls.Add(this.gBoxPlatforms);
             this.gBoxFilters.Controls.Add(this.gBoxDevices);
-            this.gBoxFilters.Location = new System.Drawing.Point(12, 173);
+            this.gBoxFilters.Location = new System.Drawing.Point(12, 219);
             this.gBoxFilters.Name = "gBoxFilters";
             this.gBoxFilters.Size = new System.Drawing.Size(210, 376);
             this.gBoxFilters.TabIndex = 3;
             this.gBoxFilters.TabStop = false;
             this.gBoxFilters.Text = "Filters";
-            // 
-            // btnSetFilters
-            // 
-            this.btnSetFilters.Location = new System.Drawing.Point(128, 19);
-            this.btnSetFilters.Name = "btnSetFilters";
-            this.btnSetFilters.Size = new System.Drawing.Size(56, 23);
-            this.btnSetFilters.TabIndex = 7;
-            this.btnSetFilters.Text = "Set";
-            this.btnSetFilters.UseVisualStyleBackColor = true;
-            this.btnSetFilters.Click += new System.EventHandler(this.btnSetFilters_Click);
-            // 
-            // btnClrFilter
-            // 
-            this.btnClrFilter.Location = new System.Drawing.Point(128, 48);
-            this.btnClrFilter.Name = "btnClrFilter";
-            this.btnClrFilter.Size = new System.Drawing.Size(56, 23);
-            this.btnClrFilter.TabIndex = 8;
-            this.btnClrFilter.Text = "Clear";
-            this.btnClrFilter.UseVisualStyleBackColor = true;
-            this.btnClrFilter.Click += new System.EventHandler(this.btnClrFilter_Click);
             // 
             // btnSaveFilters
             // 
@@ -314,11 +296,44 @@
             this.btnSaveFilters.UseVisualStyleBackColor = true;
             this.btnSaveFilters.Click += new System.EventHandler(this.btnSaveFilters_Click);
             // 
+            // btnClrFilter
+            // 
+            this.btnClrFilter.Location = new System.Drawing.Point(128, 48);
+            this.btnClrFilter.Name = "btnClrFilter";
+            this.btnClrFilter.Size = new System.Drawing.Size(56, 23);
+            this.btnClrFilter.TabIndex = 8;
+            this.btnClrFilter.Text = "Clear";
+            this.btnClrFilter.UseVisualStyleBackColor = true;
+            this.btnClrFilter.Click += new System.EventHandler(this.btnClrFilter_Click);
+            // 
+            // btnSetFilters
+            // 
+            this.btnSetFilters.Location = new System.Drawing.Point(128, 19);
+            this.btnSetFilters.Name = "btnSetFilters";
+            this.btnSetFilters.Size = new System.Drawing.Size(56, 23);
+            this.btnSetFilters.TabIndex = 7;
+            this.btnSetFilters.Text = "Set";
+            this.btnSetFilters.UseVisualStyleBackColor = true;
+            this.btnSetFilters.Click += new System.EventHandler(this.btnSetFilters_Click);
+            // 
+            // rbIncon
+            // 
+            this.rbIncon.AutoSize = true;
+            this.rbIncon.Location = new System.Drawing.Point(18, 111);
+            this.rbIncon.Name = "rbIncon";
+            this.rbIncon.Size = new System.Drawing.Size(85, 17);
+            this.rbIncon.TabIndex = 4;
+            this.rbIncon.TabStop = true;
+            this.rbIncon.Tag = "4";
+            this.rbIncon.Text = "Inconclusive";
+            this.rbIncon.UseVisualStyleBackColor = true;
+            this.rbIncon.CheckedChanged += new System.EventHandler(this.rbIncon_CheckedChanged);
+            // 
             // InfoForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(887, 561);
+            this.ClientSize = new System.Drawing.Size(887, 607);
             this.Controls.Add(this.gBoxFilters);
             this.Controls.Add(this.gb_Reveal);
             this.Controls.Add(this.panel1);
@@ -361,5 +376,6 @@
         private System.Windows.Forms.Button btnSetFilters;
         private System.Windows.Forms.Button btnClrFilter;
         private System.Windows.Forms.Button btnSaveFilters;
+        private System.Windows.Forms.RadioButton rbIncon;
     }
 }

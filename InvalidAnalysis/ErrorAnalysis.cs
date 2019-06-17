@@ -66,7 +66,7 @@ namespace InvalidAnalysis
                 string[] FiveTables = RawPage.Split(new string[] { "<div class=\"table\">", "</table>" }, StringSplitOptions.RemoveEmptyEntries);
                 string [] aLine = FiveTables[1].Split(new string[] { "<td ", "</td>" }, StringSplitOptions.RemoveEmptyEntries);
                 cWorkUnit wu = new cWorkUnit();
-                wu.HeaderInit(ref aLine[3], ref aLine[31]);
+                wu.HeaderInit(ref aLine[3]); //, ref aLine[31]);
                 i = FiveTables[3].IndexOf("Application</th></tr>");  // should be able split using <tr> and </tr>
                 aLine = FiveTables[3].Substring(i).Split(new string[] { "<tr>", "</tr>" }, StringSplitOptions.RemoveEmptyEntries);
                 j = 2;
@@ -79,7 +79,7 @@ namespace InvalidAnalysis
                     j += 2;
                     wu = new cWorkUnit();
                     wu.name = pp.Wingmen[0].name;
-                    wu.ets = pp.Wingmen[0].ets;
+                    //wu.ets = pp.Wingmen[0].ets;
                 }
                 tbInfo.Text += iPage.ToString("D").PadLeft(4) + " " + pp.strWorkUnit + "\r\n";
                 ListViewItem lvi = new ListViewItem();
