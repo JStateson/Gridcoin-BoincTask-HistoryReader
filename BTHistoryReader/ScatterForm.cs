@@ -782,6 +782,7 @@ namespace BTHistoryReader
   
         private Int32? FindNearestPoint(ref DataPointCollection points, double x, double y, int iLoc)
         {
+            string strTemp="";
             if (points == null) return null;
             if (points.Count == 0) return null;
             DataPoint point = new DataPoint();
@@ -802,7 +803,10 @@ namespace BTHistoryReader
             int j = idx[0];
             int iGrp = ThisSeriesData[iLoc].iSystem[j];
             points[j].Color = Color.FromArgb(rnd.Next(256), rnd.Next(256), rnd.Next(256));
-            MessageBox.Show("member of: "+ lviewSubSeries.Items[iGrp].Text);
+            // problem: not showing any app names in list box if there is only one appname
+            if (lviewSubSeries.Items.Count > 0) strTemp = lviewSubSeries.Items[iGrp].Text;
+            else strTemp = ThisSeriesData[iLoc].strAppName;
+            MessageBox.Show("member of: "+ strTemp);
             return 0;
         }
 
