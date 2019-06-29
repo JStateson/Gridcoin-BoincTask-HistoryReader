@@ -43,6 +43,15 @@ namespace BTHistoryReader
         public string Last_sProj="";
         public string Last_sApp="";
 
+        // only visible when not scattering all
+        private void ShowAppSelects(bool bVisible)
+        {
+            btnSelAllApp.Visible = bVisible;
+            BtnClrAllApp.Visible = bVisible;
+            BtnInvSelApp.Visible = bVisible;
+            LBoxApps.SelectionMode = (bVisible ? SelectionMode.MultiExtended : SelectionMode.One);
+        }
+
         public class cKPAproj
         {
             public string sProjName;
@@ -601,14 +610,15 @@ namespace BTHistoryReader
         // could be rewritten to avoid the little list.
         // this routine implements the scatter apps
         private List<string> strAppsForSeries;
-        private bool FormSeriesFromApps(int n)  // n is number of entries in the listview
+        private bool FormSeriesFromApps(int n)  // n is number of entries in the listview (number selected rather)
         {
             strAppsForSeries = new List<string>(n);
-            foreach(string strInfo in LBoxApps.Items)
+            foreach(int j in LBoxApps.SelectedIndices)
             {
+                string strInfo = LBoxApps.Items[j].ToString();
                 int i = strInfo.IndexOf(") ");  // really need the name of the app
                 if (i < 2) return false;        // cant be
-                string strApp = strInfo.Substring(i+2);
+                string strApp = strInfo.Substring(i + 2);
                 strAppsForSeries.Add(strApp);
             }
             MySeriesData = new List<cSeriesData>(n);
@@ -671,7 +681,7 @@ namespace BTHistoryReader
             int n;
             if (rbScatApps.Checked)
             {
-                n = LBoxApps.Items.Count;
+                n = LBoxApps.SelectedItems.Count; //LBoxApps.Items.Count;
                 if (n == 0) return false;
                 return FormSeriesFromApps(n);
             }
@@ -694,6 +704,41 @@ namespace BTHistoryReader
             if(GetScatterData())
             {
                 ShowScatter();
+            }
+        }
+
+        private void rbScatApps_CheckedChanged(object sender, EventArgs e)
+        {
+            ShowAppSelects(true);
+        }
+
+        private void rbScatProj_CheckedChanged(object sender, EventArgs e)
+        {
+            ShowAppSelects(false);
+        }
+
+        private void btnSelAllApp_Click(object sender, EventArgs e)
+        {
+            for(int i=0; i < LBoxApps.Items.Count;i++)
+            {
+                LBoxApps.SetSelected(i, true);
+            }
+        }
+
+        private void BtnClrAllApp_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i < LBoxApps.Items.Count; i++)
+            {
+                LBoxApps.SetSelected(i, false);
+            }
+        }
+
+        private void BtnInvSelApp_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i < LBoxApps.Items.Count; i++)
+            {
+                bool bSelected = LBoxApps.GetSelected(i);
+                LBoxApps.SetSelected(i, !bSelected);
             }
         }
     }

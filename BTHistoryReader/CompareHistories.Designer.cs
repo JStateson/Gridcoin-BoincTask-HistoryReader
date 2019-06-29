@@ -35,6 +35,9 @@
             this.rbScatApps = new System.Windows.Forms.RadioButton();
             this.label4 = new System.Windows.Forms.Label();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.BtnInvSelApp = new System.Windows.Forms.Button();
+            this.BtnClrAllApp = new System.Windows.Forms.Button();
+            this.btnSelAllApp = new System.Windows.Forms.Button();
             this.LBoxApps = new System.Windows.Forms.ListBox();
             this.label2 = new System.Windows.Forms.Label();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
@@ -85,16 +88,16 @@
             this.panel1.Controls.Add(this.groupBox2);
             this.panel1.Controls.Add(this.groupBox1);
             this.panel1.ForeColor = System.Drawing.Color.Blue;
-            this.panel1.Location = new System.Drawing.Point(12, 29);
+            this.panel1.Location = new System.Drawing.Point(12, 17);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(937, 193);
+            this.panel1.Size = new System.Drawing.Size(937, 203);
             this.panel1.TabIndex = 1;
             // 
             // groupBox5
             // 
             this.groupBox5.Controls.Add(this.rbScatProj);
             this.groupBox5.Controls.Add(this.rbScatApps);
-            this.groupBox5.Location = new System.Drawing.Point(749, 26);
+            this.groupBox5.Location = new System.Drawing.Point(749, 18);
             this.groupBox5.Name = "groupBox5";
             this.groupBox5.Size = new System.Drawing.Size(159, 127);
             this.groupBox5.TabIndex = 8;
@@ -111,6 +114,7 @@
             this.rbScatProj.Text = "Scatter Systems";
             this.toolTip1.SetToolTip(this.rbScatProj, "Only useful with ore than 1 system ");
             this.rbScatProj.UseVisualStyleBackColor = true;
+            this.rbScatProj.CheckedChanged += new System.EventHandler(this.rbScatProj_CheckedChanged);
             // 
             // rbScatApps
             // 
@@ -124,6 +128,7 @@
             this.rbScatApps.Text = "Scatter Thsse Apps";
             this.toolTip1.SetToolTip(this.rbScatApps, "Only useful with more than one app");
             this.rbScatApps.UseVisualStyleBackColor = true;
+            this.rbScatApps.CheckedChanged += new System.EventHandler(this.rbScatApps_CheckedChanged);
             // 
             // label4
             // 
@@ -136,13 +141,46 @@
             // 
             // groupBox4
             // 
+            this.groupBox4.Controls.Add(this.BtnInvSelApp);
+            this.groupBox4.Controls.Add(this.BtnClrAllApp);
+            this.groupBox4.Controls.Add(this.btnSelAllApp);
             this.groupBox4.Controls.Add(this.LBoxApps);
-            this.groupBox4.Location = new System.Drawing.Point(483, 22);
+            this.groupBox4.Location = new System.Drawing.Point(483, 14);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(225, 143);
+            this.groupBox4.Size = new System.Drawing.Size(225, 174);
             this.groupBox4.TabIndex = 6;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Applications";
+            // 
+            // BtnInvSelApp
+            // 
+            this.BtnInvSelApp.Location = new System.Drawing.Point(150, 145);
+            this.BtnInvSelApp.Name = "BtnInvSelApp";
+            this.BtnInvSelApp.Size = new System.Drawing.Size(68, 23);
+            this.BtnInvSelApp.TabIndex = 5;
+            this.BtnInvSelApp.Text = "Invert Sel";
+            this.BtnInvSelApp.UseVisualStyleBackColor = true;
+            this.BtnInvSelApp.Click += new System.EventHandler(this.BtnInvSelApp_Click);
+            // 
+            // BtnClrAllApp
+            // 
+            this.BtnClrAllApp.Location = new System.Drawing.Point(68, 145);
+            this.BtnClrAllApp.Name = "BtnClrAllApp";
+            this.BtnClrAllApp.Size = new System.Drawing.Size(44, 23);
+            this.BtnClrAllApp.TabIndex = 4;
+            this.BtnClrAllApp.Text = "Clr All";
+            this.BtnClrAllApp.UseVisualStyleBackColor = true;
+            this.BtnClrAllApp.Click += new System.EventHandler(this.BtnClrAllApp_Click);
+            // 
+            // btnSelAllApp
+            // 
+            this.btnSelAllApp.Location = new System.Drawing.Point(6, 145);
+            this.btnSelAllApp.Name = "btnSelAllApp";
+            this.btnSelAllApp.Size = new System.Drawing.Size(44, 23);
+            this.btnSelAllApp.TabIndex = 3;
+            this.btnSelAllApp.Text = "Sel All";
+            this.btnSelAllApp.UseVisualStyleBackColor = true;
+            this.btnSelAllApp.Click += new System.EventHandler(this.btnSelAllApp_Click);
             // 
             // LBoxApps
             // 
@@ -151,6 +189,7 @@
             this.LBoxApps.HorizontalScrollbar = true;
             this.LBoxApps.Location = new System.Drawing.Point(6, 19);
             this.LBoxApps.Name = "LBoxApps";
+            this.LBoxApps.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
             this.LBoxApps.Size = new System.Drawing.Size(212, 108);
             this.LBoxApps.Sorted = true;
             this.LBoxApps.TabIndex = 2;
@@ -168,7 +207,7 @@
             // groupBox3
             // 
             this.groupBox3.Controls.Add(this.LBoxProjects);
-            this.groupBox3.Location = new System.Drawing.Point(297, 22);
+            this.groupBox3.Location = new System.Drawing.Point(297, 14);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(138, 143);
             this.groupBox3.TabIndex = 4;
@@ -199,7 +238,7 @@
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.rbElapsedTime);
-            this.groupBox2.Location = new System.Drawing.Point(130, 26);
+            this.groupBox2.Location = new System.Drawing.Point(130, 18);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(117, 120);
             this.groupBox2.TabIndex = 2;
@@ -221,7 +260,7 @@
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.rbSelect);
-            this.groupBox1.Location = new System.Drawing.Point(21, 26);
+            this.groupBox1.Location = new System.Drawing.Point(21, 18);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(85, 120);
             this.groupBox1.TabIndex = 1;
@@ -515,5 +554,8 @@
         private System.Windows.Forms.CheckBox cboxFL;
         private System.Windows.Forms.TextBox tbSumCnt;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Button BtnInvSelApp;
+        private System.Windows.Forms.Button BtnClrAllApp;
+        private System.Windows.Forms.Button btnSelAllApp;
     }
 }

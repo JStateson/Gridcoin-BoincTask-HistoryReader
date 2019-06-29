@@ -77,7 +77,7 @@ namespace BTHistoryReader
                     break;
             }
             lviewSubSeries.Visible = bShowDatasests | bScatteringApps;
-            btnInvSel.Visible = bShowDatasests; // does not work with any other scatter plots!!!
+            btnInvSel.Visible = bShowDatasests; // does not work with any other scatter plots!!! 6-24-2019!!!
             lblSysHideUnhide.Visible = lviewSubSeries.Visible;
             ThisSeriesData = refSD;
             ShowScatter();
