@@ -141,7 +141,8 @@ namespace BTHistoryReader
             LBoxApps.Items.Clear();
             LBoxProjects.Items.Clear();
             btf.CurrentSystem = "";
-
+            ShowAppSelects(false);              // todo need implement multi-select better as systems are list for just one item
+                                                // not all those selected in the listbox
             EstimateLineCount();
             foreach (string strHisFile in btf.AllHistories)
             {
@@ -613,9 +614,10 @@ namespace BTHistoryReader
         private bool FormSeriesFromApps(int n)  // n is number of entries in the listview (number selected rather)
         {
             strAppsForSeries = new List<string>(n);
-            foreach(int j in LBoxApps.SelectedIndices)
+            //foreach(int j in LBoxApps.SelectedIndices)    // todo need to redesign multiselect before it works correctl
+            foreach (string strInfo in LBoxApps.Items)
             {
-                string strInfo = LBoxApps.Items[j].ToString();
+                //string strInfo = LBoxApps.Items[j].ToString();
                 int i = strInfo.IndexOf(") ");  // really need the name of the app
                 if (i < 2) return false;        // cant be
                 string strApp = strInfo.Substring(i + 2);
@@ -681,7 +683,7 @@ namespace BTHistoryReader
             int n = LViewConc.Items.Count;
             if (rbScatApps.Checked)
             {
-                n = LBoxApps.SelectedItems.Count; //LBoxApps.Items.Count;
+                // n = LBoxApps.SelectedItems.Count; //todo need to think about the multiselect better
                 if (n == 0) return false;
                 return FormSeriesFromApps(n);
             }
@@ -708,11 +710,13 @@ namespace BTHistoryReader
 
         private void rbScatApps_CheckedChanged(object sender, EventArgs e)
         {
+            return; //todo need to redesign way list view is handeled befoer this can work
             ShowAppSelects(true);
         }
 
         private void rbScatProj_CheckedChanged(object sender, EventArgs e)
         {
+            return;   //todo need to redesign way list view is handeled befoer this can work
             ShowAppSelects(false);
             // transition to "one" allowed index does not leave clean state
             // in the ListBox so force an update
