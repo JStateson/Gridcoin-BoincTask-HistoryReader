@@ -644,7 +644,7 @@ namespace BTHistoryReader
             return MySeriesData.Count > 0;
         }
 
-       
+
         // simular to above but scattering systems
         private bool FormSeriesFromSystems(int n)
         {
@@ -652,7 +652,7 @@ namespace BTHistoryReader
             MySeriesData = new List<cSeriesData>();                 // must be only those checked, not all
             foreach (ListViewItem itm in LViewConc.Items)
             {
-                if(itm.Checked)
+                if (itm.Checked)
                 {
                     cSeriesData sa = new cSeriesData();
                     NumChecked++;
@@ -671,14 +671,14 @@ namespace BTHistoryReader
                     }
                     else sa = null;
                 }
-            }  
-            return NumChecked > 0;
+            }
+            return (NumChecked > 0 && MySeriesData.Count > 0);
         }
 
         // forms scatter dagta depending on the radio button selected
         private bool GetScatterData()
         {
-            int n;
+            int n = LViewConc.Items.Count;
             if (rbScatApps.Checked)
             {
                 n = LBoxApps.SelectedItems.Count; //LBoxApps.Items.Count;
@@ -687,7 +687,6 @@ namespace BTHistoryReader
             }
             else
             {
-                n = LViewConc.Items.Count;
                 return FormSeriesFromSystems(n);
             }
         }
@@ -715,6 +714,10 @@ namespace BTHistoryReader
         private void rbScatProj_CheckedChanged(object sender, EventArgs e)
         {
             ShowAppSelects(false);
+            // transition to "one" allowed index does not leave clean state
+            // in the ListBox so force an update
+            UpdateAppInfo();
+            LViewConc.Refresh();
         }
 
         private void btnSelAllApp_Click(object sender, EventArgs e)
