@@ -20,8 +20,9 @@ namespace BTHistoryReader
         public List<string> Projects;
         public List<string> Systems;
         public List<cKPAlocs> KPAlocs;
-        public List<string> SystemsCompared;    // this and following are paired
-        public List<string> SystemsCompared_nConcurrent;
+        public List<string> SystemsCompared;    // this and following 3 are paired
+        public List<string> SystemsCompared_nConcurrent; // these pairing need to be better designed: go to the data not make a copy??
+        public List<bool> SystemsCompared_bWantStats;
         public List<int> SystemsComparedCount;
         private string strAverageAll = "Average All";
         public List<bool> bItemsToColor = new List<bool>(); // use color to show which apps have values
@@ -37,6 +38,7 @@ namespace BTHistoryReader
                 dLelapsedTime.Add(d);
             }
             public int nConcurrent = 1;    // save info to allow restoreing when switching across apps and systems
+            public bool bUseThisAppInStatsListBox = true;
         }
 
 
@@ -133,6 +135,7 @@ namespace BTHistoryReader
             Systems = new List<string>();;
             SystemsCompared = new List<string>();
             SystemsCompared_nConcurrent = new List<string>();
+            SystemsCompared_bWantStats = new List<bool>();
             SystemsComparedCount = new List<int>();
             int iSystem = -1;
             int NumberProjects = 0;
@@ -150,7 +153,7 @@ namespace BTHistoryReader
                 RtnCod = btf.ValidateHistory(strHisFile, ref ThisSystem);
                 if (RtnCod < 0) continue;
                 DuplicateNameCnt = 0;
-                ThisSystem = MustBeUniqueName(ThisSystem,ref DuplicateNameCnt);
+                ThisSystem = MustBeUniqueName(ThisSystem, ref DuplicateNameCnt);
                 Systems.Add(ThisSystem);
                 iSystem = Systems.Count - 1;    // index into name of system
                 btf.ClearPreviousHistory();
@@ -289,6 +292,7 @@ namespace BTHistoryReader
                 SystemsCompared.Clear();
                 SystemsCompared_nConcurrent.Clear();
                 SystemsComparedCount.Clear();
+                SystemsCompared_bWantStats.Clear();
             }
 
             foreach (cKPAlocs ckpal in KPAlocs)                                             // for every system
@@ -305,12 +309,14 @@ namespace BTHistoryReader
                                 if (ckpaa.dLelapsedTime.Count == 0)                         // must have data
                                     continue;
                                 strLoc = Systems[ckpaa.iSystem];
+                                // the following returns false if a system is unchecked as the name is not added in
                                 if (!bUseThisSystem(strLoc, strSystems)) continue;          // not sure why I put system name into strloc
                                 if (bMakeTable)
                                 {
                                     SystemsCompared.Add(strLoc);
                                     SystemsCompared_nConcurrent.Add(ckpaa.nConcurrent.ToString());
                                     SystemsComparedCount.Add(ckpaa.dLelapsedTime.Count);
+                                    SystemsCompared_bWantStats.Add(ckpaa.bUseThisAppInStatsListBox);
                                 }
 
                                 else
@@ -375,7 +381,7 @@ namespace BTHistoryReader
                 strSysConc[1] = s;
                 strSysConc[2] = SystemsComparedCount[i].ToString();
                 itm = new ListViewItem(strSysConc);
-                itm.Checked = true;
+                itm.Checked = SystemsCompared_bWantStats[i];
                 LViewConc.Items.Add(itm);
                 i++;
             }
@@ -437,12 +443,13 @@ namespace BTHistoryReader
         }
 
         // put the number of concurrent items processed by the GPU into the table that has the corresponding data.
-        private void BackfitConcurrency(string sysname, string projname, string appname, int value)
+        private void BackfitConcurrency(string sysname, string projname, string appname, int value,bool bLVchecked)
         {
             foreach (cKPAlocs ckpal in KPAlocs)                          // for each system
             {
                 foreach (cKPAproj ckpap in ckpal.KPAproj)               // for each project
                 {
+                    if (ckpap.sProjName == projname)               // for the project selected
                     if (ckpap.sProjName == projname)               // for the project selected
                     {
                         foreach (cKPAapps ckpaa in ckpap.KPAapps)       // for each app in the project
@@ -452,6 +459,7 @@ namespace BTHistoryReader
                                 if (Systems[ckpaa.iSystem] == sysname)
                                 {
                                     ckpaa.nConcurrent = value;
+                                    ckpaa.bUseThisAppInStatsListBox = bLVchecked;
                                 }
                             }
                         }
@@ -461,7 +469,7 @@ namespace BTHistoryReader
         }
 
         // same as above but used to set all of them to 1 ie: a reset.
-        private void BackfitAllConcurrency(int value)
+        private void BackfitAllConcurrency(int value, bool bChecked)
         {
             foreach (cKPAlocs ckpal in KPAlocs)                          // for each system
             {
@@ -470,6 +478,11 @@ namespace BTHistoryReader
                     foreach (cKPAapps ckpaa in ckpap.KPAapps)       // for each app in the project
                     {
                         ckpaa.nConcurrent = value;
+                        if(!ckpaa.bUseThisAppInStatsListBox)
+                        {
+                            int i = 0;
+                        }
+                        ckpaa.bUseThisAppInStatsListBox = bChecked;
                     }
                 }
             }
@@ -478,6 +491,7 @@ namespace BTHistoryReader
         // this is the "Apply" button, not sure how to rename it w/o design form going crazy on me
         private void button1_Click(object sender, EventArgs e)
         {
+            int i = 0;
             string strWhatToAverage = "";
             bool bAny = false;
             string strSysName, strProjName, strAppName;
@@ -488,8 +502,9 @@ namespace BTHistoryReader
                 strSysName = itm.SubItems[1].Text;
                 nConcurrent = Convert.ToInt32(itm.SubItems[0].Text);
                 strProjName = LBoxProjects.Text;
-                strAppName = LBoxApps.Text;
-                BackfitConcurrency(strSysName, strProjName, strAppName, nConcurrent);
+                strAppName = "";
+                bool bBad = GetNameFromBox(LBoxApps.Text, ref strAppName);
+                BackfitConcurrency(strSysName, strProjName, strAppName, nConcurrent, itm.Checked);
                 if (itm.Checked)
                 {
                     strWhatToAverage += "-" + strSysName ;
@@ -533,7 +548,7 @@ namespace BTHistoryReader
                 itm.Checked = true;
                 itm.Text = "1";
             }
-            BackfitAllConcurrency( 1);
+            BackfitAllConcurrency( 1,true);
             CalcAllValues(Last_sProj, Last_sApp, false, strAverageAll);
         }
 
@@ -606,6 +621,14 @@ namespace BTHistoryReader
             return (sa.dValues.Count > 0) ;
         }
 
+        private bool GetNameFromBox(string strIn, ref string strOut)
+        {
+            int i = strIn.IndexOf(") ");  // really need the name of the app
+            if (i < 2) return false;        // cant be
+            strOut = strIn.Substring(i + 2);
+            return true;
+        }
+
         // using the listbox of apps, extract just the name of the app and save the name locally just below
         // then use what is in the List to add the apps data to the series for graphics
         // could be rewritten to avoid the little list.
@@ -613,14 +636,14 @@ namespace BTHistoryReader
         private List<string> strAppsForSeries;
         private bool FormSeriesFromApps(int n)  // n is number of entries in the listview (number selected rather)
         {
+            string strApp = "";
             strAppsForSeries = new List<string>(n);
             //foreach(int j in LBoxApps.SelectedIndices)    // todo need to redesign multiselect before it works correctl
             foreach (string strInfo in LBoxApps.Items)
             {
                 //string strInfo = LBoxApps.Items[j].ToString();
-                int i = strInfo.IndexOf(") ");  // really need the name of the app
-                if (i < 2) return false;        // cant be
-                string strApp = strInfo.Substring(i + 2);
+                bool bGood = GetNameFromBox(strInfo, ref strApp);
+                if(!bGood)return false;
                 strAppsForSeries.Add(strApp);
             }
             MySeriesData = new List<cSeriesData>(n);
@@ -659,9 +682,10 @@ namespace BTHistoryReader
                     cSeriesData sa = new cSeriesData();
                     NumChecked++;
                     sa.strSysName = itm.SubItems[1].Text;   // this will be the first item to be seen in the list view
-                    int i = LBoxApps.Text.IndexOf(") ");  // really need the name of the app
-                    if (i < 2) return false;        // cant be
-                    sa.strAppName = LBoxApps.Text.Substring(i + 2);
+                    sa.strAppName = "";
+                    bool bGood = GetNameFromBox(LBoxApps.Text, ref sa.strAppName);
+                    if (!bGood) return false;
+
                     sa.strProjName = LBoxProjects.Text;
                     sa.dValues = new List<double>();
                     sa.ShowType = eShowType.DoingSystems;

@@ -20,7 +20,7 @@ namespace BTHistoryReader
         private string SeriesName = "";
         private double dBig = -1;
         double dSmall = 1e6;
-        private string strSeries = "Elapsed Time in ";
+        private string strSeries = "X-Axis: Elapsed Time in ";
         // note to myself, elspased time is always in minutes
         private int CurrentNumberSeriesDisplayable = 0; // number available to view
         private int CurrentSeriesDisplayed = -1;        // the one being shown IFF only one series is shown else -1

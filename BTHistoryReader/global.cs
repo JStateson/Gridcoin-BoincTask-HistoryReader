@@ -63,6 +63,8 @@ namespace BTHistoryReader
             sAppName = sApp;
         }
 
+        // lookup the dataset name and see if it can be subclassed
+        // to allow differenct classes of data to be identified by color 
         private string GetAppName(string sFullName, string sProj)
         {
             int iTerm;
@@ -230,6 +232,9 @@ namespace BTHistoryReader
         {
             // todo
         }
+
+        // sNameFull is the dataset name
+        // sname is the abbreviated datasaet (if any) that could be a subclass of the data
         public int NameInsert(string sNameFull, string sProj)
         {
             int n = DataNameInfo.Count;
@@ -448,7 +453,7 @@ public class cSeriesData
         
     }
 
-
+    // AppName could be "Milkyway@home Separation
     public class cAppName
     {
         public string Name;
@@ -456,6 +461,7 @@ public class cSeriesData
         public cDataName DataName;
         public string strPlanClass;
         public string strName;
+        public bool bUseThisAppInStatsListBox;
         public List<int> LineLoc;
         public List<double> dElapsedTime;
         public List<int> DataSetGroup;
@@ -518,12 +524,18 @@ public class cSeriesData
             get { return LineLoc.Count; }
         }
         // the following is not being used it seems
-        public void init(string sApp, string strProj)
+        public void init(string sApp, string strProj, bool bIsUnk)
         {
             Name = sApp;
             DataName = new cDataName();
             DataName.Init(sApp);
             DataName.CurrentProject = strProj;
+            LineLoc = new List<int>();
+            dElapsedTime = new List<double>();
+            DataSetGroup = new List<int>();
+            bIsValid = new List<bool>();
+            bIsUnknown = bIsUnk;
+            //bUseThisAppInStatsListBox = true;   // unless specified otherwise in listbox
         }
         public bool bIsUnknown;
     }
@@ -593,12 +605,8 @@ public class cSeriesData
         public cAppName AddApp(string strName, string strPC)
         {
             cAppName AppName = new cAppName();
+            AppName.init(strName, ProjName,false);
             AppName.ptrKPA = this;
-            AppName.init(strName, ProjName);
-            AppName.LineLoc = new List<int>();
-            AppName.dElapsedTime = new List<double>();
-            AppName.DataSetGroup = new List<int>();
-            AppName.bIsValid = new List<bool>();
             AppName.strPlanClass = strPC;
             AppName.Name = strName + " [" + strPC + "]";
             KnownApps.Add(AppName);
@@ -609,15 +617,10 @@ public class cSeriesData
         public cAppName AddUnkApp(string strIn)
         {
             cAppName AppName = new cAppName();
-            AppName.init(strIn, ProjName);
+            AppName.init(strIn, ProjName,true);
             AppName.ptrKPA = this;
-            AppName.LineLoc = new List<int>();
-            AppName.dElapsedTime = new List<double>();
-            AppName.DataSetGroup = new List<int>();
-            AppName.bIsValid = new List<bool>();
             KnownApps.Add(AppName);
             bIgnore = false;   
-            AppName.bIsUnknown = true;
             bContainsUnknownApps = true;
             return AppName;
         }
