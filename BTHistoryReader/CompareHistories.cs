@@ -51,7 +51,9 @@ namespace BTHistoryReader
             btnSelAllApp.Visible = bVisible;
             BtnClrAllApp.Visible = bVisible;
             BtnInvSelApp.Visible = bVisible;
+            lblWarnApps.Visible = bVisible;
             LBoxApps.SelectionMode = (bVisible ? SelectionMode.MultiExtended : SelectionMode.One);
+            ClearBoxSelections();
         }
 
         public class cKPAproj
@@ -144,7 +146,7 @@ namespace BTHistoryReader
             LBoxApps.Items.Clear();
             LBoxProjects.Items.Clear();
             btf.CurrentSystem = "";
-            ShowAppSelects(false);              // todo need implement multi-select better as systems are list for just one item
+            //ShowAppSelects(false);              // todo need implement multi-select better as systems are list for just one item
                                                 // not all those selected in the listbox
             EstimateLineCount();
             foreach (string strHisFile in btf.AllHistories)
@@ -249,6 +251,7 @@ namespace BTHistoryReader
         // systems have unique names but when pasted together they might lose uniquness so we are surrounding them
         // with a dash.  The checkboxes for which systems to ignore are not always accssible so it is convenient to concatonate. 
         // file requested systems together and then see if a particular project in the the string
+        // not used anymore
         private bool bUseThisSystem(string strProjName, string strListOfUsed)
         {
             string strQualifier;
@@ -265,8 +268,22 @@ namespace BTHistoryReader
             return "\u00F7" + n.ToString();
         }
 
+        // test to see if app name is one of the ones selected
+        private bool bIsAppSelected(string sAppName)
+        {
+            string strName = "";
+            bool bGood=false;
+            foreach (int i in LBoxApps.SelectedIndices)
+            {
+                bGood = GetNameFromBox(LBoxApps.Items[i].ToString(), ref strName);
+                if (!bGood) return false;
+                if (strName == sAppName) return true;
+            }
+            return false;
+        }
 
         // if bMakeTable is not true then we are recalculating using number of devices from table
+        // 7-1-2019  ignore sApp, use either the ones selected or all if none selected  
         private void CalcAllValues(string sProj, string sApp, bool bMakeTable, string strSystems)
         {
             TBoxResults.Text = "";
@@ -282,6 +299,10 @@ namespace BTHistoryReader
             bool bShowFL = cboxFL.Checked;
             int MaxAllowed = Convert.ToInt32(tbSumCnt.Text);
             bool bShowSummary = false;
+
+            bool bUseAll = LBoxApps.SelectedIndices.Count == 0;
+            bool bUseThis;
+            bool bCandidate;
 
             Last_sProj = sProj;
             Last_sApp = sApp;
@@ -304,13 +325,13 @@ namespace BTHistoryReader
                     {                                             // we may want this in results if has any data
                         foreach (cKPAapps ckpaa in ckpap.KPAapps)                           // for each app in the project
                         {
-                            if (ckpaa.sAppName == sApp)                                     // if it is the app we want then do analysis
+                            bCandidate = bUseAll | bIsAppSelected(ckpaa.sAppName);
+                            bUseThis = (sApp == "all") ? bCandidate : ckpaa.sAppName == sApp;
+                            if (bUseThis)  
                             {
                                 if (ckpaa.dLelapsedTime.Count == 0)                         // must have data
                                     continue;
                                 strLoc = Systems[ckpaa.iSystem];
-                                // the following returns false if a system is unchecked as the name is not added in
-                                if (!bUseThisSystem(strLoc, strSystems)) continue;          // not sure why I put system name into strloc
                                 if (bMakeTable)
                                 {
                                     SystemsCompared.Add(strLoc);
@@ -321,8 +342,8 @@ namespace BTHistoryReader
 
                                 else
                                 {
-                                    ckpaa.nConcurrent = GetConcurrency(strLoc);
                                 }
+                                if (!ckpaa.bUseThisAppInStatsListBox) continue;
                                 ncnt = 0;
                                 bShowSummary = bShowFL & (ckpaa.dLelapsedTime.Count > MaxAllowed);
                                 foreach (double d in ckpaa.dLelapsedTime)
@@ -363,17 +384,21 @@ namespace BTHistoryReader
 
         // uses a listview with checkbox to decide which system go into the calculation and which gpu's have multiple task
         // running on them and a count of how many results
-        private void UpdateAppInfo()
+        // if name is empty then calculate all
+        private void UpdateAppInfo(string strAll)
         {
             int i = 0;
-            string strAppSelected = LBoxApps.Text;
+            bool bGood;
+            string strAppSelected = "";
             string[] strSysConc;
             ListViewItem itm;
             LViewConc.Items.Clear();
-            int iString = strAppSelected.IndexOf(")");
-            if (iString <= 0) return;   // probably should assert this
+            if (strAll == "all")
+                strAppSelected = "all";
+            else
+                bGood = GetNameFromBox(LBoxApps.Text, ref strAppSelected);
             ShowPBar(true);
-            CalcAllValues(LBoxProjects.Text, strAppSelected.Substring(iString + 2), true, strAverageAll);
+            CalcAllValues(LBoxProjects.Text, strAppSelected, true, strAverageAll);
             foreach (string s in SystemsCompared)
             {
                 strSysConc = new string[3];
@@ -390,8 +415,11 @@ namespace BTHistoryReader
 
         private void LBoxApps_SelectedIndexChanged(object sender, EventArgs e)
         {
-            UpdateAppInfo();
+            string strApp;
             btnShowScatter.Visible = LBoxApps.Items.Count > 0;
+            LViewConc.Enabled = LBoxApps.SelectedIndices.Count == 1;
+            strApp = LViewConc.Enabled ? "" : "all";
+            UpdateAppInfo(strApp);
         }
 
         // look in listview for any concurrent gpu tasks
@@ -478,10 +506,6 @@ namespace BTHistoryReader
                     foreach (cKPAapps ckpaa in ckpap.KPAapps)       // for each app in the project
                     {
                         ckpaa.nConcurrent = value;
-                        if(!ckpaa.bUseThisAppInStatsListBox)
-                        {
-                            int i = 0;
-                        }
                         ckpaa.bUseThisAppInStatsListBox = bChecked;
                     }
                 }
@@ -506,16 +530,19 @@ namespace BTHistoryReader
                 bool bBad = GetNameFromBox(LBoxApps.Text, ref strAppName);
                 BackfitConcurrency(strSysName, strProjName, strAppName, nConcurrent, itm.Checked);
                 if (itm.Checked)
-                {
-                    strWhatToAverage += "-" + strSysName ;
                     bAny = true;
-                }
-                strWhatToAverage += "-";
+                // below not needed as we are saving the checkmarks during backfit
+                //if (itm.Checked)
+                //{
+                //    strWhatToAverage += "-" + strSysName ;
+                //    bAny = true;
+                //}
+                //strWhatToAverage += "-";
             }
-            if (bAny)
+           if (bAny)
                 CalcAllValues(Last_sProj, Last_sApp, false, strWhatToAverage);
-            else
-                UpdateAppInfo();
+           else
+                UpdateAppInfo("");
         }
 
         private void btnHelp_Click(object sender, EventArgs e)
@@ -549,7 +576,7 @@ namespace BTHistoryReader
                 itm.Text = "1";
             }
             BackfitAllConcurrency( 1,true);
-            CalcAllValues(Last_sProj, Last_sApp, false, strAverageAll);
+            CalcAllValues(Last_sProj, "", false, strAverageAll);
         }
 
         // for each specified app, in each specified system, accumulate elapsed time and find min amd max values.
@@ -597,6 +624,7 @@ namespace BTHistoryReader
                     {
                         foreach (cKPAapps ckpaa in ckpap.KPAapps)       // for each app in the project
                         {
+                            if (!ckpaa.bUseThisAppInStatsListBox) continue;
                             if(ckpaa.sAppName == sa.strAppName)         // is it one of the apps we want?
                             {
                                 if (ckpaa.dLelapsedTime.Count == 0)
@@ -629,28 +657,19 @@ namespace BTHistoryReader
             return true;
         }
 
-        // using the listbox of apps, extract just the name of the app and save the name locally just below
-        // then use what is in the List to add the apps data to the series for graphics
-        // could be rewritten to avoid the little list.
-        // this routine implements the scatter apps
-        private List<string> strAppsForSeries;
-        private bool FormSeriesFromApps(int n)  // n is number of entries in the listview (number selected rather)
+
+        private bool MergeAppInfo(int nSelected)
         {
+            bool bGood;
+            MySeriesData = new List<cSeriesData>();
             string strApp = "";
-            strAppsForSeries = new List<string>(n);
-            //foreach(int j in LBoxApps.SelectedIndices)    // todo need to redesign multiselect before it works correctl
-            foreach (string strInfo in LBoxApps.Items)
+            for (int i = 0; i < LBoxApps.SelectedIndices.Count; i++)
             {
-                //string strInfo = LBoxApps.Items[j].ToString();
-                bool bGood = GetNameFromBox(strInfo, ref strApp);
-                if(!bGood)return false;
-                strAppsForSeries.Add(strApp);
-            }
-            MySeriesData = new List<cSeriesData>(n);
-            foreach(string strName in strAppsForSeries)
-            {
+                int j = LBoxApps.SelectedIndices[i];
+                bGood = GetNameFromBox(LBoxApps.Items[j].ToString(), ref strApp);
+                if (!bGood) return false;
                 cSeriesData sa = new cSeriesData();
-                sa.strAppName = strName;
+                sa.strAppName = strApp;
                 sa.strProjName = LBoxProjects.Text;
                 sa.strSysName = ""; // not applicable 
                 sa.dValues = new List<double>();
@@ -666,9 +685,14 @@ namespace BTHistoryReader
                 }
                 else sa = null;
             }
-            return MySeriesData.Count > 0;
+            return MySeriesData.Count > 0; ;
         }
+        // using the listbox of apps, extract just the name of the app and save the name locally just below
+        // then use what is in the List to add the apps data to the series for graphics
+        // could be rewritten to avoid the little list.
+        // this routine implements the scatter apps
 
+ 
 
         // simular to above but scattering systems
         private bool FormSeriesFromSystems(int n)
@@ -707,9 +731,9 @@ namespace BTHistoryReader
             int n = LViewConc.Items.Count;
             if (rbScatApps.Checked)
             {
-                // n = LBoxApps.SelectedItems.Count; //todo need to think about the multiselect better
+                n = LBoxApps.SelectedItems.Count; //todo need to think about the multiselect better
                 if (n == 0) return false;
-                return FormSeriesFromApps(n);
+                return MergeAppInfo(n);
             }
             else
             {
@@ -734,18 +758,18 @@ namespace BTHistoryReader
 
         private void rbScatApps_CheckedChanged(object sender, EventArgs e)
         {
-            return; //todo need to redesign way list view is handeled befoer this can work
             ShowAppSelects(true);
+        }
+
+        private void ClearBoxSelections()
+        {
+            LBoxApps.SelectedIndices.Clear();
+            LViewConc.Items.Clear();
         }
 
         private void rbScatProj_CheckedChanged(object sender, EventArgs e)
         {
-            return;   //todo need to redesign way list view is handeled befoer this can work
             ShowAppSelects(false);
-            // transition to "one" allowed index does not leave clean state
-            // in the ListBox so force an update
-            UpdateAppInfo();
-            LViewConc.Refresh();
         }
 
         private void btnSelAllApp_Click(object sender, EventArgs e)
@@ -762,6 +786,7 @@ namespace BTHistoryReader
             {
                 LBoxApps.SetSelected(i, false);
             }
+            LViewConc.Items.Clear();
         }
 
         private void BtnInvSelApp_Click(object sender, EventArgs e)

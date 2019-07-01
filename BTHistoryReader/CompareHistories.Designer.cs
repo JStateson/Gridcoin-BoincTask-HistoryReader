@@ -66,6 +66,7 @@
             this.label5 = new System.Windows.Forms.Label();
             this.cboxFL = new System.Windows.Forms.CheckBox();
             this.TBoxResults = new System.Windows.Forms.TextBox();
+            this.lblWarnApps = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.groupBox5.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -380,8 +381,9 @@
             this.btnReset.Name = "btnReset";
             this.btnReset.Size = new System.Drawing.Size(75, 23);
             this.btnReset.TabIndex = 15;
-            this.btnReset.Text = "Reset";
-            this.toolTip1.SetToolTip(this.btnReset, "check all and set number concurrent to 1");
+            this.btnReset.Text = "Reset All";
+            this.toolTip1.SetToolTip(this.btnReset, "check all and set number concurrent to 1\r\nincludeing those not shown in the stats" +
+        " box");
             this.btnReset.UseVisualStyleBackColor = false;
             this.btnReset.Click += new System.EventHandler(this.btnReset_Click);
             // 
@@ -424,7 +426,7 @@
             // 
             this.lblWarnApply.AutoSize = true;
             this.lblWarnApply.ForeColor = System.Drawing.Color.Red;
-            this.lblWarnApply.Location = new System.Drawing.Point(140, 430);
+            this.lblWarnApply.Location = new System.Drawing.Point(140, 424);
             this.lblWarnApply.Name = "lblWarnApply";
             this.lblWarnApply.Size = new System.Drawing.Size(122, 13);
             this.lblWarnApply.TabIndex = 17;
@@ -479,12 +481,23 @@
             this.TBoxResults.TabIndex = 9;
             this.TBoxResults.WordWrap = false;
             // 
+            // lblWarnApps
+            // 
+            this.lblWarnApps.AutoSize = true;
+            this.lblWarnApps.ForeColor = System.Drawing.Color.Red;
+            this.lblWarnApps.Location = new System.Drawing.Point(140, 444);
+            this.lblWarnApps.Name = "lblWarnApps";
+            this.lblWarnApps.Size = new System.Drawing.Size(230, 13);
+            this.lblWarnApps.TabIndex = 19;
+            this.lblWarnApps.Text = "Cannot edit table if more than one app selected";
+            // 
             // CompareHistories
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
             this.ClientSize = new System.Drawing.Size(961, 463);
+            this.Controls.Add(this.lblWarnApps);
             this.Controls.Add(this.groupBox6);
             this.Controls.Add(this.lblWarnApply);
             this.Controls.Add(this.btnShowScatter);
@@ -557,5 +570,6 @@
         private System.Windows.Forms.Button BtnInvSelApp;
         private System.Windows.Forms.Button BtnClrAllApp;
         private System.Windows.Forms.Button btnSelAllApp;
+        private System.Windows.Forms.Label lblWarnApps;
     }
 }
