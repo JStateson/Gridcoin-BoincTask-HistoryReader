@@ -509,7 +509,9 @@ namespace BTHistoryReader
         private void cboxUseLog_CheckedChanged(object sender, EventArgs e)
         {
             double d = GetBestScaleingBottom(dSmall);
-            ChartScatter.ChartAreas["ChartArea1"].AxisX.Minimum = cboxUseLog.Checked ? Math.Max(0.1, d) : d ;
+            ChartScatter.ChartAreas["ChartArea1"].AxisX.Minimum = cboxUseLog.Checked ? Math.Max(0.01, d) : d ;
+            ChartScatter.ChartAreas["ChartArea1"].AxisX.MinorTickMark.Enabled  = true;
+            ChartScatter.ChartAreas["ChartArea1"].AxisX.MinorTickMark.Interval = 1;
             ChartScatter.ChartAreas["ChartArea1"].AxisX.IsLogarithmic = cboxUseLog.Checked;
             if(!cboxUseLog.Checked)
             {

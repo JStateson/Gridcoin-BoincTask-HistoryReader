@@ -417,8 +417,8 @@ namespace BTHistoryReader
         {
             string strApp;
             btnShowScatter.Visible = LBoxApps.Items.Count > 0;
-            LViewConc.Enabled = LBoxApps.SelectedIndices.Count == 1;
-            strApp = LViewConc.Enabled ? "" : "all";
+            LViewConc.Enabled = LBoxApps.SelectedIndices.Count == 1;        // needed as apply deos not work in multiselect
+            strApp = (LBoxApps.SelectedIndices.Count == 1) ? "" : "all";
             UpdateAppInfo(strApp);
         }
 

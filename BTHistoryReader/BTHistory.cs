@@ -891,6 +891,8 @@ namespace BTHistoryReader
                 {
                     AppName.NumberBadWorkUnits++;
                     tb_Info.Text += "Bad exit status line " + ThisProjectInfo[j].strLineNum + "\r\n";
+//                    continue;   // 7-july-2019 ignore bad data: had not effect as not used in calculationn anyway and
+// if plotted might be useful as one can click on the bad point and possibly find the dataset name
                 }
                 n -= nElapsedTime;                                  // get the correct start time as best as we can
                 ThisProjectInfo[j].time_t_Started = n;              // needed to calculate throughput
