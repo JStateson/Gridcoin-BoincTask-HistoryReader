@@ -158,6 +158,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="CH_image.png" />
+    <None Include="Resources\boinc_logo_33.gif" />
+    <None Include="Resources\boinc_logo.gif" />
     <None Include="Resources\BuildDate.txt" />
   </ItemGroup>
   <ItemGroup />

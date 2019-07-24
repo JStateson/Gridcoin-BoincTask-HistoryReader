@@ -61,7 +61,28 @@ namespace BTHistoryReader.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Sat 06/01/2019  1:39:59.59 .
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap boinc_logo {
+            get {
+                object obj = ResourceManager.GetObject("boinc_logo", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap boinc_logo_33 {
+            get {
+                object obj = ResourceManager.GetObject("boinc_logo_33", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wed 07/24/2019 11:52:33.96 
+        ///.
         /// </summary>
         internal static string BuildDate {
             get {

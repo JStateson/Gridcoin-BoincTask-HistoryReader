@@ -65,6 +65,7 @@
             this.tb_Results = new System.Windows.Forms.TextBox();
             this.rbThroughput = new System.Windows.Forms.RadioButton();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.btnLkCr = new System.Windows.Forms.Button();
             this.cb_SelProj = new System.Windows.Forms.ComboBox();
             this.lb_nApps = new System.Windows.Forms.Label();
             this.lb_nProj = new System.Windows.Forms.Label();
@@ -106,7 +107,7 @@
             this.panel1.Controls.Add(this.btn_OpenHistory);
             this.panel1.Location = new System.Drawing.Point(12, 12);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(937, 534);
+            this.panel1.Size = new System.Drawing.Size(1000, 534);
             this.panel1.TabIndex = 0;
             this.panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.panel1_Paint);
             // 
@@ -258,7 +259,7 @@
             this.gb_filter.Controls.Add(this.lb_SelWorkUnits);
             this.gb_filter.Location = new System.Drawing.Point(534, 41);
             this.gb_filter.Name = "gb_filter";
-            this.gb_filter.Size = new System.Drawing.Size(382, 478);
+            this.gb_filter.Size = new System.Drawing.Size(448, 478);
             this.gb_filter.TabIndex = 6;
             this.gb_filter.TabStop = false;
             this.gb_filter.Text = "Filter";
@@ -280,9 +281,9 @@
             // 
             this.groupBox5.Controls.Add(this.btnPlotET);
             this.groupBox5.Controls.Add(this.btnPlot);
-            this.groupBox5.Location = new System.Drawing.Point(269, 311);
+            this.groupBox5.Location = new System.Drawing.Point(321, 311);
             this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(107, 118);
+            this.groupBox5.Size = new System.Drawing.Size(110, 118);
             this.groupBox5.TabIndex = 21;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Above Selections";
@@ -361,7 +362,7 @@
             // lb_NumSel
             // 
             this.lb_NumSel.AutoSize = true;
-            this.lb_NumSel.Location = new System.Drawing.Point(168, 373);
+            this.lb_NumSel.Location = new System.Drawing.Point(167, 373);
             this.lb_NumSel.Name = "lb_NumSel";
             this.lb_NumSel.Size = new System.Drawing.Size(78, 13);
             this.lb_NumSel.TabIndex = 14;
@@ -393,7 +394,7 @@
             // 
             this.lb_LocMax.AutoSize = true;
             this.lb_LocMax.CausesValidation = false;
-            this.lb_LocMax.Location = new System.Drawing.Point(170, 313);
+            this.lb_LocMax.Location = new System.Drawing.Point(139, 313);
             this.lb_LocMax.Name = "lb_LocMax";
             this.lb_LocMax.Size = new System.Drawing.Size(74, 13);
             this.lb_LocMax.TabIndex = 11;
@@ -404,7 +405,7 @@
             // 
             this.lbTimeContinunity.AutoSize = true;
             this.lbTimeContinunity.CausesValidation = false;
-            this.lbTimeContinunity.Location = new System.Drawing.Point(169, 339);
+            this.lbTimeContinunity.Location = new System.Drawing.Point(139, 344);
             this.lbTimeContinunity.Name = "lbTimeContinunity";
             this.lbTimeContinunity.Size = new System.Drawing.Size(91, 13);
             this.lbTimeContinunity.TabIndex = 10;
@@ -441,7 +442,7 @@
             this.lb_SelWorkUnits.Location = new System.Drawing.Point(19, 39);
             this.lb_SelWorkUnits.Name = "lb_SelWorkUnits";
             this.lb_SelWorkUnits.SelectionMode = System.Windows.Forms.SelectionMode.MultiSimple;
-            this.lb_SelWorkUnits.Size = new System.Drawing.Size(317, 214);
+            this.lb_SelWorkUnits.Size = new System.Drawing.Size(412, 214);
             this.lb_SelWorkUnits.TabIndex = 7;
             this.toolTip1.SetToolTip(this.lb_SelWorkUnits, "Select a start and a stop");
             this.lb_SelWorkUnits.SelectedIndexChanged += new System.EventHandler(this.lb_SelWorkUnits_SelectedIndexChanged);
@@ -508,6 +509,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.btnLkCr);
             this.groupBox1.Controls.Add(this.cb_SelProj);
             this.groupBox1.Controls.Add(this.lb_nApps);
             this.groupBox1.Controls.Add(this.lb_nProj);
@@ -524,6 +526,19 @@
             this.groupBox1.TabIndex = 4;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "History Selections";
+            // 
+            // btnLkCr
+            // 
+            this.btnLkCr.BackColor = System.Drawing.SystemColors.Info;
+            this.btnLkCr.Font = new System.Drawing.Font("Arial Narrow", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnLkCr.Location = new System.Drawing.Point(12, 103);
+            this.btnLkCr.Name = "btnLkCr";
+            this.btnLkCr.Size = new System.Drawing.Size(68, 39);
+            this.btnLkCr.TabIndex = 25;
+            this.btnLkCr.Text = "Lookup\r\nCredit";
+            this.toolTip1.SetToolTip(this.btnLkCr, "Launches Project Info Pages");
+            this.btnLkCr.UseVisualStyleBackColor = false;
+            this.btnLkCr.Click += new System.EventHandler(this.btnLkCr_Click);
             // 
             // cb_SelProj
             // 
@@ -574,6 +589,7 @@
             // 
             // tb_AvgCredit
             // 
+            this.tb_AvgCredit.BackColor = System.Drawing.SystemColors.Info;
             this.tb_AvgCredit.Location = new System.Drawing.Point(282, 100);
             this.tb_AvgCredit.Name = "tb_AvgCredit";
             this.tb_AvgCredit.Size = new System.Drawing.Size(57, 20);
@@ -660,7 +676,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(976, 558);
+            this.ClientSize = new System.Drawing.Size(1038, 558);
             this.Controls.Add(this.panel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
@@ -737,6 +753,7 @@
         private System.Windows.Forms.Button btnPlotET;
         private System.Windows.Forms.Button btnPlot;
         private System.Windows.Forms.Button btnScatSets;
+        private System.Windows.Forms.Button btnLkCr;
     }
 }
 

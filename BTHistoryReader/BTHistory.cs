@@ -832,7 +832,7 @@ namespace BTHistoryReader
             int nLimit = Convert.ToInt32(tboxLimit.Text);
             pbarLoading.Value = 0;
             if (AppName.LineLoc.Count == 0) return 0;
-            
+
 
             foreach (int i in AppName.LineLoc)  // this could be rewritten better but WTF, it was done before I got that splitlinestuff to work
             {
@@ -891,8 +891,8 @@ namespace BTHistoryReader
                 {
                     AppName.NumberBadWorkUnits++;
                     tb_Info.Text += "Bad exit status line " + ThisProjectInfo[j].strLineNum + "\r\n";
-//                    continue;   // 7-july-2019 ignore bad data: had not effect as not used in calculationn anyway and
-// if plotted might be useful as one can click on the bad point and possibly find the dataset name
+                    //                    continue;   // 7-july-2019 ignore bad data: had not effect as not used in calculationn anyway and
+                    // if plotted might be useful as one can click on the bad point and possibly find the dataset name
                 }
                 n -= nElapsedTime;                                  // get the correct start time as best as we can
                 ThisProjectInfo[j].time_t_Started = n;              // needed to calculate throughput
@@ -918,6 +918,7 @@ namespace BTHistoryReader
             double dSeconds = 0;
             int nItems, nDevices;
             double dUnitsPerSecond;
+            double ExpectedAvgCredit; // per 24 hous=rs
             int NumUnits = lb_SelWorkUnits.SelectedItems.Count;
             string sTemp, s1, s2;
 
@@ -956,9 +957,10 @@ namespace BTHistoryReader
             tb_Results.Text += "Secs per work unit per devices: " + (nDevices / dUnitsPerSecond).ToString("###,##0\r\n");
             tb_Results.Text += "Secs per work unit this system: " + (1.0 / dUnitsPerSecond).ToString("###,##0\r\n");
             dAvgCreditPerUnit = Convert.ToDouble(tb_AvgCredit.Text);
-            tb_Results.Text += "Credits/sec (system): " + (dUnitsPerSecond * dAvgCreditPerUnit).ToString("#,##0.00\r\n");
-
             tb_Results.Text += "Credits/sec (one device): " + (dUnitsPerSecond * dAvgCreditPerUnit / nDevices).ToString("##0.00\r\n");
+            tb_Results.Text += "Credits/sec (system): " + (dUnitsPerSecond * dAvgCreditPerUnit).ToString("#,##0.00\r\n");
+            tb_Results.Text += "System Daily Avg: " + (86400.0 * dUnitsPerSecond * dAvgCreditPerUnit).ToString("#,###,##0.0\r\n");
+
         }
 
         // using the selected items, take an average and the std and display
@@ -1517,7 +1519,7 @@ namespace BTHistoryReader
         {
             MySeriesData = new List<cSeriesData>();
             int iLoc = LookupProject(cb_SelProj.Text); //cb_SelProj.SelectedIndex;
-            bool bAny=false;
+            bool bAny = false;
             foreach (cAppName appName in KnownProjApps[iLoc].KnownApps)
             {
                 int n = appName.nAppEntries;
@@ -1529,7 +1531,7 @@ namespace BTHistoryReader
                     sa.strAppName = appName.Name;       // usually more than one app this must be first in listview
                     sa.strProjName = CurrentProject;    //only doing one project use this for title info
                     sa.dValues = new List<double>();
-                    foreach(double d in appName.dElapsedTime)
+                    foreach (double d in appName.dElapsedTime)
                     {
                         sa.dValues.Add(d / 60.0);   // probably should just use minutes to start with
                     }
@@ -1537,15 +1539,15 @@ namespace BTHistoryReader
 
                     sa.TheseSystems = new List<string>();   // these numbers are the index into the dataset name
                                                             // each app has list of names which is a duplicate problem maybe
-                    foreach(cNameValue nv in appName.DataName.DataNameInfo)
+                    foreach (cNameValue nv in appName.DataName.DataNameInfo)
                     {
                         sa.TheseSystems.Add(nv.DataName + " (" + nv.SizeGroup.ToString() + ")");
                     }
                     sa.iTheseSystem = new List<int>();  // this needs to match the name of the dataset
-                    for(int i = 0; i < sa.TheseSystems.Count;i++)
+                    for (int i = 0; i < sa.TheseSystems.Count; i++)
                     {
                         sa.iTheseSystem.Add(i); // there is no single repository of group numbers, each app
-                            // has its own copy so they are all numbered sequential
+                                                // has its own copy so they are all numbered sequential
                     }
                     sa.ShowType = eShowType.DoingSets;
                     sa.bIsValid = appName.bIsValid; //new List<bool>();
@@ -1562,6 +1564,70 @@ namespace BTHistoryReader
             if (FormSeriesFromSets())
                 ShowScatter();
 
+        }
+
+        public static void GoToSite(string url)
+        {
+            System.Diagnostics.Process.Start(url);
+        }
+
+        /*
+                 "Milkyway@Home","World Community Grid","SETI@home","Rosetta@home",
+                "GPUGRID","Einstein@Home","LHC@home","Asteroids@home","NumberFields@home",
+                "latinsquares","TN-Grid Platform","collatz","Collatz Conjecture",
+                "PrimeGrid","Universe@Home","Bitcoin Utopia", "nfs@home", "enigma",
+                "Amicable"}; 
+        */
+
+        private void btnLkCr_Click(object sender, EventArgs e)
+        {
+            string[] strProjNames =  {
+                "ilkyway","ommunity","SETI","Rosetta",
+                "GPUGRID","Einstein","LHC@home","Asteroids","NumberFields",
+                "latinsquares","TN-Grid Platform","ollatz",
+                "PrimeGrid","Universe","Bitcoin Utopia", "nfs@home", "enigma",
+                "Amicable"};
+            string[] ProjUrls = {
+                "https://milkyway.cs.rpi.edu/milkyway",
+                "https://www.worldcommunitygrid.org/",
+                "https://setiathome.berkeley.edu",
+                "https://boinc.bakerlab.org/",
+                //
+                "http://www.gpugrid.net",
+                "https://einsteinathome.org",
+                "https://lhcathome.cern.ch/lhcathome",
+                "http://asteroidsathome.net",
+                "https://numberfields.asu.edu/NumberFields/",
+                //
+                "https://boinc.multi-pool.info/latinsquares",
+                "http://gene.disi.unitn.it/test/",
+                "https://boinc.thesonntags.com/collatz",
+                //
+                "https://www.primegrid.com/",
+                "https://universeathome.pl/universe/",
+                "", // project info no longer exists
+                "https://escatter11.fullerton.edu/nfs/",
+                "http://www.enigmaathome.net"
+            };
+            GoToSite("www.stateson.net/hostprojectstats");
+            string strProj = cb_SelProj.SelectedItem.ToString().ToLower();
+            int iIndex= 0;
+            bool bFound = false;
+            foreach(string strName in strProjNames)
+            {
+                string strLower = strName.ToLower();
+                if(strProj.Contains(strLower))
+                {
+                    GoToSite(ProjUrls[iIndex]);
+                    bFound = true;
+                    break;
+                }
+                iIndex++;
+            }
+            if(!bFound)
+            {
+                tb_Info.Text += "missing url to " + strProj + "\r\n";
+            }
         }
     }
 }

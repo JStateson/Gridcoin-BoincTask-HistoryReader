@@ -1,4 +1,6 @@
-﻿using System;
+﻿//#define FormProjectNames
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -11,6 +13,8 @@ using System.Runtime.InteropServices;
 using System.Diagnostics;
 using Notepad;
 using System.IO;
+
+
 
 namespace BTHistoryReader
 {
@@ -193,13 +197,23 @@ namespace BTHistoryReader
                     }
                 }
             }
-            btf.ClearPreviousHistory(); // not sure why this was in the above loop ???
+            btf.ClearPreviousHistory();
+#if FormProjectNames
+            string strDebugTemp = "{";
+#endif
             foreach (string s in Projects)
             {
                 LBoxProjects.Items.Add(s);
+#if FormProjectNames
+                strDebugTemp += "\"" + s + "\","; 
+#endif
             }
+#if FormProjectNames
+            strDebugTemp += "}";
+#endif
         }
 
+        //{"Milkyway@Home","World Community Grid","SETI@home","Rosetta@home","GPUGRID","Einstein@Home","LHC@home","Asteroids@home","NumberFields@home","latinsquares","TN-Grid Platform","collatz","Collatz Conjecture","PrimeGrid","Universe@Home","Bitcoin Utopia"}
 
         // for the requested project, in all history files, sum up the number of results of any project with that name
         // and put each app name into the ProjApp table along with the sum of all results of that app
