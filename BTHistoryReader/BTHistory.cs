@@ -1618,7 +1618,12 @@ namespace BTHistoryReader
                 string strLower = strName.ToLower();
                 if(strProj.Contains(strLower))
                 {
-                    GoToSite(ProjUrls[iIndex]);
+                    string strUrl = ProjUrls[iIndex];
+                    if (strUrl == "")
+                    {
+                        break;
+                    }
+                    GoToSite(strUrl);
                     bFound = true;
                     break;
                 }
