@@ -460,7 +460,8 @@ namespace BTHistoryReader
             lb_nApps.Visible = false;
             bt_all.Enabled = false;
 
-            ofd_history.ShowDialog();
+            if (DialogResult.OK != ofd_history.ShowDialog())
+                return false;
             AllHistories = ofd_history.FileNames;
             if (AllHistories.Length > 1)
             {
@@ -747,6 +748,7 @@ namespace BTHistoryReader
         // standard bubble sort with exchange on index
         // could have used yourList.sort() but progress bar was needed
         // due to size of array
+        // 8-1-2019 when truncating, use only newest data
         public void SortTimeIncreasing(int nSort)
         {
             iSortIndex = new int[nSort];
@@ -816,7 +818,7 @@ namespace BTHistoryReader
             return time.ToString(@"hh\:mm\:ss");
         }
 
-        // this fills in the "ThisProjectInfo" structure with stuff from the single line in the history files of "the app"
+        // this fills in the "ThisProjectInfo" structure with stuff from each single line in the history files of "the app"
         public int FillProjectInfo(cAppName AppName)
         {
             string[] strSymbols;
@@ -830,22 +832,38 @@ namespace BTHistoryReader
             long n, nElapsedTime;
             bool bStopReading = cboxStopLoad.Checked;
             int nLimit = Convert.ToInt32(tboxLimit.Text);
+            int i, iStart, iTraverse, iCount;
             pbarLoading.Value = 0;
             if (AppName.LineLoc.Count == 0) return 0;
 
+            // this could be rewritten better but WTF, it was done before I got that splitlinestuff to work
+            // 8-1-2019 if truncating then use only last part of this table      
+            //foreach (int i in AppName.LineLoc) 
 
-            foreach (int i in AppName.LineLoc)  // this could be rewritten better but WTF, it was done before I got that splitlinestuff to work
+            iCount = AppName.LineLoc.Count;
+            iStart = 0;
+            if(bStopReading)
             {
+                if(iCount > nLimit)
+                {
+                    iStart = iCount - nLimit;
+                    iCount = nLimit;
+                    tb_Info.Text += " skipping to get last " + tboxLimit.Text + " out of " + AppName.LineLoc.Count.ToString() + " records\r\n";
+                }
+            }
+            for(iTraverse=0; iTraverse < iCount;  iTraverse++)
+            {
+                i = AppName.LineLoc[iTraverse + iStart];
                 bState = LinesHistory[i].Length > ExpectedLengthLine;
                 if (!bState)
                 {
                     break;
                 }
-                if (bStopReading && j >= nLimit)
-                {
-                    tb_Info.Text += " stopping after reading " + tboxLimit.Text + " out of " + AppName.LineLoc.Count.ToString() + " records\r\n";
-                    break;
-                }
+                //if (bStopReading && j >= nLimit)
+                //{
+                //    tb_Info.Text += " stopping after reading " + tboxLimit.Text + " out of " + AppName.LineLoc.Count.ToString() + " records\r\n";
+                //    break;
+                //}
                 iWTF = LinesHistory[i].IndexOf("WTFTODO_");
                 if (iWTF > 0)
                 {
