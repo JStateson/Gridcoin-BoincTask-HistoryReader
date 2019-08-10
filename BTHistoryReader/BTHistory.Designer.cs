@@ -60,6 +60,7 @@
             this.btnClear = new System.Windows.Forms.Button();
             this.lb_SelWorkUnits = new System.Windows.Forms.ListBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.cbGPUcompare = new System.Windows.Forms.CheckBox();
             this.rbIdle = new System.Windows.Forms.RadioButton();
             this.rbElapsed = new System.Windows.Forms.RadioButton();
             this.tb_Results = new System.Windows.Forms.TextBox();
@@ -82,6 +83,8 @@
             this.ofd_history = new System.Windows.Forms.OpenFileDialog();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.TimerShowBuild = new System.Windows.Forms.Timer(this.components);
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.cbShowError = new System.Windows.Forms.CheckBox();
             this.panel1.SuspendLayout();
             this.gboxOPFsettings.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -89,6 +92,7 @@
             this.groupBox5.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
+            this.groupBox3.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
@@ -107,7 +111,7 @@
             this.panel1.Controls.Add(this.btn_OpenHistory);
             this.panel1.Location = new System.Drawing.Point(12, 12);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1000, 534);
+            this.panel1.Size = new System.Drawing.Size(1000, 588);
             this.panel1.TabIndex = 0;
             this.panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.panel1_Paint);
             // 
@@ -243,7 +247,7 @@
             // 
             // gb_filter
             // 
-            this.gb_filter.Controls.Add(this.btnScatSets);
+            this.gb_filter.Controls.Add(this.groupBox3);
             this.gb_filter.Controls.Add(this.groupBox5);
             this.gb_filter.Controls.Add(this.btn_Filter);
             this.gb_filter.Controls.Add(this.btnCheckPrev);
@@ -259,7 +263,7 @@
             this.gb_filter.Controls.Add(this.lb_SelWorkUnits);
             this.gb_filter.Location = new System.Drawing.Point(534, 41);
             this.gb_filter.Name = "gb_filter";
-            this.gb_filter.Size = new System.Drawing.Size(448, 478);
+            this.gb_filter.Size = new System.Drawing.Size(448, 530);
             this.gb_filter.TabIndex = 6;
             this.gb_filter.TabStop = false;
             this.gb_filter.Text = "Filter";
@@ -268,7 +272,7 @@
             // 
             this.btnScatSets.Enabled = false;
             this.btnScatSets.ForeColor = System.Drawing.SystemColors.HotTrack;
-            this.btnScatSets.Location = new System.Drawing.Point(265, 442);
+            this.btnScatSets.Location = new System.Drawing.Point(116, 36);
             this.btnScatSets.Name = "btnScatSets";
             this.btnScatSets.Size = new System.Drawing.Size(111, 23);
             this.btnScatSets.TabIndex = 24;
@@ -281,9 +285,9 @@
             // 
             this.groupBox5.Controls.Add(this.btnPlotET);
             this.groupBox5.Controls.Add(this.btnPlot);
-            this.groupBox5.Location = new System.Drawing.Point(321, 311);
+            this.groupBox5.Location = new System.Drawing.Point(320, 296);
             this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(110, 118);
+            this.groupBox5.Size = new System.Drawing.Size(110, 100);
             this.groupBox5.TabIndex = 21;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Above Selections";
@@ -439,7 +443,7 @@
             this.lb_SelWorkUnits.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lb_SelWorkUnits.FormattingEnabled = true;
             this.lb_SelWorkUnits.ItemHeight = 14;
-            this.lb_SelWorkUnits.Location = new System.Drawing.Point(19, 39);
+            this.lb_SelWorkUnits.Location = new System.Drawing.Point(18, 32);
             this.lb_SelWorkUnits.Name = "lb_SelWorkUnits";
             this.lb_SelWorkUnits.SelectionMode = System.Windows.Forms.SelectionMode.MultiSimple;
             this.lb_SelWorkUnits.Size = new System.Drawing.Size(412, 214);
@@ -449,16 +453,29 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.cbGPUcompare);
             this.groupBox2.Controls.Add(this.rbIdle);
             this.groupBox2.Controls.Add(this.rbElapsed);
             this.groupBox2.Controls.Add(this.tb_Results);
             this.groupBox2.Controls.Add(this.rbThroughput);
             this.groupBox2.Location = new System.Drawing.Point(16, 352);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(500, 167);
+            this.groupBox2.Size = new System.Drawing.Size(500, 219);
             this.groupBox2.TabIndex = 5;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Type Analysis";
+            // 
+            // cbGPUcompare
+            // 
+            this.cbGPUcompare.AutoSize = true;
+            this.cbGPUcompare.Location = new System.Drawing.Point(12, 183);
+            this.cbGPUcompare.Name = "cbGPUcompare";
+            this.cbGPUcompare.Size = new System.Drawing.Size(93, 17);
+            this.cbGPUcompare.TabIndex = 7;
+            this.cbGPUcompare.Text = "Show by GPU";
+            this.toolTip1.SetToolTip(this.cbGPUcompare, "If checked braek out results and plot by Deviice #");
+            this.cbGPUcompare.UseVisualStyleBackColor = true;
+            this.cbGPUcompare.CheckedChanged += new System.EventHandler(this.cbGPUcompare_CheckedChanged);
             // 
             // rbIdle
             // 
@@ -490,7 +507,7 @@
             this.tb_Results.Multiline = true;
             this.tb_Results.Name = "tb_Results";
             this.tb_Results.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.tb_Results.Size = new System.Drawing.Size(349, 134);
+            this.tb_Results.Size = new System.Drawing.Size(349, 181);
             this.tb_Results.TabIndex = 4;
             // 
             // rbThroughput
@@ -672,11 +689,32 @@
             this.TimerShowBuild.Interval = 250;
             this.TimerShowBuild.Tick += new System.EventHandler(this.TimerShowBuild_Tick);
             // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(this.cbShowError);
+            this.groupBox3.Controls.Add(this.btnScatSets);
+            this.groupBox3.Location = new System.Drawing.Point(186, 406);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(244, 105);
+            this.groupBox3.TabIndex = 25;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "Dataset & Device plots";
+            // 
+            // cbShowError
+            // 
+            this.cbShowError.AutoSize = true;
+            this.cbShowError.Location = new System.Drawing.Point(6, 19);
+            this.cbShowError.Name = "cbShowError";
+            this.cbShowError.Size = new System.Drawing.Size(83, 17);
+            this.cbShowError.TabIndex = 25;
+            this.cbShowError.Text = "Show Errors";
+            this.cbShowError.UseVisualStyleBackColor = true;
+            // 
             // BTHistory
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1038, 558);
+            this.ClientSize = new System.Drawing.Size(1038, 612);
             this.Controls.Add(this.panel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
@@ -696,6 +734,8 @@
             this.groupBox2.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            this.groupBox3.ResumeLayout(false);
+            this.groupBox3.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -754,6 +794,9 @@
         private System.Windows.Forms.Button btnPlot;
         private System.Windows.Forms.Button btnScatSets;
         private System.Windows.Forms.Button btnLkCr;
+        private System.Windows.Forms.CheckBox cbGPUcompare;
+        private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.CheckBox cbShowError;
     }
 }
 

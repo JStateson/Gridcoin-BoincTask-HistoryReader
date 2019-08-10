@@ -29,6 +29,7 @@ namespace BTHistoryReader
         public long time_t_Completed;
         public long time_t_Diff_C_S;
         public string strUse;
+        public int iDeviceUsed; //if -1 then CPU or not known  only applies to GPUs
         public string strReceived;
         public string strVMem;
         public string strMem;
@@ -447,6 +448,7 @@ public class cSeriesData
         public long CompletedTime;
         public string strCompletedTime;
         public string use;
+        public int iDeviceUsed; // if gpu we want id else =1
         public double Received;
         public double vMem;
         public double Mem;
@@ -466,10 +468,12 @@ public class cSeriesData
         public List<double> dElapsedTime;
         public List<int> DataSetGroup;
         public List<bool> bIsValid;
-        public void AddETinfo(double d, int n)
+        //  device id not useful in tree struct but could be shown
+        public void AddETinfo(double d, int n, int j)
         {
             dElapsedTime.Add(d);
             DataSetGroup.Add(n);
+            //DeviceID.Add(j);
         }
         public string GetInfo
         {
@@ -480,11 +484,48 @@ public class cSeriesData
         public double StdRunTime;
         public bool bNoResults = false;
         public string strAvgStd = "";
+        public int nDevices;
+        /*
+        public List<int> DeviceID;
+        public string GetDeviceStats(int idev)
+        {
+            double d, dArt=0.0, dSrt=0.0;
+            int  nU = 0;
+            for (int i = 0; i < bIsValid.Count; i++)
+            {
+                if (bIsValid[i] && idev == DeviceID[i])
+                {
+                    d = dElapsedTime[i] / 60.0; // want minutes
+                    dArt += d;
+                    nU++;
+                }
+            }
+            if (nU == 0)
+            {
+                bNoResults = true;
+                return "Device " + idev.ToString() + "not present in this sample";
+            }
+            AvgRunTime /= nU;
+            for (int i = 0; i < bIsValid.Count; i++)
+            {
+                if (bIsValid[i] && idev == DeviceID[i])
+                {
+                    d = dElapsedTime[i] / 60.0;
+                    d = d - dArt;
+                    d = d * d;
+                    dSrt += d;
+                }
+            }
+            dSrt /= nU;
+            dSrt = Math.Sqrt(StdRunTime);
+            return "GPU" + idev.ToString() + ":"  + nU.ToString("##,##0") + "-" + dArt.ToString("###,##0.0") + "(" + dSrt.ToString("#,##0.0") + ")\r\n";        
+        }
+        */
         public bool DoAverages()            // return true if avg was calculated
         {
             int nUsed = 0;
             double d;
-
+            nDevices = 0;
             bNoResults = false;
             AvgRunTime = 0.0;
             StdRunTime = 0.0;
@@ -511,6 +552,7 @@ public class cSeriesData
                     d = d - AvgRunTime;
                     d = d * d;
                     StdRunTime += d;
+                    //nDevices = Math.Max(nDevices, DeviceID[i]); // GPUs are numbered 0..n-1 NOT USEFUL IN TREE STRUCT
                 }
             }
             StdRunTime /= nUsed;

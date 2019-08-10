@@ -28,6 +28,7 @@ namespace BTHistoryReader
             InitializeComponent();
             try
             {
+                // DEFALT IS TO USE CVS1  note that the 3 files slowly change in real time as they are updated
                 bool b = Properties.Settings.Default.TypeCVS;
                 if (!b) rbUseCVS.Checked = true;
                 else rbUseCVS1.Checked = true;
@@ -61,6 +62,9 @@ namespace BTHistoryReader
         static double dAvgCreditPerUnit;
         static int iPadSize;
         static int[] iSortIndex;
+        static int[] SortToInfo; // index created by sort so that the intems int he select box eacn easily located the actual items in
+                                      // the info table
+
         static int LastKnownProject = 0;
         public int NumberBadWorkUnits;
         static int ExpectedLengthLine = 100;
@@ -609,7 +613,7 @@ namespace BTHistoryReader
             int eInvalid = 0;   // invalid line in history (not complete or whatever)
             cAppName AppName;
             cKnownProjApps kpa;
-            int iGrp;   // which dataset group the record is in (dataset is the "name" of the data
+            int iLocDevice, jloc, iGrp;   // which dataset group the record is in (dataset is the "name" of the data
 
             bool bInformOnlyOnce = true;
             // find and identify any project in the file
@@ -651,12 +655,24 @@ namespace BTHistoryReader
                 // jys adding plan class info
                 AppName = KnownProjApps[RtnCode].SymbolInsert(OneSplitLine.Application + " [" + OneSplitLine.PlanClass + "]", 3 + iLine);  // first real data is in 5th line (0..4)
                 iGrp = AppName.DataName.NameInsert(OneSplitLine.Name, OneSplitLine.Project);
-                AppName.AddETinfo(OneSplitLine.dElapsedTimeCpu, iGrp);
+                iLocDevice = OneSplitLine.use.IndexOf("device "); //1234567
+                if (iLocDevice > 0)
+                {
+                    jloc = OneSplitLine.use.LastIndexOf(")");
+                    iLocDevice += 7;
+                    jloc -= iLocDevice;
+                    //string strDebug = OneSplitLine.use.Substring(iLocDevice, jloc);
+                    OneSplitLine.iDeviceUsed = Convert.ToInt32(OneSplitLine.use.Substring(iLocDevice, jloc));
+                }
+                else OneSplitLine.iDeviceUsed = -1;
+                AppName.AddETinfo(OneSplitLine.dElapsedTimeCpu, iGrp, OneSplitLine.iDeviceUsed);
                 // the above iGrp needs to go into ThisProjectInfo which unfortunately does not exist here
                 // and I do not want to rewrite this code at this time.
                 // going to append that value to the current history line
-                LinesHistory[iLine - 1] += "WTFTODO_" + iGrp.ToString();
-                AppName.bIsValid.Add(eInvalid == (int)eHistoryError.SeemsOK);
+                // the -1 on below subscripting was a big mistake
+                // note:  the WTFb was added for debugging as the device number was a problem and is not needed any more
+                LinesHistory[iLine + 3] += "WTFaTODO_" + iGrp.ToString() + "|"; // + "WTFbTODO_" + OneSplitLine.iDeviceUsed.ToString();
+                AppName.bIsValid.Add(OneSplitLine.State != 3);        //(eInvalid == (int)eHistoryError.SeemsOK);
                 if (AppName.bIsUnknown & bInformOnlyOnce)
                 {
                     tb_Info.Text += "Unk App " + AppName.GetInfo + " added to database\r\n";
@@ -752,6 +768,8 @@ namespace BTHistoryReader
         public void SortTimeIncreasing(int nSort)
         {
             iSortIndex = new int[nSort];
+            SortToInfo = new int[nSort];
+
             int i, j, k;
             int j1, j2;
             string sTemp;
@@ -764,7 +782,7 @@ namespace BTHistoryReader
                 SetPBARcnt(nSort / GetPBARmax());
                 lb_SelWorkUnits.UseWaitCursor = true;
             }
-            k = nSort - 2;
+            k = nSort - 1;
             tb_Info.Refresh();
             for (i = 0; i < nSort; i++)
                 iSortIndex[i] = i;
@@ -793,6 +811,7 @@ namespace BTHistoryReader
                 LinesWeRead = 0;
                 tb_Info.Text += "Displaying those items wait moment longer...\r\n";
             }
+            n = 0;
             for (i = 0; i < nSort; i++)
             {
                 LinesWeRead++;
@@ -804,6 +823,8 @@ namespace BTHistoryReader
                 j = iSortIndex[i];
                 if (!ThisProjectInfo[j].bState) continue;
                 sTemp = ThisProjectInfo[j].strOutput;
+                SortToInfo[n] = j;    //Convert.ToInt32(sTemp.Substring(0, iPadSize));
+                n++; 
                 lb_SelWorkUnits.Items.Add(sTemp);
             }
             pbarLoading.Visible = false;
@@ -827,7 +848,7 @@ namespace BTHistoryReader
             System.DateTime dt_this;
             string strWTF = "";
             int j = 0;
-            int iWTF = 0;
+            int iWTF = 0, jWTF ;
             bool bState, bState1;
             long n, nElapsedTime;
             bool bStopReading = cboxStopLoad.Checked;
@@ -864,13 +885,35 @@ namespace BTHistoryReader
                 //    tb_Info.Text += " stopping after reading " + tboxLimit.Text + " out of " + AppName.LineLoc.Count.ToString() + " records\r\n";
                 //    break;
                 //}
-                iWTF = LinesHistory[i].IndexOf("WTFTODO_");
+                iWTF = LinesHistory[i].IndexOf("WTFaTODO_");
                 if (iWTF > 0)
                 {
-                    iWTF += 8;
-                    strWTF = LinesHistory[i].Substring(iWTF);
+                    jWTF = LinesHistory[i].IndexOf("|");
+                    Debug.Assert(jWTF > 0);
+                    iWTF += 9;
+                    strWTF = LinesHistory[i].Substring(iWTF,(jWTF-iWTF));
                     ThisProjectInfo[j].DatasetGroup = Convert.ToInt32(strWTF);
                 }
+                iWTF = LinesHistory[i].IndexOf("device ");
+                if (iWTF > 0)
+                {
+                    iWTF += 7;
+                    jWTF = LinesHistory[i].Substring(iWTF).IndexOf(")");
+                    Debug.Assert(jWTF > 0);;
+                    strWTF = LinesHistory[i].Substring(iWTF,(jWTF));
+                    ThisProjectInfo[j].iDeviceUsed = Convert.ToInt32(strWTF);
+                }
+                /*  this was used for debugging
+                iWTF = LinesHistory[i].IndexOf("WTFbTODO_");
+                if (iWTF > 0)
+                {
+                    jWTF = LinesHistory[i].LastIndexOf("|");
+                    Debug.Assert(jWTF > 0);
+                    iWTF += 9;
+                    strWTF = LinesHistory[i].Substring(iWTF);
+                    ThisProjectInfo[j].iDeviceUsed = Convert.ToInt32(strWTF);
+                }
+                */
                 strSymbols = LinesHistory[i].Split('\t');
                 ThisProjectInfo[j].strLineNum = strSymbols[(int)eHindex.Run];
                 //RunNumber = Convert.ToInt32(ThisProjectInfo[j].strLineNum);
@@ -918,7 +961,7 @@ namespace BTHistoryReader
                 ThisProjectInfo[j].strElapsedTimeGpu = fmtHMS(Convert.ToInt64(strSymbols[(int)eHindex.ElapsedTimeGpu].ToString()));
                 sTemp += " " + ThisProjectInfo[j].strElapsedTimeCpu;
                 //    "(" + ThisProjectInfo[j].strElapsedTimeGpu + ")";
-                ThisProjectInfo[j].strOutput = sTemp;               // eventually put into our text box to allow selections
+                ThisProjectInfo[j].strOutput = sTemp + " D" + ThisProjectInfo[j].iDeviceUsed.ToString();               // eventually put into our text box to allow selections
                 j++;
             }
             SortTimeIncreasing(j);
@@ -960,8 +1003,8 @@ namespace BTHistoryReader
             k = s2.IndexOf("M ");
             s2 = s2.Substring(0, k + 1);
 
-            t_start = ThisProjectInfo[iSortIndex[i]].time_t_Started;
-            t_stop = ThisProjectInfo[iSortIndex[j]].time_t_Completed;
+            t_start = ThisProjectInfo[SortToInfo[i]].time_t_Started;
+            t_stop  = ThisProjectInfo[SortToInfo[j]].time_t_Completed;
 
             tb_Results.Text = "Start time " + s1 + "\r\n";
             tb_Results.Text += "Stop  time " + s2 + "\r\n";
@@ -998,13 +1041,21 @@ namespace BTHistoryReader
                 return;
             }
             i = lb_SelWorkUnits.SelectedIndices[0]; // difference between this shows the selection
-            j = lb_SelWorkUnits.SelectedIndices[1];
+            j = lb_SelWorkUnits.SelectedIndices[1]; // 8-9-2019 but these must be used to locate the actual valuea
             n = 1 + j - i;  // number of items to average
-            if (n < 2) return;
-            n = 0;
-            for (k = i; k <= j; k++)
+            if (n < 2)
             {
-                if (!ThisProjectInfo[k].bState) continue;
+                tb_Results.Text += "Need at least 2 items\r\n";
+                return;
+            }
+            n = 0;
+            for (int k1 = i; k1 <= j; k1++)
+            {
+                k = SortToInfo[k1];
+                if (!ThisProjectInfo[k].bState)
+                {
+                    continue;
+                }
                 d = ThisProjectInfo[k].dElapsedTime;
                 if (d == 0.0)
                 {
@@ -1016,14 +1067,15 @@ namespace BTHistoryReader
                 n++;
                 Avg += d;
 
-                strOut += d.ToString("###,##0.00") + "\t" + fmtHMS(l) + "\r\n";
+                strOut += d.ToString("###,##0.00") + "\t" + fmtHMS(l) + " D" +ThisProjectInfo[k].iDeviceUsed.ToString() + "\r\n";
             }
             if (n == 0) return;
             Avg /= n;
             l = Convert.ToInt64(Avg * 60.0);
             Std = 0;
-            for (k = i; k <= j; k++)
+            for (int k1 = i; k1 <= j; k1++)
             {
+                k = SortToInfo[k1];
                 if (!ThisProjectInfo[k].bState) continue;
                 d = ThisProjectInfo[k].dElapsedTime;
                 if (d == 0.0)
@@ -1094,9 +1146,116 @@ namespace BTHistoryReader
         }
 
 
+        private string CalcOneStat(int iDev, int iStart, int iStop)
+        {
+            string strResult = "GPU" + iDev.ToString() + " WUs:";
+            double d;
+            double Avg = 0.0;
+            double Std = 0.0;
+            long l;
+            int k, n = 0;
+            for (int k1 = iStart; k1 <= iStop; k1++)
+            {
+                k = SortToInfo[k1];
+                if (!ThisProjectInfo[k].bState || iDev != ThisProjectInfo[k].iDeviceUsed) continue;
+                d = ThisProjectInfo[k].dElapsedTime;
+                if (d == 0.0)
+                {
+                    Debug.Assert(false);
+                    continue; // bad or missing data was finally fixed.  Problem was bitcoin utopia had 0 for cpu
+                }                                                        // so putting in "0.1" for cpu but not if gpu is 0 also
+                l = Convert.ToInt64(d);
+                d /= 60.0;
+                n++;
+                Avg += d;
+            }
+            if(n == 0)
+            {
+                return strResult + " has no valid data\r\n";
+            }
+            Avg /= n;
+            l = Convert.ToInt64(Avg * 60.0);
+            Std = 0;
+            for (int k1 = iStart; k1 <= iStop; k1++)
+            {
+                k = SortToInfo[k1];
+                if (!ThisProjectInfo[k].bState || iDev != ThisProjectInfo[k].iDeviceUsed) continue;
+                d = ThisProjectInfo[k].dElapsedTime;
+                if (d == 0.0)
+                {
+                    Debug.Assert(false);        // 
+                    continue;
+                }
+                d = d / 60.0 - Avg;
+                Std += d * d;
+            }
+            Std = Math.Sqrt(Std / n);
+
+            return strResult + n.ToString("##,##0") + " -Stats- Avg:" + Avg.ToString("###,##0.0") + "(" + Std.ToString("#,##0.00") + ")\r\n";
+        }
+
+        private string CalcGPUstats(int nDevices,int iStart, int iStop)
+        {
+            string strResults = "There are " + nDevices.ToString() + " GPUs, units are minutes\r\n";
+            strResults += "Dev#   WU count  Avg and Std of avg\r\n";
+            for (int i = 0; i < nDevices;i++)
+            {
+                strResults += CalcOneStat(i, iStart, iStop);
+            }
+            return strResults;
+        }
+
+
+        private void FilterUsingGPUs()
+        {
+            // get start, stop and number of devices
+            int DeviceMax = -1;
+            int i, j, k, n;
+            long l;
+            string strOut = "";
+            int NumUnits = lb_SelWorkUnits.SelectedItems.Count;
+            if (NumUnits != 2)
+            {
+                tb_Results.Text = "you must select exactly two items\r\n";
+                return;
+            }
+            i = lb_SelWorkUnits.SelectedIndices[0]; // difference between this shows the selection
+            j = lb_SelWorkUnits.SelectedIndices[1];
+            n = 1 + j - i;  // number of items to average
+            if (n < 2)
+            {
+                tb_Results.Text += "Need at least 2 items\r\n";
+                return;
+            }
+            n = 0;
+            for (int k1 = i; k1 <= j; k1++)
+            {
+                k = SortToInfo[k1];
+                if (!ThisProjectInfo[k].bState) continue;
+                DeviceMax = Math.Max(DeviceMax, ThisProjectInfo[k].iDeviceUsed);
+            }
+            if(DeviceMax == -1)
+            {
+                    tb_Results.Text += "App does not use GPUs\r\n";
+                    return;
+            }
+
+            if (rbElapsed.Checked)
+            {
+                tb_Results.Text +=  CalcGPUstats(DeviceMax + 1, i, j);
+                return;
+            }
+        }
+
         // the first number shown in the selection box is line number in the history file, not the index to the project info table
         private void btn_Filter_Click(object sender, EventArgs e)
         {
+            tb_Results.Text = "";
+            if (cbGPUcompare.Checked)
+            {
+                FilterUsingGPUs();
+                return;
+            }
             if (rbElapsed.Checked) PerformStats();
             if (rbThroughput.Checked) PerformThruput();
             if (rbIdle.Checked)
@@ -1110,6 +1269,7 @@ namespace BTHistoryReader
         {
             lb_SelWorkUnits.SelectedIndices.Clear();
             ShowSelectable(false);
+            tb_Results.Text = "";
         }
 
         private void cb_AppNames_SelectedIndexChanged(object sender, EventArgs e)
@@ -1259,17 +1419,21 @@ namespace BTHistoryReader
                     return 0;
                 i = 0;
                 j = iSortIndex.Last();
-                tStart = ThisProjectInfo[iSortIndex[i]].time_t_Completed - Convert.ToInt64(ThisProjectInfo[iSortIndex[i]].dElapsedTime);
-                tEnd = ThisProjectInfo[iSortIndex[j]].time_t_Completed;
+                //tStart = ThisProjectInfo[iSortIndex[i]].time_t_Completed - Convert.ToInt64(ThisProjectInfo[iSortIndex[i]].dElapsedTime);
+                //tEnd = ThisProjectInfo[iSortIndex[j]].time_t_Completed;
+                tStart = ThisProjectInfo[SortToInfo[i]].time_t_Completed - Convert.ToInt64(ThisProjectInfo[iSortIndex[i]].dElapsedTime);
+                tEnd = ThisProjectInfo[SortToInfo[j]].time_t_Completed;
                 strTimeDiff = BestTimeUnits(tEnd - tStart);
                 lbSeriesTime.Text = "total series time: " + strTimeDiff;
                 return 0;
             }
             ShowSelectable(true);
             i = lb_SelWorkUnits.SelectedIndices[0]; // difference between this shows the selection
-            tStart = ThisProjectInfo[iSortIndex[i]].time_t_Completed - Convert.ToInt64(ThisProjectInfo[iSortIndex[i]].dElapsedTime);
+            //tStart = ThisProjectInfo[iSortIndex[i]].time_t_Completed - Convert.ToInt64(ThisProjectInfo[iSortIndex[i]].dElapsedTime);
+            tStart = ThisProjectInfo[SortToInfo[i]].time_t_Completed - Convert.ToInt64(ThisProjectInfo[SortToInfo[i]].dElapsedTime);
             j = lb_SelWorkUnits.SelectedIndices[1];
-            tEnd = ThisProjectInfo[iSortIndex[j]].time_t_Completed;
+            //tEnd = ThisProjectInfo[iSortIndex[j]].time_t_Completed;
+            tEnd = ThisProjectInfo[SortToInfo[j]].time_t_Completed;
             strTimeDiff = BestTimeUnits(tEnd - tStart);
             lbSeriesTime.Text = "Selected series time: " + strTimeDiff;
             n = 1 + j - i;
@@ -1330,7 +1494,7 @@ namespace BTHistoryReader
             // need to make sure the first one valid
             do
             {
-                int k = iSortIndex[i];
+                int k = SortToInfo[i]; //iSortIndex[i];
                 if (ThisProjectInfo[k].bState) break;
                 i++;
                 if (i >= j) return false;
@@ -1537,6 +1701,8 @@ namespace BTHistoryReader
         {
             MySeriesData = new List<cSeriesData>();
             int iLoc = LookupProject(cb_SelProj.Text); //cb_SelProj.SelectedIndex;
+            int jLoc;   // traverse pointer to see if data is bad or not
+            bool bGood;
             bool bAny = false;
             foreach (cAppName appName in KnownProjApps[iLoc].KnownApps)
             {
@@ -1549,9 +1715,19 @@ namespace BTHistoryReader
                     sa.strAppName = appName.Name;       // usually more than one app this must be first in listview
                     sa.strProjName = CurrentProject;    //only doing one project use this for title info
                     sa.dValues = new List<double>();
+                    jLoc = 0;
                     foreach (double d in appName.dElapsedTime)
                     {
-                        sa.dValues.Add(d / 60.0);   // probably should just use minutes to start with
+                        bGood = appName.bIsValid[jLoc];
+                        jLoc++;
+                        if(cbShowError.Checked)
+                            sa.dValues.Add(d / 60.0);   // probably should just use minutes to start with
+                        else
+                        {
+                            if (bGood)
+                                sa.dValues.Add(d / 60.0);
+                            else continue;
+                        }
                     }
                     sa.iSystem = appName.DataSetGroup; //  new List<int>();
 
@@ -1650,6 +1826,23 @@ namespace BTHistoryReader
             if(!bFound)
             {
                 tb_Info.Text += "missing url to " + strProj + "\r\n";
+            }
+        }
+
+        private void cbGPUcompare_CheckedChanged(object sender, EventArgs e)
+        {
+            if(cbGPUcompare.Checked)
+            {
+                rbElapsed.Checked = true;
+                rbThroughput.Enabled = false;
+                rbIdle.Enabled = false;
+                rbElapsed.Enabled = false;
+            }
+            else
+            {
+                rbThroughput.Enabled = true;
+                rbIdle.Enabled = true;
+                rbElapsed.Enabled = true;
             }
         }
     }
