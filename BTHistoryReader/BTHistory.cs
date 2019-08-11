@@ -1194,6 +1194,26 @@ namespace BTHistoryReader
             return strResult + n.ToString("##,##0") + " -Stats- Avg:" + Avg.ToString("###,##0.0") + "(" + Std.ToString("#,##0.00") + ")\r\n";
         }
 
+        private string CalcOnecredit(int iDev, int iStart, int iStop, ref double val)
+        {
+            double d = Convert.ToDouble(tb_AvgCredit.Text);
+            string strResult = "GPU" + iDev.ToString() + " ";
+            int n=0, k;
+            for (int k1 = iStart; k1 <= iStop; k1++)
+            {
+                k = SortToInfo[k1];
+                if (!ThisProjectInfo[k].bState || iDev != ThisProjectInfo[k].iDeviceUsed) continue;
+                n++;
+            }
+            if (n == 0)
+            {
+                return strResult + " has no valid data\r\n";
+            }
+            val = n * d / TimeIntervalMinutes;
+            return strResult + "(" + val.ToString("#,##0.00)");
+        }
+
+
         private string CalcGPUstats(int nDevices,int iStart, int iStop)
         {
             string strResults = "There are " + nDevices.ToString() + " GPUs, units are minutes\r\n";
@@ -1205,6 +1225,42 @@ namespace BTHistoryReader
             return strResults;
         }
 
+        private string CalcGPUcredits(int nDevices, int iStart, int iStop)
+        {
+            //1234567890123456789012345678901234567890123456
+            //         1         2         3         4
+            // |++++++++++++++++++++++++++++++++++++++++++++
+            // 46 chars in output area
+            int[] CostSizes = new int[nDevices];
+            int n = -1;
+            double d = 0, AvgAll = 0;
+            double e = -1;
+            int r; // the remainder of line
+            
+            for (int i = 0; i < nDevices; i++)
+            {
+                CostSizes[i] = CalcOnecredit(i, iStart, iStop, ref d).Length;
+                n = Math.Max(n, CostSizes[i]);
+                if (e < d) e = d;
+            }
+            r = 45 - n; // need this many + signs for the maximum 
+
+            for(int i = 0; i < nDevices;i++)
+            {
+                CostSizes[i] = n - CostSizes[i];
+                // above is how many spaces to pad the text
+            }
+            string strResults = "Using " + tb_AvgCredit.Text + " for average credit\r\nCredit per minute for " + nDevices.ToString() + " GPUs is\r\n";
+            for (int i = 0; i < nDevices; i++)
+            {
+                string strTemp = CalcOnecredit(i, iStart, iStop, ref d) + "        ".Substring(0, CostSizes[i]);
+                AvgAll += d;
+                double x = r * d / e;
+                int j = Convert.ToInt32(x) ;
+                strResults += strTemp + " |++++++++++++++++++++++++++++++++++++++++++++".Substring(0,j) + "\r\n";
+            }
+            return strResults + "System averages " + AvgAll.ToString("#,##0.0") + " credits per minute\r\n";
+        }
 
         private void FilterUsingGPUs()
         {
@@ -1212,7 +1268,6 @@ namespace BTHistoryReader
             int DeviceMax = -1;
             int i, j, k, n;
             long l;
-            string strOut = "";
             int NumUnits = lb_SelWorkUnits.SelectedItems.Count;
             if (NumUnits != 2)
             {
@@ -1244,6 +1299,15 @@ namespace BTHistoryReader
             {
                 tb_Results.Text +=  CalcGPUstats(DeviceMax + 1, i, j);
                 return;
+            }
+            else if(rbThroughput.Checked)
+            {
+                if (tb_AvgCredit.Text == "0")
+                {
+                    tb_Results.Text = "need to specify a credit value\r\nClick on Lookup Credit or just use 100\r\n";
+                    return;
+                }
+                tb_Results.Text += CalcGPUcredits(DeviceMax + 1, i, j);
             }
         }
 
@@ -1403,12 +1467,13 @@ namespace BTHistoryReader
 
         // see how many items the user selected in the elapsed time list
         // only allowed to select 2 items, a start and a stop 
+        double TimeIntervalMinutes = -1;
         private int CountSelected()
         {
             int i, j, n = lb_SelWorkUnits.SelectedIndices.Count;
             string strTimeDiff;
             long tStart, tEnd;
-
+            TimeIntervalMinutes = -1;
             lb_NumSel.Text = "None Selected";
             bt_all.Enabled = (lb_SelWorkUnits.Items.Count > 0);
             if (n != 2)
@@ -1419,8 +1484,6 @@ namespace BTHistoryReader
                     return 0;
                 i = 0;
                 j = iSortIndex.Last();
-                //tStart = ThisProjectInfo[iSortIndex[i]].time_t_Completed - Convert.ToInt64(ThisProjectInfo[iSortIndex[i]].dElapsedTime);
-                //tEnd = ThisProjectInfo[iSortIndex[j]].time_t_Completed;
                 tStart = ThisProjectInfo[SortToInfo[i]].time_t_Completed - Convert.ToInt64(ThisProjectInfo[iSortIndex[i]].dElapsedTime);
                 tEnd = ThisProjectInfo[SortToInfo[j]].time_t_Completed;
                 strTimeDiff = BestTimeUnits(tEnd - tStart);
@@ -1429,16 +1492,14 @@ namespace BTHistoryReader
             }
             ShowSelectable(true);
             i = lb_SelWorkUnits.SelectedIndices[0]; // difference between this shows the selection
-            //tStart = ThisProjectInfo[iSortIndex[i]].time_t_Completed - Convert.ToInt64(ThisProjectInfo[iSortIndex[i]].dElapsedTime);
             tStart = ThisProjectInfo[SortToInfo[i]].time_t_Completed - Convert.ToInt64(ThisProjectInfo[SortToInfo[i]].dElapsedTime);
             j = lb_SelWorkUnits.SelectedIndices[1];
-            //tEnd = ThisProjectInfo[iSortIndex[j]].time_t_Completed;
             tEnd = ThisProjectInfo[SortToInfo[j]].time_t_Completed;
             strTimeDiff = BestTimeUnits(tEnd - tStart);
             lbSeriesTime.Text = "Selected series time: " + strTimeDiff;
             n = 1 + j - i;
             lb_NumSel.Text = "Selected: " + n.ToString();
-
+            TimeIntervalMinutes = (tEnd - tStart) / 60.0;
             return n;
         }
 
@@ -1833,16 +1894,13 @@ namespace BTHistoryReader
         {
             if(cbGPUcompare.Checked)
             {
-                rbElapsed.Checked = true;
-                rbThroughput.Enabled = false;
                 rbIdle.Enabled = false;
-                rbElapsed.Enabled = false;
+                if (rbIdle.Checked)
+                    rbElapsed.Checked = true;
             }
             else
             {
-                rbThroughput.Enabled = true;
                 rbIdle.Enabled = true;
-                rbElapsed.Enabled = true;
             }
         }
     }
