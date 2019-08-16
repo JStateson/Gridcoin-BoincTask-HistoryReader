@@ -10,7 +10,9 @@ namespace BTHistoryReader
 {
     public partial class BTHistory : Form
     {
-
+        public int MaxDeviceCount;
+        int iStart = -1;
+        int iStop = -1;
         public int AnalysisType;
         public string ThisSystem = "";
         public cSplitHistoryValues OneSplitLine;    // use this for processing each line in history file;
@@ -1262,17 +1264,17 @@ namespace BTHistoryReader
             return strResults + "System averages " + AvgAll.ToString("#,##0.0") + " credits per minute\r\n";
         }
 
-        private void FilterUsingGPUs()
+        private bool FilterUsingGPUs(ref int DeviceMax, ref int iStart, ref int iStop)
         {
             // get start, stop and number of devices
-            int DeviceMax = -1;
+            DeviceMax = -1;
             int i, j, k, n;
             long l;
             int NumUnits = lb_SelWorkUnits.SelectedItems.Count;
             if (NumUnits != 2)
             {
                 tb_Results.Text = "you must select exactly two items\r\n";
-                return;
+                return false;
             }
             i = lb_SelWorkUnits.SelectedIndices[0]; // difference between this shows the selection
             j = lb_SelWorkUnits.SelectedIndices[1];
@@ -1280,9 +1282,11 @@ namespace BTHistoryReader
             if (n < 2)
             {
                 tb_Results.Text += "Need at least 2 items\r\n";
-                return;
+                return false;
             }
             n = 0;
+            iStart = i;
+            iStop = j;
             for (int k1 = i; k1 <= j; k1++)
             {
                 k = SortToInfo[k1];
@@ -1292,32 +1296,37 @@ namespace BTHistoryReader
             if(DeviceMax == -1)
             {
                     tb_Results.Text += "App does not use GPUs\r\n";
-                    return;
+                    return false;
             }
 
             if (rbElapsed.Checked)
             {
                 tb_Results.Text +=  CalcGPUstats(DeviceMax + 1, i, j);
-                return;
+                return true;
             }
             else if(rbThroughput.Checked)
             {
                 if (tb_AvgCredit.Text == "0")
                 {
                     tb_Results.Text = "need to specify a credit value\r\nClick on Lookup Credit or just use 100\r\n";
-                    return;
+                    return false;
                 }
                 tb_Results.Text += CalcGPUcredits(DeviceMax + 1, i, j);
             }
+            return true;
         }
 
         // the first number shown in the selection box is line number in the history file, not the index to the project info table
         private void btn_Filter_Click(object sender, EventArgs e)
         {
+
             tb_Results.Text = "";
             if (cbGPUcompare.Checked)
             {
-                FilterUsingGPUs();
+                MaxDeviceCount = -1;
+                iStart = -1;
+                iStop = -1;
+                FilterUsingGPUs(ref MaxDeviceCount, ref iStart, ref iStop);
                 return;
             }
             if (rbElapsed.Checked) PerformStats();
@@ -1463,6 +1472,7 @@ namespace BTHistoryReader
             btnPlotET.Enabled = bShow;
             btnCheckNext.Enabled = bShow;
             btnCheckPrev.Enabled = bShow;
+            btnGTime.Enabled = bShow;
         }
 
         // see how many items the user selected in the elapsed time list
@@ -1902,6 +1912,27 @@ namespace BTHistoryReader
             {
                 rbIdle.Enabled = true;
             }
+        }
+
+        private void btnGTime_Click(object sender, EventArgs e)
+        {
+            //MaxDeviceCount = -1;
+            //bt_all_Click(null, null);
+            //if (false == FilterUsingGPUs(ref MaxDeviceCount)) return;
+            if (iStart < 0 || iStop < 0)
+            {
+                cbGPUcompare.Checked = true;
+                bt_all_Click(null, null);
+                btn_Filter_Click(null, null);
+            }
+            timegraph DeviceGraph = new timegraph (ref ThisProjectInfo, 1+MaxDeviceCount, iStart, iStop, ref SortToInfo);
+            DeviceGraph.ShowDialog();
+            DeviceGraph.Dispose();
+        }
+
+        private void gb_filter_Enter(object sender, EventArgs e)
+        {
+
         }
     }
 }

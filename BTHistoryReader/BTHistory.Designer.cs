@@ -43,6 +43,9 @@
             this.btnAbout = new System.Windows.Forms.Button();
             this.btnShowProjectTree = new System.Windows.Forms.Button();
             this.gb_filter = new System.Windows.Forms.GroupBox();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.btnGTime = new System.Windows.Forms.Button();
+            this.cbShowError = new System.Windows.Forms.CheckBox();
             this.btnScatSets = new System.Windows.Forms.Button();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.btnPlotET = new System.Windows.Forms.Button();
@@ -83,16 +86,14 @@
             this.ofd_history = new System.Windows.Forms.OpenFileDialog();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.TimerShowBuild = new System.Windows.Forms.Timer(this.components);
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.cbShowError = new System.Windows.Forms.CheckBox();
             this.panel1.SuspendLayout();
             this.gboxOPFsettings.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.gb_filter.SuspendLayout();
+            this.groupBox3.SuspendLayout();
             this.groupBox5.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
-            this.groupBox3.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
@@ -267,12 +268,47 @@
             this.gb_filter.TabIndex = 6;
             this.gb_filter.TabStop = false;
             this.gb_filter.Text = "Filter";
+            this.gb_filter.Enter += new System.EventHandler(this.gb_filter_Enter);
+            // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(this.btnGTime);
+            this.groupBox3.Controls.Add(this.cbShowError);
+            this.groupBox3.Controls.Add(this.btnScatSets);
+            this.groupBox3.Location = new System.Drawing.Point(186, 406);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(244, 105);
+            this.groupBox3.TabIndex = 25;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "Dataset & Device plots";
+            // 
+            // btnGTime
+            // 
+            this.btnGTime.Enabled = false;
+            this.btnGTime.Location = new System.Drawing.Point(116, 68);
+            this.btnGTime.Name = "btnGTime";
+            this.btnGTime.Size = new System.Drawing.Size(75, 23);
+            this.btnGTime.TabIndex = 26;
+            this.btnGTime.Text = "Time Graph";
+            this.btnGTime.UseVisualStyleBackColor = true;
+            this.btnGTime.Click += new System.EventHandler(this.btnGTime_Click);
+            // 
+            // cbShowError
+            // 
+            this.cbShowError.AutoSize = true;
+            this.cbShowError.ForeColor = System.Drawing.SystemColors.HotTrack;
+            this.cbShowError.Location = new System.Drawing.Point(6, 19);
+            this.cbShowError.Name = "cbShowError";
+            this.cbShowError.Size = new System.Drawing.Size(123, 17);
+            this.cbShowError.TabIndex = 25;
+            this.cbShowError.Text = "Show Dataset Errors";
+            this.cbShowError.UseVisualStyleBackColor = true;
             // 
             // btnScatSets
             // 
             this.btnScatSets.Enabled = false;
             this.btnScatSets.ForeColor = System.Drawing.SystemColors.HotTrack;
-            this.btnScatSets.Location = new System.Drawing.Point(116, 36);
+            this.btnScatSets.Location = new System.Drawing.Point(116, 39);
             this.btnScatSets.Name = "btnScatSets";
             this.btnScatSets.Size = new System.Drawing.Size(111, 23);
             this.btnScatSets.TabIndex = 24;
@@ -285,9 +321,9 @@
             // 
             this.groupBox5.Controls.Add(this.btnPlotET);
             this.groupBox5.Controls.Add(this.btnPlot);
-            this.groupBox5.Location = new System.Drawing.Point(320, 296);
+            this.groupBox5.Location = new System.Drawing.Point(320, 269);
             this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(110, 100);
+            this.groupBox5.Size = new System.Drawing.Size(110, 93);
             this.groupBox5.TabIndex = 21;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Above Selections";
@@ -295,7 +331,7 @@
             // btnPlotET
             // 
             this.btnPlotET.Enabled = false;
-            this.btnPlotET.Location = new System.Drawing.Point(18, 72);
+            this.btnPlotET.Location = new System.Drawing.Point(18, 57);
             this.btnPlotET.Name = "btnPlotET";
             this.btnPlotET.Size = new System.Drawing.Size(75, 23);
             this.btnPlotET.TabIndex = 22;
@@ -307,7 +343,7 @@
             // btnPlot
             // 
             this.btnPlot.Enabled = false;
-            this.btnPlot.Location = new System.Drawing.Point(18, 33);
+            this.btnPlot.Location = new System.Drawing.Point(18, 21);
             this.btnPlot.Name = "btnPlot";
             this.btnPlot.Size = new System.Drawing.Size(75, 23);
             this.btnPlot.TabIndex = 21;
@@ -689,27 +725,6 @@
             this.TimerShowBuild.Interval = 250;
             this.TimerShowBuild.Tick += new System.EventHandler(this.TimerShowBuild_Tick);
             // 
-            // groupBox3
-            // 
-            this.groupBox3.Controls.Add(this.cbShowError);
-            this.groupBox3.Controls.Add(this.btnScatSets);
-            this.groupBox3.Location = new System.Drawing.Point(186, 406);
-            this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(244, 105);
-            this.groupBox3.TabIndex = 25;
-            this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Dataset & Device plots";
-            // 
-            // cbShowError
-            // 
-            this.cbShowError.AutoSize = true;
-            this.cbShowError.Location = new System.Drawing.Point(6, 19);
-            this.cbShowError.Name = "cbShowError";
-            this.cbShowError.Size = new System.Drawing.Size(83, 17);
-            this.cbShowError.TabIndex = 25;
-            this.cbShowError.Text = "Show Errors";
-            this.cbShowError.UseVisualStyleBackColor = true;
-            // 
             // BTHistory
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -729,13 +744,13 @@
             this.groupBox4.PerformLayout();
             this.gb_filter.ResumeLayout(false);
             this.gb_filter.PerformLayout();
+            this.groupBox3.ResumeLayout(false);
+            this.groupBox3.PerformLayout();
             this.groupBox5.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
-            this.groupBox3.ResumeLayout(false);
-            this.groupBox3.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -797,6 +812,7 @@
         private System.Windows.Forms.CheckBox cbGPUcompare;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.CheckBox cbShowError;
+        private System.Windows.Forms.Button btnGTime;
     }
 }
 

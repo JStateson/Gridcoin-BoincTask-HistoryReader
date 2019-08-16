@@ -38,6 +38,75 @@ namespace BTHistoryReader
         public int DatasetGroup;
     }
 
+    // for the time graph we need time (long) and elapsed time (double) and
+    // device id which is the list quantity
+    public class cDeviceGraphInfo
+    {
+        public long time_t;
+        public double dElapsed;
+    }
+    //https://stackoverflow.com/questions/15907556/how-do-you-set-datetime-range-on-x-axis-for-system-windows-forms-datavisualizati
+    public class cGraphInfo
+    {
+        public List<cDeviceGraphInfo> RawDevice;
+        public double[] time_m;
+        public double[] dElapsed;
+        public double mTimeSpan; // start to stop in minutes
+        public int NumEntries;
+        public long lStart;
+        private double mAvg, sAvg;
+        private System.DateTime dt_1970 = new System.DateTime(1970, 1, 1);
+        public double sAverageElapsed; // in seconds
+        public double AvgMinutes
+        {
+            get { return mAvg; }
+            set
+            {
+                mAvg = value;   // units are minutes
+                sAvg = mAvg * 60.0;
+                NumEntries = 0;
+                if (RawDevice.Count < 2) return;
+                lStart = RawDevice[0].time_t; 
+                // estimate number of intervals
+                int t;
+                int i=0,n, np=0;
+                int c = RawDevice.Count;
+                long nL, delta, time_t, diff = RawDevice[c - 1].time_t - lStart;
+                t = 1 + Convert.ToInt32(diff / sAvg);
+                dElapsed = new double[t];
+                mTimeSpan = diff / 60;
+                time_m = new double[t];
+                sAverageElapsed = 0;
+                do
+                {
+                    n = 1;
+                    nL = RawDevice[i].time_t;   // time in seconds from raw data
+                    time_t = nL - lStart;       // time in seconds since start point
+                    time_m[np] = time_t / 60.0;  // change seconds to minutes and save for x-axis
+                    dElapsed[np] = RawDevice[i].dElapsed;   // save y axis but will accumulate for average over specified minutes
+                    sAverageElapsed += RawDevice[i].dElapsed;
+                    do
+                    {
+                        delta = (RawDevice[i].time_t - lStart) - time_t;    // in seconds
+                        i++;
+                        if(i == c || delta > sAvg )
+                        {
+                            dElapsed[np] /= n;
+                            break;
+                        }
+                        dElapsed[np] += RawDevice[i].dElapsed;
+                        n++;
+                        sAverageElapsed += RawDevice[i].dElapsed;
+                    } while(true);
+                    np++;
+                    if (i == c) break;
+                } while (true);
+                NumEntries = np;
+            }
+        }
+
+    }
+
     public class cNameValue 
     {
         public string DataName;
