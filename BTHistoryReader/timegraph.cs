@@ -110,7 +110,7 @@ namespace BTHistoryReader
                 if (dij > dOffline)
                 {
                     // x axis is in hours not minutes
-                    Offline.Add((ThisProjectInfo[i].time_t_Completed - ThisProjectInfo[0].time_t_Completed) / 3600.0);
+                    Offline.Add((ThisProjectInfo[i].time_t_Completed - ThisProjectInfo[iSortToInfo[iStart]].time_t_Completed) / 3600.0);
                     TimeOffline.Add(dij / 60.0);
                 }
             }
