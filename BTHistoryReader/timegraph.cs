@@ -100,7 +100,7 @@ namespace BTHistoryReader
             dElapsedOffset /= iElapsedCount;
 
             //  would like to know if system was offline:  use 3 * elapsed offset to determine if offline
-            dOffline = 3 * dElapsedOffset;
+            dOffline = (3 * dElapsedOffset) / 60.0;
             for (int i1 = iStart; i1 < iStop - 1; i1++)
             {
                 int i = iSortToInfo[i1];
