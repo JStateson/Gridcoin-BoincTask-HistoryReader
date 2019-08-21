@@ -519,6 +519,7 @@ namespace BTHistoryReader
             InitLookupTable();
             DisallowCallbacks(true);
             LinesToReadThenIncrement = 0;
+            btnGTime.Enabled = false;
             if (FetchHistory())
             {
                 DisallowCallbacks(false);
@@ -1319,7 +1320,7 @@ namespace BTHistoryReader
         // the first number shown in the selection box is line number in the history file, not the index to the project info table
         private void btn_Filter_Click(object sender, EventArgs e)
         {
-
+            btnGTime.Enabled = true;
             tb_Results.Text = "";
             if (cbGPUcompare.Checked)
             {
@@ -1342,6 +1343,7 @@ namespace BTHistoryReader
         {
             lb_SelWorkUnits.SelectedIndices.Clear();
             ShowSelectable(false);
+            btnGTime.Enabled = false;
             tb_Results.Text = "";
         }
 
@@ -1472,7 +1474,6 @@ namespace BTHistoryReader
             btnPlotET.Enabled = bShow;
             btnCheckNext.Enabled = bShow;
             btnCheckPrev.Enabled = bShow;
-            btnGTime.Enabled = bShow;
         }
 
         // see how many items the user selected in the elapsed time list
@@ -1919,12 +1920,14 @@ namespace BTHistoryReader
             //MaxDeviceCount = -1;
             //bt_all_Click(null, null);
             //if (false == FilterUsingGPUs(ref MaxDeviceCount)) return;
-            if (iStart < 0 || iStop < 0)
-            {
-                cbGPUcompare.Checked = true;
-                bt_all_Click(null, null);
-                btn_Filter_Click(null, null);
-            }
+            if (iStart < 0 || iStop < 0) return;
+            /*
+                        {
+                            cbGPUcompare.Checked = true;
+                            bt_all_Click(null, null);
+                            btn_Filter_Click(null, null);
+                        } 
+             */
             timegraph DeviceGraph = new timegraph (ref ThisProjectInfo, 1+MaxDeviceCount, iStart, iStop, ref SortToInfo);
             DeviceGraph.ShowDialog();
             DeviceGraph.Dispose();
