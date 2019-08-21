@@ -45,6 +45,7 @@ namespace BTHistoryReader
             iSortToInfo = SortToInfo;
             iStart = iiStart;
             iStop = iiStop;
+            nudAvg.SelectedIndex = 3;
             PerformGraph();
         }
         
@@ -100,7 +101,7 @@ namespace BTHistoryReader
             dElapsedOffset /= iElapsedCount;
 
             //  would like to know if system was offline:  use 3 * elapsed offset to determine if offline
-            dOffline = (3 * dElapsedOffset) / 60.0;
+            dOffline = (mFilter * dElapsedOffset) / 60.0; // multipler was 3
             for (int i1 = iStart; i1 < iStop - 1; i1++)
             {
                 int i = iSortToInfo[i1];
