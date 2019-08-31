@@ -516,6 +516,7 @@ namespace BTHistoryReader
 
         private void btn_OpenHistory_Click(object sender, EventArgs e)
         {
+            tb_Info.Text = "";
             InitLookupTable();
             DisallowCallbacks(true);
             LinesToReadThenIncrement = 0;
