@@ -29,6 +29,7 @@ namespace BTHistoryReader
         private bool bShowDatasests;
         double fScaleMultiplier;
         string strScaleUnits;
+        bool bSeeError;
 
         private class cSaveOutlier
         {
@@ -54,9 +55,10 @@ namespace BTHistoryReader
         // https://stackoverflow.com/questions/56484451/unexpected-side-effect-setting-point-colors-in-chart-xaxis
         // solution was found:  use color.transparent in addition to point.isempty and
         // do not restore color of points that have been hidden
-        public ScatterForm(ref List<cSeriesData> refSD, string WhatsShowing)
+        public ScatterForm(ref List<cSeriesData> refSD, string WhatsShowing, bool bAllowSeeError)
         {
             InitializeComponent();
+            bSeeError = bAllowSeeError;
             switch(WhatsShowing)
             {
                 case "Datasets":
@@ -118,6 +120,10 @@ namespace BTHistoryReader
             }
             for(int i = 0; i < ThisSeriesData.Count; i++)
             {
+                if (ChartScatter.Series[i].Points.Count == 0)
+                {
+                    continue;
+                }
                 DataPoint p = new DataPoint();
                 p.Color = ChartScatter.Series[i].Points[0].Color;
                 SavedColoredPoints.Add(p);  // want to restore this color
@@ -222,7 +228,7 @@ namespace BTHistoryReader
             double d;
             for(int i = 0; i < n; i++)
             {
-                if (!sd.bIsValid[i]) continue;
+                if (!(sd.bIsValid[i] || bSeeError)) continue;
                 d = sd.dValues[i];
                 dSmall = Math.Min(dSmall, d);
                 dBig = Math.Max(dBig, d);

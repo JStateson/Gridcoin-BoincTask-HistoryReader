@@ -86,6 +86,7 @@
             this.ofd_history = new System.Windows.Forms.OpenFileDialog();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.TimerShowBuild = new System.Windows.Forms.Timer(this.components);
+            this.btnClrInfo = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.gboxOPFsettings.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -99,6 +100,7 @@
             // panel1
             // 
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel1.Controls.Add(this.btnClrInfo);
             this.panel1.Controls.Add(this.lblBuildDate);
             this.panel1.Controls.Add(this.pbarLoading);
             this.panel1.Controls.Add(this.gboxOPFsettings);
@@ -691,7 +693,7 @@
             this.tb_Info.Multiline = true;
             this.tb_Info.Name = "tb_Info";
             this.tb_Info.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.tb_Info.Size = new System.Drawing.Size(500, 68);
+            this.tb_Info.Size = new System.Drawing.Size(438, 68);
             this.tb_Info.TabIndex = 2;
             // 
             // lb_history_loc
@@ -724,6 +726,16 @@
             this.TimerShowBuild.Enabled = true;
             this.TimerShowBuild.Interval = 250;
             this.TimerShowBuild.Tick += new System.EventHandler(this.TimerShowBuild_Tick);
+            // 
+            // btnClrInfo
+            // 
+            this.btnClrInfo.Location = new System.Drawing.Point(466, 133);
+            this.btnClrInfo.Name = "btnClrInfo";
+            this.btnClrInfo.Size = new System.Drawing.Size(50, 23);
+            this.btnClrInfo.TabIndex = 13;
+            this.btnClrInfo.Text = "Clear";
+            this.btnClrInfo.UseVisualStyleBackColor = true;
+            this.btnClrInfo.Click += new System.EventHandler(this.btnClrInfo_Click);
             // 
             // BTHistory
             // 
@@ -813,6 +825,7 @@
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.CheckBox cbShowError;
         private System.Windows.Forms.Button btnGTime;
+        private System.Windows.Forms.Button btnClrInfo;
     }
 }
 

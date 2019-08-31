@@ -20,7 +20,10 @@ namespace BTHistoryReader
         public double dElapsedTime;
         public string strElapsedTimeGpu;    // actually this is the cpu time that is in parens ie: "00:02:45(00:00:17)"
         public double dElapsedCPU;  // this seems to really be CPU time
-        public string strState;     // seems a '3' here is aborted or bad
+        public string strState;     // note sure what this is
+        // seem good:  5,31,3, 4 but need to check for 0 in elapsed cpu and gpu
+        // seem bad:  6
+        // the above state is not to be used for error. if exit status is non-zero then error
         public bool bState; // if true then state is valid can can be counted in average & std computations
         public string strExitstatus;
         public string strReportedTime;
@@ -533,11 +536,22 @@ public class cSeriesData
         public string strPlanClass;
         public string strName;
         public bool bUseThisAppInStatsListBox;
-        public List<int> LineLoc;
+        public bool bUsesGPU;   // if uses gpu then gpu cannot be 0 elapsed time (except bitcoin utopia crap!!)
+        public List<int> LineLoc;       // offset or index into the history file. Index "4" is the history line identifier "1"
+                                        // the above can be used to extract a value from the history file
+                                        // subtract 3 from it to get the identifier.  the identifier is shown lb_SelWorkUnits
+                                        // as the first colume.  If the number in that first column is extracted then 3 must be added 
+                                        // to it if wanting to index into the history file.  One or the other may be available in different
+                                        // areas of the code
         public List<double> dElapsedTime;
         public List<int> DataSetGroup;
         public List<bool> bIsValid;
         //  device id not useful in tree struct but could be shown
+        public void AddUse(string strUse)
+        {
+            string strTemp = strUse.ToLower();
+            bUsesGPU = strTemp.Contains("gpu");
+        }
         public void AddETinfo(double d, int n, int j)
         {
             dElapsedTime.Add(d);

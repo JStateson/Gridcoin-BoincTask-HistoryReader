@@ -356,7 +356,7 @@ namespace BTHistoryReader
         public void ClearInfoTables()
         {
             tb_AvgCredit.Text = "0";
-            tb_Info.Text = "";
+            //tb_Info.Text = "";
             tb_Results.Text = "";
         }
 
@@ -610,7 +610,7 @@ namespace BTHistoryReader
         // save all information in the KnownProjApp table
         public int ProcessHistoryFile()
         {
-            bool bAnyData = false;
+            bool bAnyData = false, bTemp;
             int iLine = -4;  // if > 4 then 
             int RtnCode = 0;
             int eInvalid = 0;   // invalid line in history (not complete or whatever)
@@ -632,7 +632,13 @@ namespace BTHistoryReader
                 if (iLine < 1) continue;    // skip past header
                 // possible sanity check here: iLine is 1 and first token of "s" is also 1
                 eInvalid = OneSplitLine.StoreLineOfHistory(s, ExpectedLengthLine);
-                if (eInvalid != 0) continue;    // do not put 0 elapsed time into our results
+                if (eInvalid != 0)
+                {
+                    if (eInvalid == (int)eHistoryError.EndHistory)
+                        continue;
+                    //tb_Info.Text += "PHF: bad line " + iLine.ToString() + "\r\n";
+                    //continue;    // do not put 0 elapsed time into our results
+                }
                 RtnCode = LookupProj(OneSplitLine.Project);
                 if (RtnCode < 0)
                 {
@@ -657,6 +663,7 @@ namespace BTHistoryReader
                 // and put all info also 
                 // jys adding plan class info
                 AppName = KnownProjApps[RtnCode].SymbolInsert(OneSplitLine.Application + " [" + OneSplitLine.PlanClass + "]", 3 + iLine);  // first real data is in 5th line (0..4)
+                AppName.AddUse(OneSplitLine.use);   // would like to be able to set this just once for the app but easier to look for GPU here
                 iGrp = AppName.DataName.NameInsert(OneSplitLine.Name, OneSplitLine.Project);
                 iLocDevice = OneSplitLine.use.IndexOf("device "); //1234567
                 if (iLocDevice > 0)
@@ -675,7 +682,13 @@ namespace BTHistoryReader
                 // the -1 on below subscripting was a big mistake
                 // note:  the WTFb was added for debugging as the device number was a problem and is not needed any more
                 LinesHistory[iLine + 3] += "WTFaTODO_" + iGrp.ToString() + "|"; // + "WTFbTODO_" + OneSplitLine.iDeviceUsed.ToString();
-                AppName.bIsValid.Add(OneSplitLine.State != 3);        //(eInvalid == (int)eHistoryError.SeemsOK);
+                //AppName.bIsValid.Add(OneSplitLine.State != 3);        //(eInvalid == (int)eHistoryError.SeemsOK);
+                // State cannot be used as just not 3
+                bTemp = (OneSplitLine.ExitStatus == 0);
+                //if (OneSplitLine.State == 6) bTemp = false;
+                if (OneSplitLine.dElapsedTimeGpu == 0 && OneSplitLine.dElapsedTimeCpu == 0) bTemp = false;// exception is bitcoin utopia
+                if (AppName.bUsesGPU && OneSplitLine.dElapsedTimeGpu == 0) bTemp = false;
+                AppName.bIsValid.Add(bTemp);
                 if (AppName.bIsUnknown & bInformOnlyOnce)
                 {
                     tb_Info.Text += "Unk App " + AppName.GetInfo + " added to database\r\n";
@@ -1498,7 +1511,7 @@ namespace BTHistoryReader
                 tStart = ThisProjectInfo[SortToInfo[i]].time_t_Completed - Convert.ToInt64(ThisProjectInfo[iSortIndex[i]].dElapsedTime);
                 tEnd = ThisProjectInfo[SortToInfo[j]].time_t_Completed;
                 strTimeDiff = BestTimeUnits(tEnd - tStart);
-                lbSeriesTime.Text = "total series time: " + strTimeDiff;
+                lbSeriesTime.Text = "total series time(only valid shown): " + strTimeDiff;
                 return 0;
             }
             ShowSelectable(true);
@@ -1507,7 +1520,7 @@ namespace BTHistoryReader
             j = lb_SelWorkUnits.SelectedIndices[1];
             tEnd = ThisProjectInfo[SortToInfo[j]].time_t_Completed;
             strTimeDiff = BestTimeUnits(tEnd - tStart);
-            lbSeriesTime.Text = "Selected series time: " + strTimeDiff;
+            lbSeriesTime.Text = "Selected series time(only valid shown): " + strTimeDiff;
             n = 1 + j - i;
             lb_NumSel.Text = "Selected: " + n.ToString();
             TimeIntervalMinutes = (tEnd - tStart) / 60.0;
@@ -1762,7 +1775,7 @@ namespace BTHistoryReader
 
         private void ShowScatter()
         {
-            ScatterForm PlotScatter = new ScatterForm(ref MySeriesData, "Datasets");
+            ScatterForm PlotScatter = new ScatterForm(ref MySeriesData, "Datasets", cbShowError.Checked);
             PlotScatter.ShowDialog();
             PlotScatter.Dispose();
         }
@@ -1776,11 +1789,14 @@ namespace BTHistoryReader
             int jLoc;   // traverse pointer to see if data is bad or not
             bool bGood;
             bool bAny = false;
+            if (iLoc < 0) return false; // canceled out of open history but tried a plot
             foreach (cAppName appName in KnownProjApps[iLoc].KnownApps)
             {
                 int n = appName.nAppEntries;
                 if (n > 0)
                 {
+                    if (appName.bNoResults && (!cbShowError.Checked))
+                        continue;
                     bAny = true;
                     cSeriesData sa = new cSeriesData();
                     sa.strSysName = CurrentSystem;      // only 1 system as we are not comparing systems
@@ -1936,6 +1952,11 @@ namespace BTHistoryReader
         private void gb_filter_Enter(object sender, EventArgs e)
         {
 
+        }
+
+        private void btnClrInfo_Click(object sender, EventArgs e)
+        {
+            tb_Info.Text = "";
         }
     }
 }

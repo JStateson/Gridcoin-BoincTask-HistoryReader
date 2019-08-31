@@ -757,7 +757,7 @@ namespace BTHistoryReader
 
         private void ShowScatter()
         {                                                   // radio button was misnamed, should be ScatterSystems
-            ScatterForm PlotScatter = new ScatterForm(ref MySeriesData, rbScatProj.Checked ? "Systems" : "Apps");
+            ScatterForm PlotScatter = new ScatterForm(ref MySeriesData, rbScatProj.Checked ? "Systems" : "Apps", false);
             PlotScatter.ShowDialog();
             PlotScatter.Dispose();
         }
