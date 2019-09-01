@@ -1532,12 +1532,12 @@ namespace BTHistoryReader
         private void bt_all_Click(object sender, EventArgs e)
         {
             int i = lb_SelWorkUnits.Items.Count;
+            btnGTime.Enabled = false;
             if (i == 0) return;
             lb_SelWorkUnits.ClearSelected();
             lb_SelWorkUnits.SetSelected(0, true);
             lb_SelWorkUnits.SetSelected(i - 1, true);
             CountSelected();
-
         }
 
         private void lb_SelWorkUnits_SelectedIndexChanged(object sender, EventArgs e)
