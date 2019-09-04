@@ -343,12 +343,14 @@ namespace BTHistoryReader
     {
         DoingApps = 0,
         DoingSystems = 1,
-        DoingSets = 2
+        DoingSets = 2,
+        DoingGPUs = 3
     }
 
 
 public class cSeriesData
     {
+        public string strSeriesName;    // used by that scatter gpu graph
         public string strAppName;
         public string strProjName;
         public string strSysName;    // if gathering all data for a specific app then this field may contain multiple system names (scatter apps)
@@ -368,7 +370,7 @@ public class cSeriesData
                                             // and each number is unique unless the same dataset is used by another app
                                             // for scattering datasets this is the group number that matches the dataset name
                                             // and does not correspond to a point
-                                
+        public List<int> iGpuDevice;      // gpu devcice number 0..whatever or 0 if a cpu                       
         public string GetNameToShow(eShowType eST)
         {
             switch (eST)
@@ -536,27 +538,41 @@ public class cSeriesData
         public string strPlanClass;
         public string strName;
         public bool bUseThisAppInStatsListBox;
-        public bool bUsesGPU;   // if uses gpu then gpu cannot be 0 elapsed time (except bitcoin utopia crap!!)
+        public int nUsesGPU;            // if uses gpu then gpu cannot be 0 elapsed time (except bitcoin utopia crap!!)
         public List<int> LineLoc;       // offset or index into the history file. Index "4" is the history line identifier "1"
                                         // the above can be used to extract a value from the history file
                                         // subtract 3 from it to get the identifier.  the identifier is shown lb_SelWorkUnits
                                         // as the first colume.  If the number in that first column is extracted then 3 must be added 
                                         // to it if wanting to index into the history file.  One or the other may be available in different
-                                        // areas of the code
+                                        // areas of the code.  if nUsesGPU < 0 then is not using a gpu else is device number
         public List<double> dElapsedTime;
         public List<int> DataSetGroup;
         public List<bool> bIsValid;
-        //  device id not useful in tree struct but could be shown
+        public List<int>DeviceID;  // can be used in plot all datasets to show GPU
         public void AddUse(string strUse)
         {
             string strTemp = strUse.ToLower();
-            bUsesGPU = strTemp.Contains("gpu");
+            bool bUsesGPU = strTemp.Contains("gpu");
+            if (bUsesGPU)
+            {
+                int jLoc, iLoc = strTemp.IndexOf("device ");
+                //Debug.Assert(iLoc > 0); if only one gpu then device number is not shown so use 0
+                if (iLoc > 0)
+                {
+                    iLoc += 7;
+                    strTemp = strUse.Substring(iLoc);
+                    jLoc = strUse.IndexOf(")");
+                    nUsesGPU = Convert.ToInt32(strTemp.Substring(0, jLoc - iLoc));
+                }
+                else nUsesGPU = 0;
+            }
+            else nUsesGPU = -1;
         }
         public void AddETinfo(double d, int n, int j)
         {
             dElapsedTime.Add(d);
             DataSetGroup.Add(n);
-            //DeviceID.Add(j);
+            DeviceID.Add(j);
         }
         public string GetInfo
         {
@@ -658,6 +674,7 @@ public class cSeriesData
             LineLoc = new List<int>();
             dElapsedTime = new List<double>();
             DataSetGroup = new List<int>();
+            DeviceID = new List<int>();
             bIsValid = new List<bool>();
             bIsUnknown = bIsUnk;
             //bUseThisAppInStatsListBox = true;   // unless specified otherwise in listbox

@@ -521,6 +521,7 @@ namespace BTHistoryReader
             DisallowCallbacks(true);
             LinesToReadThenIncrement = 0;
             btnGTime.Enabled = false;
+            btnScatGpu.Enabled = false;
             if (FetchHistory())
             {
                 DisallowCallbacks(false);
@@ -664,9 +665,10 @@ namespace BTHistoryReader
                 // and put all info also 
                 // jys adding plan class info
                 AppName = KnownProjApps[RtnCode].SymbolInsert(OneSplitLine.Application + " [" + OneSplitLine.PlanClass + "]", 3 + iLine);  // first real data is in 5th line (0..4)
-                AppName.AddUse(OneSplitLine.use);   // would like to be able to set this just once for the app but easier to look for GPU here
+                AppName.AddUse(OneSplitLine.use);   
                 iGrp = AppName.DataName.NameInsert(OneSplitLine.Name, OneSplitLine.Project);
-                iLocDevice = OneSplitLine.use.IndexOf("device "); //1234567
+                iLocDevice = OneSplitLine.use.IndexOf("device "); //1234567  note that sometimes the device is missing, if so, then use 0 as
+                    // possible there was only 1 device and no number was assigned
                 if (iLocDevice > 0)
                 {
                     jloc = OneSplitLine.use.LastIndexOf(")");
@@ -675,7 +677,8 @@ namespace BTHistoryReader
                     //string strDebug = OneSplitLine.use.Substring(iLocDevice, jloc);
                     OneSplitLine.iDeviceUsed = Convert.ToInt32(OneSplitLine.use.Substring(iLocDevice, jloc));
                 }
-                else OneSplitLine.iDeviceUsed = -1;
+                else OneSplitLine.iDeviceUsed = 0;  // device is not shown if only one gpu so use 0   
+                // need to backfit gpu id to 
                 AppName.AddETinfo(OneSplitLine.dElapsedTimeCpu, iGrp, OneSplitLine.iDeviceUsed);
                 // the above iGrp needs to go into ThisProjectInfo which unfortunately does not exist here
                 // and I do not want to rewrite this code at this time.
@@ -688,7 +691,7 @@ namespace BTHistoryReader
                 bTemp = (OneSplitLine.ExitStatus == 0);
                 //if (OneSplitLine.State == 6) bTemp = false;
                 if (OneSplitLine.dElapsedTimeGpu == 0 && OneSplitLine.dElapsedTimeCpu == 0) bTemp = false;// exception is bitcoin utopia
-                if (AppName.bUsesGPU && OneSplitLine.dElapsedTimeGpu == 0) bTemp = false;
+                if ((AppName.nUsesGPU>=0) && OneSplitLine.dElapsedTimeGpu == 0) bTemp = false;
                 AppName.bIsValid.Add(bTemp);
                 if (AppName.bIsUnknown & bInformOnlyOnce)
                 {
@@ -920,6 +923,9 @@ namespace BTHistoryReader
                     strWTF = LinesHistory[i].Substring(iWTF,(jWTF));
                     ThisProjectInfo[j].iDeviceUsed = Convert.ToInt32(strWTF);
                 }
+                else
+                    ThisProjectInfo[j].iDeviceUsed = 0; // device 0 or cpu
+
                 /*  this was used for debugging
                 iWTF = LinesHistory[i].IndexOf("WTFbTODO_");
                 if (iWTF > 0)
@@ -1334,8 +1340,9 @@ namespace BTHistoryReader
         // the first number shown in the selection box is line number in the history file, not the index to the project info table
         private void btn_Filter_Click(object sender, EventArgs e)
         {
-            btnGTime.Enabled = true;
+            btnGTime.Enabled = cbGPUcompare.Checked;
             tb_Results.Text = "";
+            btnScatGpu.Enabled = true;
             if (cbGPUcompare.Checked)
             {
                 MaxDeviceCount = -1;
@@ -1532,7 +1539,8 @@ namespace BTHistoryReader
         private void bt_all_Click(object sender, EventArgs e)
         {
             int i = lb_SelWorkUnits.Items.Count;
-            btnGTime.Enabled = false;
+            btnGTime.Enabled = false ;
+            btnScatGpu.Enabled = false;
             if (i == 0) return;
             lb_SelWorkUnits.ClearSelected();
             lb_SelWorkUnits.SetSelected(0, true);
@@ -1781,6 +1789,13 @@ namespace BTHistoryReader
             PlotScatter.Dispose();
         }
 
+        private void ShowGPUScatter()
+        {
+            ScatterForm PlotScatter = new ScatterForm(ref MySeriesData, "GPUs", cbShowError.Checked);
+            PlotScatter.ShowDialog();
+            PlotScatter.Dispose();
+        }
+
 
         private List<cSeriesData> MySeriesData;
         bool FormSeriesFromSets()
@@ -1805,9 +1820,11 @@ namespace BTHistoryReader
                     sa.strProjName = CurrentProject;    //only doing one project use this for title info
                     sa.dValues = new List<double>();
                     jLoc = 0;
+                    sa.iGpuDevice = new List<int>();
                     foreach (double d in appName.dElapsedTime)
                     {
                         bGood = appName.bIsValid[jLoc];
+                        sa.iGpuDevice.Add(appName.DeviceID[jLoc]);
                         jLoc++;
                         if(cbShowError.Checked)
                             sa.dValues.Add(d / 60.0);   // probably should just use minutes to start with
@@ -1822,13 +1839,17 @@ namespace BTHistoryReader
 
                     sa.TheseSystems = new List<string>();   // these numbers are the index into the dataset name
                                                             // each app has list of names which is a duplicate problem maybe
+
                     foreach (cNameValue nv in appName.DataName.DataNameInfo)
                     {
-                        sa.TheseSystems.Add(nv.DataName + " (" + nv.SizeGroup.ToString() + ")");
+                        //string strUse = appName.nUsesGPU < 0 ? "[CPU]" : "[GPU" + appName.nUsesGPU.ToString() + "]";
+                        sa.TheseSystems.Add(nv.DataName + " (" + nv.SizeGroup.ToString() + ")");  
+                        // strUse not useful here as this is not homogeneous group (gpus are different)
                     }
                     sa.iTheseSystem = new List<int>();  // this needs to match the name of the dataset
                     for (int i = 0; i < sa.TheseSystems.Count; i++)
                     {
+
                         sa.iTheseSystem.Add(i); // there is no single repository of group numbers, each app
                                                 // has its own copy so they are all numbered sequential
                     }
@@ -1842,11 +1863,95 @@ namespace BTHistoryReader
             return bAny;
         }
 
+        
+        bool FormSeriesFromGPUs()
+        {
+            MySeriesData = new List<cSeriesData>();
+            int iLoc = LookupProject(cb_SelProj.Text); //cb_SelProj.SelectedIndex;
+            int jLoc;   // traverse pointer to see if data is bad or not
+            int kLoc;   // traverse MySeriesData
+            bool bGood;
+            bool bAny = false;
+            if (iLoc < 0) return false; // canceled out of open history but tried a plot
+            List<int>iGPUsUsed = new List<int>();   // these will be series names
+                                                    // need to count devices
+            foreach (cAppName appName in KnownProjApps[iLoc].KnownApps)
+            {
+                int n = appName.nAppEntries;
+                if (n > 0)
+                {
+                    if (appName.bNoResults && (!cbShowError.Checked))
+                        continue;
+                    jLoc = 0;
+                    foreach (int i in appName.DeviceID)
+                    {
+                        bGood = appName.bIsValid[jLoc];
+                        if (bGood || cbShowError.Checked)
+                        {
+                            if (iGPUsUsed.Contains(i)) continue;
+                            iGPUsUsed.Add(i);
+                        }
+                    }
+                }
+            }
+
+            kLoc = 0;
+            foreach (int iGPU in iGPUsUsed)
+            {
+                cSeriesData sa = new cSeriesData();
+                bool bFirst = true;
+                sa.strSeriesName = "D" + iGPU.ToString();
+                foreach (cAppName appName in KnownProjApps[iLoc].KnownApps)
+                {
+                    int n = appName.nAppEntries;
+                    if (n > 0)
+                    {
+                        jLoc = 0;
+                        if (appName.bNoResults && (!cbShowError.Checked)) continue;
+                        foreach (double d in appName.dElapsedTime)
+                        {
+                            if (appName.DeviceID[jLoc] != iGPU)
+                            {
+                                jLoc++;
+                                continue;
+                            }
+                            bGood = appName.bIsValid[jLoc];
+                            jLoc++;
+                            if (!(bGood || cbShowError.Checked)) continue;
+                            if (bFirst)
+                            {
+                                bAny = true;
+                                sa.strSysName = CurrentSystem;      // only 1 system as we are not comparing systems
+                                sa.strAppName = appName.Name;       // usually more than one app this must be first in listview
+                                sa.strProjName = CurrentProject;    //only doing one project use this for title info
+                                sa.dValues = new List<double>();
+                                sa.ShowType = eShowType.DoingGPUs;
+                                sa.bIsValid = new List<bool>();
+                                sa.nConcurrent = 1;
+                                sa.TheseSystems = new List<string>();
+                                sa.TheseSystems.Add(sa.strSeriesName);
+                                MySeriesData.Add(sa);
+                                sa.iTheseSystem = new List<int>();
+                                sa.iTheseSystem.Add(0);
+                                bFirst = false;
+                            }
+                            sa = MySeriesData[kLoc];
+                            sa.dValues.Add(d / 60.0);
+                            sa.bIsValid.Add(bGood);
+                            bAny = true;
+                        }
+                        int ii = 0;
+                    }
+                }
+                kLoc++;
+            }
+            return bAny;
+        }
+
         private void btnScatSets_Click(object sender, EventArgs e)
         {
             if (FormSeriesFromSets())
                 ShowScatter();
-
         }
 
         public static void GoToSite(string url)
@@ -1958,6 +2063,12 @@ namespace BTHistoryReader
         private void btnClrInfo_Click(object sender, EventArgs e)
         {
             tb_Info.Text = "";
+        }
+
+        private void btnScatGpu_Click(object sender, EventArgs e)
+        {
+            if (FormSeriesFromGPUs())
+                ShowGPUScatter();
         }
     }
 }

@@ -114,6 +114,8 @@
             this.Controls.Add(this.lbyaxis);
             this.Controls.Add(this.lbxaxis);
             this.Controls.Add(this.tgraph);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
+            this.MaximizeBox = false;
             this.Name = "timegraph";
             this.Text = "timegraph";
             ((System.ComponentModel.ISupportInitialize)(this.tgraph)).EndInit();

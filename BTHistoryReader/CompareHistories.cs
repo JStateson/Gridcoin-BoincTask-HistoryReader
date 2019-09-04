@@ -690,6 +690,7 @@ namespace BTHistoryReader
                 sa.iSystem = new List<int>();
                 sa.TheseSystems = new List<string>();
                 sa.iTheseSystem = new List<int>();
+                sa.iGpuDevice = new List<int>();
                 sa.ShowType = eShowType.DoingApps;
                 sa.bIsValid = new List<bool>();
                 sa.nConcurrent = 1; // this may be revised when data is obtain as we dont know the system yet

@@ -27,6 +27,7 @@ namespace BTHistoryReader
         private bool bScatteringApps;
         private bool bShowSystemData;         // scattering systems
         private bool bShowDatasests;
+        private bool bScatteringGPUs;
         double fScaleMultiplier;
         string strScaleUnits;
         bool bSeeError;
@@ -65,20 +66,32 @@ namespace BTHistoryReader
                     bShowDatasests = true;
                     bScatteringApps = false;
                     bShowSystemData = false;
+                    bShowSystemData = false;
+                    bScatteringGPUs = false;
                     lbScatUsage.Text = "If more than one data set listed then clicking\non that name will hide / unhide it\nclick header to reset";
                     break;
                 case "Apps" :
                     bScatteringApps = true;
                     bShowSystemData = false;
                     bShowDatasests = false;
+                    bScatteringGPUs = false;
                     break;
                 case "Systems":
                     bShowSystemData = true;
                     bShowDatasests = false;
                     bScatteringApps = false;
+                    bScatteringGPUs = false;
+                    break;
+                case "GPUs":
+                    bShowDatasests = false;
+                    bScatteringApps = false;
+                    bShowSystemData = false;
+                    bShowSystemData = false;
+                    bScatteringGPUs = true;
+                    lbScatUsage.Text = "If more than one data set listed then clicking\non that name will hide / unhide it\nclick header to reset";
                     break;
             }
-            lviewSubSeries.Visible = bShowDatasests | bScatteringApps;
+            lviewSubSeries.Visible = bShowDatasests | bScatteringApps | bScatteringGPUs;
             btnInvSel.Visible = bShowDatasests; // does not work with any other scatter plots!!! 6-24-2019!!!
             lblSysHideUnhide.Visible = lviewSubSeries.Visible;
             ThisSeriesData = refSD;
@@ -112,7 +125,7 @@ namespace BTHistoryReader
             MyLegendNames.Add(cl);
             foreach(cSeriesData sd in ThisSeriesData)
             {
-                string seriesname = sd.GetNameToShow(sd.ShowType);
+                string seriesname = bScatteringGPUs ? sd.strSeriesName : sd.GetNameToShow(sd.ShowType);
                 cl = new cColoredLegends();
                 cl.strName = seriesname;
                 cl.rgb = ChartScatter.Series[seriesname].Color;
@@ -302,13 +315,20 @@ namespace BTHistoryReader
                     d = sd.dValues[i];
                     xAxis.Add(d * fScaleMultiplier);
                 }
-                string seriesname = sd.GetNameToShow(sd.ShowType);
+                string seriesname = bScatteringGPUs ? sd.strSeriesName : sd.GetNameToShow(sd.ShowType);
                 SeriesName = seriesname;
                 ChartScatter.Series.Add(seriesname);
                 ChartScatter.Series[seriesname].EmptyPointStyle.Color = Color.Transparent;
                 // seems not needed but left in to remind of what I tried
                 ChartScatter.Series[seriesname].ChartType = SeriesChartType.Point;
                 ChartScatter.Series[seriesname].Points.DataBindXY(xAxis.ToArray(), yAxis.ToArray());
+                n = 0;
+                foreach(DataPoint p in ChartScatter.Series[seriesname].Points)
+                {
+                    p.Tag = bScatteringGPUs ? j:  sd.iGpuDevice[n];  
+                    n++;
+                }
+                j++;
             }
             UsedOutliers = new Stack<cSaveOutlier>();
             ChartScatter.Legends["Legend1"].Title = strSeries + strScaleUnits;
@@ -814,7 +834,7 @@ namespace BTHistoryReader
             // problem: not showing any app names in list box if there is only one appname
             if (lviewSubSeries.Items.Count > 0) strTemp = lviewSubSeries.Items[iGrp].Text;
             else strTemp = ThisSeriesData[iLoc].strAppName;
-            MessageBox.Show("member of: "+ strTemp);
+            MessageBox.Show("member of: " + strTemp + "[D" + points[j].Tag +  "]" );
             return 0;
         }
 

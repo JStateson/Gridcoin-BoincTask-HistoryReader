@@ -30,6 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.btnClrInfo = new System.Windows.Forms.Button();
             this.lblBuildDate = new System.Windows.Forms.Label();
             this.pbarLoading = new System.Windows.Forms.ProgressBar();
             this.gboxOPFsettings = new System.Windows.Forms.GroupBox();
@@ -44,6 +45,7 @@
             this.btnShowProjectTree = new System.Windows.Forms.Button();
             this.gb_filter = new System.Windows.Forms.GroupBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.btnScatGpu = new System.Windows.Forms.Button();
             this.btnGTime = new System.Windows.Forms.Button();
             this.cbShowError = new System.Windows.Forms.CheckBox();
             this.btnScatSets = new System.Windows.Forms.Button();
@@ -86,7 +88,6 @@
             this.ofd_history = new System.Windows.Forms.OpenFileDialog();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.TimerShowBuild = new System.Windows.Forms.Timer(this.components);
-            this.btnClrInfo = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.gboxOPFsettings.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -114,9 +115,19 @@
             this.panel1.Controls.Add(this.btn_OpenHistory);
             this.panel1.Location = new System.Drawing.Point(12, 12);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1000, 588);
+            this.panel1.Size = new System.Drawing.Size(1000, 604);
             this.panel1.TabIndex = 0;
             this.panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.panel1_Paint);
+            // 
+            // btnClrInfo
+            // 
+            this.btnClrInfo.Location = new System.Drawing.Point(466, 133);
+            this.btnClrInfo.Name = "btnClrInfo";
+            this.btnClrInfo.Size = new System.Drawing.Size(50, 23);
+            this.btnClrInfo.TabIndex = 13;
+            this.btnClrInfo.Text = "Clear";
+            this.btnClrInfo.UseVisualStyleBackColor = true;
+            this.btnClrInfo.Click += new System.EventHandler(this.btnClrInfo_Click);
             // 
             // lblBuildDate
             // 
@@ -266,7 +277,7 @@
             this.gb_filter.Controls.Add(this.lb_SelWorkUnits);
             this.gb_filter.Location = new System.Drawing.Point(534, 41);
             this.gb_filter.Name = "gb_filter";
-            this.gb_filter.Size = new System.Drawing.Size(448, 530);
+            this.gb_filter.Size = new System.Drawing.Size(448, 551);
             this.gb_filter.TabIndex = 6;
             this.gb_filter.TabStop = false;
             this.gb_filter.Text = "Filter";
@@ -274,43 +285,57 @@
             // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.btnScatGpu);
             this.groupBox3.Controls.Add(this.btnGTime);
             this.groupBox3.Controls.Add(this.cbShowError);
             this.groupBox3.Controls.Add(this.btnScatSets);
             this.groupBox3.Location = new System.Drawing.Point(186, 406);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(244, 105);
+            this.groupBox3.Size = new System.Drawing.Size(244, 139);
             this.groupBox3.TabIndex = 25;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Dataset & Device plots";
             // 
+            // btnScatGpu
+            // 
+            this.btnScatGpu.ForeColor = System.Drawing.Color.DarkGreen;
+            this.btnScatGpu.Location = new System.Drawing.Point(116, 102);
+            this.btnScatGpu.Name = "btnScatGpu";
+            this.btnScatGpu.Size = new System.Drawing.Size(111, 23);
+            this.btnScatGpu.TabIndex = 27;
+            this.btnScatGpu.Text = "Scatter GPU";
+            this.btnScatGpu.UseVisualStyleBackColor = true;
+            this.btnScatGpu.Click += new System.EventHandler(this.btnScatGpu_Click);
+            // 
             // btnGTime
             // 
             this.btnGTime.Enabled = false;
-            this.btnGTime.Location = new System.Drawing.Point(116, 68);
+            this.btnGTime.ForeColor = System.Drawing.Color.DarkGreen;
+            this.btnGTime.Location = new System.Drawing.Point(116, 73);
             this.btnGTime.Name = "btnGTime";
-            this.btnGTime.Size = new System.Drawing.Size(75, 23);
+            this.btnGTime.Size = new System.Drawing.Size(111, 23);
             this.btnGTime.TabIndex = 26;
-            this.btnGTime.Text = "Time Graph";
+            this.btnGTime.Text = "Time Graph GPU";
+            this.toolTip1.SetToolTip(this.btnGTime, "select Show by GPU to enable this function");
             this.btnGTime.UseVisualStyleBackColor = true;
             this.btnGTime.Click += new System.EventHandler(this.btnGTime_Click);
             // 
             // cbShowError
             // 
             this.cbShowError.AutoSize = true;
-            this.cbShowError.ForeColor = System.Drawing.SystemColors.HotTrack;
+            this.cbShowError.ForeColor = System.Drawing.SystemColors.ControlText;
             this.cbShowError.Location = new System.Drawing.Point(6, 19);
             this.cbShowError.Name = "cbShowError";
-            this.cbShowError.Size = new System.Drawing.Size(123, 17);
+            this.cbShowError.Size = new System.Drawing.Size(118, 17);
             this.cbShowError.TabIndex = 25;
-            this.cbShowError.Text = "Show Dataset Errors";
+            this.cbShowError.Text = "Include Error Points";
             this.cbShowError.UseVisualStyleBackColor = true;
             // 
             // btnScatSets
             // 
             this.btnScatSets.Enabled = false;
             this.btnScatSets.ForeColor = System.Drawing.SystemColors.HotTrack;
-            this.btnScatSets.Location = new System.Drawing.Point(116, 39);
+            this.btnScatSets.Location = new System.Drawing.Point(116, 41);
             this.btnScatSets.Name = "btnScatSets";
             this.btnScatSets.Size = new System.Drawing.Size(111, 23);
             this.btnScatSets.TabIndex = 24;
@@ -727,21 +752,11 @@
             this.TimerShowBuild.Interval = 250;
             this.TimerShowBuild.Tick += new System.EventHandler(this.TimerShowBuild_Tick);
             // 
-            // btnClrInfo
-            // 
-            this.btnClrInfo.Location = new System.Drawing.Point(466, 133);
-            this.btnClrInfo.Name = "btnClrInfo";
-            this.btnClrInfo.Size = new System.Drawing.Size(50, 23);
-            this.btnClrInfo.TabIndex = 13;
-            this.btnClrInfo.Text = "Clear";
-            this.btnClrInfo.UseVisualStyleBackColor = true;
-            this.btnClrInfo.Click += new System.EventHandler(this.btnClrInfo_Click);
-            // 
             // BTHistory
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1038, 612);
+            this.ClientSize = new System.Drawing.Size(1038, 628);
             this.Controls.Add(this.panel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
@@ -826,6 +841,7 @@
         private System.Windows.Forms.CheckBox cbShowError;
         private System.Windows.Forms.Button btnGTime;
         private System.Windows.Forms.Button btnClrInfo;
+        private System.Windows.Forms.Button btnScatGpu;
     }
 }
 
