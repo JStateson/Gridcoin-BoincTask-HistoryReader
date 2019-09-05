@@ -59,14 +59,15 @@ namespace BTHistoryReader
         public long lStart;
         private double mAvg, sAvg;
         private System.DateTime dt_1970 = new System.DateTime(1970, 1, 1);
-        public double sAverageElapsed; // in seconds
+        public double sAverageElapsed; // in seconds - not always since scale can now change in time plot
         public double AvgMinutes
         {
             get { return mAvg; }
             set
             {
-                mAvg = value;   // units are minutes
+                mAvg = value;   // units are minutes and is used only for x-axis to see how many to add for each x point
                 sAvg = mAvg * 60.0;
+                double d;
                 NumEntries = 0;
                 if (RawDevice.Count < 2) return;
                 lStart = RawDevice[0].time_t; 
@@ -87,7 +88,8 @@ namespace BTHistoryReader
                     time_t = nL - lStart;       // time in seconds since start point
                     time_m[np] = time_t / 60.0;  // change seconds to minutes and save for x-axis
                     dElapsed[np] = RawDevice[i].dElapsed;   // save y axis but will accumulate for average over specified minutes
-                    sAverageElapsed += RawDevice[i].dElapsed;
+                    // change to seconds
+                    sAverageElapsed += dElapsed[np];
                     do
                     {
                         delta = (RawDevice[i].time_t - lStart) - time_t;    // in seconds
@@ -97,9 +99,10 @@ namespace BTHistoryReader
                             dElapsed[np] /= n;
                             break;
                         }
-                        dElapsed[np] += RawDevice[i].dElapsed;
+                        d = RawDevice[i].dElapsed;
+                        dElapsed[np] += d;
+                        sAverageElapsed += d;
                         n++;
-                        sAverageElapsed += RawDevice[i].dElapsed;
                     } while(true);
                     np++;
                     if (i == c) break;

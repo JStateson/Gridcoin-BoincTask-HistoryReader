@@ -36,6 +36,7 @@
             this.nudAvg = new System.Windows.Forms.DomainUpDown();
             this.label1 = new System.Windows.Forms.Label();
             this.btnDoGraph = new System.Windows.Forms.Button();
+            this.cbShowOffline = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.tgraph)).BeginInit();
             this.SuspendLayout();
             // 
@@ -72,6 +73,7 @@
             // nudAvg
             // 
             this.nudAvg.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.nudAvg.Items.Add("1");
             this.nudAvg.Items.Add("2");
             this.nudAvg.Items.Add("4");
             this.nudAvg.Items.Add("8");
@@ -103,11 +105,22 @@
             this.btnDoGraph.UseVisualStyleBackColor = true;
             this.btnDoGraph.Click += new System.EventHandler(this.btnDoGraph_Click);
             // 
+            // cbShowOffline
+            // 
+            this.cbShowOffline.AutoSize = true;
+            this.cbShowOffline.Location = new System.Drawing.Point(680, 443);
+            this.cbShowOffline.Name = "cbShowOffline";
+            this.cbShowOffline.Size = new System.Drawing.Size(99, 17);
+            this.cbShowOffline.TabIndex = 6;
+            this.cbShowOffline.Text = "Estimate Offline";
+            this.cbShowOffline.UseVisualStyleBackColor = true;
+            // 
             // timegraph
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 474);
+            this.Controls.Add(this.cbShowOffline);
             this.Controls.Add(this.btnDoGraph);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.nudAvg);
@@ -132,5 +145,6 @@
         private System.Windows.Forms.DomainUpDown nudAvg;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button btnDoGraph;
+        private System.Windows.Forms.CheckBox cbShowOffline;
     }
 }

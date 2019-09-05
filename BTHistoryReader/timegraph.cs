@@ -35,8 +35,12 @@ namespace BTHistoryReader
         int iStart;
         int iStop;
         int nDevices;
+        Series gpusOffline = new Series("Offline");
+        bool offlineAdded = false;
+        string strYscale = "seconds";
+        double dYscale = 1.0;
 
-        public timegraph(ref List<cProjectInfo> rThisProjectInfo, int rnDevices, int iiStart, int iiStop, ref int[] SortToInfo)
+        public timegraph(ref List<cProjectInfo> rThisProjectInfo, int rnDevices, int iiStart, int iiStop, double dMax, ref int[] SortToInfo)
         {
             InitializeComponent();
             nDevices = rnDevices;
@@ -46,18 +50,30 @@ namespace BTHistoryReader
             iStart = iiStart;
             iStop = iiStop;
             nudAvg.SelectedIndex = 3;
+            strYscale = BestTimeUnits(dMax, ref dYscale);
             PerformGraph();
         }
-        
+
+        // the input to this must be in seconds
+        private string BestTimeUnits(double d, ref double dOut)
+        {
+            dOut = 1.0;
+            if (d < 600.0) return "secs";
+            dOut = 60.0;
+            return "mins";
+        }
+
         private void PerformGraph()
         {
             GraphInfo = new List<cGraphInfo>(nDevices);
+            
             Offline = new List<double>();
             TimeOffline = new List<double>();
             for (int i = 0; i < nDevices; i++)
             {
                 cGraphInfo gi = new cGraphInfo();
                 gi.RawDevice = new List<cDeviceGraphInfo>();
+                // not used gi.dYscale = dYscale;   // same for all gpus
                 GraphInfo.Add(gi);
                 if (i >= 0)
                 {
@@ -80,7 +96,7 @@ namespace BTHistoryReader
                     if (k == j)
                     {
                         cDeviceGraphInfo dgi = new cDeviceGraphInfo();
-                        dgi.dElapsed = ThisProjectInfo[i].dElapsedCPU;
+                        dgi.dElapsed = ThisProjectInfo[i].dElapsedTime; // this was wrong: dElapsedCPU;
                         dgi.time_t = ThisProjectInfo[i].time_t_Completed;
                         GraphInfo[j].RawDevice.Add(dgi);
                         break;
@@ -92,7 +108,9 @@ namespace BTHistoryReader
             mFilter = Convert.ToInt32(nudAvg.Text);
             for (int i = 0; i < nDevices; i++)
             {
-                GraphInfo[i].AvgMinutes = mFilter;
+                // problem:  AvgMinutes expects mFilter to be in minutes and changes to seconds but data scale changes
+                // since I added that get best scale
+                GraphInfo[i].AvgMinutes = mFilter ;
                 if (i == 0) lSmallest = GraphInfo[i].lStart;
                 lSmallest = Math.Min(lSmallest, GraphInfo[i].lStart);
                 iElapsedCount += GraphInfo[i].RawDevice.Count;
@@ -101,7 +119,7 @@ namespace BTHistoryReader
             dElapsedOffset /= iElapsedCount;
 
             //  would like to know if system was offline:  use 3 * elapsed offset to determine if offline
-            dOffline = (mFilter * dElapsedOffset) / 60.0; // multipler was 3
+            dOffline = (mFilter * dElapsedOffset) / 60.0; // multipler was 3 ??do I need dyscale here??
             for (int i1 = iStart; i1 < iStop - 1; i1++)
             {
                 int i = iSortToInfo[i1];
@@ -116,11 +134,11 @@ namespace BTHistoryReader
                 }
             }
 
-            if (Offline.Count > 0)
+           if (Offline.Count > 0 )
             {
-                Series gpus = new Series("Offline?");
+                gpusOffline = new Series("Offline");
                 int NumMarkers = 10; 
-                gpus.ChartType = SeriesChartType.Point;
+                gpusOffline.ChartType = SeriesChartType.Point;
                 for (int i = 0; i < Offline.Count; i++)
                 {
                     // add some points between x and x + the span
@@ -128,10 +146,11 @@ namespace BTHistoryReader
                     double dSpan = TimeOffline[i] / NumMarkers;
                     for (int j = 0; j < NumMarkers; j++)
                     {
-                        gpus.Points.AddXY(Offline[i] + j * dSpan, 10);
+                        gpusOffline.Points.AddXY(Offline[i] + j * dSpan, 2);
                     }
                 }
-                tgraph.Series.Add(gpus);
+                if (cbShowOffline.Checked)
+                    AddOffline();
             }
             mLargestTimeSpan = -1;
             for (int i = 0; i < nDevices; i++)
@@ -141,7 +160,7 @@ namespace BTHistoryReader
                 for (int j = 0; j < GraphInfo[i].NumEntries; j++)
                 {
                     double dHours = (GraphInfo[i].time_m[j] + dSmallOffset) / 60.0;
-                    tgraph.Series[i].Points.AddXY(dHours, (GraphInfo[i].dElapsed[j] + dElapsedOffset * i));
+                    tgraph.Series[i].Points.AddXY(dHours, (GraphInfo[i].dElapsed[j] + dElapsedOffset * i) / dYscale);
                 }
                 if (GraphInfo[i].NumEntries < 2)
                 {
@@ -151,10 +170,26 @@ namespace BTHistoryReader
             }
             tgraph.ChartAreas[0].AxisX.Maximum = BestXmax(mLargestTimeSpan);
             lbxaxis.Text = "xAxis time since " + dtStart.ToLocalTime() + " in hours";
-            lbyaxis.Text = "yAxis elapsed time (seconds) offset by " + dElapsedOffset.ToString("##.0 seconds");
+            lbyaxis.Text = "yAxis elapsed time ("+strYscale + ") offset by " + (dElapsedOffset/dYscale).ToString("##.0 " + strYscale);
             //tgraph.Series[0].Points.DataBindXY(GraphInfo[0].time_t, GraphInfo[0].dElapsed);
             tgraph.Invalidate();
         }
+
+        private void AddOffline()
+        {
+            if (offlineAdded) return;
+            offlineAdded = true;
+            tgraph.Series.Add(gpusOffline);
+        }
+
+        private void RemoveOffline()
+        {
+            int n = tgraph.Series.Count - 1;
+            if (!offlineAdded || n < 1) return;
+            offlineAdded = false;
+            tgraph.Series.RemoveAt(n);
+        }
+
 
         // span is in hours
         private int GetBestNumMarkers(double span)
@@ -181,6 +216,7 @@ namespace BTHistoryReader
             int n = tgraph.Series.Count;
             for (int i = n - 1; i >= 0; i--)
                 tgraph.Series.RemoveAt(i);
+            offlineAdded = false;
             PerformGraph();
         }
     }

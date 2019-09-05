@@ -405,7 +405,7 @@ namespace BTHistoryReader
             }
             SetSysColors(s);
             n = ExpectedOffset.Count;
-            if(n == 1)
+            if(n == 1 || bScatteringGPUs)
             {
                 // no need to get random color, reuse the default
                 return;

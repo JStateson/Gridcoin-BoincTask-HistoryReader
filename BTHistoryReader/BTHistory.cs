@@ -1863,87 +1863,47 @@ namespace BTHistoryReader
             return bAny;
         }
 
-        
+
         bool FormSeriesFromGPUs()
         {
-            MySeriesData = new List<cSeriesData>();
-            int iLoc = LookupProject(cb_SelProj.Text); //cb_SelProj.SelectedIndex;
-            int jLoc;   // traverse pointer to see if data is bad or not
-            int kLoc;   // traverse MySeriesData
-            bool bGood;
             bool bAny = false;
-            if (iLoc < 0) return false; // canceled out of open history but tried a plot
-            List<int>iGPUsUsed = new List<int>();   // these will be series names
-                                                    // need to count devices
-            foreach (cAppName appName in KnownProjApps[iLoc].KnownApps)
+            int iGpu = 0;
+            MySeriesData = new List<cSeriesData>();
+            List<int> iGPUsUsed = new List<int>();   // these will be series names
+                                                     // need to count devices
+            cSeriesData sa;
+            foreach (cProjectInfo pi in ThisProjectInfo)
             {
-                int n = appName.nAppEntries;
-                if (n > 0)
+                if(pi.bState || cbShowError.Checked)
                 {
-                    if (appName.bNoResults && (!cbShowError.Checked))
-                        continue;
-                    jLoc = 0;
-                    foreach (int i in appName.DeviceID)
-                    {
-                        bGood = appName.bIsValid[jLoc];
-                        if (bGood || cbShowError.Checked)
-                        {
-                            if (iGPUsUsed.Contains(i)) continue;
-                            iGPUsUsed.Add(i);
-                        }
-                    }
+                    if (iGPUsUsed.Contains(pi.iDeviceUsed)) continue;
+                    iGpu = pi.iDeviceUsed;
+                    iGPUsUsed.Add(iGpu);
+                    sa = new cSeriesData();
+                    sa.strSeriesName = "D" + iGpu.ToString();
+                    bAny = true;
+                    sa.strSysName = CurrentSystem;      // only 1 system as we are not comparing systems
+                    sa.strAppName = cb_AppNames.Text;       // usually more than one app this must be first in listview
+                    sa.strProjName = CurrentProject;    //only doing one project use this for title info
+                    sa.dValues = new List<double>();
+                    sa.ShowType = eShowType.DoingGPUs;
+                    sa.bIsValid = new List<bool>();
+                    sa.nConcurrent = 1;
+                    sa.TheseSystems = new List<string>();
+                    sa.iTheseSystem = new List<int>();
+                    sa.iTheseSystem.Add(0);
+                    MySeriesData.Add(sa);
                 }
             }
-
-            kLoc = 0;
-            foreach (int iGPU in iGPUsUsed)
+            foreach (cProjectInfo pi in ThisProjectInfo)
             {
-                cSeriesData sa = new cSeriesData();
-                bool bFirst = true;
-                sa.strSeriesName = "D" + iGPU.ToString();
-                foreach (cAppName appName in KnownProjApps[iLoc].KnownApps)
+                if (pi.bState || cbShowError.Checked)
                 {
-                    int n = appName.nAppEntries;
-                    if (n > 0)
-                    {
-                        jLoc = 0;
-                        if (appName.bNoResults && (!cbShowError.Checked)) continue;
-                        foreach (double d in appName.dElapsedTime)
-                        {
-                            if (appName.DeviceID[jLoc] != iGPU)
-                            {
-                                jLoc++;
-                                continue;
-                            }
-                            bGood = appName.bIsValid[jLoc];
-                            jLoc++;
-                            if (!(bGood || cbShowError.Checked)) continue;
-                            if (bFirst)
-                            {
-                                bAny = true;
-                                sa.strSysName = CurrentSystem;      // only 1 system as we are not comparing systems
-                                sa.strAppName = appName.Name;       // usually more than one app this must be first in listview
-                                sa.strProjName = CurrentProject;    //only doing one project use this for title info
-                                sa.dValues = new List<double>();
-                                sa.ShowType = eShowType.DoingGPUs;
-                                sa.bIsValid = new List<bool>();
-                                sa.nConcurrent = 1;
-                                sa.TheseSystems = new List<string>();
-                                sa.TheseSystems.Add(sa.strSeriesName);
-                                MySeriesData.Add(sa);
-                                sa.iTheseSystem = new List<int>();
-                                sa.iTheseSystem.Add(0);
-                                bFirst = false;
-                            }
-                            sa = MySeriesData[kLoc];
-                            sa.dValues.Add(d / 60.0);
-                            sa.bIsValid.Add(bGood);
-                            bAny = true;
-                        }
-                        int ii = 0;
-                    }
+                    iGpu = pi.iDeviceUsed;
+                    sa = MySeriesData[iGpu];
+                    sa.dValues.Add(pi.dElapsedTime);
+                    sa.bIsValid.Add(pi.bState);
                 }
-                kLoc++;
             }
             return bAny;
         }
@@ -2039,18 +1999,19 @@ namespace BTHistoryReader
 
         private void btnGTime_Click(object sender, EventArgs e)
         {
-            //MaxDeviceCount = -1;
-            //bt_all_Click(null, null);
-            //if (false == FilterUsingGPUs(ref MaxDeviceCount)) return;
             if (iStart < 0 || iStop < 0) return;
-            /*
-                        {
-                            cbGPUcompare.Checked = true;
-                            bt_all_Click(null, null);
-                            btn_Filter_Click(null, null);
-                        } 
-             */
-            timegraph DeviceGraph = new timegraph (ref ThisProjectInfo, 1+MaxDeviceCount, iStart, iStop, ref SortToInfo);
+            double dMax = -1.0;
+            for(int i=iStart; i<=iStop; i++)
+            {
+                int j = SortToInfo[i];
+                cProjectInfo pi = ThisProjectInfo[j];
+                if (pi.bState)  // do not use error checked box as times series is not useful with bad numbers
+                {
+                    dMax = Math.Max(dMax, pi.dElapsedTime);
+                }
+                else continue;
+            }
+            timegraph DeviceGraph = new timegraph (ref ThisProjectInfo, 1+MaxDeviceCount, iStart, iStop,dMax, ref SortToInfo);
             DeviceGraph.ShowDialog();
             DeviceGraph.Dispose();
         }
