@@ -1901,7 +1901,7 @@ namespace BTHistoryReader
                 {
                     iGpu = pi.iDeviceUsed;
                     sa = MySeriesData[iGpu];
-                    sa.dValues.Add(pi.dElapsedTime);
+                    sa.dValues.Add(pi.dElapsedTime / 60.0);
                     sa.bIsValid.Add(pi.bState);
                 }
             }
