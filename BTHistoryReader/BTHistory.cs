@@ -679,6 +679,10 @@ namespace BTHistoryReader
                 }
                 else OneSplitLine.iDeviceUsed = 0;  // device is not shown if only one gpu so use 0   
                 // need to backfit gpu id to 
+                if(OneSplitLine.dElapsedTimeCpu == 0)
+                {
+                    int iDebug = 0;
+                }
                 AppName.AddETinfo(OneSplitLine.dElapsedTimeCpu, iGrp, OneSplitLine.iDeviceUsed);
                 // the above iGrp needs to go into ThisProjectInfo which unfortunately does not exist here
                 // and I do not want to rewrite this code at this time.

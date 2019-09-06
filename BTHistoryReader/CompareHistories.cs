@@ -136,6 +136,7 @@ namespace BTHistoryReader
             InitializeComponent();
             string ThisSystem = "";
             int DuplicateNameCnt = 0;
+            int iLoc;
             Projects = new List<string>();
             KPAlocs = new List<cKPAlocs>();
             Systems = new List<string>();;
@@ -189,9 +190,12 @@ namespace BTHistoryReader
                         cProjectInfo cpi = new cProjectInfo();
                         cpi.iSystem = iSystem;
                         ckpaa.iSystem = iSystem;
+                        iLoc = 0;
                         foreach (double d in AppName.dElapsedTime)
                         {
-                            ckpaa.AddValue(d / 60.0); 
+                            if (AppName.bIsValid[iLoc])
+                                ckpaa.AddValue(d / 60.0);
+                            iLoc++;
                         }
                         btf.ThisProjectInfo.Add(cpi);
                     }
@@ -614,8 +618,7 @@ namespace BTHistoryReader
                                 {
                                     if (d == 0.0)
                                     {
-                                        // jys 9-6-2019Debug.Assert(false);
-                                        int iDebug = 0;
+                                        Debug.Assert(false);                                       
                                     }
                                     sa.dValues.Add(d/ckpaa.nConcurrent);
                                     sa.bIsValid.Add(true);
@@ -648,8 +651,7 @@ namespace BTHistoryReader
                                 {
                                     if (d == 0.0)
                                     {
-                                        // 9-6-2019 must have some 0 creep in Debug.Assert(false);
-                                        int iDebug = 0;
+                                        Debug.Assert(false);
                                     }
                                     sa.dValues.Add(d/ckpaa.nConcurrent);
                                     sa.iSystem.Add(ckpaa.iSystem);
