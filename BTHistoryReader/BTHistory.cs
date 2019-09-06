@@ -638,8 +638,6 @@ namespace BTHistoryReader
                 {
                     if (eInvalid == (int)eHistoryError.EndHistory)
                         continue;
-                    //tb_Info.Text += "PHF: bad line " + iLine.ToString() + "\r\n";
-                    //continue;    // do not put 0 elapsed time into our results
                 }
                 RtnCode = LookupProj(OneSplitLine.Project);
                 if (RtnCode < 0)
@@ -661,9 +659,6 @@ namespace BTHistoryReader
                     else continue;
                 }
                 bAnyData = true;
-                // if the app is found then point to the line containing the app's info
-                // and put all info also 
-                // jys adding plan class info
                 AppName = KnownProjApps[RtnCode].SymbolInsert(OneSplitLine.Application + " [" + OneSplitLine.PlanClass + "]", 3 + iLine);  // first real data is in 5th line (0..4)
                 AppName.AddUse(OneSplitLine.use);   
                 iGrp = AppName.DataName.NameInsert(OneSplitLine.Name, OneSplitLine.Project);
@@ -674,26 +669,20 @@ namespace BTHistoryReader
                     jloc = OneSplitLine.use.LastIndexOf(")");
                     iLocDevice += 7;
                     jloc -= iLocDevice;
-                    //string strDebug = OneSplitLine.use.Substring(iLocDevice, jloc);
                     OneSplitLine.iDeviceUsed = Convert.ToInt32(OneSplitLine.use.Substring(iLocDevice, jloc));
                 }
                 else OneSplitLine.iDeviceUsed = 0;  // device is not shown if only one gpu so use 0   
-                // need to backfit gpu id to 
-                if(OneSplitLine.dElapsedTimeCpu == 0)
-                {
-                    int iDebug = 0;
-                }
                 AppName.AddETinfo(OneSplitLine.dElapsedTimeCpu, iGrp, OneSplitLine.iDeviceUsed);
                 // the above iGrp needs to go into ThisProjectInfo which unfortunately does not exist here
                 // and I do not want to rewrite this code at this time.
                 // going to append that value to the current history line
-                // the -1 on below subscripting was a big mistake
-                // note:  the WTFb was added for debugging as the device number was a problem and is not needed any more
                 LinesHistory[iLine + 3] += "WTFaTODO_" + iGrp.ToString() + "|"; // + "WTFbTODO_" + OneSplitLine.iDeviceUsed.ToString();
-                //AppName.bIsValid.Add(OneSplitLine.State != 3);        //(eInvalid == (int)eHistoryError.SeemsOK);
-                // State cannot be used as just not 3
-                bTemp = (OneSplitLine.ExitStatus == 0);
-                //if (OneSplitLine.State == 6) bTemp = false;
+                bTemp = (OneSplitLine.ExitStatus == 0); // this is not a complete test as it seem if CVS is used then the exit "state"
+                // can be 2.  Not sure what that represents but it is a problem as shown at bottom of this source in a comment
+                // looks like the fix is to check for 0 in reported and completed time.  I think the problem is CVS is a temp file and CVS1
+                // is the one that is more "complete" but cvs has the most newest stuff and cvs1 and 3 like several hours behine
+                if (OneSplitLine.State == 1) bTemp = false;     // this is always the case
+                if (OneSplitLine.ReportedTime == 0) bTemp = false;  // jys 9-6-2019 maybe this fixes the problem with bad values
                 if (OneSplitLine.dElapsedTimeGpu == 0 && OneSplitLine.dElapsedTimeCpu == 0) bTemp = false;// exception is bitcoin utopia
                 if ((AppName.nUsesGPU>=0) && OneSplitLine.dElapsedTimeGpu == 0) bTemp = false;
                 AppName.bIsValid.Add(bTemp);
@@ -960,13 +949,7 @@ namespace BTHistoryReader
                 // the below is actually CPU time as it appears headers in history are reversed for these two items
                 ThisProjectInfo[j].dElapsedCPU = Convert.ToDouble(strSymbols[(int)eHindex.ElapsedTimeGpu].ToString());
                 ThisProjectInfo[j].dElapsedTime = nElapsedTime;
-
-                // try to find which history entries are bad and mark them out of statistical calculations for "avg" 
-                // they still count in thruput
-
-                // wrong test if (strSymbols[(int)eHindex.State].ToString() == "3") bState = false;
-                // wrong test if (strSymbols[(int)eHindex.State].ToString() == "6") bState = false;
-                bState = strSymbols[(int)eHindex.State].ToString() != "0";
+                bState = strSymbols[(int)eHindex.ExitStatus].ToString() == "0";
                 // problem:  bitcoin utopia has 0 cpu time but we want to show it
                 // if there is gpu time then set cpu time to 1 second
                 if (nElapsedTime == 0) bState = false;  // possibly incomplete written out data has 0 but state still good?
@@ -1909,6 +1892,10 @@ namespace BTHistoryReader
                     sa.dValues.Add(pi.dElapsedTime / 60.0);
                     sa.bIsValid.Add(pi.bState);
                 }
+                else
+                {
+                    int iDebug = 0;
+                }
             }
             return bAny;
         }
@@ -2038,3 +2025,14 @@ namespace BTHistoryReader
         }
     }
 }
+/*Project	Application	Version Number	Name	PlanClass	Elapsed Time Cpu	Elapsed Time Gpu	State	ExitStatus	Reported time	Completed time	Use	Received	VMem	Mem
+ * -------------------------------------------------------------------------------------------------ES---Reported---Completed---use-Received
+482	World Community Grid	Mapping Cancer Markers	743	MCM1_0153882_1609_0		22122	22115	5	0	1567809502	1567807942		1567531363.832855	78569472.000000	37664686.658060	-1x		-1x		-1x		-1x		-1x	
+483	World Community Grid	Mapping Cancer Markers	743	MCM1_0153918_9343_1		23901	23877	5	0	0	1567810582		1567531363.832855	80019456.000000	39214027.476951	-1x		-1x		-1x		-1x		-1x	
+484	World Community Grid	Mapping Cancer Markers	743	MCM1_0153919_8085_1		23976	23959	5	0	0	1567811362		1567531363.832855	80003072.000000	40076038.203909	-1x		-1x		-1x		-1x		-1x	
+485	World Community Grid	Mapping Cancer Markers	743	MCM1_0153926_6242_1		23535	23519	2	0	0	0		1567531363.832855	80228352.000000	39406757.418836	-1x		-1x		-1x		-1x		-1x	
+487	World Community Grid	Mapping Cancer Markers	743	MCM1_0153924_2059_0		23350	23328	2	0	0	0		1567531363.832855	80228352.000000	39444388.646863	-1x		-1x		-1x		-1x		-1x	
+489	World Community Grid	Mapping Cancer Markers	743	MCM1_0153882_1551_1		21823	21801	5	0	0	1567810582		1567531363.832855	78565376.000000	37634012.999719	-1x		-1x		-1x		-1x		-1x	
+482 is good, 3,4 bad as 0 is not a valid start time 5 and 7 are bad as start and stop are both 0 and 9 is also bad
+not that the exit status is all 0 or "good" 
+*/
