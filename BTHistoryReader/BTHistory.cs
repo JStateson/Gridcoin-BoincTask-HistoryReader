@@ -960,11 +960,12 @@ namespace BTHistoryReader
                 // try to find which history entries are bad and mark them out of statistical calculations for "avg" 
                 // they still count in thruput
 
-                if (strSymbols[(int)eHindex.State].ToString() == "3") bState = false;
-                if (strSymbols[(int)eHindex.State].ToString() == "6") bState = false;
+                // wrong test if (strSymbols[(int)eHindex.State].ToString() == "3") bState = false;
+                // wrong test if (strSymbols[(int)eHindex.State].ToString() == "6") bState = false;
+                bState = strSymbols[(int)eHindex.State].ToString() != "0";
                 // problem:  bitcoin utopia has 0 cpu time but we want to show it
                 // if there is gpu time then set cpu time to 1 second
-                if (nElapsedTime == 0) bState = false;
+                if (nElapsedTime == 0) bState = false;  // possibly incomplete written out data has 0 but state still good?
                 else
                 {
                     if (ThisProjectInfo[j].dElapsedCPU == 0.0)

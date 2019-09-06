@@ -614,7 +614,8 @@ namespace BTHistoryReader
                                 {
                                     if (d == 0.0)
                                     {
-                                        Debug.Assert(false);
+                                        // jys 9-6-2019Debug.Assert(false);
+                                        int iDebug = 0;
                                     }
                                     sa.dValues.Add(d/ckpaa.nConcurrent);
                                     sa.bIsValid.Add(true);
@@ -647,7 +648,8 @@ namespace BTHistoryReader
                                 {
                                     if (d == 0.0)
                                     {
-                                        Debug.Assert(false);
+                                        // 9-6-2019 must have some 0 creep in Debug.Assert(false);
+                                        int iDebug = 0;
                                     }
                                     sa.dValues.Add(d/ckpaa.nConcurrent);
                                     sa.iSystem.Add(ckpaa.iSystem);

@@ -325,7 +325,7 @@ namespace BTHistoryReader
                 n = 0;
                 foreach(DataPoint p in ChartScatter.Series[seriesname].Points)
                 {
-                    p.Tag = bScatteringGPUs ? j:  sd.iGpuDevice[n];  
+                    p.Tag = bScatteringGPUs ? j :0 ; // was null ?sd.iGpuDevice[n];  
                     n++;
                 }
                 j++;
