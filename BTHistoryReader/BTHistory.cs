@@ -1576,7 +1576,7 @@ namespace BTHistoryReader
             // need to make sure the first one valid
             do
             {
-                int k = SortToInfo[i]; //iSortIndex[i];
+                int k = SortToInfo[i]; 
                 if (ThisProjectInfo[k].bState) break;
                 i++;
                 if (i >= j) return false;
@@ -1588,7 +1588,7 @@ namespace BTHistoryReader
                 int k = iSortIndex[n];
                 if (!ThisProjectInfo[k].bState) continue;
                 l = ThisProjectInfo[k].time_t_Completed;
-                if (n > i)
+                if (CompletionTimes.Count > 0) //(n > i) jys 9-12-2019 bug if first record is bad
                 {
                     double dd = l - CompletionTimes.Last();
                     IdleGap.Add(dd);
