@@ -56,6 +56,7 @@ namespace BTHistoryReader
         // https://stackoverflow.com/questions/56484451/unexpected-side-effect-setting-point-colors-in-chart-xaxis
         // solution was found:  use color.transparent in addition to point.isempty and
         // do not restore color of points that have been hidden
+        // currently nConcurrent is not used locally as it was applied before the call
         public ScatterForm(ref List<cSeriesData> refSD, string WhatsShowing, bool bAllowSeeError)
         {
             InitializeComponent();

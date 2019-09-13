@@ -39,8 +39,9 @@ namespace BTHistoryReader
         bool offlineAdded = false;
         string strYscale = "seconds";
         double dYscale = 1.0;
-
-        public timegraph(ref List<cProjectInfo> rThisProjectInfo, int rnDevices, int iiStart, int iiStop, double dMax, ref int[] SortToInfo)
+        double dNumConcurrent = 1.0;
+        // nCon is number of concurrent tasks and has been divided intod dMax already
+        public timegraph(ref List<cProjectInfo> rThisProjectInfo, int rnDevices, int iiStart, int iiStop, double dMax, ref int[] SortToInfo, int nCon)
         {
             InitializeComponent();
             nDevices = rnDevices;
@@ -51,6 +52,7 @@ namespace BTHistoryReader
             iStop = iiStop;
             nudAvg.SelectedIndex = 3;
             strYscale = BestTimeUnits(dMax, ref dYscale);
+            dNumConcurrent = nCon;
             PerformGraph();
         }
 
@@ -96,7 +98,7 @@ namespace BTHistoryReader
                     if (k == j)
                     {
                         cDeviceGraphInfo dgi = new cDeviceGraphInfo();
-                        dgi.dElapsed = ThisProjectInfo[i].dElapsedTime; // this was wrong: dElapsedCPU;
+                        dgi.dElapsed = ThisProjectInfo[i].dElapsedTime / dNumConcurrent;  
                         dgi.time_t = ThisProjectInfo[i].time_t_Completed;
                         GraphInfo[j].RawDevice.Add(dgi);
                         break;

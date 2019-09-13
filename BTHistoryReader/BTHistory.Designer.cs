@@ -45,6 +45,8 @@
             this.btnShowProjectTree = new System.Windows.Forms.Button();
             this.gb_filter = new System.Windows.Forms.GroupBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.nudConCurrent = new System.Windows.Forms.NumericUpDown();
             this.btnScatGpu = new System.Windows.Forms.Button();
             this.btnGTime = new System.Windows.Forms.Button();
             this.cbShowError = new System.Windows.Forms.CheckBox();
@@ -88,11 +90,15 @@
             this.ofd_history = new System.Windows.Forms.OpenFileDialog();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.TimerShowBuild = new System.Windows.Forms.Timer(this.components);
+            this.btnLastDay = new System.Windows.Forms.Button();
+            this.btnLastHour = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.gboxOPFsettings.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.gb_filter.SuspendLayout();
             this.groupBox3.SuspendLayout();
+            this.groupBox6.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudConCurrent)).BeginInit();
             this.groupBox5.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -261,6 +267,8 @@
             // 
             // gb_filter
             // 
+            this.gb_filter.Controls.Add(this.btnLastHour);
+            this.gb_filter.Controls.Add(this.btnLastDay);
             this.gb_filter.Controls.Add(this.groupBox3);
             this.gb_filter.Controls.Add(this.groupBox5);
             this.gb_filter.Controls.Add(this.btn_Filter);
@@ -285,25 +293,63 @@
             // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.groupBox6);
             this.groupBox3.Controls.Add(this.btnScatGpu);
             this.groupBox3.Controls.Add(this.btnGTime);
             this.groupBox3.Controls.Add(this.cbShowError);
             this.groupBox3.Controls.Add(this.btnScatSets);
-            this.groupBox3.Location = new System.Drawing.Point(186, 406);
+            this.groupBox3.Location = new System.Drawing.Point(170, 406);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(244, 139);
+            this.groupBox3.Size = new System.Drawing.Size(260, 139);
             this.groupBox3.TabIndex = 25;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Dataset & Device plots";
             // 
+            // groupBox6
+            // 
+            this.groupBox6.Controls.Add(this.nudConCurrent);
+            this.groupBox6.ForeColor = System.Drawing.Color.DarkGreen;
+            this.groupBox6.Location = new System.Drawing.Point(6, 57);
+            this.groupBox6.Name = "groupBox6";
+            this.groupBox6.Size = new System.Drawing.Size(99, 67);
+            this.groupBox6.TabIndex = 29;
+            this.groupBox6.TabStop = false;
+            this.groupBox6.Text = "WUs per GPU";
+            // 
+            // nudConCurrent
+            // 
+            this.nudConCurrent.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.nudConCurrent.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.nudConCurrent.Location = new System.Drawing.Point(28, 30);
+            this.nudConCurrent.Maximum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.nudConCurrent.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.nudConCurrent.Name = "nudConCurrent";
+            this.nudConCurrent.ReadOnly = true;
+            this.nudConCurrent.Size = new System.Drawing.Size(41, 22);
+            this.nudConCurrent.TabIndex = 28;
+            this.toolTip1.SetToolTip(this.nudConCurrent, "divides the elapsed time by the number of concurrent work units");
+            this.nudConCurrent.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
             // btnScatGpu
             // 
             this.btnScatGpu.ForeColor = System.Drawing.Color.DarkGreen;
-            this.btnScatGpu.Location = new System.Drawing.Point(116, 102);
+            this.btnScatGpu.Location = new System.Drawing.Point(127, 102);
             this.btnScatGpu.Name = "btnScatGpu";
             this.btnScatGpu.Size = new System.Drawing.Size(111, 23);
             this.btnScatGpu.TabIndex = 27;
-            this.btnScatGpu.Text = "Scatter GPU";
+            this.btnScatGpu.Text = "Scatter all GPU";
             this.btnScatGpu.UseVisualStyleBackColor = true;
             this.btnScatGpu.Click += new System.EventHandler(this.btnScatGpu_Click);
             // 
@@ -311,7 +357,7 @@
             // 
             this.btnGTime.Enabled = false;
             this.btnGTime.ForeColor = System.Drawing.Color.DarkGreen;
-            this.btnGTime.Location = new System.Drawing.Point(116, 73);
+            this.btnGTime.Location = new System.Drawing.Point(127, 73);
             this.btnGTime.Name = "btnGTime";
             this.btnGTime.Size = new System.Drawing.Size(111, 23);
             this.btnGTime.TabIndex = 26;
@@ -323,7 +369,7 @@
             // cbShowError
             // 
             this.cbShowError.AutoSize = true;
-            this.cbShowError.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.cbShowError.ForeColor = System.Drawing.Color.DarkGreen;
             this.cbShowError.Location = new System.Drawing.Point(6, 19);
             this.cbShowError.Name = "cbShowError";
             this.cbShowError.Size = new System.Drawing.Size(118, 17);
@@ -334,8 +380,8 @@
             // btnScatSets
             // 
             this.btnScatSets.Enabled = false;
-            this.btnScatSets.ForeColor = System.Drawing.SystemColors.HotTrack;
-            this.btnScatSets.Location = new System.Drawing.Point(116, 41);
+            this.btnScatSets.ForeColor = System.Drawing.Color.DarkGreen;
+            this.btnScatSets.Location = new System.Drawing.Point(127, 41);
             this.btnScatSets.Name = "btnScatSets";
             this.btnScatSets.Size = new System.Drawing.Size(111, 23);
             this.btnScatSets.TabIndex = 24;
@@ -370,6 +416,7 @@
             // btnPlot
             // 
             this.btnPlot.Enabled = false;
+            this.btnPlot.ForeColor = System.Drawing.SystemColors.HotTrack;
             this.btnPlot.Location = new System.Drawing.Point(18, 21);
             this.btnPlot.Name = "btnPlot";
             this.btnPlot.Size = new System.Drawing.Size(75, 23);
@@ -450,7 +497,8 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.BackColor = System.Drawing.SystemColors.Info;
+            this.label4.BackColor = System.Drawing.SystemColors.Control;
+            this.label4.ForeColor = System.Drawing.SystemColors.HotTrack;
             this.label4.Location = new System.Drawing.Point(139, 279);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(161, 13);
@@ -752,6 +800,28 @@
             this.TimerShowBuild.Interval = 250;
             this.TimerShowBuild.Tick += new System.EventHandler(this.TimerShowBuild_Tick);
             // 
+            // btnLastDay
+            // 
+            this.btnLastDay.ForeColor = System.Drawing.SystemColors.HotTrack;
+            this.btnLastDay.Location = new System.Drawing.Point(18, 523);
+            this.btnLastDay.Name = "btnLastDay";
+            this.btnLastDay.Size = new System.Drawing.Size(125, 23);
+            this.btnLastDay.TabIndex = 26;
+            this.btnLastDay.Text = "Select Last Day";
+            this.btnLastDay.UseVisualStyleBackColor = true;
+            this.btnLastDay.Click += new System.EventHandler(this.btnLastDay_Click);
+            // 
+            // btnLastHour
+            // 
+            this.btnLastHour.ForeColor = System.Drawing.SystemColors.HotTrack;
+            this.btnLastHour.Location = new System.Drawing.Point(18, 487);
+            this.btnLastHour.Name = "btnLastHour";
+            this.btnLastHour.Size = new System.Drawing.Size(125, 23);
+            this.btnLastHour.TabIndex = 27;
+            this.btnLastHour.Text = "Select Last Hour";
+            this.btnLastHour.UseVisualStyleBackColor = true;
+            this.btnLastHour.Click += new System.EventHandler(this.btnLastHour_Click);
+            // 
             // BTHistory
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -773,6 +843,8 @@
             this.gb_filter.PerformLayout();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
+            this.groupBox6.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.nudConCurrent)).EndInit();
             this.groupBox5.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
@@ -842,6 +914,10 @@
         private System.Windows.Forms.Button btnGTime;
         private System.Windows.Forms.Button btnClrInfo;
         private System.Windows.Forms.Button btnScatGpu;
+        private System.Windows.Forms.NumericUpDown nudConCurrent;
+        private System.Windows.Forms.GroupBox groupBox6;
+        private System.Windows.Forms.Button btnLastHour;
+        private System.Windows.Forms.Button btnLastDay;
     }
 }
 

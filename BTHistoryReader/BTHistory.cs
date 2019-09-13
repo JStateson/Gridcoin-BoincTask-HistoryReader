@@ -63,9 +63,10 @@ namespace BTHistoryReader
         static string ReqID = "BoincTasks History";
         static double dAvgCreditPerUnit;
         static int iPadSize;
-        static int[] iSortIndex;
-        static int[] SortToInfo; // index created by sort so that the intems int he select box eacn easily located the actual items in
-                                      // the info table
+        static int[] iSortIndex; //  the items in the InfoTable are ordered by this index when put into the select box
+        static int[] SortToInfo; // index created by sort so that the items in the select box can easily locate the actual items in
+                                 // the info table (backwards to info table)
+        static int NumInSTI;     // number items in above int array
 
         static int LastKnownProject = 0;
         public int NumberBadWorkUnits;
@@ -517,6 +518,7 @@ namespace BTHistoryReader
         private void btn_OpenHistory_Click(object sender, EventArgs e)
         {
             tb_Info.Text = "";
+            nudConCurrent.Value = 1;
             InitLookupTable();
             DisallowCallbacks(true);
             LinesToReadThenIncrement = 0;
@@ -836,10 +838,11 @@ namespace BTHistoryReader
                 j = iSortIndex[i];
                 if (!ThisProjectInfo[j].bState) continue;
                 sTemp = ThisProjectInfo[j].strOutput;
-                SortToInfo[n] = j;    //Convert.ToInt32(sTemp.Substring(0, iPadSize));
+                SortToInfo[n] = j; 
                 n++; 
                 lb_SelWorkUnits.Items.Add(sTemp);
             }
+            NumInSTI = n;
             pbarLoading.Visible = false;
             lb_SelWorkUnits.UseWaitCursor = false;
             CanChangeProjApp(true);
@@ -1503,7 +1506,7 @@ namespace BTHistoryReader
                 if (n == 0)
                     return 0;
                 i = 0;
-                j = iSortIndex.Last();
+                j = iSortIndex.Last();  // j is the index to the oldest time completed ie: the last one in the ld_selworkunits table
                 tStart = ThisProjectInfo[SortToInfo[i]].time_t_Completed - Convert.ToInt64(ThisProjectInfo[iSortIndex[i]].dElapsedTime);
                 tEnd = ThisProjectInfo[SortToInfo[j]].time_t_Completed;
                 strTimeDiff = BestTimeUnits(tEnd - tStart);
@@ -1534,6 +1537,30 @@ namespace BTHistoryReader
             lb_SelWorkUnits.SetSelected(0, true);
             lb_SelWorkUnits.SetSelected(i - 1, true);
             CountSelected();
+        }
+
+        private void SelectLast(long iSeconds)
+        {
+            int j,i = lb_SelWorkUnits.Items.Count;
+            long tEndComplete, tStartComplete, tDiff;   // not true "start" time as not adding the elapsed time
+            btnGTime.Enabled = false;
+            btnScatGpu.Enabled = false;
+            if (i == 0) return;
+            i--;
+            lb_SelWorkUnits.ClearSelected();
+            lb_SelWorkUnits.SetSelected(i, true);
+            tEndComplete = ThisProjectInfo[SortToInfo[i]].time_t_Completed;
+            i--;
+            for(j = i; j >= 0; j--)
+            {
+                tStartComplete = ThisProjectInfo[SortToInfo[j]].time_t_Completed;
+                tDiff = tEndComplete - tStartComplete;
+                if (tDiff >= iSeconds) break;
+            }
+            if (j < 0) j = 0;   // dont remmber how for loop ends in "C"
+            lb_SelWorkUnits.SetSelected(j, true);
+            CountSelected();
+            RunContinunityCheck();
         }
 
         private void lb_SelWorkUnits_SelectedIndexChanged(object sender, EventArgs e)
@@ -1789,6 +1816,7 @@ namespace BTHistoryReader
         bool FormSeriesFromSets()
         {
             MySeriesData = new List<cSeriesData>();
+            int nCon = Convert.ToInt32(nudConCurrent.Value);
             int iLoc = LookupProject(cb_SelProj.Text); //cb_SelProj.SelectedIndex;
             int jLoc;   // traverse pointer to see if data is bad or not
             bool bGood;
@@ -1815,11 +1843,11 @@ namespace BTHistoryReader
                         sa.iGpuDevice.Add(appName.DeviceID[jLoc]);
                         jLoc++;
                         if(cbShowError.Checked)
-                            sa.dValues.Add(d / 60.0);   // probably should just use minutes to start with
+                            sa.dValues.Add(d / (nCon*60.0));   // probably should just use minutes to start with
                         else
                         {
                             if (bGood)
-                                sa.dValues.Add(d / 60.0);
+                                sa.dValues.Add(d / (nCon*60.0));
                             else continue;
                         }
                     }
@@ -1843,7 +1871,7 @@ namespace BTHistoryReader
                     }
                     sa.ShowType = eShowType.DoingSets;
                     sa.bIsValid = appName.bIsValid; //new List<bool>();
-                    sa.nConcurrent = 1;
+                    sa.nConcurrent = nCon;
 
                     MySeriesData.Add(sa);
                 }
@@ -1851,7 +1879,7 @@ namespace BTHistoryReader
             return bAny;
         }
 
-
+        // this does not use the select table as all data is used
         bool FormSeriesFromGPUs()
         {
             bool bAny = false;
@@ -1859,7 +1887,9 @@ namespace BTHistoryReader
             MySeriesData = new List<cSeriesData>();
             List<int> iGPUsUsed = new List<int>();   // these will be series names
                                                      // need to count devices
-            cSeriesData sa;
+            int nCon = Convert.ToInt32(nudConCurrent.Value);
+            cSeriesData sa; 
+            // need to count series first
             foreach (cProjectInfo pi in ThisProjectInfo)
             {
                 if(pi.bState || cbShowError.Checked)
@@ -1876,25 +1906,22 @@ namespace BTHistoryReader
                     sa.dValues = new List<double>();
                     sa.ShowType = eShowType.DoingGPUs;
                     sa.bIsValid = new List<bool>();
-                    sa.nConcurrent = 1;
+                    sa.nConcurrent = nCon;
                     sa.TheseSystems = new List<string>();
                     sa.iTheseSystem = new List<int>();
                     sa.iTheseSystem.Add(0);
                     MySeriesData.Add(sa);
                 }
             }
+            // now get data
             foreach (cProjectInfo pi in ThisProjectInfo)
             {
                 if (pi.bState || cbShowError.Checked)
                 {
                     iGpu = pi.iDeviceUsed;
                     sa = MySeriesData[iGpu];
-                    sa.dValues.Add(pi.dElapsedTime / 60.0);
+                    sa.dValues.Add(pi.dElapsedTime / (nCon*60.0));
                     sa.bIsValid.Add(pi.bState);
-                }
-                else
-                {
-                    int iDebug = 0;
                 }
             }
             return bAny;
@@ -1993,7 +2020,8 @@ namespace BTHistoryReader
         {
             if (iStart < 0 || iStop < 0) return;
             double dMax = -1.0;
-            for(int i=iStart; i<=iStop; i++)
+            int nCon = Convert.ToInt32(nudConCurrent.Value);
+            for (int i=iStart; i<=iStop; i++)
             {
                 int j = SortToInfo[i];
                 cProjectInfo pi = ThisProjectInfo[j];
@@ -2003,7 +2031,7 @@ namespace BTHistoryReader
                 }
                 else continue;
             }
-            timegraph DeviceGraph = new timegraph (ref ThisProjectInfo, 1+MaxDeviceCount, iStart, iStop,dMax, ref SortToInfo);
+            timegraph DeviceGraph = new timegraph (ref ThisProjectInfo, 1+MaxDeviceCount, iStart, iStop,dMax/nCon, ref SortToInfo, nCon);
             DeviceGraph.ShowDialog();
             DeviceGraph.Dispose();
         }
@@ -2022,6 +2050,18 @@ namespace BTHistoryReader
         {
             if (FormSeriesFromGPUs())
                 ShowGPUScatter();
+        }
+
+
+
+        private void btnLastHour_Click(object sender, EventArgs e)
+        {
+            SelectLast(3600);
+        }
+
+        private void btnLastDay_Click(object sender, EventArgs e)
+        {
+            SelectLast(24 * 3600);
         }
     }
 }
