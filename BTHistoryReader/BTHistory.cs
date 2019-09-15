@@ -30,12 +30,13 @@ namespace BTHistoryReader
             InitializeComponent();
             try
             {
-                // DEFALT IS TO USE CVS1  note that the 3 files slowly change in real time as they are updated
+                // DEFAULT IS TO USE CVS1  note that the 3 files slowly change in real time as they are updated
                 bool b = Properties.Settings.Default.TypeCVS;
                 if (!b) rbUseCVS.Checked = true;
                 else rbUseCVS1.Checked = true;
                 cboxStopLoad.Checked = Properties.Settings.Default.UseLimit;
                 tboxLimit.Text = Properties.Settings.Default.RecLimit;
+                lbLastFiles.Text = Properties.Settings.Default.LastFiles;
             }
             catch
             {
@@ -472,6 +473,12 @@ namespace BTHistoryReader
             AllHistories = ofd_history.FileNames;
             if (AllHistories.Length > 1)
             {
+                lbLastFiles.Text = "";
+                foreach (string strHisFile in AllHistories)
+                {
+                    lbLastFiles.Text += strHisFile + "\r\n";
+                }
+                SaveLast();
                 pbarLoading.Visible = true;
                 BTHistory.ActiveForm.Enabled = false;
                 LinesWeRead = 0;                    // used by progress bar
@@ -483,6 +490,8 @@ namespace BTHistoryReader
                 return false;
             }
             lb_history_loc.Text = ofd_history.FileName;
+            lbLastFiles.Text = ofd_history.FileName;
+            SaveLast();
             if (File.Exists(lb_history_loc.Text))
             {
                 str_PathToHistory = lb_history_loc.Text;
@@ -1457,6 +1466,20 @@ namespace BTHistoryReader
             myAbout.ShowDialog();
         }
 
+        private void btnBug_Click(object sender, EventArgs e)
+        {
+            if(ofd_history.InitialDirectory == "")
+            {
+                int nFiles = LocatePathToHistory();
+                if(nFiles ==0)
+                {
+                    tb_Info.Text += "Warning: cannot find any history files\r\n";
+                    ofd_history.InitialDirectory = "";
+                }
+            }
+            reportbug MyReport = new reportbug(lbLastFiles.Text, ofd_history.InitialDirectory);
+            MyReport.ShowDialog();
+        }
 
         private void rbElapsed_CheckedChanged(object sender, EventArgs e)
         {
@@ -2052,7 +2075,10 @@ namespace BTHistoryReader
                 ShowGPUScatter();
         }
 
-
+        private void SaveLast()
+        {
+            Properties.Settings.Default.LastFiles = lbLastFiles.Text ;
+        }
 
         private void btnLastHour_Click(object sender, EventArgs e)
         {

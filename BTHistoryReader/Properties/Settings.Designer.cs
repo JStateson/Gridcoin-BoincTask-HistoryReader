@@ -58,5 +58,17 @@ namespace BTHistoryReader.Properties {
                 this["UseLimit"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("empty")]
+        public string LastFiles {
+            get {
+                return ((string)(this["LastFiles"]));
+            }
+            set {
+                this["LastFiles"] = value;
+            }
+        }
     }
 }

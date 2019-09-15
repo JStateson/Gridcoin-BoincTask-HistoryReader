@@ -30,6 +30,8 @@
         {
             this.components = new System.ComponentModel.Container();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.btnBug = new System.Windows.Forms.Button();
+            this.lbLastFiles = new System.Windows.Forms.Label();
             this.btnClrInfo = new System.Windows.Forms.Button();
             this.lblBuildDate = new System.Windows.Forms.Label();
             this.pbarLoading = new System.Windows.Forms.ProgressBar();
@@ -44,6 +46,8 @@
             this.btnAbout = new System.Windows.Forms.Button();
             this.btnShowProjectTree = new System.Windows.Forms.Button();
             this.gb_filter = new System.Windows.Forms.GroupBox();
+            this.btnLastHour = new System.Windows.Forms.Button();
+            this.btnLastDay = new System.Windows.Forms.Button();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
             this.nudConCurrent = new System.Windows.Forms.NumericUpDown();
@@ -90,8 +94,6 @@
             this.ofd_history = new System.Windows.Forms.OpenFileDialog();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.TimerShowBuild = new System.Windows.Forms.Timer(this.components);
-            this.btnLastDay = new System.Windows.Forms.Button();
-            this.btnLastHour = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.gboxOPFsettings.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -107,6 +109,8 @@
             // panel1
             // 
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel1.Controls.Add(this.btnBug);
+            this.panel1.Controls.Add(this.lbLastFiles);
             this.panel1.Controls.Add(this.btnClrInfo);
             this.panel1.Controls.Add(this.lblBuildDate);
             this.panel1.Controls.Add(this.pbarLoading);
@@ -124,6 +128,26 @@
             this.panel1.Size = new System.Drawing.Size(1000, 604);
             this.panel1.TabIndex = 0;
             this.panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.panel1_Paint);
+            // 
+            // btnBug
+            // 
+            this.btnBug.Location = new System.Drawing.Point(831, 12);
+            this.btnBug.Name = "btnBug";
+            this.btnBug.Size = new System.Drawing.Size(133, 23);
+            this.btnBug.TabIndex = 15;
+            this.btnBug.Text = "BUG or SUGGESTION";
+            this.btnBug.UseVisualStyleBackColor = true;
+            this.btnBug.Click += new System.EventHandler(this.btnBug_Click);
+            // 
+            // lbLastFiles
+            // 
+            this.lbLastFiles.AutoSize = true;
+            this.lbLastFiles.Location = new System.Drawing.Point(19, 579);
+            this.lbLastFiles.Name = "lbLastFiles";
+            this.lbLastFiles.Size = new System.Drawing.Size(79, 13);
+            this.lbLastFiles.TabIndex = 14;
+            this.lbLastFiles.Text = "Last Files Used";
+            this.lbLastFiles.Visible = false;
             // 
             // btnClrInfo
             // 
@@ -247,7 +271,7 @@
             // 
             // btnAbout
             // 
-            this.btnAbout.Location = new System.Drawing.Point(747, 12);
+            this.btnAbout.Location = new System.Drawing.Point(710, 12);
             this.btnAbout.Name = "btnAbout";
             this.btnAbout.Size = new System.Drawing.Size(99, 23);
             this.btnAbout.TabIndex = 8;
@@ -290,6 +314,28 @@
             this.gb_filter.TabStop = false;
             this.gb_filter.Text = "Filter";
             this.gb_filter.Enter += new System.EventHandler(this.gb_filter_Enter);
+            // 
+            // btnLastHour
+            // 
+            this.btnLastHour.ForeColor = System.Drawing.SystemColors.HotTrack;
+            this.btnLastHour.Location = new System.Drawing.Point(18, 487);
+            this.btnLastHour.Name = "btnLastHour";
+            this.btnLastHour.Size = new System.Drawing.Size(125, 23);
+            this.btnLastHour.TabIndex = 27;
+            this.btnLastHour.Text = "Select Last Hour";
+            this.btnLastHour.UseVisualStyleBackColor = true;
+            this.btnLastHour.Click += new System.EventHandler(this.btnLastHour_Click);
+            // 
+            // btnLastDay
+            // 
+            this.btnLastDay.ForeColor = System.Drawing.SystemColors.HotTrack;
+            this.btnLastDay.Location = new System.Drawing.Point(18, 523);
+            this.btnLastDay.Name = "btnLastDay";
+            this.btnLastDay.Size = new System.Drawing.Size(125, 23);
+            this.btnLastDay.TabIndex = 26;
+            this.btnLastDay.Text = "Select Last Day";
+            this.btnLastDay.UseVisualStyleBackColor = true;
+            this.btnLastDay.Click += new System.EventHandler(this.btnLastDay_Click);
             // 
             // groupBox3
             // 
@@ -800,28 +846,6 @@
             this.TimerShowBuild.Interval = 250;
             this.TimerShowBuild.Tick += new System.EventHandler(this.TimerShowBuild_Tick);
             // 
-            // btnLastDay
-            // 
-            this.btnLastDay.ForeColor = System.Drawing.SystemColors.HotTrack;
-            this.btnLastDay.Location = new System.Drawing.Point(18, 523);
-            this.btnLastDay.Name = "btnLastDay";
-            this.btnLastDay.Size = new System.Drawing.Size(125, 23);
-            this.btnLastDay.TabIndex = 26;
-            this.btnLastDay.Text = "Select Last Day";
-            this.btnLastDay.UseVisualStyleBackColor = true;
-            this.btnLastDay.Click += new System.EventHandler(this.btnLastDay_Click);
-            // 
-            // btnLastHour
-            // 
-            this.btnLastHour.ForeColor = System.Drawing.SystemColors.HotTrack;
-            this.btnLastHour.Location = new System.Drawing.Point(18, 487);
-            this.btnLastHour.Name = "btnLastHour";
-            this.btnLastHour.Size = new System.Drawing.Size(125, 23);
-            this.btnLastHour.TabIndex = 27;
-            this.btnLastHour.Text = "Select Last Hour";
-            this.btnLastHour.UseVisualStyleBackColor = true;
-            this.btnLastHour.Click += new System.EventHandler(this.btnLastHour_Click);
-            // 
             // BTHistory
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -918,6 +942,8 @@
         private System.Windows.Forms.GroupBox groupBox6;
         private System.Windows.Forms.Button btnLastHour;
         private System.Windows.Forms.Button btnLastDay;
+        private System.Windows.Forms.Label lbLastFiles;
+        private System.Windows.Forms.Button btnBug;
     }
 }
 
