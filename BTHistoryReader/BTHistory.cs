@@ -1608,6 +1608,10 @@ namespace BTHistoryReader
 
         // user want a plot of the gaps in completion
         // this forms the data that is eventually plotted
+        /// <summary>
+        // 9/19/2019 plotting wrong direction.  0 should be present time and 0....5 the 5 would be 5 hours back.  I got it reversed
+        /// </summary>
+        /// <returns></returns>
         private bool PerformIdleAnalysis()
         {
             int i, j, n;
@@ -1653,6 +1657,9 @@ namespace BTHistoryReader
                 return false;
             }
             StdGap = CalcStd(AvgGap, ref IdleGap);
+            //the below is NFG as it is the plotting that needs to be fixd
+            //IdleGap.Reverse();
+            //CompletionTimes.Reverse();
             return true;
         }
 
@@ -2088,6 +2095,21 @@ namespace BTHistoryReader
         private void btnLastDay_Click(object sender, EventArgs e)
         {
             SelectLast(24 * 3600);
+        }
+
+        private void btn2hr_Click(object sender, EventArgs e)
+        {
+            SelectLast(3600 * 2);
+        }
+
+        private void btn4hr_Click(object sender, EventArgs e)
+        {
+            SelectLast(3600 * 4);
+        }
+
+        private void btn8hr_Click(object sender, EventArgs e)
+        {
+            SelectLast(3600 * 8);
         }
     }
 }

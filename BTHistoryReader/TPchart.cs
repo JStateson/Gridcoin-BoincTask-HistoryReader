@@ -47,9 +47,29 @@ namespace BTHistoryReader
             gboxLKBACK.Visible = !bValue;
         }
 
-        // ctStart if > 0 then normalizing
+        // ctStart if > 0 then setting to 0 for for "now" and positive axis is going back in time
         // did not want to overwrite the data that was passed by reference
-        private void SaveWorking(int n, double ctStart)
+        // note there is one more completion time then elapsed time for IDLE but not for elapsed time plots
+        // so n (ct) is 1 too big compare to (it)
+        // not sure why I did that or how it happened
+        private void ID_SaveWorking(int nCT)
+        {
+            int i, j, n = it.Count;
+            nCT--;
+            WORKctStart = ct[nCT];
+            WORKit = new double[n];
+            WORKct = new double[n];
+            j = n - 1;
+            for (i = 0; i < n; i ++)
+            {
+                WORKit[i] = it[j];
+                WORKct[i] = WORKctStart - ct[nCT - i];
+                j--;
+            }
+            ValidWork = n;
+        }
+
+        private void ET_SaveWorking(int n)
         {
             int i;
             WORKit = new double[n];
@@ -57,7 +77,7 @@ namespace BTHistoryReader
             WORKctStart = ct[0];
             for (i = 0; i < n; i++)
             {
-                WORKct[i] = ct[i] - ctStart;
+                WORKct[i] = ct[i];
                 WORKit[i] = it[i];
             }
             ValidWork = n;
@@ -143,7 +163,8 @@ namespace BTHistoryReader
 
             if (AvgGap != -1)
             {   // plotting idle time and the first arg is in seconds, not minutes
-                SaveWorking(ct.Count-1, ct[0]); // since it is difference between ct then there is always one less item
+                //SaveWorking(ct.Count-1, ct[0]); // since it is difference between ct then there is always one less item
+                ID_SaveWorking(ct.Count); // 9/19/2019
                 gboxFilter.Text = "Detail Filter (0 is all)";
                 this.Text = "Idle Plot";
                 i = Convert.ToInt32(StdGap / AvgGap);
@@ -159,7 +180,7 @@ namespace BTHistoryReader
             // plotting elapsed time, first arg is in minutes
             this.Text = "Elapsed Time";
             gboxFilter.Text = "Visual Scaling";
-            SaveWorking(ct.Count,0);
+            ET_SaveWorking(ct.Count);
             toolTip1.SetToolTip(DetailFilter, "Change x-axis scale");
             lbSpinFilter.Text = "adj xAxis scale";
             DrawHist();

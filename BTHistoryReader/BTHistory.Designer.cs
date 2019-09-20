@@ -94,6 +94,9 @@
             this.ofd_history = new System.Windows.Forms.OpenFileDialog();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.TimerShowBuild = new System.Windows.Forms.Timer(this.components);
+            this.btn2hr = new System.Windows.Forms.Button();
+            this.btn4hr = new System.Windows.Forms.Button();
+            this.btn8hr = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.gboxOPFsettings.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -125,7 +128,7 @@
             this.panel1.Controls.Add(this.btn_OpenHistory);
             this.panel1.Location = new System.Drawing.Point(12, 12);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1000, 604);
+            this.panel1.Size = new System.Drawing.Size(1000, 641);
             this.panel1.TabIndex = 0;
             this.panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.panel1_Paint);
             // 
@@ -291,6 +294,9 @@
             // 
             // gb_filter
             // 
+            this.gb_filter.Controls.Add(this.btn8hr);
+            this.gb_filter.Controls.Add(this.btn4hr);
+            this.gb_filter.Controls.Add(this.btn2hr);
             this.gb_filter.Controls.Add(this.btnLastHour);
             this.gb_filter.Controls.Add(this.btnLastDay);
             this.gb_filter.Controls.Add(this.groupBox3);
@@ -309,7 +315,7 @@
             this.gb_filter.Controls.Add(this.lb_SelWorkUnits);
             this.gb_filter.Location = new System.Drawing.Point(534, 41);
             this.gb_filter.Name = "gb_filter";
-            this.gb_filter.Size = new System.Drawing.Size(448, 551);
+            this.gb_filter.Size = new System.Drawing.Size(448, 584);
             this.gb_filter.TabIndex = 6;
             this.gb_filter.TabStop = false;
             this.gb_filter.Text = "Filter";
@@ -318,7 +324,7 @@
             // btnLastHour
             // 
             this.btnLastHour.ForeColor = System.Drawing.SystemColors.HotTrack;
-            this.btnLastHour.Location = new System.Drawing.Point(18, 487);
+            this.btnLastHour.Location = new System.Drawing.Point(18, 514);
             this.btnLastHour.Name = "btnLastHour";
             this.btnLastHour.Size = new System.Drawing.Size(125, 23);
             this.btnLastHour.TabIndex = 27;
@@ -329,7 +335,7 @@
             // btnLastDay
             // 
             this.btnLastDay.ForeColor = System.Drawing.SystemColors.HotTrack;
-            this.btnLastDay.Location = new System.Drawing.Point(18, 523);
+            this.btnLastDay.Location = new System.Drawing.Point(18, 478);
             this.btnLastDay.Name = "btnLastDay";
             this.btnLastDay.Size = new System.Drawing.Size(125, 23);
             this.btnLastDay.TabIndex = 26;
@@ -346,7 +352,7 @@
             this.groupBox3.Controls.Add(this.btnScatSets);
             this.groupBox3.Location = new System.Drawing.Point(170, 406);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(260, 139);
+            this.groupBox3.Size = new System.Drawing.Size(260, 131);
             this.groupBox3.TabIndex = 25;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Dataset & Device plots";
@@ -366,7 +372,7 @@
             // 
             this.nudConCurrent.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.nudConCurrent.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.nudConCurrent.Location = new System.Drawing.Point(28, 30);
+            this.nudConCurrent.Location = new System.Drawing.Point(28, 25);
             this.nudConCurrent.Maximum = new decimal(new int[] {
             10,
             0,
@@ -391,7 +397,7 @@
             // btnScatGpu
             // 
             this.btnScatGpu.ForeColor = System.Drawing.Color.DarkGreen;
-            this.btnScatGpu.Location = new System.Drawing.Point(127, 102);
+            this.btnScatGpu.Location = new System.Drawing.Point(127, 90);
             this.btnScatGpu.Name = "btnScatGpu";
             this.btnScatGpu.Size = new System.Drawing.Size(111, 23);
             this.btnScatGpu.TabIndex = 27;
@@ -403,7 +409,7 @@
             // 
             this.btnGTime.Enabled = false;
             this.btnGTime.ForeColor = System.Drawing.Color.DarkGreen;
-            this.btnGTime.Location = new System.Drawing.Point(127, 73);
+            this.btnGTime.Location = new System.Drawing.Point(127, 61);
             this.btnGTime.Name = "btnGTime";
             this.btnGTime.Size = new System.Drawing.Size(111, 23);
             this.btnGTime.TabIndex = 26;
@@ -427,7 +433,7 @@
             // 
             this.btnScatSets.Enabled = false;
             this.btnScatSets.ForeColor = System.Drawing.Color.DarkGreen;
-            this.btnScatSets.Location = new System.Drawing.Point(127, 41);
+            this.btnScatSets.Location = new System.Drawing.Point(127, 29);
             this.btnScatSets.Name = "btnScatSets";
             this.btnScatSets.Size = new System.Drawing.Size(111, 23);
             this.btnScatSets.TabIndex = 24;
@@ -846,11 +852,44 @@
             this.TimerShowBuild.Interval = 250;
             this.TimerShowBuild.Tick += new System.EventHandler(this.TimerShowBuild_Tick);
             // 
+            // btn2hr
+            // 
+            this.btn2hr.ForeColor = System.Drawing.SystemColors.HotTrack;
+            this.btn2hr.Location = new System.Drawing.Point(19, 549);
+            this.btn2hr.Name = "btn2hr";
+            this.btn2hr.Size = new System.Drawing.Size(75, 23);
+            this.btn2hr.TabIndex = 28;
+            this.btn2hr.Text = "Last 2 Hours";
+            this.btn2hr.UseVisualStyleBackColor = true;
+            this.btn2hr.Click += new System.EventHandler(this.btn2hr_Click);
+            // 
+            // btn4hr
+            // 
+            this.btn4hr.ForeColor = System.Drawing.SystemColors.HotTrack;
+            this.btn4hr.Location = new System.Drawing.Point(114, 549);
+            this.btn4hr.Name = "btn4hr";
+            this.btn4hr.Size = new System.Drawing.Size(75, 23);
+            this.btn4hr.TabIndex = 29;
+            this.btn4hr.Text = "Last 4 Hours";
+            this.btn4hr.UseVisualStyleBackColor = true;
+            this.btn4hr.Click += new System.EventHandler(this.btn4hr_Click);
+            // 
+            // btn8hr
+            // 
+            this.btn8hr.ForeColor = System.Drawing.SystemColors.HotTrack;
+            this.btn8hr.Location = new System.Drawing.Point(210, 549);
+            this.btn8hr.Name = "btn8hr";
+            this.btn8hr.Size = new System.Drawing.Size(75, 23);
+            this.btn8hr.TabIndex = 30;
+            this.btn8hr.Text = "Last 8 Hours";
+            this.btn8hr.UseVisualStyleBackColor = true;
+            this.btn8hr.Click += new System.EventHandler(this.btn8hr_Click);
+            // 
             // BTHistory
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1038, 628);
+            this.ClientSize = new System.Drawing.Size(1038, 665);
             this.Controls.Add(this.panel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
@@ -944,6 +983,9 @@
         private System.Windows.Forms.Button btnLastDay;
         private System.Windows.Forms.Label lbLastFiles;
         private System.Windows.Forms.Button btnBug;
+        private System.Windows.Forms.Button btn8hr;
+        private System.Windows.Forms.Button btn4hr;
+        private System.Windows.Forms.Button btn2hr;
     }
 }
 
