@@ -30,6 +30,8 @@
         {
             this.components = new System.ComponentModel.Container();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.groupBox8 = new System.Windows.Forms.GroupBox();
+            this.lblFilterString = new System.Windows.Forms.Label();
             this.btnBug = new System.Windows.Forms.Button();
             this.lbLastFiles = new System.Windows.Forms.Label();
             this.btnClrInfo = new System.Windows.Forms.Button();
@@ -46,6 +48,9 @@
             this.btnAbout = new System.Windows.Forms.Button();
             this.btnShowProjectTree = new System.Windows.Forms.Button();
             this.gb_filter = new System.Windows.Forms.GroupBox();
+            this.groupBox7 = new System.Windows.Forms.GroupBox();
+            this.cbUseAdvFilter = new System.Windows.Forms.CheckBox();
+            this.btnAdvFilter = new System.Windows.Forms.Button();
             this.btn8hr = new System.Windows.Forms.Button();
             this.btn4hr = new System.Windows.Forms.Button();
             this.btn2hr = new System.Windows.Forms.Button();
@@ -98,9 +103,11 @@
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.TimerShowBuild = new System.Windows.Forms.Timer(this.components);
             this.panel1.SuspendLayout();
+            this.groupBox8.SuspendLayout();
             this.gboxOPFsettings.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.gb_filter.SuspendLayout();
+            this.groupBox7.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox6.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudConCurrent)).BeginInit();
@@ -112,6 +119,7 @@
             // panel1
             // 
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel1.Controls.Add(this.groupBox8);
             this.panel1.Controls.Add(this.btnBug);
             this.panel1.Controls.Add(this.lbLastFiles);
             this.panel1.Controls.Add(this.btnClrInfo);
@@ -128,9 +136,30 @@
             this.panel1.Controls.Add(this.btn_OpenHistory);
             this.panel1.Location = new System.Drawing.Point(12, 12);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1000, 641);
+            this.panel1.Size = new System.Drawing.Size(1000, 686);
             this.panel1.TabIndex = 0;
             this.panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.panel1_Paint);
+            // 
+            // groupBox8
+            // 
+            this.groupBox8.Controls.Add(this.lblFilterString);
+            this.groupBox8.Location = new System.Drawing.Point(22, 612);
+            this.groupBox8.Name = "groupBox8";
+            this.groupBox8.Size = new System.Drawing.Size(476, 54);
+            this.groupBox8.TabIndex = 16;
+            this.groupBox8.TabStop = false;
+            this.groupBox8.Text = "Advanced Filter (used only for single history)";
+            // 
+            // lblFilterString
+            // 
+            this.lblFilterString.AutoSize = true;
+            this.lblFilterString.BackColor = System.Drawing.SystemColors.Info;
+            this.lblFilterString.ForeColor = System.Drawing.SystemColors.InfoText;
+            this.lblFilterString.Location = new System.Drawing.Point(18, 22);
+            this.lblFilterString.Name = "lblFilterString";
+            this.lblFilterString.Size = new System.Drawing.Size(85, 13);
+            this.lblFilterString.TabIndex = 0;
+            this.lblFilterString.Text = "reserved for filter";
             // 
             // btnBug
             // 
@@ -294,6 +323,7 @@
             // 
             // gb_filter
             // 
+            this.gb_filter.Controls.Add(this.groupBox7);
             this.gb_filter.Controls.Add(this.btn8hr);
             this.gb_filter.Controls.Add(this.btn4hr);
             this.gb_filter.Controls.Add(this.btn2hr);
@@ -315,42 +345,75 @@
             this.gb_filter.Controls.Add(this.lb_SelWorkUnits);
             this.gb_filter.Location = new System.Drawing.Point(534, 41);
             this.gb_filter.Name = "gb_filter";
-            this.gb_filter.Size = new System.Drawing.Size(448, 584);
+            this.gb_filter.Size = new System.Drawing.Size(448, 624);
             this.gb_filter.TabIndex = 6;
             this.gb_filter.TabStop = false;
             this.gb_filter.Text = "Filter";
             this.gb_filter.Enter += new System.EventHandler(this.gb_filter_Enter);
             // 
+            // groupBox7
+            // 
+            this.groupBox7.Controls.Add(this.cbUseAdvFilter);
+            this.groupBox7.Controls.Add(this.btnAdvFilter);
+            this.groupBox7.Location = new System.Drawing.Point(170, 548);
+            this.groupBox7.Name = "groupBox7";
+            this.groupBox7.Size = new System.Drawing.Size(254, 63);
+            this.groupBox7.TabIndex = 31;
+            this.groupBox7.TabStop = false;
+            this.groupBox7.Text = "Advanced Filter";
+            // 
+            // cbUseAdvFilter
+            // 
+            this.cbUseAdvFilter.AutoSize = true;
+            this.cbUseAdvFilter.BackColor = System.Drawing.SystemColors.Info;
+            this.cbUseAdvFilter.Enabled = false;
+            this.cbUseAdvFilter.Location = new System.Drawing.Point(127, 19);
+            this.cbUseAdvFilter.Name = "cbUseAdvFilter";
+            this.cbUseAdvFilter.Size = new System.Drawing.Size(70, 17);
+            this.cbUseAdvFilter.TabIndex = 1;
+            this.cbUseAdvFilter.Text = "Use Filter";
+            this.cbUseAdvFilter.UseVisualStyleBackColor = false;
+            // 
+            // btnAdvFilter
+            // 
+            this.btnAdvFilter.Location = new System.Drawing.Point(15, 19);
+            this.btnAdvFilter.Name = "btnAdvFilter";
+            this.btnAdvFilter.Size = new System.Drawing.Size(75, 23);
+            this.btnAdvFilter.TabIndex = 0;
+            this.btnAdvFilter.Text = "Create / Edit";
+            this.btnAdvFilter.UseVisualStyleBackColor = true;
+            this.btnAdvFilter.Click += new System.EventHandler(this.btnAdvFilter_Click);
+            // 
             // btn8hr
             // 
             this.btn8hr.ForeColor = System.Drawing.SystemColors.HotTrack;
-            this.btn8hr.Location = new System.Drawing.Point(210, 549);
+            this.btn8hr.Location = new System.Drawing.Point(19, 588);
             this.btn8hr.Name = "btn8hr";
-            this.btn8hr.Size = new System.Drawing.Size(75, 23);
+            this.btn8hr.Size = new System.Drawing.Size(52, 23);
             this.btn8hr.TabIndex = 30;
-            this.btn8hr.Text = "Last 8 Hours";
+            this.btn8hr.Text = "Last 8";
             this.btn8hr.UseVisualStyleBackColor = true;
             this.btn8hr.Click += new System.EventHandler(this.btn8hr_Click);
             // 
             // btn4hr
             // 
             this.btn4hr.ForeColor = System.Drawing.SystemColors.HotTrack;
-            this.btn4hr.Location = new System.Drawing.Point(114, 549);
+            this.btn4hr.Location = new System.Drawing.Point(92, 554);
             this.btn4hr.Name = "btn4hr";
-            this.btn4hr.Size = new System.Drawing.Size(75, 23);
+            this.btn4hr.Size = new System.Drawing.Size(50, 23);
             this.btn4hr.TabIndex = 29;
-            this.btn4hr.Text = "Last 4 Hours";
+            this.btn4hr.Text = "Last 4";
             this.btn4hr.UseVisualStyleBackColor = true;
             this.btn4hr.Click += new System.EventHandler(this.btn4hr_Click);
             // 
             // btn2hr
             // 
             this.btn2hr.ForeColor = System.Drawing.SystemColors.HotTrack;
-            this.btn2hr.Location = new System.Drawing.Point(19, 549);
+            this.btn2hr.Location = new System.Drawing.Point(18, 554);
             this.btn2hr.Name = "btn2hr";
-            this.btn2hr.Size = new System.Drawing.Size(75, 23);
+            this.btn2hr.Size = new System.Drawing.Size(52, 23);
             this.btn2hr.TabIndex = 28;
-            this.btn2hr.Text = "Last 2 Hours";
+            this.btn2hr.Text = "Last 2";
             this.btn2hr.UseVisualStyleBackColor = true;
             this.btn2hr.Click += new System.EventHandler(this.btn2hr_Click);
             // 
@@ -640,7 +703,7 @@
             this.lb_SelWorkUnits.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lb_SelWorkUnits.FormattingEnabled = true;
             this.lb_SelWorkUnits.ItemHeight = 14;
-            this.lb_SelWorkUnits.Location = new System.Drawing.Point(18, 32);
+            this.lb_SelWorkUnits.Location = new System.Drawing.Point(6, 32);
             this.lb_SelWorkUnits.Name = "lb_SelWorkUnits";
             this.lb_SelWorkUnits.SelectionMode = System.Windows.Forms.SelectionMode.MultiSimple;
             this.lb_SelWorkUnits.Size = new System.Drawing.Size(412, 214);
@@ -890,7 +953,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1038, 665);
+            this.ClientSize = new System.Drawing.Size(1038, 710);
             this.Controls.Add(this.panel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
@@ -899,12 +962,16 @@
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.BTHistory_FormClosing);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
+            this.groupBox8.ResumeLayout(false);
+            this.groupBox8.PerformLayout();
             this.gboxOPFsettings.ResumeLayout(false);
             this.gboxOPFsettings.PerformLayout();
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
             this.gb_filter.ResumeLayout(false);
             this.gb_filter.PerformLayout();
+            this.groupBox7.ResumeLayout(false);
+            this.groupBox7.PerformLayout();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             this.groupBox6.ResumeLayout(false);
@@ -987,6 +1054,11 @@
         private System.Windows.Forms.Button btn8hr;
         private System.Windows.Forms.Button btn4hr;
         private System.Windows.Forms.Button btn2hr;
+        private System.Windows.Forms.GroupBox groupBox7;
+        private System.Windows.Forms.CheckBox cbUseAdvFilter;
+        private System.Windows.Forms.Button btnAdvFilter;
+        private System.Windows.Forms.GroupBox groupBox8;
+        private System.Windows.Forms.Label lblFilterString;
     }
 }
 

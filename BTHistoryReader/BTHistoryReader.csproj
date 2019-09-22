@@ -82,6 +82,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AdvFilter.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AdvFilter.Designer.cs">
+      <DependentUpon>AdvFilter.cs</DependentUpon>
+    </Compile>
     <Compile Include="BTHistory.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -144,6 +150,9 @@
     <Compile Include="global.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="AdvFilter.resx">
+      <DependentUpon>AdvFilter.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="BTHistory.resx">
       <DependentUpon>BTHistory.cs</DependentUpon>
     </EmbeddedResource>

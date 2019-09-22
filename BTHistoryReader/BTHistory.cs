@@ -26,6 +26,8 @@ namespace BTHistoryReader
         //private bool bDoNotLoadA = true; // this is a kluge until I figure out why I cannot remove those events!!!
         //private bool bDoNotLoadP = true;
 
+        cAdvFilter MyAdvFilter = new cAdvFilter();
+
         public BTHistory()
         {
             InitializeComponent();
@@ -53,7 +55,8 @@ namespace BTHistoryReader
                     tb_Info.Text = "exception: " + e.Message + "\r\n";
                 }
             }
-
+            MyAdvFilter.bContains = true;   // must match default in design view of AdvFilter
+            MyAdvFilter.strPhrase = ""; // for now dont bother with any properties or setting can add save feature later if at all
         }
 
         private int iLocMaxDiff;
@@ -874,13 +877,14 @@ namespace BTHistoryReader
             System.DateTime dt_this;
             string strWTF = "";
             int j = 0;
-            int iWTF = 0, jWTF ;
+            int iWTF = 0, jWTF;
             bool bState, bState1;
             long n, nElapsedTime;
             bool bStopReading = cboxStopLoad.Checked;
             int nLimit = Convert.ToInt32(tboxLimit.Text);
             int i, iStart, iTraverse, iCount;
             pbarLoading.Value = 0;
+            MyAdvFilter.NumExcluded = 0;
             if (AppName.LineLoc.Count == 0) return 0;
 
             // this could be rewritten better but WTF, it was done before I got that splitlinestuff to work
@@ -889,16 +893,16 @@ namespace BTHistoryReader
 
             iCount = AppName.LineLoc.Count;
             iStart = 0;
-            if(bStopReading)
+            if (bStopReading)
             {
-                if(iCount > nLimit)
+                if (iCount > nLimit)
                 {
                     iStart = iCount - nLimit;
                     iCount = nLimit;
                     tb_Info.Text += " skipping to get last " + tboxLimit.Text + " out of " + AppName.LineLoc.Count.ToString() + " records\r\n";
                 }
             }
-            for(iTraverse=0; iTraverse < iCount;  iTraverse++)
+            for (iTraverse = 0; iTraverse < iCount; iTraverse++)
             {
                 i = AppName.LineLoc[iTraverse + iStart];
                 bState = LinesHistory[i].Length > ExpectedLengthLine;
@@ -917,7 +921,7 @@ namespace BTHistoryReader
                     jWTF = LinesHistory[i].IndexOf("|");
                     Debug.Assert(jWTF > 0);
                     iWTF += 9;
-                    strWTF = LinesHistory[i].Substring(iWTF,(jWTF-iWTF));
+                    strWTF = LinesHistory[i].Substring(iWTF, (jWTF - iWTF));
                     ThisProjectInfo[j].DatasetGroup = Convert.ToInt32(strWTF);
                 }
                 iWTF = LinesHistory[i].IndexOf("device ");
@@ -925,24 +929,14 @@ namespace BTHistoryReader
                 {
                     iWTF += 7;
                     jWTF = LinesHistory[i].Substring(iWTF).IndexOf(")");
-                    Debug.Assert(jWTF > 0);;
-                    strWTF = LinesHistory[i].Substring(iWTF,(jWTF));
+                    Debug.Assert(jWTF > 0); ;
+                    strWTF = LinesHistory[i].Substring(iWTF, (jWTF));
                     ThisProjectInfo[j].iDeviceUsed = Convert.ToInt32(strWTF);
                 }
                 else
                     ThisProjectInfo[j].iDeviceUsed = 0; // device 0 or cpu
 
-                /*  this was used for debugging
-                iWTF = LinesHistory[i].IndexOf("WTFbTODO_");
-                if (iWTF > 0)
-                {
-                    jWTF = LinesHistory[i].LastIndexOf("|");
-                    Debug.Assert(jWTF > 0);
-                    iWTF += 9;
-                    strWTF = LinesHistory[i].Substring(iWTF);
-                    ThisProjectInfo[j].iDeviceUsed = Convert.ToInt32(strWTF);
-                }
-                */
+
                 strSymbols = LinesHistory[i].Split('\t');
                 ThisProjectInfo[j].strLineNum = strSymbols[(int)eHindex.Run];
                 //RunNumber = Convert.ToInt32(ThisProjectInfo[j].strLineNum);
@@ -986,9 +980,31 @@ namespace BTHistoryReader
                 sTemp += " " + ThisProjectInfo[j].strElapsedTimeCpu;
                 //    "(" + ThisProjectInfo[j].strElapsedTimeGpu + ")";
                 ThisProjectInfo[j].strOutput = sTemp + " D" + ThisProjectInfo[j].iDeviceUsed.ToString();               // eventually put into our text box to allow selections
+                ThisProjectInfo[j].strName = strSymbols[(int)eHindex.Name];
+                if (cbUseAdvFilter.Checked)
+                {
+                    if (MyAdvFilter.bContains)
+                    {
+                        ThisProjectInfo[j].bExclude = !(ThisProjectInfo[j].strName.Contains(MyAdvFilter.strPhrase));
+                    }
+                    else
+                    {
+                        ThisProjectInfo[j].bExclude = (ThisProjectInfo[j].strName.Contains(MyAdvFilter.strPhrase));
+                    }
+                }
+                else ThisProjectInfo[j].bExclude = false;
+                if (ThisProjectInfo[j].bExclude)
+                {
+                    MyAdvFilter.NumExcluded++;
+                    ThisProjectInfo[j].bState = false;  // 9=21=2019 jys expedient to just mark them as bad for now and rewrite later
+                }
                 j++;
             }
             SortTimeIncreasing(j);
+            if (cbUseAdvFilter.Checked)
+            {
+                tb_Info.Text += "Seems " + (MyAdvFilter.NumExcluded).ToString() + " items were excluded by the advanced filter\r\n";
+            }
             return j;
         }
 
@@ -1829,16 +1845,16 @@ namespace BTHistoryReader
         }
 
 
-        private void ShowScatter()
+        private void ShowScatter(string strFilter)
         {
-            ScatterForm PlotScatter = new ScatterForm(ref MySeriesData, "Datasets", cbShowError.Checked);
+            ScatterForm PlotScatter = new ScatterForm(ref MySeriesData, "Datasets", cbShowError.Checked, strFilter);
             PlotScatter.ShowDialog();
             PlotScatter.Dispose();
         }
 
-        private void ShowGPUScatter()
+        private void ShowGPUScatter(string strFilter)
         {
-            ScatterForm PlotScatter = new ScatterForm(ref MySeriesData, "GPUs", cbShowError.Checked);
+            ScatterForm PlotScatter = new ScatterForm(ref MySeriesData, "GPUs", cbShowError.Checked, strFilter);
             PlotScatter.ShowDialog();
             PlotScatter.Dispose();
         }
@@ -1966,7 +1982,7 @@ namespace BTHistoryReader
         private void btnScatSets_Click(object sender, EventArgs e)
         {
             if (FormSeriesFromSets())
-                ShowScatter();
+                ShowScatter(GetAdvFilter());
         }
 
         public static void GoToSite(string url)
@@ -2082,12 +2098,21 @@ namespace BTHistoryReader
             tb_Info.Text = "";
         }
 
+        private string GetAdvFilter()
+        {
+            if(cbUseAdvFilter.Checked)
+            {
+                return lblFilterString.Text;
+            }
+            return "";
+        }
+
         private void btnScatGpu_Click(object sender, EventArgs e)
         {
             long tEnd = ThisProjectInfo[SortToInfo[iStop]].time_t_Completed;
             long tStart = ThisProjectInfo[SortToInfo[iStart]].time_t_Started;
             if (FormSeriesFromGPUs(tStart, tEnd))
-                ShowGPUScatter();
+                ShowGPUScatter(GetAdvFilter());
         }
 
         private void SaveLast()
@@ -2117,8 +2142,25 @@ namespace BTHistoryReader
 
         private void btn8hr_Click(object sender, EventArgs e)
         {
-            SelectLast(3600 * 8
-                );
+            SelectLast(3600 * 8);
+        }
+
+        private void btnAdvFilter_Click(object sender, EventArgs e)
+        {
+            AdvFilter adfForm = new AdvFilter(ref MyAdvFilter);
+            adfForm.ShowDialog();
+            adfForm.Dispose();
+            if(MyAdvFilter.strPhrase != "")
+            {
+                string strTemp = "select datasets where data name " + (MyAdvFilter.bContains ? "contains " : " does not contain") + " the phrase " + MyAdvFilter.strPhrase;
+                lblFilterString.Text = strTemp;
+                cbUseAdvFilter.Enabled = true;
+            }
+            else
+            {
+                cbUseAdvFilter.Checked = false;
+                cbUseAdvFilter.Enabled = false;
+            }
         }
     }
 }

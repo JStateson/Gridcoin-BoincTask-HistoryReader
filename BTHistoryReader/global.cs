@@ -39,6 +39,7 @@ namespace BTHistoryReader
         public string strOutput;
         public int iSystem;    // index to system data came from
         public int DatasetGroup;
+        public bool bExclude;  // used by the advanced filter program
     }
 
     // for the time graph we need time (long) and elapsed time (double) and
@@ -111,6 +112,13 @@ namespace BTHistoryReader
             }
         }
 
+    }
+
+    public class cAdvFilter
+    {
+        public string strPhrase;
+        public bool bContains;
+        public int NumExcluded;
     }
 
     public class cNameValue 
@@ -351,7 +359,8 @@ namespace BTHistoryReader
     }
 
 
-public class cSeriesData
+
+    public class cSeriesData
     {
         public string strSeriesName;    // used by that scatter gpu graph
         public string strAppName;

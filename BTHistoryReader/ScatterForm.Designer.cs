@@ -52,6 +52,7 @@
             this.lblShowApp = new System.Windows.Forms.Label();
             this.btnInvSel = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.lbAdvFilter = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.nudShowOnly)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudXscale)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ChartScatter)).BeginInit();
@@ -264,11 +265,22 @@
             this.btnInvSel.UseVisualStyleBackColor = true;
             this.btnInvSel.Click += new System.EventHandler(this.btnInvSel_Click);
             // 
+            // lbAdvFilter
+            // 
+            this.lbAdvFilter.AutoSize = true;
+            this.lbAdvFilter.BackColor = System.Drawing.SystemColors.Info;
+            this.lbAdvFilter.Location = new System.Drawing.Point(12, 530);
+            this.lbAdvFilter.Name = "lbAdvFilter";
+            this.lbAdvFilter.Size = new System.Drawing.Size(135, 13);
+            this.lbAdvFilter.TabIndex = 16;
+            this.lbAdvFilter.Text = "Reserve for filter info, if any";
+            // 
             // ScatterForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(958, 510);
+            this.ClientSize = new System.Drawing.Size(958, 562);
+            this.Controls.Add(this.lbAdvFilter);
             this.Controls.Add(this.btnInvSel);
             this.Controls.Add(this.lblShowApp);
             this.Controls.Add(this.lblSysHideUnhide);
@@ -317,5 +329,6 @@
         private System.Windows.Forms.Label lblShowApp;
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.Button btnInvSel;
+        private System.Windows.Forms.Label lbAdvFilter;
     }
 }

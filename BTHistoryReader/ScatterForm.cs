@@ -57,10 +57,11 @@ namespace BTHistoryReader
         // solution was found:  use color.transparent in addition to point.isempty and
         // do not restore color of points that have been hidden
         // currently nConcurrent is not used locally as it was applied before the call
-        public ScatterForm(ref List<cSeriesData> refSD, string WhatsShowing, bool bAllowSeeError)
+        public ScatterForm(ref List<cSeriesData> refSD, string WhatsShowing, bool bAllowSeeError, string strFilter)
         {
             InitializeComponent();
             bSeeError = bAllowSeeError;
+            lbAdvFilter.Text = strFilter;
             switch(WhatsShowing)
             {
                 case "Datasets":

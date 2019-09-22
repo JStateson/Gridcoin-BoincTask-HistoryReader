@@ -31,7 +31,6 @@ namespace BTHistoryReader
         private string strAverageAll = "Average All";
         public List<bool> bItemsToColor = new List<bool>(); // use color to show which apps have values
         private List<cSeriesData> MySeriesData;
-
         public class cKPAapps
         {
             public string sAppName;
@@ -760,9 +759,10 @@ namespace BTHistoryReader
             }
         }
 
-        private void ShowScatter()
+        private void ShowScatter(string strFilter)
         {                                                   // radio button was misnamed, should be ScatterSystems
-            ScatterForm PlotScatter = new ScatterForm(ref MySeriesData, rbScatProj.Checked ? "Systems" : "Apps", false);
+            lbAdvFilter.Text = strFilter;
+            ScatterForm PlotScatter = new ScatterForm(ref MySeriesData, rbScatProj.Checked ? "Systems" : "Apps", false, strFilter);
             PlotScatter.ShowDialog();
             PlotScatter.Dispose();
         }
@@ -771,7 +771,7 @@ namespace BTHistoryReader
         {
             if(GetScatterData())
             {
-                ShowScatter();
+                ShowScatter(lbAdvFilter.Text);
             }
         }
 

@@ -67,6 +67,7 @@
             this.cboxFL = new System.Windows.Forms.CheckBox();
             this.TBoxResults = new System.Windows.Forms.TextBox();
             this.lblWarnApps = new System.Windows.Forms.Label();
+            this.lbAdvFilter = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.groupBox5.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -80,6 +81,7 @@
             // 
             this.panel1.BackColor = System.Drawing.Color.Ivory;
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel1.Controls.Add(this.lbAdvFilter);
             this.panel1.Controls.Add(this.groupBox5);
             this.panel1.Controls.Add(this.label4);
             this.panel1.Controls.Add(this.groupBox4);
@@ -491,6 +493,16 @@
             this.lblWarnApps.TabIndex = 19;
             this.lblWarnApps.Text = "Cannot edit table if more than one app selected";
             // 
+            // lbAdvFilter
+            // 
+            this.lbAdvFilter.AutoSize = true;
+            this.lbAdvFilter.BackColor = System.Drawing.SystemColors.Info;
+            this.lbAdvFilter.Location = new System.Drawing.Point(24, 169);
+            this.lbAdvFilter.Name = "lbAdvFilter";
+            this.lbAdvFilter.Size = new System.Drawing.Size(135, 13);
+            this.lbAdvFilter.TabIndex = 17;
+            this.lbAdvFilter.Text = "Reserve for filter info, if any";
+            // 
             // CompareHistories
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -571,5 +583,6 @@
         private System.Windows.Forms.Button BtnClrAllApp;
         private System.Windows.Forms.Button btnSelAllApp;
         private System.Windows.Forms.Label lblWarnApps;
+        private System.Windows.Forms.Label lbAdvFilter;
     }
 }
