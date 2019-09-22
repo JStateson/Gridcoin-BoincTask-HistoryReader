@@ -46,6 +46,9 @@
             this.btnAbout = new System.Windows.Forms.Button();
             this.btnShowProjectTree = new System.Windows.Forms.Button();
             this.gb_filter = new System.Windows.Forms.GroupBox();
+            this.btn8hr = new System.Windows.Forms.Button();
+            this.btn4hr = new System.Windows.Forms.Button();
+            this.btn2hr = new System.Windows.Forms.Button();
             this.btnLastHour = new System.Windows.Forms.Button();
             this.btnLastDay = new System.Windows.Forms.Button();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
@@ -94,9 +97,6 @@
             this.ofd_history = new System.Windows.Forms.OpenFileDialog();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.TimerShowBuild = new System.Windows.Forms.Timer(this.components);
-            this.btn2hr = new System.Windows.Forms.Button();
-            this.btn4hr = new System.Windows.Forms.Button();
-            this.btn8hr = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.gboxOPFsettings.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -321,6 +321,39 @@
             this.gb_filter.Text = "Filter";
             this.gb_filter.Enter += new System.EventHandler(this.gb_filter_Enter);
             // 
+            // btn8hr
+            // 
+            this.btn8hr.ForeColor = System.Drawing.SystemColors.HotTrack;
+            this.btn8hr.Location = new System.Drawing.Point(210, 549);
+            this.btn8hr.Name = "btn8hr";
+            this.btn8hr.Size = new System.Drawing.Size(75, 23);
+            this.btn8hr.TabIndex = 30;
+            this.btn8hr.Text = "Last 8 Hours";
+            this.btn8hr.UseVisualStyleBackColor = true;
+            this.btn8hr.Click += new System.EventHandler(this.btn8hr_Click);
+            // 
+            // btn4hr
+            // 
+            this.btn4hr.ForeColor = System.Drawing.SystemColors.HotTrack;
+            this.btn4hr.Location = new System.Drawing.Point(114, 549);
+            this.btn4hr.Name = "btn4hr";
+            this.btn4hr.Size = new System.Drawing.Size(75, 23);
+            this.btn4hr.TabIndex = 29;
+            this.btn4hr.Text = "Last 4 Hours";
+            this.btn4hr.UseVisualStyleBackColor = true;
+            this.btn4hr.Click += new System.EventHandler(this.btn4hr_Click);
+            // 
+            // btn2hr
+            // 
+            this.btn2hr.ForeColor = System.Drawing.SystemColors.HotTrack;
+            this.btn2hr.Location = new System.Drawing.Point(19, 549);
+            this.btn2hr.Name = "btn2hr";
+            this.btn2hr.Size = new System.Drawing.Size(75, 23);
+            this.btn2hr.TabIndex = 28;
+            this.btn2hr.Text = "Last 2 Hours";
+            this.btn2hr.UseVisualStyleBackColor = true;
+            this.btn2hr.Click += new System.EventHandler(this.btn2hr_Click);
+            // 
             // btnLastHour
             // 
             this.btnLastHour.ForeColor = System.Drawing.SystemColors.HotTrack;
@@ -396,12 +429,13 @@
             // 
             // btnScatGpu
             // 
+            this.btnScatGpu.Enabled = false;
             this.btnScatGpu.ForeColor = System.Drawing.Color.DarkGreen;
             this.btnScatGpu.Location = new System.Drawing.Point(127, 90);
             this.btnScatGpu.Name = "btnScatGpu";
-            this.btnScatGpu.Size = new System.Drawing.Size(111, 23);
+            this.btnScatGpu.Size = new System.Drawing.Size(127, 23);
             this.btnScatGpu.TabIndex = 27;
-            this.btnScatGpu.Text = "Scatter all GPU";
+            this.btnScatGpu.Text = "Scatter selected GPU";
             this.btnScatGpu.UseVisualStyleBackColor = true;
             this.btnScatGpu.Click += new System.EventHandler(this.btnScatGpu_Click);
             // 
@@ -411,9 +445,9 @@
             this.btnGTime.ForeColor = System.Drawing.Color.DarkGreen;
             this.btnGTime.Location = new System.Drawing.Point(127, 61);
             this.btnGTime.Name = "btnGTime";
-            this.btnGTime.Size = new System.Drawing.Size(111, 23);
+            this.btnGTime.Size = new System.Drawing.Size(127, 23);
             this.btnGTime.TabIndex = 26;
-            this.btnGTime.Text = "Time Graph GPU";
+            this.btnGTime.Text = "Time Graph sel GPU";
             this.toolTip1.SetToolTip(this.btnGTime, "select Show by GPU to enable this function");
             this.btnGTime.UseVisualStyleBackColor = true;
             this.btnGTime.Click += new System.EventHandler(this.btnGTime_Click);
@@ -435,7 +469,7 @@
             this.btnScatSets.ForeColor = System.Drawing.Color.DarkGreen;
             this.btnScatSets.Location = new System.Drawing.Point(127, 29);
             this.btnScatSets.Name = "btnScatSets";
-            this.btnScatSets.Size = new System.Drawing.Size(111, 23);
+            this.btnScatSets.Size = new System.Drawing.Size(127, 23);
             this.btnScatSets.TabIndex = 24;
             this.btnScatSets.Text = "Plot All Datasets";
             this.toolTip1.SetToolTip(this.btnScatSets, "Scatter elapsed over all datsets for project selected");
@@ -851,39 +885,6 @@
             this.TimerShowBuild.Enabled = true;
             this.TimerShowBuild.Interval = 250;
             this.TimerShowBuild.Tick += new System.EventHandler(this.TimerShowBuild_Tick);
-            // 
-            // btn2hr
-            // 
-            this.btn2hr.ForeColor = System.Drawing.SystemColors.HotTrack;
-            this.btn2hr.Location = new System.Drawing.Point(19, 549);
-            this.btn2hr.Name = "btn2hr";
-            this.btn2hr.Size = new System.Drawing.Size(75, 23);
-            this.btn2hr.TabIndex = 28;
-            this.btn2hr.Text = "Last 2 Hours";
-            this.btn2hr.UseVisualStyleBackColor = true;
-            this.btn2hr.Click += new System.EventHandler(this.btn2hr_Click);
-            // 
-            // btn4hr
-            // 
-            this.btn4hr.ForeColor = System.Drawing.SystemColors.HotTrack;
-            this.btn4hr.Location = new System.Drawing.Point(114, 549);
-            this.btn4hr.Name = "btn4hr";
-            this.btn4hr.Size = new System.Drawing.Size(75, 23);
-            this.btn4hr.TabIndex = 29;
-            this.btn4hr.Text = "Last 4 Hours";
-            this.btn4hr.UseVisualStyleBackColor = true;
-            this.btn4hr.Click += new System.EventHandler(this.btn4hr_Click);
-            // 
-            // btn8hr
-            // 
-            this.btn8hr.ForeColor = System.Drawing.SystemColors.HotTrack;
-            this.btn8hr.Location = new System.Drawing.Point(210, 549);
-            this.btn8hr.Name = "btn8hr";
-            this.btn8hr.Size = new System.Drawing.Size(75, 23);
-            this.btn8hr.TabIndex = 30;
-            this.btn8hr.Text = "Last 8 Hours";
-            this.btn8hr.UseVisualStyleBackColor = true;
-            this.btn8hr.Click += new System.EventHandler(this.btn8hr_Click);
             // 
             // BTHistory
             // 

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Windows.Forms;
 
 
+
 namespace BTHistoryReader
 {
     public partial class BTHistory : Form
@@ -1011,8 +1012,8 @@ namespace BTHistoryReader
                 tb_Results.Text = "you must select exactly two items\r\n";
                 return;
             }
-            i = lb_SelWorkUnits.SelectedIndices[0]; // difference between this shows the selection
-            j = lb_SelWorkUnits.SelectedIndices[1];
+            iStart = i = lb_SelWorkUnits.SelectedIndices[0]; // difference between this shows the selection
+            iStop = j = lb_SelWorkUnits.SelectedIndices[1];
             nDevices = Convert.ToInt32(tbNDevices.Text);
             sTemp = lb_SelWorkUnits.SelectedItems[0].ToString();
             //i1 = Convert.ToInt32(sTemp.Substring(0, iPadSize)) - 1;  // origin is 0 not 1
@@ -1063,8 +1064,8 @@ namespace BTHistoryReader
                 tb_Results.Text = "you must select exactly two items\r\n";
                 return;
             }
-            i = lb_SelWorkUnits.SelectedIndices[0]; // difference between this shows the selection
-            j = lb_SelWorkUnits.SelectedIndices[1]; // 8-9-2019 but these must be used to locate the actual valuea
+            iStart = i = lb_SelWorkUnits.SelectedIndices[0]; // difference between this shows the selection
+            iStop = j = lb_SelWorkUnits.SelectedIndices[1]; // 8-9-2019 but these must be used to locate the actual valuea
             n = 1 + j - i;  // number of items to average
             if (n < 2)
             {
@@ -1525,6 +1526,7 @@ namespace BTHistoryReader
             if (n != 2)
             {
                 ShowSelectable(false);
+                btnScatGpu.Enabled = false; // do not allow gpu scatter unless filtering is done first
                 lbTimeContinunity.Text = "not calculated yet";
                 if (n == 0)
                     return 0;
@@ -1620,8 +1622,8 @@ namespace BTHistoryReader
 
             if (lb_SelWorkUnits.Items.Count < 2) return false;
             if (lb_SelWorkUnits.SelectedIndices.Count != 2) return false;
-            i = lb_SelWorkUnits.SelectedIndices[0]; // difference between this shows the selection
-            j = lb_SelWorkUnits.SelectedIndices[1];
+            iStart = i = lb_SelWorkUnits.SelectedIndices[0]; // difference between this shows the selection
+            iStop = j = lb_SelWorkUnits.SelectedIndices[1];
             n = j - i;
             if (n < 3) return false;  // need to show two segments at least
             CompletionTimes = new List<double>(n + 1);
@@ -1910,7 +1912,7 @@ namespace BTHistoryReader
         }
 
         // this does not use the select table as all data is used
-        bool FormSeriesFromGPUs()
+        bool FormSeriesFromGPUs(long lStart, long lStop)
         {
             bool bAny = false;
             int iGpu = 0;
@@ -1924,7 +1926,9 @@ namespace BTHistoryReader
             {
                 if(pi.bState || cbShowError.Checked)
                 {
-                    if (iGPUsUsed.Contains(pi.iDeviceUsed)) continue;
+                    if (iGPUsUsed.Contains(pi.iDeviceUsed)) continue;   // already counted it
+                    if (pi.time_t_Started >= lStop) continue;
+                    if (pi.time_t_Completed <= lStart) continue;
                     iGpu = pi.iDeviceUsed;
                     iGPUsUsed.Add(iGpu);
                     sa = new cSeriesData();
@@ -1948,6 +1952,8 @@ namespace BTHistoryReader
             {
                 if (pi.bState || cbShowError.Checked)
                 {
+                    if (pi.time_t_Started >= lStop) continue;
+                    if (pi.time_t_Completed <= lStart) continue;
                     iGpu = pi.iDeviceUsed;
                     sa = MySeriesData[iGpu];
                     sa.dValues.Add(pi.dElapsedTime / (nCon*60.0));
@@ -2078,7 +2084,9 @@ namespace BTHistoryReader
 
         private void btnScatGpu_Click(object sender, EventArgs e)
         {
-            if (FormSeriesFromGPUs())
+            long tEnd = ThisProjectInfo[SortToInfo[iStop]].time_t_Completed;
+            long tStart = ThisProjectInfo[SortToInfo[iStart]].time_t_Started;
+            if (FormSeriesFromGPUs(tStart, tEnd))
                 ShowGPUScatter();
         }
 
@@ -2109,7 +2117,8 @@ namespace BTHistoryReader
 
         private void btn8hr_Click(object sender, EventArgs e)
         {
-            SelectLast(3600 * 8);
+            SelectLast(3600 * 8
+                );
         }
     }
 }
