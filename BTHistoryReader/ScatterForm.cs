@@ -31,6 +31,8 @@ namespace BTHistoryReader
         double fScaleMultiplier;
         string strScaleUnits;
         bool bSeeError;
+        double dScaledOffset = 0.0;     // change offset to minutes or hours as necessary.  default is seconds
+        double dOrigOffset = 0.0;
 
         private class cSaveOutlier
         {
@@ -57,11 +59,17 @@ namespace BTHistoryReader
         // solution was found:  use color.transparent in addition to point.isempty and
         // do not restore color of points that have been hidden
         // currently nConcurrent is not used locally as it was applied before the call
-        public ScatterForm(ref List<cSeriesData> refSD, string WhatsShowing, bool bAllowSeeError, string strFilter)
+        // offset can be used to offset each graph for visibility.  Applies to GPUO data records.  Scale is minutes for doffset
+        public ScatterForm(ref List<cSeriesData> refSD, string WhatsShowing, bool bAllowSeeError, string strFilter, double dOffset)
         {
             InitializeComponent();
             bSeeError = bAllowSeeError;
             lbAdvFilter.Text = strFilter;
+            dOrigOffset = dOffset;
+            cbUseOffset.Checked = false;
+            cbUseOffset.Enabled = false;
+            lbOffsetValue.Visible = false;
+
             switch(WhatsShowing)
             {
                 case "Datasets":
@@ -88,8 +96,9 @@ namespace BTHistoryReader
                     bShowDatasests = false;
                     bScatteringApps = false;
                     bShowSystemData = false;
-                    bShowSystemData = false;
                     bScatteringGPUs = true;
+                    cbUseOffset.Enabled = true;
+                    lbOffsetValue.Visible = true;
                     lbScatUsage.Text = "If more than one data set listed then clicking\non that name will hide / unhide it\nclick header to reset";
                     break;
             }
@@ -112,6 +121,12 @@ namespace BTHistoryReader
         }
 
  
+        // show average value for each gpu be sure to correct for scaleing
+        private string strFmtOffset(double dvalue)
+        {
+            if (dvalue == 0.0) return "";
+            return (dvalue * fScaleMultiplier).ToString("#0.0");
+        }
 
         List<cColoredLegends> MyLegendNames;
         List<DataPoint> SavedColoredPoints;
@@ -129,7 +144,7 @@ namespace BTHistoryReader
             {
                 string seriesname = bScatteringGPUs ? sd.strSeriesName : sd.GetNameToShow(sd.ShowType);
                 cl = new cColoredLegends();
-                cl.strName = seriesname;
+                cl.strName = seriesname + "[avg:" + strFmtOffset(sd.dAvgs) + "]" ;
                 cl.rgb = ChartScatter.Series[seriesname].Color;
                 MyLegendNames.Add(cl);
             }
@@ -145,6 +160,7 @@ namespace BTHistoryReader
             }
             // allow 1 more than actual so we can wrap back to 0
             nudShowOnly.Maximum = n + 1;
+            cbUseOffset.Enabled = (MyLegendNames.Count > 1) & bScatteringGPUs;
             DrawShowingText(0);
         }
 
@@ -278,6 +294,7 @@ namespace BTHistoryReader
             f = d / dBig;
             dSmall *= f;
             dBig = d;
+            
             return strUnits;
         }
 
@@ -285,15 +302,20 @@ namespace BTHistoryReader
         {
             fScaleMultiplier = 0;
             strScaleUnits = SetMinMax(ref fScaleMultiplier);
+            dScaledOffset = dOrigOffset * fScaleMultiplier;
         }
 
 
         // draw points vertical one over the other from 1 to n but normalzed to 0.0 to 1.0
         // the x axis position is the elapsed time.
+        // only called once so cannnot use cbUseOffset tool
         private void ShowScatter()
         {
             double d=0;
             int j = 0;
+            int iSD=0;
+            //double dOffset = cbUseOffset.Checked ? dScaledOffset : 0.0 ; not useful here
+
             CurrentNumberSeriesDisplayable = ThisSeriesData.Count;
             SetScale();
             //bScatteringApps = ThisSeriesData[0].bIsShowingApp;
@@ -315,9 +337,10 @@ namespace BTHistoryReader
                     d = Convert.ToDouble(i) / n;
                     yAxis.Add(d);
                     d = sd.dValues[i];
-                    xAxis.Add(d * fScaleMultiplier);
+                    xAxis.Add(d * fScaleMultiplier); // + (dOffset * iSD));    // offset is already scaled by fScaleMultiplier
                 }
                 string seriesname = bScatteringGPUs ? sd.strSeriesName : sd.GetNameToShow(sd.ShowType);
+                //seriesname += strFmtOffset(sd.dAvgs); not usefull here as do not want the name of the series to change when average changes
                 SeriesName = seriesname;
                 ChartScatter.Series.Add(seriesname);
                 ChartScatter.Series[seriesname].EmptyPointStyle.Color = Color.Transparent;
@@ -339,6 +362,35 @@ namespace BTHistoryReader
             ChartScatter.ChartAreas["ChartArea1"].AxisX.Minimum = GetBestScaleingBottom(dSmall);
             ChartScatter.ChartAreas["ChartArea1"].AxisX.LabelStyle.Format = "#.#";
 
+        }
+
+        private void AddOffset()
+        {
+            if (dScaledOffset == 0.0) return;   // nothing to do
+            double dOffset;
+            for (int i = 0; i < ThisSeriesData.Count; i++)
+            {
+                dOffset = i * dScaledOffset;
+                foreach (DataPoint p in ChartScatter.Series[i].Points)
+                {
+                    p.XValue += dOffset; 
+                }
+            }
+            lbOffsetValue.Text = "each series offset by " + dScaledOffset.ToString("#0.0");
+        }
+        private void SubOffset()
+        {
+            if (dScaledOffset == 0.0) return;   // nothing to do
+            double dOffset;
+            for (int i = 0; i < ThisSeriesData.Count; i++)
+            {
+                dOffset = i * dScaledOffset;
+                foreach (DataPoint p in ChartScatter.Series[i].Points)
+                {
+                    p.XValue -= dOffset;
+                }
+            }
+            lbOffsetValue.Text = "no offset applied";
         }
 
         // we removed an outlier got to rescale
@@ -518,6 +570,7 @@ namespace BTHistoryReader
                 nudShowOnly.Value = 0;
                 lviewSubSeries.Items.Clear();
             }
+            cbUseOffset.Enabled = nudShowOnly.Value == 0;   // do not add offset when viewing individual series
             ShowHideSeries(i);  // show or hide entire series (visibility only)
             DrawShowingText(i); // ShowHide must be done first
             if (i == 0  | bShowSystemData)
@@ -675,7 +728,7 @@ namespace BTHistoryReader
             }
         }
 
-        // xValue here is original data not fron graph
+        // xValue here is original data not from graph
         private void RestoreScale(double xValue, double fMpy)
         {
             double a,f,d = 0;
@@ -859,6 +912,20 @@ namespace BTHistoryReader
             double x = ChartScatter.ChartAreas[0].AxisX.PixelPositionToValue(e.X);
             double y = ChartScatter.ChartAreas[0].AxisY.PixelPositionToValue(e.Y);
             FindNearestPoint(ref Points, x, y, UseMe);
+        }
+
+        private void cbUseOffset_CheckedChanged(object sender, EventArgs e)
+        {
+            nudShowOnly.Enabled = !cbUseOffset.Checked;
+            if (MyLegendNames.Count <= 1) return;   // nothing to offset if only one dataset
+            if (cbUseOffset.Checked)
+            {
+                AddOffset();
+                ChartScatter.ChartAreas["ChartArea1"].AxisX.Maximum = dBig * MyLegendNames.Count;
+                return;
+            }
+            SubOffset();
+            ChartScatter.ChartAreas["ChartArea1"].AxisX.Maximum = dBig;
         }
     }
 }

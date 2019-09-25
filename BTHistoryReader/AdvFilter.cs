@@ -23,6 +23,7 @@ namespace BTHistoryReader
             {
                 tbFilPhrase.Text = MyADF.strPhrase;
                 rbContain.Checked = MyADF.bContains;
+                rbDoNotContain.Checked = !rbContain.Checked;
             }
         }
 

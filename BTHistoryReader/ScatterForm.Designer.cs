@@ -30,9 +30,9 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ScatterForm));
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend3 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend4 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             this.lbScatUsage = new System.Windows.Forms.Label();
             this.GetLegendInfo = new System.Windows.Forms.Timer(this.components);
             this.labelShowSeries = new System.Windows.Forms.Label();
@@ -43,6 +43,8 @@
             this.cboxUseLog = new System.Windows.Forms.CheckBox();
             this.ChartScatter = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.lbOffsetValue = new System.Windows.Forms.Label();
+            this.cbUseOffset = new System.Windows.Forms.CheckBox();
             this.lviewSubSeries = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.gboxOutlier = new System.Windows.Forms.GroupBox();
@@ -116,7 +118,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(36, 38);
+            this.label2.Location = new System.Drawing.Point(36, 30);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(41, 13);
             this.label2.TabIndex = 7;
@@ -124,7 +126,7 @@
             // 
             // nudXscale
             // 
-            this.nudXscale.Location = new System.Drawing.Point(105, 36);
+            this.nudXscale.Location = new System.Drawing.Point(105, 28);
             this.nudXscale.Maximum = new decimal(new int[] {
             9,
             0,
@@ -139,7 +141,7 @@
             // cboxUseLog
             // 
             this.cboxUseLog.AutoSize = true;
-            this.cboxUseLog.Location = new System.Drawing.Point(170, 39);
+            this.cboxUseLog.Location = new System.Drawing.Point(170, 31);
             this.cboxUseLog.Name = "cboxUseLog";
             this.cboxUseLog.Size = new System.Drawing.Size(108, 17);
             this.cboxUseLog.TabIndex = 8;
@@ -149,15 +151,15 @@
             // 
             // ChartScatter
             // 
-            chartArea1.Name = "ChartArea1";
-            this.ChartScatter.ChartAreas.Add(chartArea1);
-            legend1.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Left;
-            legend1.IsDockedInsideChartArea = false;
-            legend1.Name = "Legend1";
-            legend2.DockedToChartArea = "ChartArea1";
-            legend2.Name = "SysLeg";
-            this.ChartScatter.Legends.Add(legend1);
-            this.ChartScatter.Legends.Add(legend2);
+            chartArea2.Name = "ChartArea1";
+            this.ChartScatter.ChartAreas.Add(chartArea2);
+            legend3.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Left;
+            legend3.IsDockedInsideChartArea = false;
+            legend3.Name = "Legend1";
+            legend4.DockedToChartArea = "ChartArea1";
+            legend4.Name = "SysLeg";
+            this.ChartScatter.Legends.Add(legend3);
+            this.ChartScatter.Legends.Add(legend4);
             this.ChartScatter.Location = new System.Drawing.Point(21, 22);
             this.ChartScatter.Name = "ChartScatter";
             this.ChartScatter.Size = new System.Drawing.Size(923, 320);
@@ -167,15 +169,39 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.lbOffsetValue);
+            this.groupBox1.Controls.Add(this.cbUseOffset);
             this.groupBox1.Controls.Add(this.cboxUseLog);
             this.groupBox1.Controls.Add(this.nudXscale);
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Location = new System.Drawing.Point(12, 423);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(294, 75);
+            this.groupBox1.Size = new System.Drawing.Size(294, 115);
             this.groupBox1.TabIndex = 9;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "X-Axis scaling";
+            // 
+            // lbOffsetValue
+            // 
+            this.lbOffsetValue.AutoSize = true;
+            this.lbOffsetValue.BackColor = System.Drawing.SystemColors.Info;
+            this.lbOffsetValue.Location = new System.Drawing.Point(36, 88);
+            this.lbOffsetValue.Name = "lbOffsetValue";
+            this.lbOffsetValue.Size = new System.Drawing.Size(65, 13);
+            this.lbOffsetValue.TabIndex = 10;
+            this.lbOffsetValue.Text = "Offset Value";
+            // 
+            // cbUseOffset
+            // 
+            this.cbUseOffset.AutoSize = true;
+            this.cbUseOffset.Enabled = false;
+            this.cbUseOffset.Location = new System.Drawing.Point(105, 62);
+            this.cbUseOffset.Name = "cbUseOffset";
+            this.cbUseOffset.Size = new System.Drawing.Size(107, 17);
+            this.cbUseOffset.TabIndex = 9;
+            this.cbUseOffset.Text = "Offset each GPU";
+            this.cbUseOffset.UseVisualStyleBackColor = true;
+            this.cbUseOffset.CheckedChanged += new System.EventHandler(this.cbUseOffset_CheckedChanged);
             // 
             // lviewSubSeries
             // 
@@ -269,7 +295,7 @@
             // 
             this.lbAdvFilter.AutoSize = true;
             this.lbAdvFilter.BackColor = System.Drawing.SystemColors.Info;
-            this.lbAdvFilter.Location = new System.Drawing.Point(12, 530);
+            this.lbAdvFilter.Location = new System.Drawing.Point(12, 559);
             this.lbAdvFilter.Name = "lbAdvFilter";
             this.lbAdvFilter.Size = new System.Drawing.Size(135, 13);
             this.lbAdvFilter.TabIndex = 16;
@@ -279,7 +305,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(958, 562);
+            this.ClientSize = new System.Drawing.Size(958, 591);
             this.Controls.Add(this.lbAdvFilter);
             this.Controls.Add(this.btnInvSel);
             this.Controls.Add(this.lblShowApp);
@@ -330,5 +356,7 @@
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.Button btnInvSel;
         private System.Windows.Forms.Label lbAdvFilter;
+        private System.Windows.Forms.CheckBox cbUseOffset;
+        private System.Windows.Forms.Label lbOffsetValue;
     }
 }

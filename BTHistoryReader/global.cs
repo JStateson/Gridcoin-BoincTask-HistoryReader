@@ -375,6 +375,7 @@ namespace BTHistoryReader
         public int nConcurrent;
         public double dSmall;
         public double dBig;
+        public double dAvgs;                // used by the gpu scatter as we need the average for the gpu for offset purposes
         public List<string> TheseSystems;   // those systems that contributed to the elapsed times in the scatter plot
                                             // or which datasets (the name) that contributed
         public List<int> iTheseSystem;      // need to know the index of the system that is associated with iSystem above

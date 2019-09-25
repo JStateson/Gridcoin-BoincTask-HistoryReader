@@ -1847,14 +1847,14 @@ namespace BTHistoryReader
 
         private void ShowScatter(string strFilter)
         {
-            ScatterForm PlotScatter = new ScatterForm(ref MySeriesData, "Datasets", cbShowError.Checked, strFilter);
+            ScatterForm PlotScatter = new ScatterForm(ref MySeriesData, "Datasets", cbShowError.Checked, strFilter,0.0);
             PlotScatter.ShowDialog();
             PlotScatter.Dispose();
         }
 
-        private void ShowGPUScatter(string strFilter)
+        private void ShowGPUScatter(string strFilter,double dOffset)
         {
-            ScatterForm PlotScatter = new ScatterForm(ref MySeriesData, "GPUs", cbShowError.Checked, strFilter);
+            ScatterForm PlotScatter = new ScatterForm(ref MySeriesData, "GPUs", cbShowError.Checked, strFilter, dOffset);
             PlotScatter.ShowDialog();
             PlotScatter.Dispose();
         }
@@ -1928,15 +1928,16 @@ namespace BTHistoryReader
         }
 
         // this does not use the select table as all data is used
-        bool FormSeriesFromGPUs(long lStart, long lStop)
+        bool FormSeriesFromGPUs(long lStart, long lStop, ref double dOffset)
         {
             bool bAny = false;
             int iGpu = 0;
+            double dMinutes;
             MySeriesData = new List<cSeriesData>();
             List<int> iGPUsUsed = new List<int>();   // these will be series names
                                                      // need to count devices
             int nCon = Convert.ToInt32(nudConCurrent.Value);
-            cSeriesData sa; 
+            cSeriesData sa;
             // need to count series first
             foreach (cProjectInfo pi in ThisProjectInfo)
             {
@@ -1956,6 +1957,7 @@ namespace BTHistoryReader
                     sa.dValues = new List<double>();
                     sa.ShowType = eShowType.DoingGPUs;
                     sa.bIsValid = new List<bool>();
+                    sa.dAvgs = 0.0;
                     sa.nConcurrent = nCon;
                     sa.TheseSystems = new List<string>();
                     sa.iTheseSystem = new List<int>();
@@ -1972,9 +1974,17 @@ namespace BTHistoryReader
                     if (pi.time_t_Completed <= lStart) continue;
                     iGpu = pi.iDeviceUsed;
                     sa = MySeriesData[iGpu];
-                    sa.dValues.Add(pi.dElapsedTime / (nCon*60.0));
+                    dMinutes = pi.dElapsedTime / (nCon * 60.0);
+                    sa.dValues.Add(dMinutes);
+                    sa.dAvgs += dMinutes;
                     sa.bIsValid.Add(pi.bState);
                 }
+            }
+            dOffset = 0.0;
+            foreach(cSeriesData sd in MySeriesData)
+            {
+                sd.dAvgs /= sd.dValues.Count;
+                dOffset = Math.Max(dOffset, sd.dAvgs);
             }
             return bAny;
         }
@@ -2111,8 +2121,9 @@ namespace BTHistoryReader
         {
             long tEnd = ThisProjectInfo[SortToInfo[iStop]].time_t_Completed;
             long tStart = ThisProjectInfo[SortToInfo[iStart]].time_t_Started;
-            if (FormSeriesFromGPUs(tStart, tEnd))
-                ShowGPUScatter(GetAdvFilter());
+            double dOffset = 0.0;
+            if (FormSeriesFromGPUs(tStart, tEnd, ref dOffset))
+                ShowGPUScatter(GetAdvFilter(), dOffset);
         }
 
         private void SaveLast()
