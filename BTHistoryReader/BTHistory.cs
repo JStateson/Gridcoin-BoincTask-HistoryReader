@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -9,8 +10,10 @@ using System.Windows.Forms;
 
 namespace BTHistoryReader
 {
+
     public partial class BTHistory : Form
     {
+        public const int MAXGPUS = 64;
         public int MaxDeviceCount;
         int iStart = -1;
         int iStop = -1;
@@ -780,6 +783,7 @@ namespace BTHistoryReader
         {
             int i = cb_SelProj.SelectedIndex;
             DisallowAppCallbacks(true);
+            tb_Results.Text = "";
             ClearForNewProject();
             cb_SelProj.Text = cb_SelProj.Items[i].ToString();
             i = LookupProject(cb_SelProj.Text);
@@ -787,6 +791,8 @@ namespace BTHistoryReader
             DisallowAppCallbacks(false);
             DisplayHistory();
             ShowNumberApps();
+            if (lb_SelWorkUnits.Items.Count == 0)
+                tb_Results.Text = "No good data for this app\r\n";
         }
 
         // standard bubble sort with exchange on index
@@ -1391,6 +1397,8 @@ namespace BTHistoryReader
             if (cb_AppNames.Text == "") return;
             ClearInfoTables();
             DisplayHistory();
+            if (lb_SelWorkUnits.Items.Count == 0)
+                tb_Results.Text = "No good data for this app\r\n";
         }
 
 
@@ -1932,7 +1940,9 @@ namespace BTHistoryReader
         {
             bool bAny = false;
             int iGpu = 0;
+            int nSeries = 0;
             double dMinutes;
+            int[] GPUtoSeries = new int[MAXGPUS];
             MySeriesData = new List<cSeriesData>();
             List<int> iGPUsUsed = new List<int>();   // these will be series names
                                                      // need to count devices
@@ -1950,6 +1960,8 @@ namespace BTHistoryReader
                     iGPUsUsed.Add(iGpu);
                     sa = new cSeriesData();
                     sa.strSeriesName = "D" + iGpu.ToString();
+                    GPUtoSeries[iGpu] = nSeries;
+                    nSeries++;
                     bAny = true;
                     sa.strSysName = CurrentSystem;      // only 1 system as we are not comparing systems
                     sa.strAppName = cb_AppNames.Text;       // usually more than one app this must be first in listview
@@ -1973,7 +1985,9 @@ namespace BTHistoryReader
                     if (pi.time_t_Started >= lStop) continue;
                     if (pi.time_t_Completed <= lStart) continue;
                     iGpu = pi.iDeviceUsed;
-                    sa = MySeriesData[iGpu];
+                    //sa = MySeriesData[iGpu];    // true only if all GPUs are in table else not true
+                    sa = MySeriesData[GPUtoSeries[iGpu]];
+
                     dMinutes = pi.dElapsedTime / (nCon * 60.0);
                     sa.dValues.Add(dMinutes);
                     sa.dAvgs += dMinutes;
@@ -2172,6 +2186,7 @@ namespace BTHistoryReader
                 cbUseAdvFilter.Checked = false;
                 cbUseAdvFilter.Enabled = false;
             }
+            cbUseAdvFilter.Checked |= MyAdvFilter.bOKreturn;
         }
     }
 }
@@ -2185,4 +2200,5 @@ namespace BTHistoryReader
 489	World Community Grid	Mapping Cancer Markers	743	MCM1_0153882_1551_1		21823	21801	5	0	0	1567810582		1567531363.832855	78565376.000000	37634012.999719	-1x		-1x		-1x		-1x		-1x	
 482 is good, 3,4 bad as 0 is not a valid start time 5 and 7 are bad as start and stop are both 0 and 9 is also bad
 not that the exit status is all 0 or "good" 
+https://www.epochconverter.com/timezones?q=1569287308&tz=America%2FChicago
 */

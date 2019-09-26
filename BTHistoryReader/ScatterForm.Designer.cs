@@ -30,16 +30,14 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ScatterForm));
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend3 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend4 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             this.lbScatUsage = new System.Windows.Forms.Label();
             this.GetLegendInfo = new System.Windows.Forms.Timer(this.components);
             this.labelShowSeries = new System.Windows.Forms.Label();
             this.nudShowOnly = new System.Windows.Forms.NumericUpDown();
             this.tboxShowing = new System.Windows.Forms.TextBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.nudXscale = new System.Windows.Forms.NumericUpDown();
             this.cboxUseLog = new System.Windows.Forms.CheckBox();
             this.ChartScatter = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -56,7 +54,6 @@
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.lbAdvFilter = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.nudShowOnly)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudXscale)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ChartScatter)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.gboxOutlier.SuspendLayout();
@@ -115,33 +112,10 @@
             this.tboxShowing.TabIndex = 5;
             this.tboxShowing.Text = "Show All";
             // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(36, 30);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(41, 13);
-            this.label2.TabIndex = 7;
-            this.label2.Text = "Stretch";
-            // 
-            // nudXscale
-            // 
-            this.nudXscale.Location = new System.Drawing.Point(105, 28);
-            this.nudXscale.Maximum = new decimal(new int[] {
-            9,
-            0,
-            0,
-            0});
-            this.nudXscale.Name = "nudXscale";
-            this.nudXscale.ReadOnly = true;
-            this.nudXscale.Size = new System.Drawing.Size(38, 20);
-            this.nudXscale.TabIndex = 6;
-            this.nudXscale.ValueChanged += new System.EventHandler(this.nudXscale_ValueChanged_1);
-            // 
             // cboxUseLog
             // 
             this.cboxUseLog.AutoSize = true;
-            this.cboxUseLog.Location = new System.Drawing.Point(170, 31);
+            this.cboxUseLog.Location = new System.Drawing.Point(104, 26);
             this.cboxUseLog.Name = "cboxUseLog";
             this.cboxUseLog.Size = new System.Drawing.Size(108, 17);
             this.cboxUseLog.TabIndex = 8;
@@ -151,15 +125,15 @@
             // 
             // ChartScatter
             // 
-            chartArea2.Name = "ChartArea1";
-            this.ChartScatter.ChartAreas.Add(chartArea2);
-            legend3.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Left;
-            legend3.IsDockedInsideChartArea = false;
-            legend3.Name = "Legend1";
-            legend4.DockedToChartArea = "ChartArea1";
-            legend4.Name = "SysLeg";
-            this.ChartScatter.Legends.Add(legend3);
-            this.ChartScatter.Legends.Add(legend4);
+            chartArea1.Name = "ChartArea1";
+            this.ChartScatter.ChartAreas.Add(chartArea1);
+            legend1.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Left;
+            legend1.IsDockedInsideChartArea = false;
+            legend1.Name = "Legend1";
+            legend2.DockedToChartArea = "ChartArea1";
+            legend2.Name = "SysLeg";
+            this.ChartScatter.Legends.Add(legend1);
+            this.ChartScatter.Legends.Add(legend2);
             this.ChartScatter.Location = new System.Drawing.Point(21, 22);
             this.ChartScatter.Name = "ChartScatter";
             this.ChartScatter.Size = new System.Drawing.Size(923, 320);
@@ -172,8 +146,6 @@
             this.groupBox1.Controls.Add(this.lbOffsetValue);
             this.groupBox1.Controls.Add(this.cbUseOffset);
             this.groupBox1.Controls.Add(this.cboxUseLog);
-            this.groupBox1.Controls.Add(this.nudXscale);
-            this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Location = new System.Drawing.Point(12, 423);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(294, 115);
@@ -323,7 +295,6 @@
             this.Name = "ScatterForm";
             this.Text = "Scatter Plot";
             ((System.ComponentModel.ISupportInitialize)(this.nudShowOnly)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudXscale)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ChartScatter)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
@@ -341,8 +312,6 @@
         private System.Windows.Forms.Label labelShowSeries;
         private System.Windows.Forms.NumericUpDown nudShowOnly;
         private System.Windows.Forms.TextBox tboxShowing;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.NumericUpDown nudXscale;
         private System.Windows.Forms.CheckBox cboxUseLog;
         private System.Windows.Forms.DataVisualization.Charting.Chart ChartScatter;
         private System.Windows.Forms.GroupBox groupBox1;

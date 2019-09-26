@@ -97,7 +97,7 @@ namespace BTHistoryReader
                     bScatteringApps = false;
                     bShowSystemData = false;
                     bScatteringGPUs = true;
-                    cbUseOffset.Enabled = true;
+                    cbUseOffset.Enabled = refSD.Count > 1;
                     lbOffsetValue.Visible = true;
                     lbScatUsage.Text = "If more than one data set listed then clicking\non that name will hide / unhide it\nclick header to reset";
                     break;
@@ -160,7 +160,8 @@ namespace BTHistoryReader
             }
             // allow 1 more than actual so we can wrap back to 0
             nudShowOnly.Maximum = n + 1;
-            cbUseOffset.Enabled = (MyLegendNames.Count > 1) & bScatteringGPUs;
+            // must have at least 2 series and "All" is not a series
+            cbUseOffset.Enabled = (MyLegendNames.Count > 2) & bScatteringGPUs;
             DrawShowingText(0);
         }
 
@@ -206,7 +207,9 @@ namespace BTHistoryReader
             return 1000;
         }
 
-        private double GetBestScaleingUpper(double a)
+        // this is not as good as the next one lets see
+        /*
+        private double xGetBestScaleingUpper(double a)
         {
             int iSig = (int) nudXscale.Value;
             double r = 1.0 / (1 + iSig);
@@ -214,6 +217,11 @@ namespace BTHistoryReader
             if (a < 100) return Math.Max(a, 100 * r);
             if (a < 1000) return Math.Max(a, 1000 * r);
             return a;
+        }
+        */
+        private double GetBestScaleingUpper(double a)
+        {
+            return GetBestOffsetScale(a);
         }
 
         // use (dOut / d) to scale
@@ -302,7 +310,7 @@ namespace BTHistoryReader
         {
             fScaleMultiplier = 0;
             strScaleUnits = SetMinMax(ref fScaleMultiplier);
-            dScaledOffset = dOrigOffset * fScaleMultiplier;
+            dScaledOffset = GetBestOffsetScale(dOrigOffset * fScaleMultiplier);
         }
 
 
@@ -376,7 +384,7 @@ namespace BTHistoryReader
                     p.XValue += dOffset; 
                 }
             }
-            lbOffsetValue.Text = "each series offset by " + dScaledOffset.ToString("#0.0");
+            lbOffsetValue.Text = "each additional series offset by " + dScaledOffset.ToString("#0.0");
         }
         private void SubOffset()
         {
@@ -570,7 +578,7 @@ namespace BTHistoryReader
                 nudShowOnly.Value = 0;
                 lviewSubSeries.Items.Clear();
             }
-            cbUseOffset.Enabled = nudShowOnly.Value == 0;   // do not add offset when viewing individual series
+            cbUseOffset.Enabled = (nudShowOnly.Value == 0) & bScatteringGPUs;   // do not add offset when viewing individual series
             ShowHideSeries(i);  // show or hide entire series (visibility only)
             DrawShowingText(i); // ShowHide must be done first
             if (i == 0  | bShowSystemData)
@@ -722,7 +730,7 @@ namespace BTHistoryReader
                 x1 = ThisSeriesData[sO.iWhereData].dValues[sO.iWhereRemoved];
                 ThisSeriesData[sO.iWhereData].bIsValid[sO.iWhereRemoved] = true;
                 // x1 was biggest at the time it was removed
-                Debug.Assert(x1 >= ThisSeriesData[sO.iWhereData].dBig);   // got to be true in same series
+                Debug.Assert(x1 >= ThisSeriesData[sO.iWhereData].dBig);   // not true if offsetting gpus else true if same series
                 ThisSeriesData[sO.iWhereData].dBig = x1;
                 RestoreScale(x1, sO.fmpy);
             }
@@ -920,12 +928,39 @@ namespace BTHistoryReader
             if (MyLegendNames.Count <= 1) return;   // nothing to offset if only one dataset
             if (cbUseOffset.Checked)
             {
+                nudHideXoutliers.Enabled = false;
                 AddOffset();
-                ChartScatter.ChartAreas["ChartArea1"].AxisX.Maximum = dBig * MyLegendNames.Count;
+                ChartScatter.ChartAreas["ChartArea1"].AxisX.Maximum = GetBestOffsetScale(dBig * MyLegendNames.Count);
                 return;
             }
+            nudHideXoutliers.Enabled = true;
             SubOffset();
-            ChartScatter.ChartAreas["ChartArea1"].AxisX.Maximum = dBig;
+            ChartScatter.ChartAreas["ChartArea1"].AxisX.Maximum = GetBestScaleingUpper(dBig);
+        }
+
+        private double GetBestOffsetScale(double dValue)
+        {
+            int iVal;
+            if (dValue < 10.0) return 10.0;
+            if (dValue < 100.0)
+            {
+                iVal = Convert.ToInt32(dValue / 10.0);
+                iVal++;
+                iVal *= 10;
+            }
+            else if(dValue < 1000.0)
+            {
+                iVal = Convert.ToInt32(dValue / 100.0);
+                iVal++;
+                iVal *= 100;
+            }
+            else
+            {
+                iVal = Convert.ToInt32(dValue / 1000.0);
+                iVal++;
+                iVal *= 1000;
+            }
+            return Convert.ToDouble(iVal);
         }
     }
 }

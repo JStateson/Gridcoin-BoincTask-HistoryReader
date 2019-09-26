@@ -30,13 +30,15 @@ namespace BTHistoryReader
         private void btnOK_Click(object sender, EventArgs e)
         {
             MyADF.strPhrase = tbFilPhrase.Text;
+            MyADF.bOKreturn = tbFilPhrase.Text != "";
             MyADF.bContains = rbContain.Checked;
             this.Close();
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
         {
-            MyADF.strPhrase = "";
+            //MyADF.strPhrase = ""; may want to restore original phrase change mind but have not saved)
+            MyADF.bOKreturn = false;
             this.Close();
         }
     }

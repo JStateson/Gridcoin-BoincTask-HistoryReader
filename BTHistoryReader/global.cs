@@ -7,7 +7,7 @@ using System.Diagnostics;
 
 namespace BTHistoryReader
 {
-    // fillowing struct is mostly filled in as history is parsed
+// fillowing struct is mostly filled in as history is parsed
     public class cProjectInfo
     {
         public string strLineNum;
@@ -119,6 +119,7 @@ namespace BTHistoryReader
         public string strPhrase;
         public bool bContains;
         public int NumExcluded;
+        public bool bOKreturn;
     }
 
     public class cNameValue 
