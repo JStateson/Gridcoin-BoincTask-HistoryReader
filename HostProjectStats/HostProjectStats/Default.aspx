@@ -17,7 +17,7 @@
         Browse to a project and computer that interests you, select valid tasks at that computer, and<br /> make sure there are exactly 20 (or use a lower box value). Then copy the url from your browser<br /> into the &quot;Paste the url&quot; box below and click &quot;CALCULATE&quot;. You can also CLEAR the statistics<br /> or select additional pages of data up to a total of 10 pages.&nbsp;&nbsp; This program cannot log in to a users<br /> account so you must enter a url that points to a host computer and NOT a list of user tasks.<br /> To see the original data at web site click on &quot;REVIEW DATA&quot;.&nbsp; TEST DEMO may no longer work as<br /> projects block anon access due to EU laws.&nbsp; This program is useful on your own projects only.<br /> nCon is number of concurrent tasks in a single GPU (default is 1), nDev is number of GPUs or CPUs<br /> To compute watts per credit, enter Idle Watts and Load Watts of the system.&nbsp; If hyperthreads are<br /> enabled use # of threads not 
         cores.&nbsp; If nCon &gt; 1 then raw stats are adjusted by dividing by nCon.<br /> YOU MUST SELECT A COMPUTER: not &quot;all tasks&quot; as this program CANNOT obtain &quot;?userid=&quot;<br /> TEST DEMO:
         <asp:DropDownList ID="ddlTest" runat="server" AutoPostBack="True" OnSelectedIndexChanged="ddlTest_SelectedIndexChanged">
-            <asp:ListItem Value="https://milkyway.cs.rpi.edu/milkyway/results.php?hostid=802901&amp;offset=0&amp;show_names=0&amp;state=4&amp;appid=">Milkyway</asp:ListItem>
+            <asp:ListItem Value="https://milkyway.cs.rpi.edu/milkyway/results.php?hostid=776231&amp;offset=0&amp;show_names=0&amp;state=4&amp;appid=">Milkyway</asp:ListItem>
             <asp:ListItem Value="https://einsteinathome.org/host/10698787/tasks/4/0">Einstein</asp:ListItem>
             <asp:ListItem Value="https://boinc.thesonntags.com/collatz/results.php?hostid=833335&amp;offset=0&amp;show_names=0&amp;state=4&amp;appid=">Collatz</asp:ListItem>
             <asp:ListItem Value="http://www.gpugrid.net/results.php?hostid=467730&amp;offset=0&amp;show_names=0&amp;state=3&amp;appid=">GpuGrid</asp:ListItem>
@@ -30,6 +30,7 @@
             <asp:ListItem Value="https://escatter11.fullerton.edu/nfs/results.php?hostid=880073&amp;offset=0&amp;show_names=0&amp;state=4&amp;appid=1">NFS</asp:ListItem>
             <asp:ListItem Value="http://pogs.theskynet.org/pogs/results.php?hostid=858228&amp;offset=0&amp;show_names=0&amp;state=4&amp;appid=">POGS</asp:ListItem>
             <asp:ListItem Value="https://setiathome.berkeley.edu/results.php?hostid=8619726&amp;offset=0&amp;show_names=0&amp;state=4&amp;appid=">SETI</asp:ListItem>
+            <asp:ListItem>CreateQuery</asp:ListItem>
         </asp:DropDownList>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         <asp:Button ID="btnReview" runat="server" Text="REVIEW DATA" OnClick="btnReview_Click" Width="99px" OnClientClick="target ='_blank'" />

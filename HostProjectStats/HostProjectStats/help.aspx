@@ -23,7 +23,13 @@
         When this program starts up, Milkyway is selected and one of the &quot;Top Computers&quot; is preset into the URL.&nbsp; If Milkyway is online<br />
         then clicking CALCULATE will provide a demo for accessing statistics.&nbsp; Click REVIEW DATA to see the actual data.<br />
         If Milkyway is offline one will get an OOPS error as I don&#39;t do a lot of error checking.&nbsp; If you wait too long then my website<br />
-        times your session out and OOPS shows up.<br />
+        times your session out and OOPS shows up.&nbsp;&nbsp; 
+        Note that hosts sometimes go away for one reason or another.&nbsp; if an error
+        <br />
+        occurs the host is not there or has no data. Select another project.&nbsp; One of the projects is named CreateQuery&nbsp; select<br />
+        that if you want to get a url to your data.&nbsp; This is useful for posting in a forum.<br />
+        ---example of a url---<br />
+        http://xxxxxxx/Default.aspx?url=https://einsteinathome.org/host/10698787/tasks/4/0;nCon=5;nDev=6;Wu=15;lw=400;iw=100;<br />
         <br />
         To calculate the number of watts it takes to do a credit (cost of your contribution to the project) you must know how many watts<br />
         your system is drawing.&nbsp; That can be obtain using an inexpensive A/C ampmeter or wattmeter<br />
@@ -79,7 +85,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; there is no benefit.&nbsp; RunTime is divided by number concurrent to<br />
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; make it easy to compare.<br />
         <br />
-        Sources are at Github\BeemerBiker&nbsp; PM me if this does
+        Sources are at Github/jstateson&nbsp; PM me if this does
         not seem correct.<br />
         <br />
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;

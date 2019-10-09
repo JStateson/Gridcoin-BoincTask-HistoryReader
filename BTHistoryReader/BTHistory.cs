@@ -1305,7 +1305,8 @@ namespace BTHistoryReader
                 int j = Convert.ToInt32(x) ;
                 strResults += strTemp + " |++++++++++++++++++++++++++++++++++++++++++++".Substring(0,j) + "\r\n";
             }
-            return strResults + "System averages " + AvgAll.ToString("#,##0.0") + " credits per minute\r\n";
+            strResults += "System averages " + AvgAll.ToString("#,##0.0") + " credits per minute\r\n";
+            return strResults + "System daily average " + (AvgAll * 1440.0).ToString("#,###,##0") + " credits\r\n";
         }
 
         private bool FilterUsingGPUs(ref int DeviceMax, ref int iStart, ref int iStop)

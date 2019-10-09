@@ -83,7 +83,54 @@ namespace HostProjectStats
             }
             StatsOut = "";
         }
+        //https://stackoverflow.com/questions/58307896/clientquerystring-returns-ndev3d63b-but-i-was-expecting-ndev-6
+        // making up my own client query string format is
+        // ?url=xxx;nDev=n;nCon=n;Wu=n;lw=n;iw=n;
+        bool DoPreset(string strId, string strIn, ref TextBox MyTb)
+        {
+            int iStart, iTerm, iSize = strId.Length;
+            iStart = strIn.IndexOf(strId);
+            if (iStart < 0) return false;
+            iTerm = strIn.IndexOf("%3b", iStart);
+            if (iTerm <= 0) return false;
+            iStart += iSize;
+            iSize = iTerm - iStart;
+            if (iSize <= 0) return false;
+            MyTb.Text = strIn.Substring(iStart, iSize);
+            return true;
+        }
+        //%3b is the ; and %3d is the equal sign
+        bool HavePreset(string strIn)
+        {
+            TextBox MyTb = new TextBox();
+            MyTb.Text = "";
+            if(strIn == "") return false;
+            DoPreset("nCon%3d", strIn, ref tb_ntasks);
+            DoPreset("nDev%3d", strIn, ref tb_ngpu);
+            DoPreset("Wu%3d", strIn, ref tb_num2read);
+            DoPreset("lw%3d", strIn, ref tb_watts);
+            DoPreset("iw%3d", strIn, ref tb_idle);
+            bool bReturn = DoPreset("url=", strIn, ref MyTb);
+            string strUrl = MyTb.Text;
+            strUrl = strUrl.Replace("%3a", ":");
+            strUrl = strUrl.Replace("%2f", "/");
+            strUrl = strUrl.Replace("%3f", "?");
+            strUrl = strUrl.Replace("%3d", "=");
+            ProjUrl.Text = strUrl;
+            return bReturn;
+        }
 
+
+
+        /*
+            if(strIn == "") return false;
+            DoPreset("nCon=", strIn, ref tb_ntasks);
+            DoPreset("nDev=", strIn, ref tb_ngpu);
+            DoPreset("Wu=", strIn, ref tb_num2read);
+            DoPreset("lw=", strIn, ref tb_watts);
+            DoPreset("iw=", strIn, ref tb_idle);
+            return DoPreset("ProjUrl=", strIn, ref ProjUrl);
+        */
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -100,11 +147,23 @@ namespace HostProjectStats
             ZeroStuff();
             if (!IsPostBack)
             {
-                ProjUrl.Text = ddlTest.SelectedValue;
+
+                if (!HavePreset(this.ClientQueryString))
+                    ProjUrl.Text = ddlTest.SelectedValue;
+
             }
             else
             {
-                i++;
+                if(ddlTest.SelectedValue == "CreateQuery")
+                {
+                    string strUrl = "https://stateson.net/HostProjectStats/default.aspx?url=" + ProjUrl.Text + ";";
+                    strUrl += "nCon=" + tb_ntasks.Text + ";";
+                    strUrl += "nDev=" + tb_ngpu.Text + ";";
+                    strUrl += "Wu=" + tb_num2read.Text + ";";
+                    strUrl += "lw=" + tb_watts.Text + ";";
+                    strUrl += "iw=" + tb_idle.Text + ";";
+                    ResultsBox.Text = strUrl;
+                }
             }
         }
 
@@ -131,14 +190,14 @@ namespace HostProjectStats
             int iRight = sTemp.IndexOf("right>");
             if (iRight < 0)
             {
-                ResultsBox.Text = "Error expected right> not found in line " + sTemp;
+                ResultsBox.Text = "Error expected right greaterthansign not found in line " + sTemp;
                 Environment.Exit(0);
             }
             lSide = sTemp.Substring(iRight + 6);
             iRight = lSide.IndexOf("</td>");
             if (iRight < 0)
             {
-                ResultsBox.Text = "Error expected </td> not found in line " + sTemp;
+                ResultsBox.Text = "Error expected /td not found in line " + sTemp;
                 Environment.Exit(0);
             }
             double aValue = Convert.ToDouble(lSide.Substring(0, iRight));
@@ -240,7 +299,7 @@ namespace HostProjectStats
                     iStart = RawPage.IndexOf(strH);
                     if(iStart < 0)
                     {
-                        ResultsBox.Text = "error: missing '<a href=' or maybe no results\n";
+                        ResultsBox.Text = "error: missing 'a href=' or maybe no results\n";  // had to remove <
                         return -4;
                     }
                     iEnd = RawPage.Substring(iStart).IndexOf("</table>");
@@ -253,7 +312,7 @@ namespace HostProjectStats
                     iStart = RawPage.IndexOf("<tr class=row0>");
                     if(iStart < 0)
                     {
-                        ResultsBox.Text = "error: no data or missing '<tr class=row0>'\n";
+                        ResultsBox.Text = "error: no data or missing 'tr class=row0'\n"; // had to remove < and >
                         return -4;
                     }
                     iEnd = RawPage.Substring(iStart).IndexOf("</table>");   // need skip over any earlier tables in the header
@@ -418,7 +477,9 @@ namespace HostProjectStats
 
                 if (PerformCalculate(thisurl) < 0)
                 {
-                    ResultsBox.Text += "calculation was bad probably no data\n";
+                    ResultsBox.Text += "calculation was bad or more likely no data exists\n";
+                    //ResultsBox.Text += "please refresh this page before selecting CLEAR\n";
+                    // figured out the problem: cannot have <href chars in resultsbox.text
                     return;
                 }
             }
@@ -480,6 +541,8 @@ namespace HostProjectStats
         {
             Response.Redirect("~/help.aspx");
         }
+
+
 
 
 
