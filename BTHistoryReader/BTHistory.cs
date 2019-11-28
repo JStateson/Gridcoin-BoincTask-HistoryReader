@@ -938,10 +938,13 @@ namespace BTHistoryReader
                     Debug.Assert(jWTF > 0); ;
                     strWTF = LinesHistory[i].Substring(iWTF, (jWTF));
                     ThisProjectInfo[j].iDeviceUsed = Convert.ToInt32(strWTF);
+                    ThisProjectInfo[j].bDeviceUnk = false;
                 }
                 else
+                {
                     ThisProjectInfo[j].iDeviceUsed = 0; // device 0 or cpu
-
+                    ThisProjectInfo[j].bDeviceUnk = true;
+                }
 
                 strSymbols = LinesHistory[i].Split('\t');
                 ThisProjectInfo[j].strLineNum = strSymbols[(int)eHindex.Run];
@@ -1203,6 +1206,7 @@ namespace BTHistoryReader
             for (int k1 = iStart; k1 <= iStop; k1++)
             {
                 k = SortToInfo[k1];
+                if (ThisProjectInfo[k].bDeviceUnk && cbExcludeUnk.Checked) continue;
                 if (!ThisProjectInfo[k].bState || iDev != ThisProjectInfo[k].iDeviceUsed) continue;
                 d = ThisProjectInfo[k].dElapsedTime;
                 if (d == 0.0)
@@ -1225,11 +1229,12 @@ namespace BTHistoryReader
             for (int k1 = iStart; k1 <= iStop; k1++)
             {
                 k = SortToInfo[k1];
+                if (ThisProjectInfo[k].bDeviceUnk && cbExcludeUnk.Checked) continue;
                 if (!ThisProjectInfo[k].bState || iDev != ThisProjectInfo[k].iDeviceUsed) continue;
                 d = ThisProjectInfo[k].dElapsedTime;
                 if (d == 0.0)
                 {
-                    Debug.Assert(false);        // 
+                    Debug.Assert(false);
                     continue;
                 }
                 d = d / 60.0 - Avg;
@@ -1315,6 +1320,7 @@ namespace BTHistoryReader
             DeviceMax = -1;
             int i, j, k, n;
             long l;
+            int NumExcluded = 0;
             int NumUnits = lb_SelWorkUnits.SelectedItems.Count;
             if (NumUnits != 2)
             {
@@ -1336,6 +1342,11 @@ namespace BTHistoryReader
             {
                 k = SortToInfo[k1];
                 if (!ThisProjectInfo[k].bState) continue;
+                if (ThisProjectInfo[k].bDeviceUnk && cbExcludeUnk.Checked)
+                {
+                    NumExcluded++;
+                    continue;
+                }
                 DeviceMax = Math.Max(DeviceMax, ThisProjectInfo[k].iDeviceUsed);
             }
             if(DeviceMax == -1)
@@ -1347,6 +1358,10 @@ namespace BTHistoryReader
             if (rbElapsed.Checked)
             {
                 tb_Results.Text +=  CalcGPUstats(DeviceMax + 1, i, j);
+                if(NumExcluded > 0)
+                {
+                    tb_Results.Text += "UnknownGPUs:" + NumExcluded.ToString() + "\r\n";
+                }
                 return true;
             }
             else if(rbThroughput.Checked)
@@ -1954,6 +1969,7 @@ namespace BTHistoryReader
             {
                 if(pi.bState || cbShowError.Checked)
                 {
+                    if (pi.bDeviceUnk && cbExcludeUnk.Checked) continue;
                     if (iGPUsUsed.Contains(pi.iDeviceUsed)) continue;   // already counted it
                     if (pi.time_t_Started >= lStop) continue;
                     if (pi.time_t_Completed <= lStart) continue;
@@ -1985,6 +2001,7 @@ namespace BTHistoryReader
                 {
                     if (pi.time_t_Started >= lStop) continue;
                     if (pi.time_t_Completed <= lStart) continue;
+                    if (pi.bDeviceUnk && cbExcludeUnk.Checked) continue;
                     iGpu = pi.iDeviceUsed;
                     //sa = MySeriesData[iGpu];    // true only if all GPUs are in table else not true
                     sa = MySeriesData[GPUtoSeries[iGpu]];
@@ -2091,6 +2108,8 @@ namespace BTHistoryReader
             {
                 rbIdle.Enabled = true;
             }
+            cbExcludeUnk.Enabled = cbGPUcompare.Checked;
+            if (!cbExcludeUnk.Enabled) cbExcludeUnk.Checked = false;
         }
 
         private void btnGTime_Click(object sender, EventArgs e)

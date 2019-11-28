@@ -33,6 +33,7 @@ namespace BTHistoryReader
         public long time_t_Diff_C_S;
         public string strUse;
         public int iDeviceUsed; //if -1 then CPU or not known  only applies to GPUs
+        public bool bDeviceUnk; // was not identified as gpu0 or whatever.  might be device 0 or might have not executed long enough to be identified
         public string strReceived;
         public string strVMem;
         public string strMem;

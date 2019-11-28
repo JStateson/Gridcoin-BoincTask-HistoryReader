@@ -30,6 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.cbUseAdvFilter = new System.Windows.Forms.CheckBox();
             this.groupBox8 = new System.Windows.Forms.GroupBox();
             this.lblFilterString = new System.Windows.Forms.Label();
             this.btnBug = new System.Windows.Forms.Button();
@@ -49,7 +50,6 @@
             this.btnShowProjectTree = new System.Windows.Forms.Button();
             this.gb_filter = new System.Windows.Forms.GroupBox();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
-            this.cbUseAdvFilter = new System.Windows.Forms.CheckBox();
             this.btnAdvFilter = new System.Windows.Forms.Button();
             this.btn8hr = new System.Windows.Forms.Button();
             this.btn4hr = new System.Windows.Forms.Button();
@@ -102,6 +102,7 @@
             this.ofd_history = new System.Windows.Forms.OpenFileDialog();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.TimerShowBuild = new System.Windows.Forms.Timer(this.components);
+            this.cbExcludeUnk = new System.Windows.Forms.CheckBox();
             this.panel1.SuspendLayout();
             this.groupBox8.SuspendLayout();
             this.gboxOPFsettings.SuspendLayout();
@@ -119,6 +120,7 @@
             // panel1
             // 
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel1.Controls.Add(this.cbUseAdvFilter);
             this.panel1.Controls.Add(this.groupBox8);
             this.panel1.Controls.Add(this.btnBug);
             this.panel1.Controls.Add(this.lbLastFiles);
@@ -139,6 +141,18 @@
             this.panel1.Size = new System.Drawing.Size(1000, 686);
             this.panel1.TabIndex = 0;
             this.panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.panel1_Paint);
+            // 
+            // cbUseAdvFilter
+            // 
+            this.cbUseAdvFilter.AutoSize = true;
+            this.cbUseAdvFilter.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
+            this.cbUseAdvFilter.Enabled = false;
+            this.cbUseAdvFilter.Location = new System.Drawing.Point(119, 32);
+            this.cbUseAdvFilter.Name = "cbUseAdvFilter";
+            this.cbUseAdvFilter.Size = new System.Drawing.Size(70, 17);
+            this.cbUseAdvFilter.TabIndex = 17;
+            this.cbUseAdvFilter.Text = "Use Filter";
+            this.cbUseAdvFilter.UseVisualStyleBackColor = false;
             // 
             // groupBox8
             // 
@@ -353,7 +367,7 @@
             // 
             // groupBox7
             // 
-            this.groupBox7.Controls.Add(this.cbUseAdvFilter);
+            this.groupBox7.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
             this.groupBox7.Controls.Add(this.btnAdvFilter);
             this.groupBox7.Location = new System.Drawing.Point(170, 548);
             this.groupBox7.Name = "groupBox7";
@@ -362,18 +376,6 @@
             this.groupBox7.TabStop = false;
             this.groupBox7.Text = "Advanced Filter";
             // 
-            // cbUseAdvFilter
-            // 
-            this.cbUseAdvFilter.AutoSize = true;
-            this.cbUseAdvFilter.BackColor = System.Drawing.SystemColors.Info;
-            this.cbUseAdvFilter.Enabled = false;
-            this.cbUseAdvFilter.Location = new System.Drawing.Point(127, 19);
-            this.cbUseAdvFilter.Name = "cbUseAdvFilter";
-            this.cbUseAdvFilter.Size = new System.Drawing.Size(70, 17);
-            this.cbUseAdvFilter.TabIndex = 1;
-            this.cbUseAdvFilter.Text = "Use Filter";
-            this.cbUseAdvFilter.UseVisualStyleBackColor = false;
-            // 
             // btnAdvFilter
             // 
             this.btnAdvFilter.Location = new System.Drawing.Point(15, 19);
@@ -381,6 +383,7 @@
             this.btnAdvFilter.Size = new System.Drawing.Size(75, 23);
             this.btnAdvFilter.TabIndex = 0;
             this.btnAdvFilter.Text = "Create / Edit";
+            this.toolTip1.SetToolTip(this.btnAdvFilter, "This is applied only when file is opened");
             this.btnAdvFilter.UseVisualStyleBackColor = true;
             this.btnAdvFilter.Click += new System.EventHandler(this.btnAdvFilter_Click);
             // 
@@ -713,6 +716,7 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.cbExcludeUnk);
             this.groupBox2.Controls.Add(this.cbGPUcompare);
             this.groupBox2.Controls.Add(this.rbIdle);
             this.groupBox2.Controls.Add(this.rbElapsed);
@@ -728,12 +732,12 @@
             // cbGPUcompare
             // 
             this.cbGPUcompare.AutoSize = true;
-            this.cbGPUcompare.Location = new System.Drawing.Point(12, 183);
+            this.cbGPUcompare.Location = new System.Drawing.Point(6, 152);
             this.cbGPUcompare.Name = "cbGPUcompare";
             this.cbGPUcompare.Size = new System.Drawing.Size(93, 17);
             this.cbGPUcompare.TabIndex = 7;
             this.cbGPUcompare.Text = "Show by GPU";
-            this.toolTip1.SetToolTip(this.cbGPUcompare, "If checked braek out results and plot by Deviice #");
+            this.toolTip1.SetToolTip(this.cbGPUcompare, "If checked break out results and plot by Deviice #");
             this.cbGPUcompare.UseVisualStyleBackColor = true;
             this.cbGPUcompare.CheckedChanged += new System.EventHandler(this.cbGPUcompare_CheckedChanged);
             // 
@@ -931,7 +935,7 @@
             // 
             this.btn_OpenHistory.Location = new System.Drawing.Point(16, 28);
             this.btn_OpenHistory.Name = "btn_OpenHistory";
-            this.btn_OpenHistory.Size = new System.Drawing.Size(97, 23);
+            this.btn_OpenHistory.Size = new System.Drawing.Size(82, 23);
             this.btn_OpenHistory.TabIndex = 0;
             this.btn_OpenHistory.Text = "Open History";
             this.toolTip1.SetToolTip(this.btn_OpenHistory, "After opening, perform \"Dkisplay History\" then select and run filter");
@@ -948,6 +952,19 @@
             this.TimerShowBuild.Enabled = true;
             this.TimerShowBuild.Interval = 250;
             this.TimerShowBuild.Tick += new System.EventHandler(this.TimerShowBuild_Tick);
+            // 
+            // cbExcludeUnk
+            // 
+            this.cbExcludeUnk.AutoSize = true;
+            this.cbExcludeUnk.Enabled = false;
+            this.cbExcludeUnk.Location = new System.Drawing.Point(6, 185);
+            this.cbExcludeUnk.Name = "cbExcludeUnk";
+            this.cbExcludeUnk.Size = new System.Drawing.Size(118, 17);
+            this.cbExcludeUnk.TabIndex = 8;
+            this.cbExcludeUnk.Text = "Exclude Unk GPUs";
+            this.cbExcludeUnk.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.toolTip1.SetToolTip(this.cbExcludeUnk, "If checked  do not show unassigned GPU\r\nwhen Show by GPU selected");
+            this.cbExcludeUnk.UseVisualStyleBackColor = true;
             // 
             // BTHistory
             // 
@@ -971,7 +988,6 @@
             this.gb_filter.ResumeLayout(false);
             this.gb_filter.PerformLayout();
             this.groupBox7.ResumeLayout(false);
-            this.groupBox7.PerformLayout();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             this.groupBox6.ResumeLayout(false);
@@ -1055,10 +1071,11 @@
         private System.Windows.Forms.Button btn4hr;
         private System.Windows.Forms.Button btn2hr;
         private System.Windows.Forms.GroupBox groupBox7;
-        private System.Windows.Forms.CheckBox cbUseAdvFilter;
         private System.Windows.Forms.Button btnAdvFilter;
         private System.Windows.Forms.GroupBox groupBox8;
         private System.Windows.Forms.Label lblFilterString;
+        private System.Windows.Forms.CheckBox cbUseAdvFilter;
+        private System.Windows.Forms.CheckBox cbExcludeUnk;
     }
 }
 
