@@ -598,7 +598,7 @@ namespace HostProjectStats
             {
                 outStr += "Times shown above were divided by number of concurrent tasks(" + NumberConcurrent.ToString() + ")\n";
             }
-            cph = cps * 3600 * NumberBoards * NumberConcurrent;
+            cph = cps * 3600 * NumberConcurrent; // not correct to use #boards * NumberBoards;
             outStr += cph.ToString("###,##0. number of credits in an hour, this system\n");
             if (NumberWatts > 0)
             {
