@@ -79,6 +79,7 @@
             this.btnClear = new System.Windows.Forms.Button();
             this.lb_SelWorkUnits = new System.Windows.Forms.ListBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.cbExcludeUnk = new System.Windows.Forms.CheckBox();
             this.cbGPUcompare = new System.Windows.Forms.CheckBox();
             this.rbIdle = new System.Windows.Forms.RadioButton();
             this.rbElapsed = new System.Windows.Forms.RadioButton();
@@ -102,7 +103,7 @@
             this.ofd_history = new System.Windows.Forms.OpenFileDialog();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.TimerShowBuild = new System.Windows.Forms.Timer(this.components);
-            this.cbExcludeUnk = new System.Windows.Forms.CheckBox();
+            this.tbStartStopDate = new System.Windows.Forms.TextBox();
             this.panel1.SuspendLayout();
             this.groupBox8.SuspendLayout();
             this.gboxOPFsettings.SuspendLayout();
@@ -156,10 +157,11 @@
             // 
             // groupBox8
             // 
+            this.groupBox8.Controls.Add(this.groupBox7);
             this.groupBox8.Controls.Add(this.lblFilterString);
-            this.groupBox8.Location = new System.Drawing.Point(22, 612);
+            this.groupBox8.Location = new System.Drawing.Point(22, 595);
             this.groupBox8.Name = "groupBox8";
-            this.groupBox8.Size = new System.Drawing.Size(476, 54);
+            this.groupBox8.Size = new System.Drawing.Size(476, 86);
             this.groupBox8.TabIndex = 16;
             this.groupBox8.TabStop = false;
             this.groupBox8.Text = "Advanced Filter (used only for single history)";
@@ -337,7 +339,7 @@
             // 
             // gb_filter
             // 
-            this.gb_filter.Controls.Add(this.groupBox7);
+            this.gb_filter.Controls.Add(this.tbStartStopDate);
             this.gb_filter.Controls.Add(this.btn8hr);
             this.gb_filter.Controls.Add(this.btn4hr);
             this.gb_filter.Controls.Add(this.btn2hr);
@@ -363,22 +365,21 @@
             this.gb_filter.TabIndex = 6;
             this.gb_filter.TabStop = false;
             this.gb_filter.Text = "Filter";
-            this.gb_filter.Enter += new System.EventHandler(this.gb_filter_Enter);
             // 
             // groupBox7
             // 
             this.groupBox7.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
             this.groupBox7.Controls.Add(this.btnAdvFilter);
-            this.groupBox7.Location = new System.Drawing.Point(170, 548);
+            this.groupBox7.Location = new System.Drawing.Point(276, 19);
             this.groupBox7.Name = "groupBox7";
-            this.groupBox7.Size = new System.Drawing.Size(254, 63);
+            this.groupBox7.Size = new System.Drawing.Size(194, 57);
             this.groupBox7.TabIndex = 31;
             this.groupBox7.TabStop = false;
             this.groupBox7.Text = "Advanced Filter";
             // 
             // btnAdvFilter
             // 
-            this.btnAdvFilter.Location = new System.Drawing.Point(15, 19);
+            this.btnAdvFilter.Location = new System.Drawing.Point(17, 22);
             this.btnAdvFilter.Name = "btnAdvFilter";
             this.btnAdvFilter.Size = new System.Drawing.Size(75, 23);
             this.btnAdvFilter.TabIndex = 0;
@@ -449,7 +450,7 @@
             this.groupBox3.Controls.Add(this.btnGTime);
             this.groupBox3.Controls.Add(this.cbShowError);
             this.groupBox3.Controls.Add(this.btnScatSets);
-            this.groupBox3.Location = new System.Drawing.Point(170, 406);
+            this.groupBox3.Location = new System.Drawing.Point(176, 480);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(260, 131);
             this.groupBox3.TabIndex = 25;
@@ -729,6 +730,19 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Type Analysis";
             // 
+            // cbExcludeUnk
+            // 
+            this.cbExcludeUnk.AutoSize = true;
+            this.cbExcludeUnk.Enabled = false;
+            this.cbExcludeUnk.Location = new System.Drawing.Point(6, 185);
+            this.cbExcludeUnk.Name = "cbExcludeUnk";
+            this.cbExcludeUnk.Size = new System.Drawing.Size(118, 17);
+            this.cbExcludeUnk.TabIndex = 8;
+            this.cbExcludeUnk.Text = "Exclude Unk GPUs";
+            this.cbExcludeUnk.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.toolTip1.SetToolTip(this.cbExcludeUnk, "If checked  do not show unassigned GPU\r\nwhen Show by GPU selected");
+            this.cbExcludeUnk.UseVisualStyleBackColor = true;
+            // 
             // cbGPUcompare
             // 
             this.cbGPUcompare.AutoSize = true;
@@ -953,18 +967,15 @@
             this.TimerShowBuild.Interval = 250;
             this.TimerShowBuild.Tick += new System.EventHandler(this.TimerShowBuild_Tick);
             // 
-            // cbExcludeUnk
+            // tbStartStopDate
             // 
-            this.cbExcludeUnk.AutoSize = true;
-            this.cbExcludeUnk.Enabled = false;
-            this.cbExcludeUnk.Location = new System.Drawing.Point(6, 185);
-            this.cbExcludeUnk.Name = "cbExcludeUnk";
-            this.cbExcludeUnk.Size = new System.Drawing.Size(118, 17);
-            this.cbExcludeUnk.TabIndex = 8;
-            this.cbExcludeUnk.Text = "Exclude Unk GPUs";
-            this.cbExcludeUnk.TextAlign = System.Drawing.ContentAlignment.TopRight;
-            this.toolTip1.SetToolTip(this.cbExcludeUnk, "If checked  do not show unassigned GPU\r\nwhen Show by GPU selected");
-            this.cbExcludeUnk.UseVisualStyleBackColor = true;
+            this.tbStartStopDate.Enabled = false;
+            this.tbStartStopDate.Location = new System.Drawing.Point(210, 406);
+            this.tbStartStopDate.Multiline = true;
+            this.tbStartStopDate.Name = "tbStartStopDate";
+            this.tbStartStopDate.ReadOnly = true;
+            this.tbStartStopDate.Size = new System.Drawing.Size(220, 59);
+            this.tbStartStopDate.TabIndex = 31;
             // 
             // BTHistory
             // 
@@ -1076,6 +1087,7 @@
         private System.Windows.Forms.Label lblFilterString;
         private System.Windows.Forms.CheckBox cbUseAdvFilter;
         private System.Windows.Forms.CheckBox cbExcludeUnk;
+        private System.Windows.Forms.TextBox tbStartStopDate;
     }
 }
 

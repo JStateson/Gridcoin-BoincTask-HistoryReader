@@ -868,6 +868,13 @@ namespace BTHistoryReader
         }
 
         // put hours minuts secs in a nice concise format
+        static string fmtDHMS(long seconds)
+        {
+            TimeSpan time = TimeSpan.FromSeconds(seconds);
+            return time.ToString(@"d\:hh\:mm\:ss").Trim();
+        }
+
+        // put hours minuts secs in a nice concise format
         static string fmtHMS(long seconds)
         {
             TimeSpan time = TimeSpan.FromSeconds(seconds);
@@ -1028,7 +1035,7 @@ namespace BTHistoryReader
             double dSeconds = 0;
             int nItems, nDevices;
             double dUnitsPerSecond;
-            double ExpectedAvgCredit; // per 24 hous=rs
+            double WorkunitsPerDay; 
             int NumUnits = lb_SelWorkUnits.SelectedItems.Count;
             string sTemp, s1, s2;
 
@@ -1061,7 +1068,8 @@ namespace BTHistoryReader
             dSeconds = (double)t_diff;
             nItems = 1 + j - i;
             dUnitsPerSecond = nItems / dSeconds;
-            tb_Results.Text += "Elapsed seconds: " + dSeconds.ToString("###,##0\r\n");
+            WorkunitsPerDay = dUnitsPerSecond * 24.0 * 3600.0;
+            tb_Results.Text += "Elapsed seconds(includes down time if any): " + dSeconds.ToString("###,##0\r\n");
             tb_Results.Text += "Number Work Units: " + nItems + "\r\n";
             tb_Results.Text += "Units per second(system): " + dUnitsPerSecond.ToString("###,##0.0000\r\n");
             tb_Results.Text += "Secs per work unit per devices: " + (nDevices / dUnitsPerSecond).ToString("###,##0\r\n");
@@ -1070,7 +1078,7 @@ namespace BTHistoryReader
             tb_Results.Text += "Credits/sec (one device): " + (dUnitsPerSecond * dAvgCreditPerUnit / nDevices).ToString("##0.00\r\n");
             tb_Results.Text += "Credits/sec (system): " + (dUnitsPerSecond * dAvgCreditPerUnit).ToString("#,##0.00\r\n");
             tb_Results.Text += "System Daily Avg: " + (86400.0 * dUnitsPerSecond * dAvgCreditPerUnit).ToString("#,###,##0.0\r\n");
-
+            tb_Results.Text += "Avg work units per day:" + WorkunitsPerDay.ToString("###,##0.0");
         }
 
         // using the selected items, take an average and the std and display
@@ -1552,6 +1560,13 @@ namespace BTHistoryReader
             btnCheckPrev.Enabled = bShow;
         }
 
+        string RemoveCnt(string strIn)
+        {
+            int i = strIn.TrimStart().IndexOf(' ');
+            if (i < 0) return strIn;
+            return strIn.Substring(i + 1).Trim();
+        }
+
         // see how many items the user selected in the elapsed time list
         // only allowed to select 2 items, a start and a stop 
         double TimeIntervalMinutes = -1;
@@ -1588,6 +1603,9 @@ namespace BTHistoryReader
             n = 1 + j - i;
             lb_NumSel.Text = "Selected: " + n.ToString();
             TimeIntervalMinutes = (tEnd - tStart) / 60.0;
+            tbStartStopDate.Text = RemoveCnt(ThisProjectInfo[SortToInfo[i]].strCompletedTime) + "\r\n";  // jys cnt is of form "xx yyy" key on space
+            tbStartStopDate.Text += RemoveCnt(ThisProjectInfo[SortToInfo[j]].strCompletedTime) + "\r\n";
+            tbStartStopDate.Text += fmtDHMS(Convert.ToInt64(TimeIntervalMinutes * 60.0)) + "\r\n" ;
             return n;
         }
 
@@ -2130,11 +2148,6 @@ namespace BTHistoryReader
             timegraph DeviceGraph = new timegraph (ref ThisProjectInfo, 1+MaxDeviceCount, iStart, iStop,dMax/nCon, ref SortToInfo, nCon);
             DeviceGraph.ShowDialog();
             DeviceGraph.Dispose();
-        }
-
-        private void gb_filter_Enter(object sender, EventArgs e)
-        {
-
         }
 
         private void btnClrInfo_Click(object sender, EventArgs e)
