@@ -26,7 +26,7 @@
             <asp:ListItem Value="https://www.cosmologyathome.org/results.php?hostid=268457&amp;offset=0&amp;show_names=0&amp;state=4&amp;appid=">Cosmology</asp:ListItem>
             <asp:ListItem Value="http://www.enigmaathome.net/results.php?hostid=220602&amp;offset=0&amp;show_names=0&amp;state=4&amp;appid=">Enigma</asp:ListItem>
             <asp:ListItem Value="https://boinc.multi-pool.info/latinsquares/results.php?hostid=14170&amp;offset=0&amp;show_names=0&amp;state=4&amp;appid=">Odka1</asp:ListItem>
-            <asp:ListItem Value="https://lhcathome.cern.ch/lhcathome/results.php?hostid=10484460&amp;offset=0&amp;show_names=0&amp;state=4&amp;appid=">LHC</asp:ListItem>
+            <asp:ListItem Value="https://lhcathome.cern.ch/lhcathome/results.php?hostid=10587392&amp;offset=0&amp;show_names=0&amp;state=4&amp;appid=">LHC</asp:ListItem>
             <asp:ListItem Value="https://escatter11.fullerton.edu/nfs/results.php?hostid=880073&amp;offset=0&amp;show_names=0&amp;state=4&amp;appid=1">NFS</asp:ListItem>
             <asp:ListItem Value="http://pogs.theskynet.org/pogs/results.php?hostid=858228&amp;offset=0&amp;show_names=0&amp;state=4&amp;appid=">POGS</asp:ListItem>
             <asp:ListItem Value="https://setiathome.berkeley.edu/results.php?hostid=8619726&amp;offset=0&amp;show_names=0&amp;state=4&amp;appid=">SETI</asp:ListItem>

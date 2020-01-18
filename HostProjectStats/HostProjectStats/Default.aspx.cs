@@ -9,6 +9,7 @@ using System.Web.UI.WebControls;
 using System.Net;
 using System.IO;
 using System.Text;
+using System.Net.Cache;
 
 
 
@@ -137,9 +138,9 @@ namespace HostProjectStats
             int i = 0;
             //CookieContainer cc = new CookieContainer();
             client = new WebClient();
-            client.Headers.Add("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.2; .NET CLR 1.0.3705");
-            // the below were used for accedssing WCG but didnt work
-            //client.UseDefaultCredentials = true;
+            //client.Headers.Add("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.2; .NET CLR 1.0.3705");
+            client.Headers.Add("user-agent", "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.102 Safari/537.36 Edge/18.18363");
+            client.UseDefaultCredentials = true;
             //client.Credentials = new NetworkCredential("username", "password");
             Rt = new double[MaxNumSamples];
             Ct = new double[MaxNumSamples];
@@ -261,8 +262,14 @@ namespace HostProjectStats
                 return -1;
             }
             try
-            {
+            { 
                 //client.Credentials.GetCredential(myUri,"Basic");
+                //client.UseDefaultCredentials = true;
+                //client.Headers.Add("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.2; .NET CLR 1.0.3705;)");
+                //client.Headers.Add("user-agent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:47.0) Gecko/20100101 Firefox/47.0");
+                //HttpRequestCachePolicy requestPolicy =  new HttpRequestCachePolicy(HttpCacheAgeControl.MaxAge, TimeSpan.FromDays(1));
+                //client.CachePolicy = requestPolicy;
+                // wcg and lhc have a problem
                 RawPage = client.DownloadString(myUri);
             }
             catch
