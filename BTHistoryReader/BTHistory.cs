@@ -400,7 +400,7 @@ namespace BTHistoryReader
             lb_nApps.Visible = cb_AppNames.Items.Count > 0;
             if (lb_nApps.Visible)
             {
-                lb_nApps.Text = cb_AppNames.Items.Count.ToString();
+                lb_nApps.Text = cb_AppNames.Items.Count.ToString() + " App" + (cb_AppNames.Items.Count > 1 ? "s" : "");
             }
         }
 
@@ -525,7 +525,7 @@ namespace BTHistoryReader
             }
             bAny = cb_SelProj.Items.Count > 0;
             lb_nProj.Visible = bAny;
-            lb_nProj.Text = bAny ? cb_SelProj.Items.Count.ToString() : "";
+            lb_nProj.Text = bAny ? cb_SelProj.Items.Count.ToString() + " Project" + (cb_SelProj.Items.Count > 1 ? "s" :"") : "";
             ShowNumberApps();
             return true;
         }

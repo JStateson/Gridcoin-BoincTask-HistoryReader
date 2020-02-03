@@ -81,7 +81,17 @@ namespace BTHistoryReader.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Wed 07/24/2019 11:52:33.96 
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        internal static System.Drawing.Icon BT {
+            get {
+                object obj = ResourceManager.GetObject("BT", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mon 12/09/2019 10:31:21.75 
         ///.
         /// </summary>
         internal static string BuildDate {

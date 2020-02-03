@@ -32,6 +32,8 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.cbUseAdvFilter = new System.Windows.Forms.CheckBox();
             this.groupBox8 = new System.Windows.Forms.GroupBox();
+            this.groupBox7 = new System.Windows.Forms.GroupBox();
+            this.btnAdvFilter = new System.Windows.Forms.Button();
             this.lblFilterString = new System.Windows.Forms.Label();
             this.btnBug = new System.Windows.Forms.Button();
             this.lbLastFiles = new System.Windows.Forms.Label();
@@ -49,8 +51,7 @@
             this.btnAbout = new System.Windows.Forms.Button();
             this.btnShowProjectTree = new System.Windows.Forms.Button();
             this.gb_filter = new System.Windows.Forms.GroupBox();
-            this.groupBox7 = new System.Windows.Forms.GroupBox();
-            this.btnAdvFilter = new System.Windows.Forms.Button();
+            this.tbStartStopDate = new System.Windows.Forms.TextBox();
             this.btn8hr = new System.Windows.Forms.Button();
             this.btn4hr = new System.Windows.Forms.Button();
             this.btn2hr = new System.Windows.Forms.Button();
@@ -103,13 +104,12 @@
             this.ofd_history = new System.Windows.Forms.OpenFileDialog();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.TimerShowBuild = new System.Windows.Forms.Timer(this.components);
-            this.tbStartStopDate = new System.Windows.Forms.TextBox();
             this.panel1.SuspendLayout();
             this.groupBox8.SuspendLayout();
+            this.groupBox7.SuspendLayout();
             this.gboxOPFsettings.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.gb_filter.SuspendLayout();
-            this.groupBox7.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox6.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudConCurrent)).BeginInit();
@@ -165,6 +165,28 @@
             this.groupBox8.TabIndex = 16;
             this.groupBox8.TabStop = false;
             this.groupBox8.Text = "Advanced Filter (used only for single history)";
+            // 
+            // groupBox7
+            // 
+            this.groupBox7.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
+            this.groupBox7.Controls.Add(this.btnAdvFilter);
+            this.groupBox7.Location = new System.Drawing.Point(276, 19);
+            this.groupBox7.Name = "groupBox7";
+            this.groupBox7.Size = new System.Drawing.Size(194, 57);
+            this.groupBox7.TabIndex = 31;
+            this.groupBox7.TabStop = false;
+            this.groupBox7.Text = "Advanced Filter";
+            // 
+            // btnAdvFilter
+            // 
+            this.btnAdvFilter.Location = new System.Drawing.Point(17, 22);
+            this.btnAdvFilter.Name = "btnAdvFilter";
+            this.btnAdvFilter.Size = new System.Drawing.Size(75, 23);
+            this.btnAdvFilter.TabIndex = 0;
+            this.btnAdvFilter.Text = "Create / Edit";
+            this.toolTip1.SetToolTip(this.btnAdvFilter, "This is applied only when file is opened");
+            this.btnAdvFilter.UseVisualStyleBackColor = true;
+            this.btnAdvFilter.Click += new System.EventHandler(this.btnAdvFilter_Click);
             // 
             // lblFilterString
             // 
@@ -366,27 +388,15 @@
             this.gb_filter.TabStop = false;
             this.gb_filter.Text = "Filter";
             // 
-            // groupBox7
+            // tbStartStopDate
             // 
-            this.groupBox7.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
-            this.groupBox7.Controls.Add(this.btnAdvFilter);
-            this.groupBox7.Location = new System.Drawing.Point(276, 19);
-            this.groupBox7.Name = "groupBox7";
-            this.groupBox7.Size = new System.Drawing.Size(194, 57);
-            this.groupBox7.TabIndex = 31;
-            this.groupBox7.TabStop = false;
-            this.groupBox7.Text = "Advanced Filter";
-            // 
-            // btnAdvFilter
-            // 
-            this.btnAdvFilter.Location = new System.Drawing.Point(17, 22);
-            this.btnAdvFilter.Name = "btnAdvFilter";
-            this.btnAdvFilter.Size = new System.Drawing.Size(75, 23);
-            this.btnAdvFilter.TabIndex = 0;
-            this.btnAdvFilter.Text = "Create / Edit";
-            this.toolTip1.SetToolTip(this.btnAdvFilter, "This is applied only when file is opened");
-            this.btnAdvFilter.UseVisualStyleBackColor = true;
-            this.btnAdvFilter.Click += new System.EventHandler(this.btnAdvFilter_Click);
+            this.tbStartStopDate.Enabled = false;
+            this.tbStartStopDate.Location = new System.Drawing.Point(210, 406);
+            this.tbStartStopDate.Multiline = true;
+            this.tbStartStopDate.Name = "tbStartStopDate";
+            this.tbStartStopDate.ReadOnly = true;
+            this.tbStartStopDate.Size = new System.Drawing.Size(220, 59);
+            this.tbStartStopDate.TabIndex = 31;
             // 
             // btn8hr
             // 
@@ -840,14 +850,14 @@
             this.cb_SelProj.FormattingEnabled = true;
             this.cb_SelProj.Location = new System.Drawing.Point(86, 25);
             this.cb_SelProj.Name = "cb_SelProj";
-            this.cb_SelProj.Size = new System.Drawing.Size(279, 21);
+            this.cb_SelProj.Size = new System.Drawing.Size(408, 21);
             this.cb_SelProj.TabIndex = 0;
             this.cb_SelProj.SelectedIndexChanged += new System.EventHandler(this.cb_SelProj_SelectedIndexChanged);
             // 
             // lb_nApps
             // 
             this.lb_nApps.AutoSize = true;
-            this.lb_nApps.Location = new System.Drawing.Point(384, 75);
+            this.lb_nApps.Location = new System.Drawing.Point(9, 75);
             this.lb_nApps.Name = "lb_nApps";
             this.lb_nApps.Size = new System.Drawing.Size(25, 13);
             this.lb_nApps.TabIndex = 10;
@@ -857,7 +867,7 @@
             // lb_nProj
             // 
             this.lb_nProj.AutoSize = true;
-            this.lb_nProj.Location = new System.Drawing.Point(384, 33);
+            this.lb_nProj.Location = new System.Drawing.Point(9, 34);
             this.lb_nProj.Name = "lb_nProj";
             this.lb_nProj.Size = new System.Drawing.Size(25, 13);
             this.lb_nProj.TabIndex = 9;
@@ -903,7 +913,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(9, 67);
+            this.label2.Location = new System.Drawing.Point(9, 61);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(57, 13);
             this.label2.TabIndex = 3;
@@ -912,7 +922,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(9, 25);
+            this.label1.Location = new System.Drawing.Point(9, 21);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(71, 13);
             this.label1.TabIndex = 2;
@@ -923,7 +933,7 @@
             this.cb_AppNames.FormattingEnabled = true;
             this.cb_AppNames.Location = new System.Drawing.Point(86, 67);
             this.cb_AppNames.Name = "cb_AppNames";
-            this.cb_AppNames.Size = new System.Drawing.Size(279, 21);
+            this.cb_AppNames.Size = new System.Drawing.Size(408, 21);
             this.cb_AppNames.TabIndex = 1;
             this.cb_AppNames.SelectedIndexChanged += new System.EventHandler(this.cb_AppNames_SelectedIndexChanged);
             // 
@@ -967,16 +977,6 @@
             this.TimerShowBuild.Interval = 250;
             this.TimerShowBuild.Tick += new System.EventHandler(this.TimerShowBuild_Tick);
             // 
-            // tbStartStopDate
-            // 
-            this.tbStartStopDate.Enabled = false;
-            this.tbStartStopDate.Location = new System.Drawing.Point(210, 406);
-            this.tbStartStopDate.Multiline = true;
-            this.tbStartStopDate.Name = "tbStartStopDate";
-            this.tbStartStopDate.ReadOnly = true;
-            this.tbStartStopDate.Size = new System.Drawing.Size(220, 59);
-            this.tbStartStopDate.TabIndex = 31;
-            // 
             // BTHistory
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -992,13 +992,13 @@
             this.panel1.PerformLayout();
             this.groupBox8.ResumeLayout(false);
             this.groupBox8.PerformLayout();
+            this.groupBox7.ResumeLayout(false);
             this.gboxOPFsettings.ResumeLayout(false);
             this.gboxOPFsettings.PerformLayout();
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
             this.gb_filter.ResumeLayout(false);
             this.gb_filter.PerformLayout();
-            this.groupBox7.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             this.groupBox6.ResumeLayout(false);
