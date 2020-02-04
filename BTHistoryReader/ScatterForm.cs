@@ -64,6 +64,7 @@ namespace BTHistoryReader
         {
             InitializeComponent();
             bSeeError = bAllowSeeError;
+            btnInvSel.Visible = bSeeError; // 2-3-2020 invert seletion requires all data for some bug I must have TODO FIXME
             lbAdvFilter.Text = strFilter;
             dOrigOffset = dOffset;
             cbUseOffset.Checked = false;
@@ -103,7 +104,8 @@ namespace BTHistoryReader
                     break;
             }
             lviewSubSeries.Visible = bShowDatasests | bScatteringApps | bScatteringGPUs;
-            btnInvSel.Visible = bShowDatasests; // does not work with any other scatter plots!!! 6-24-2019!!!
+            btnInvSel.Visible = bShowDatasests && bSeeError; // does not work with any other scatter plots!!! 6-24-2019!!!
+            // 2-3-2020 may want to look at this later
             lblSysHideUnhide.Visible = lviewSubSeries.Visible;
             ThisSeriesData = refSD;
             ShowScatter();
