@@ -621,7 +621,31 @@ namespace BTHistoryReader
             {
                 foreach (cAppName AppName in kpa.KnownApps)
                 {
-                    AppName.DoAverages();
+                    if (AppName.bIsValid.Count > 0)
+                    {
+                        int FirstValid = -1;
+                        int LastValid = -1;
+                        bool bAny = AppName.DoAverages(ref FirstValid, ref LastValid);
+                        if(bAny)
+                        {
+                            string[] strSymbols = LinesHistory[FirstValid+4].Split('\t');
+                            long lStart = Convert.ToInt64(strSymbols[11]);
+                            lStart -= Convert.ToInt64(AppName.dElapsedTime[FirstValid]);
+                            strSymbols = LinesHistory[LastValid+4].Split('\t');
+                            long lStop = Convert.ToInt64(strSymbols[11]);
+                            AppName.TotalTimeSecs = lStop - lStart;
+                            if (AppName.bIsValid.Count > 1)
+                            {
+                                AppName.CreditPerDay = AppName.AppCredit * AppName.bIsValid.Count * 86400.0 / AppName.TotalTimeSecs;
+                                if(AppName.CreditPerDay < 0)
+                                {
+                                    AppName.CreditPerDay = 0.0;
+                                    Debug.Assert(false);
+                                }
+                            }
+                            else AppName.CreditPerDay = 0.0;
+                        }
+                    }
                 }
             }
         }

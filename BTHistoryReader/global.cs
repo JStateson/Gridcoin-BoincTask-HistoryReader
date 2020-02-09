@@ -406,7 +406,7 @@ namespace BTHistoryReader
         VersionNumber = 3,
         Name = 4,
         PlanClass = 5,
-        ElapsedTimeCpu = 6,    // if 0 here then dont use
+        ElapsedTimeCpu = 6,    // if 0 here then dont use  ===this is wall time=== use this for elapsed time
         ElapsedTimeGpu = 7,    // if 0 here then dont use
         State = 8,              // if 3 or 6 then aborted (6 for user abort)
         ExitStatus = 9,
@@ -545,6 +545,7 @@ namespace BTHistoryReader
     }
 
     // AppName could be "Milkyway@home Separation
+    // 2-8-2020 need to calculate total elapsed time for thruput purposes
     public class cAppName
     {
         public string Name;
@@ -635,10 +636,15 @@ namespace BTHistoryReader
             return "GPU" + idev.ToString() + ":"  + nU.ToString("##,##0") + "-" + dArt.ToString("###,##0.0") + "(" + dSrt.ToString("#,##0.0") + ")\r\n";        
         }
         */
-        public bool DoAverages()            // return true if avg was calculated
+        public long TotalTimeSecs; // stop - start time for first and last app
+        public double AppCredit = 1.0;
+        public double CreditPerDay = 0.0;
+        public bool DoAverages(ref int FirstValid, ref int LastValid)            // return true if avg was calculated
         {
             int nUsed = 0;
             double d;
+            FirstValid = -1;
+            LastValid = -1;
             nDevices = 0;
             bNoResults = false;
             AvgRunTime = 0.0;
@@ -647,6 +653,11 @@ namespace BTHistoryReader
             {
                 if(bIsValid[i])
                 {
+                    if(FirstValid < 0)
+                    {
+                        FirstValid = i;
+                    }
+                    LastValid = i;
                     d = dElapsedTime[i] / 60.0; // want minutes
                     AvgRunTime += d;
                     nUsed++;
@@ -672,6 +683,7 @@ namespace BTHistoryReader
             StdRunTime /= nUsed;
             StdRunTime = Math.Sqrt(StdRunTime);
             strAvgStd = nUsed.ToString("##,##0") + "-" +  AvgRunTime.ToString("###,##0.0") + "(" + StdRunTime.ToString("#,##0.0") + ")";
+            // get total elapsed time for thruput calculations
             return true;
         }
 

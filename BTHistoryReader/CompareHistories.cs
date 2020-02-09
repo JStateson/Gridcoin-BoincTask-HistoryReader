@@ -35,6 +35,7 @@ namespace BTHistoryReader
         {
             public string sAppName;
             public int iSystem;
+            public double cpd;  // credits per day
             public List<double> dLelapsedTime = new List<double>();
             public void AddValue(double d)
             {
@@ -63,11 +64,12 @@ namespace BTHistoryReader
         {
             public string sProjName;
             public List<cKPAapps> KPAapps = new List<cKPAapps>();
-            public cKPAapps AddApp(string sAppName, int iSystem)
+            public cKPAapps AddApp(string sAppName, int iSystem, double cpd)
             {
                 cKPAapps ckpaa = new cKPAapps();
                 ckpaa.sAppName = sAppName;
                 ckpaa.iSystem = iSystem;
+                ckpaa.cpd = cpd; // credits per day normalize to 1 
                 KPAapps.Add(ckpaa);
                 return ckpaa;
             }
@@ -184,11 +186,11 @@ namespace BTHistoryReader
                         int nEntries = AppName.dElapsedTime.Count;  // nEntries from AppName is not valid here
                         if (nEntries == 0) continue;
                         NumberProjects++;
-                        cKPAapps ckpaa = ckpap.AddApp(AppName.Name, iSystem);
+                        cKPAapps ckpaa = ckpap.AddApp(AppName.Name, iSystem, AppName.CreditPerDay);
                         btf.ThisProjectInfo = new List<cProjectInfo>(nEntries);
                         cProjectInfo cpi = new cProjectInfo();
                         cpi.iSystem = iSystem;
-                        ckpaa.iSystem = iSystem;
+                        //ckpaa.iSystem = iSystem; // duplicated in above call to AddApp
                         iLoc = 0;
                         foreach (double d in AppName.dElapsedTime)
                         {
@@ -196,7 +198,7 @@ namespace BTHistoryReader
                                 ckpaa.AddValue(d / 60.0);
                             iLoc++;
                         }
-                        btf.ThisProjectInfo.Add(cpi);
+                        btf.ThisProjectInfo.Add(cpi); // not sure of the purpose of this 2-8-2020 is cpi used??
                     }
                 }
             }
@@ -320,6 +322,7 @@ namespace BTHistoryReader
             bool bUseAll = LBoxApps.SelectedIndices.Count == 0;
             bool bUseThis;
             bool bCandidate;
+            double Totalcpd=0; // credit per day
 
             Last_sProj = sProj;
             Last_sApp = sApp;
@@ -375,7 +378,9 @@ namespace BTHistoryReader
                                 }
                                 if(bShowSummary)
                                     sTemp += "Summary: " + strLoc + " " + ncnt.ToString() + "\r\n";
-                                strSPAstats += strLoc + ": " + sProj + "-" + sApp + "(" + ncnt.ToString()  + ")" + strDivide(ckpaa.nConcurrent) +"\r\n";
+                                strSPAstats += strLoc + ":\t" + sProj + "-" + sApp + "(" + ncnt.ToString()  + ")" + strDivide(ckpaa.nConcurrent) +
+                                    "\tCPD:" +ckpaa.cpd.ToString("#####.##") + "\r\n";
+                                Totalcpd += ckpaa.cpd;
                             }
                         }
                     }
@@ -394,7 +399,7 @@ namespace BTHistoryReader
             sTemp = "Num: " + dTemp.Count.ToString("0") + "\r\n";
             sTemp += "AVG: " + dAvg.ToString("#,##0.00").PadLeft(12) + "\r\n";
             sTemp += "STD: " + dStd.ToString("#,##0.00").PadLeft(12) + "\r\n";
-            TBoxStats.Text = strSPAstats +"\r\n" +  sTemp;
+            TBoxStats.Text = strSPAstats + "\r\n" + sTemp + "\r\nTotal credits per day (multiply by avg credit) " + Totalcpd.ToString("###,###.##");
             toolTip1.SetToolTip(BtnCmpSave, strSystems);
         }
 
