@@ -399,7 +399,9 @@ namespace BTHistoryReader
             sTemp = "Num: " + dTemp.Count.ToString("0") + "\r\n";
             sTemp += "AVG: " + dAvg.ToString("#,##0.00").PadLeft(12) + "\r\n";
             sTemp += "STD: " + dStd.ToString("#,##0.00").PadLeft(12) + "\r\n";
-            TBoxStats.Text = strSPAstats + "\r\n" + sTemp + "\r\nTotal credits per day (multiply by avg credit) " + Totalcpd.ToString("###,###.##");
+            sTemp += "\r\nTotal  workunits per day " + Totalcpd.ToString("###,###.##");
+            sTemp += "\r\nMultiply by average credit per work unit\r\nto get your average daily credit";
+            TBoxStats.Text = strSPAstats + "\r\n" + sTemp;
             toolTip1.SetToolTip(BtnCmpSave, strSystems);
         }
 

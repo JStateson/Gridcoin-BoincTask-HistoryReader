@@ -639,7 +639,7 @@ namespace BTHistoryReader
                                 AppName.CreditPerDay = AppName.AppCredit * AppName.bIsValid.Count * 86400.0 / AppName.TotalTimeSecs;
                                 if(AppName.CreditPerDay < 0)
                                 {
-                                    AppName.CreditPerDay = 0.0;
+                                    AppName.CreditPerDay = 0.0; // 2-9-2020 did see a huge negative number here but could not reproduce it
                                     Debug.Assert(false);
                                 }
                             }
