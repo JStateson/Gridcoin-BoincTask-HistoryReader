@@ -4,7 +4,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-    <title>ABOUT</title>
+    <title>About</title>
     <style type="text/css">
         #form1 {
             height: 578px;

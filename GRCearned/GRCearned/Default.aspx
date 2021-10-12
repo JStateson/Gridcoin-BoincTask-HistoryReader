@@ -12,8 +12,10 @@
             GRC EARNINGS ESTIMATOR<br />
             <br />
             This program calculates approximate earnings in GRC based on your project&#39;s magnitude. It also calculates an efficiency percentage that MIGHT show which projects are more efficient at paying GRC based on credit earned. Note that this can change over time. Go to 
-            <asp:HyperLink ID="HyperLink1" runat="server" NavigateUrl="htltps://gridcoinstats.eu " Target="_blank">GRIDCOINSTATS.EU</asp:HyperLink>
-&nbsp;and enter your CPID. Then select your &quot;address&quot; and using your mouse, select the contents of your &quot;Active Projects&quot; table and paste into the box below, replaceing the sample shown. The Last Known Earnings is shown as 1000. Change that to your last payoff if you want, else leave it at 1000. Then click on CALCULATE. Click on CLEAR to erase the resuls or the sample. If you trust this program then enter your CPID in the box labeled CPID and click LOOKUP to avoid haveing to do the copy and paste. If you dont trust this program then enter someone else CPID into the box and click LOOKUP.&nbsp; Gridcoinstats shows all CPIDs in payouts.&nbsp; If you pick the biggest payout it will NOT be mine, that is for sure.<br />
+            <asp:HyperLink ID="HyperLink1" runat="server" NavigateUrl="https://www.gridcoinstats.eu" Target="_blank">GRIDCOINSTATS.EU</asp:HyperLink>
+&nbsp;and enter your CPID. Then select your &quot;address&quot; and using your mouse, select the contents of your &quot;Active Projects&quot; table and paste into the box below, replaceing the sample shown. The Last Known Earnings is shown as 1000. Change that to your last payoff if you want, else leave it at 1000. Then click on CALCULATE. Click on CLEAR to erase the resuls or the sample. If you trust this program then enter your CPID in the box labeled CPID and click LOOKUP to avoid haveing to do the copy and paste. If you dont trust this program then enter someone else CPID into the box and click LOOKUP.&nbsp; Gridcoinstats shows all CPIDs in payouts.&nbsp; If you pick the biggest payout it will NOT be mine, that is for sure. Or
+            <asp:HyperLink ID="HyperLink2" runat="server" NavigateUrl=" https://gridcoin.network">gridcoinNetwork</asp:HyperLink>
+            <br />
             <br />
             <asp:Label ID="Label1" runat="server" BackColor="#FFCCFF" Text="Error: Info:"></asp:Label>
 &nbsp;<asp:TextBox ID="errbox" runat="server" Width="398px" Height="23px"></asp:TextBox>

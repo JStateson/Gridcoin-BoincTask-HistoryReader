@@ -902,7 +902,7 @@ namespace BTHistoryReader
         static string fmtHMS(long seconds)
         {
             TimeSpan time = TimeSpan.FromSeconds(seconds);
-            return time.ToString(@"hh\:mm\:ss");
+            return time.ToString(@"d\:hh\:mm\:ss");
         }
 
         // this fills in the "ThisProjectInfo" structure with stuff from each single line in the history files of "the app"
@@ -1106,13 +1106,14 @@ namespace BTHistoryReader
         }
 
         // using the selected items, take an average and the std and display
+        // 10/12/2021 want to show completion time instead of the redundent elapsed time
         private void PerformStats()
         {
             int i, j, k, n;
             double Avg = 0.0;
             double Std = 0.0;
             double d;
-            long l;
+            long l, l_First=0;
             string strOut = "";
 
             int NumUnits = lb_SelWorkUnits.SelectedItems.Count;
@@ -1143,12 +1144,16 @@ namespace BTHistoryReader
                     Debug.Assert(false);
                     continue; // bad or missing data was finally fixed.  Problem was bitcoin utopia had 0 for cpu
                 }                                                        // so putting in "0.1" for cpu but not if gpu is 0 also
-                l = Convert.ToInt64(d);
+                //11/12/21 l = Convert.ToInt64(d);
+                l = ThisProjectInfo[k].time_t_Completed;
+                if (k1 == i) l_First = l;
+                l-= l_First;
                 d /= 60.0;
                 n++;
                 Avg += d;
-
-                strOut += d.ToString("###,##0.00") + "\t" + fmtHMS(l) + " D" +ThisProjectInfo[k].iDeviceUsed.ToString() + "\r\n";
+                //11/12/21     strOut += d.ToString("###,##0.00") + "\t" + fmtHMS(l) + " D" +ThisProjectInfo[k].iDeviceUsed.ToString() + "\r\n";
+                //
+                strOut += d.ToString("###,##0.00") + " D" +ThisProjectInfo[k].iDeviceUsed.ToString() + "\t" + fmtHMS(l) + "\r\n";
             }
             if (n == 0) return;
             Avg /= n;
