@@ -104,6 +104,8 @@
             this.ofd_history = new System.Windows.Forms.OpenFileDialog();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.TimerShowBuild = new System.Windows.Forms.Timer(this.components);
+            this.groupBox9 = new System.Windows.Forms.GroupBox();
+            this.tbWPB = new System.Windows.Forms.TextBox();
             this.panel1.SuspendLayout();
             this.groupBox8.SuspendLayout();
             this.groupBox7.SuspendLayout();
@@ -116,6 +118,7 @@
             this.groupBox5.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
+            this.groupBox9.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
@@ -814,6 +817,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.groupBox9);
             this.groupBox1.Controls.Add(this.btnLkCr);
             this.groupBox1.Controls.Add(this.cb_SelProj);
             this.groupBox1.Controls.Add(this.lb_nApps);
@@ -876,7 +880,7 @@
             // 
             // tbNDevices
             // 
-            this.tbNDevices.Location = new System.Drawing.Point(282, 129);
+            this.tbNDevices.Location = new System.Drawing.Point(249, 129);
             this.tbNDevices.Name = "tbNDevices";
             this.tbNDevices.Size = new System.Drawing.Size(57, 20);
             this.tbNDevices.TabIndex = 8;
@@ -886,7 +890,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(130, 129);
+            this.label5.Location = new System.Drawing.Point(97, 129);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(128, 13);
             this.label5.TabIndex = 7;
@@ -895,7 +899,7 @@
             // tb_AvgCredit
             // 
             this.tb_AvgCredit.BackColor = System.Drawing.SystemColors.Info;
-            this.tb_AvgCredit.Location = new System.Drawing.Point(282, 100);
+            this.tb_AvgCredit.Location = new System.Drawing.Point(249, 100);
             this.tb_AvgCredit.Name = "tb_AvgCredit";
             this.tb_AvgCredit.Size = new System.Drawing.Size(57, 20);
             this.tb_AvgCredit.TabIndex = 6;
@@ -904,7 +908,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(130, 103);
+            this.label3.Location = new System.Drawing.Point(97, 103);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(146, 13);
             this.label3.TabIndex = 5;
@@ -977,6 +981,24 @@
             this.TimerShowBuild.Interval = 250;
             this.TimerShowBuild.Tick += new System.EventHandler(this.TimerShowBuild_Tick);
             // 
+            // groupBox9
+            // 
+            this.groupBox9.Controls.Add(this.tbWPB);
+            this.groupBox9.Location = new System.Drawing.Point(331, 94);
+            this.groupBox9.Name = "groupBox9";
+            this.groupBox9.Size = new System.Drawing.Size(151, 55);
+            this.groupBox9.TabIndex = 26;
+            this.groupBox9.TabStop = false;
+            this.groupBox9.Text = "Avg Watts / board";
+            // 
+            // tbWPB
+            // 
+            this.tbWPB.Location = new System.Drawing.Point(43, 19);
+            this.tbWPB.Name = "tbWPB";
+            this.tbWPB.Size = new System.Drawing.Size(70, 20);
+            this.tbWPB.TabIndex = 0;
+            this.tbWPB.Text = "0";
+            // 
             // BTHistory
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1008,6 +1030,8 @@
             this.groupBox2.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            this.groupBox9.ResumeLayout(false);
+            this.groupBox9.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -1088,6 +1112,8 @@
         private System.Windows.Forms.CheckBox cbUseAdvFilter;
         private System.Windows.Forms.CheckBox cbExcludeUnk;
         private System.Windows.Forms.TextBox tbStartStopDate;
+        private System.Windows.Forms.GroupBox groupBox9;
+        private System.Windows.Forms.TextBox tbWPB;
     }
 }
 
