@@ -139,7 +139,7 @@
             this.panel1.Controls.Add(this.btn_OpenHistory);
             this.panel1.Location = new System.Drawing.Point(12, 12);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1000, 686);
+            this.panel1.Size = new System.Drawing.Size(1000, 696);
             this.panel1.TabIndex = 0;
             this.panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.panel1_Paint);
             // 
@@ -159,7 +159,7 @@
             // 
             this.groupBox8.Controls.Add(this.groupBox7);
             this.groupBox8.Controls.Add(this.lblFilterString);
-            this.groupBox8.Location = new System.Drawing.Point(22, 595);
+            this.groupBox8.Location = new System.Drawing.Point(22, 603);
             this.groupBox8.Name = "groupBox8";
             this.groupBox8.Size = new System.Drawing.Size(476, 86);
             this.groupBox8.TabIndex = 16;
@@ -212,7 +212,7 @@
             // lbLastFiles
             // 
             this.lbLastFiles.AutoSize = true;
-            this.lbLastFiles.Location = new System.Drawing.Point(19, 579);
+            this.lbLastFiles.Location = new System.Drawing.Point(19, 587);
             this.lbLastFiles.Name = "lbLastFiles";
             this.lbLastFiles.Size = new System.Drawing.Size(79, 13);
             this.lbLastFiles.TabIndex = 14;
@@ -735,7 +735,7 @@
             this.groupBox2.Controls.Add(this.rbThroughput);
             this.groupBox2.Location = new System.Drawing.Point(16, 352);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(500, 219);
+            this.groupBox2.Size = new System.Drawing.Size(500, 232);
             this.groupBox2.TabIndex = 5;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Type Analysis";
@@ -795,7 +795,7 @@
             this.tb_Results.Multiline = true;
             this.tb_Results.Name = "tb_Results";
             this.tb_Results.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.tb_Results.Size = new System.Drawing.Size(349, 181);
+            this.tb_Results.Size = new System.Drawing.Size(349, 202);
             this.tb_Results.TabIndex = 4;
             // 
             // rbThroughput
@@ -981,7 +981,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1038, 710);
+            this.ClientSize = new System.Drawing.Size(1038, 720);
             this.Controls.Add(this.panel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;

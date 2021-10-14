@@ -1050,6 +1050,8 @@ namespace BTHistoryReader
 
 
         // calculates amount of credit the system can do
+        // 10/14/2021 elapsed time can be bigger than seconds per workunit iff concurrent tasks
+        // are being done
         private void PerformThruput()
         {
 
@@ -1062,10 +1064,10 @@ namespace BTHistoryReader
             double WorkunitsPerDay; 
             int NumUnits = lb_SelWorkUnits.SelectedItems.Count;
             string sTemp, s1, s2;
-
-            if (NumUnits != 2)
+            double WUelapsed = 60.0*PerformStats(false);
+            if (NumUnits != 2 || WUelapsed < 0.0)
             {
-                tb_Results.Text = "you must select exactly two items\r\n";
+                tb_Results.Text = "you must select exactly two items or stats error\r\n";
                 return;
             }
             iStart = i = lb_SelWorkUnits.SelectedIndices[0]; // difference between this shows the selection
@@ -1093,10 +1095,13 @@ namespace BTHistoryReader
             nItems = 1 + j - i;
             dUnitsPerSecond = nItems / dSeconds;
             WorkunitsPerDay = dUnitsPerSecond * 24.0 * 3600.0;
-            tb_Results.Text += "Elapsed seconds(includes down time if any): " + dSeconds.ToString("###,##0\r\n");
+            tb_Results.Text += "Elapsed secs(includes down time): " + dSeconds.ToString("###,##0\r\n");
+            if (lbTimeContinunity.Text != "")
+                tb_Results.Text += lbTimeContinunity.Text + "\r\n";
             tb_Results.Text += "Number Work Units: " + nItems + "\r\n";
             tb_Results.Text += "Units per second(system): " + dUnitsPerSecond.ToString("###,##0.0000\r\n");
-            tb_Results.Text += "Secs per work unit per devices: " + (nDevices / dUnitsPerSecond).ToString("###,##0\r\n");
+            tb_Results.Text += "Calc secs per work unit per devices: " + (nDevices / dUnitsPerSecond).ToString("###,##0\r\n");
+            tb_Results.Text += "Measured avg secs elapsed per WU: " + WUelapsed.ToString("###,##0\r\n");
             tb_Results.Text += "Secs per work unit this system: " + (1.0 / dUnitsPerSecond).ToString("###,##0\r\n");
             dAvgCreditPerUnit = Convert.ToDouble(tb_AvgCredit.Text);
             tb_Results.Text += "Credits/sec (one device): " + (dUnitsPerSecond * dAvgCreditPerUnit / nDevices).ToString("##0.00\r\n");
@@ -1107,7 +1112,8 @@ namespace BTHistoryReader
 
         // using the selected items, take an average and the std and display
         // 10/12/2021 want to show completion time instead of the redundent elapsed time
-        private void PerformStats()
+        // 10/14/2021 want to calculate but not alway show results
+        private double PerformStats(bool bShow)
         {
             int i, j, k, n;
             double Avg = 0.0;
@@ -1120,7 +1126,7 @@ namespace BTHistoryReader
             if (NumUnits != 2)
             {
                 tb_Results.Text = "you must select exactly two items\r\n";
-                return;
+                return -1.0;
             }
             iStart = i = lb_SelWorkUnits.SelectedIndices[0]; // difference between this shows the selection
             iStop = j = lb_SelWorkUnits.SelectedIndices[1]; // 8-9-2019 but these must be used to locate the actual valuea
@@ -1128,7 +1134,7 @@ namespace BTHistoryReader
             if (n < 2)
             {
                 tb_Results.Text += "Need at least 2 items\r\n";
-                return;
+                return -1.0;
             }
             n = 0;
             for (int k1 = i; k1 <= j; k1++)
@@ -1153,9 +1159,10 @@ namespace BTHistoryReader
                 Avg += d;
                 //11/12/21     strOut += d.ToString("###,##0.00") + "\t" + fmtHMS(l) + " D" +ThisProjectInfo[k].iDeviceUsed.ToString() + "\r\n";
                 //
-                strOut += d.ToString("###,##0.00") + " D" +ThisProjectInfo[k].iDeviceUsed.ToString() + "\t" + fmtHMS(l) + "\r\n";
+                if(bShow)
+                    strOut += d.ToString("###,##0.00") + " D" +ThisProjectInfo[k].iDeviceUsed.ToString() + "\t" + fmtHMS(l) + "\r\n";
             }
-            if (n == 0) return;
+            if (n == 0) return -1.0;
             Avg /= n;
             l = Convert.ToInt64(Avg * 60.0);
             Std = 0;
@@ -1173,10 +1180,14 @@ namespace BTHistoryReader
                 Std += d * d;
             }
             Std = Math.Sqrt(Std / n);
-            tb_Results.Text = strOut;
-            tb_Results.Text += "Number of selections " + n.ToString("#,##0") + "\r\n";
-            tb_Results.Text += "AVG elapsed (minutes) " + Avg.ToString("###,##0.00") + "\t" + fmtHMS(l) + "\r\n";
-            tb_Results.Text += "STD of elapsed time " + Std.ToString("###,##0.00") + "\r\n";
+            if(bShow)
+            {
+                tb_Results.Text = strOut;
+                tb_Results.Text += "Number of selections " + n.ToString("#,##0") + "\r\n";
+                tb_Results.Text += "AVG elapsed (minutes) " + Avg.ToString("###,##0.00") + "\t" + fmtHMS(l) + "\r\n";
+                tb_Results.Text += "STD of elapsed time " + Std.ToString("###,##0.00") + "\r\n";
+            }
+            return Avg;
         }
 
 
@@ -1427,7 +1438,7 @@ namespace BTHistoryReader
                 FilterUsingGPUs(ref MaxDeviceCount, ref iStart, ref iStop);
                 return;
             }
-            if (rbElapsed.Checked) PerformStats();
+            if (rbElapsed.Checked) PerformStats(true);
             if (rbThroughput.Checked) PerformThruput();
             if (rbIdle.Checked)
             {
