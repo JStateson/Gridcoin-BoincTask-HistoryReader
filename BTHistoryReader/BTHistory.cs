@@ -1065,7 +1065,7 @@ namespace BTHistoryReader
             int NumUnits = lb_SelWorkUnits.SelectedItems.Count;
             string sTemp, s1, s2;
             double WUelapsed = 60.0*PerformStats(false);
-            double WattPerBoard = Convert.ToDouble(tbWPB.Text);
+            double WattsThisSystem = Convert.ToDouble(tbWPB.Text);
             double sdc; // system daily credits
             if (NumUnits != 2 || WUelapsed < 0.0)
             {
@@ -1111,9 +1111,9 @@ namespace BTHistoryReader
             sdc = 86400.0 * dUnitsPerSecond * dAvgCreditPerUnit;
             tb_Results.Text += "System Daily Avg: " + sdc.ToString("#,###,##0.0\r\n");
             tb_Results.Text += "Avg work units per day:" + WorkunitsPerDay.ToString("###,##0.0\r\n");
-            if(WattPerBoard > 0.0)
+            if(WattsThisSystem > 0.0)
             {
-                tb_Results.Text += "Credits per watt:" + (sdc / (WattPerBoard * nDevices)).ToString("###,##0.0");
+                tb_Results.Text += "Credits per watt:" + (sdc / (WattsThisSystem)).ToString("###,##0.0");
             }
         }
 

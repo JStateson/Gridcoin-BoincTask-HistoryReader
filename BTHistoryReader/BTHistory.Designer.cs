@@ -87,6 +87,8 @@
             this.tb_Results = new System.Windows.Forms.TextBox();
             this.rbThroughput = new System.Windows.Forms.RadioButton();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.groupBox9 = new System.Windows.Forms.GroupBox();
+            this.tbWPB = new System.Windows.Forms.TextBox();
             this.btnLkCr = new System.Windows.Forms.Button();
             this.cb_SelProj = new System.Windows.Forms.ComboBox();
             this.lb_nApps = new System.Windows.Forms.Label();
@@ -104,8 +106,6 @@
             this.ofd_history = new System.Windows.Forms.OpenFileDialog();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.TimerShowBuild = new System.Windows.Forms.Timer(this.components);
-            this.groupBox9 = new System.Windows.Forms.GroupBox();
-            this.tbWPB = new System.Windows.Forms.TextBox();
             this.panel1.SuspendLayout();
             this.groupBox8.SuspendLayout();
             this.groupBox7.SuspendLayout();
@@ -836,6 +836,24 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "History Selections";
             // 
+            // groupBox9
+            // 
+            this.groupBox9.Controls.Add(this.tbWPB);
+            this.groupBox9.Location = new System.Drawing.Point(331, 94);
+            this.groupBox9.Name = "groupBox9";
+            this.groupBox9.Size = new System.Drawing.Size(151, 55);
+            this.groupBox9.TabIndex = 26;
+            this.groupBox9.TabStop = false;
+            this.groupBox9.Text = "System Watts";
+            // 
+            // tbWPB
+            // 
+            this.tbWPB.Location = new System.Drawing.Point(43, 19);
+            this.tbWPB.Name = "tbWPB";
+            this.tbWPB.Size = new System.Drawing.Size(70, 20);
+            this.tbWPB.TabIndex = 0;
+            this.tbWPB.Text = "0";
+            // 
             // btnLkCr
             // 
             this.btnLkCr.BackColor = System.Drawing.SystemColors.Info;
@@ -980,24 +998,6 @@
             this.TimerShowBuild.Enabled = true;
             this.TimerShowBuild.Interval = 250;
             this.TimerShowBuild.Tick += new System.EventHandler(this.TimerShowBuild_Tick);
-            // 
-            // groupBox9
-            // 
-            this.groupBox9.Controls.Add(this.tbWPB);
-            this.groupBox9.Location = new System.Drawing.Point(331, 94);
-            this.groupBox9.Name = "groupBox9";
-            this.groupBox9.Size = new System.Drawing.Size(151, 55);
-            this.groupBox9.TabIndex = 26;
-            this.groupBox9.TabStop = false;
-            this.groupBox9.Text = "Avg Watts / board";
-            // 
-            // tbWPB
-            // 
-            this.tbWPB.Location = new System.Drawing.Point(43, 19);
-            this.tbWPB.Name = "tbWPB";
-            this.tbWPB.Size = new System.Drawing.Size(70, 20);
-            this.tbWPB.TabIndex = 0;
-            this.tbWPB.Text = "0";
             // 
             // BTHistory
             // 
