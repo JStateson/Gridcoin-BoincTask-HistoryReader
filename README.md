@@ -9,5 +9,5 @@ HostProjectStats provides average and std of time to complete for various projec
 Above for ASP NET, below for Windows forms (dot net)
 
 BTHistory - read Boinctasks history for throughput analysis 
-
+The BTexecutables.7z 32 and 64 bit apps run fine under wine 6.02 with mono 5
 
