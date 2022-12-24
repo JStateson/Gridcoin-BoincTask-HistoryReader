@@ -617,6 +617,7 @@ namespace BTHistoryReader
         // for all applications over all projects, compute the avg and std of elapsed time
         public void PerformCalcAverages()
         {
+            int jStart, jStop; // 12/22/2022
             foreach (cKnownProjApps kpa in KnownProjApps)
             {
                 foreach (cAppName AppName in kpa.KnownApps)
@@ -628,10 +629,14 @@ namespace BTHistoryReader
                         bool bAny = AppName.DoAverages(ref FirstValid, ref LastValid);
                         if(bAny)
                         {
-                            string[] strSymbols = LinesHistory[FirstValid+4].Split('\t');
+                            //jStart = FirstValid + 4; 
+                            jStart = AppName.LineLoc[FirstValid];
+                            string[] strSymbols = LinesHistory[jStart].Split('\t');
                             long lStart = Convert.ToInt64(strSymbols[11]);
                             lStart -= Convert.ToInt64(AppName.dElapsedTime[FirstValid]);
-                            strSymbols = LinesHistory[LastValid+4].Split('\t');
+                            // jStop = LastValid + 4;
+                            jStop = AppName.LineLoc[LastValid];
+                            strSymbols = LinesHistory[jStop].Split('\t');
                             long lStop = Convert.ToInt64(strSymbols[11]);
                             AppName.TotalTimeSecs = lStop - lStart;
                             if (AppName.bIsValid.Count > 1)
@@ -639,6 +644,10 @@ namespace BTHistoryReader
                                 AppName.CreditPerDay = AppName.AppCredit * AppName.bIsValid.Count * 86400.0 / AppName.TotalTimeSecs;
                                 if(AppName.CreditPerDay < 0)
                                 {
+                                    // 12/24/2022 was caused by wuprop.  wuprop is an ignored project, needs to be marked as invalid
+                                    // ok:  turned out that only "ignored" apps caused the problem.  The indexes were offset by 1 due to 
+                                    // the ignored app and the value calcualateds was correct to to 0 being set for credit
+                                    // all calculations were correct whether LineLoc was used or not
                                     AppName.CreditPerDay = 0.0; // 2-9-2020 did see a huge negative number here but could not reproduce it
                                     Debug.Assert(false);
                                 }
@@ -1406,7 +1415,7 @@ namespace BTHistoryReader
             }
             if(DeviceMax == -1)
             {
-                    tb_Results.Text += "App does not use GPUs\r\n";
+                    tb_Results.Text += "Either only CPUs or there are no unknown GPUs\r\n";
                     return false;
             }
 

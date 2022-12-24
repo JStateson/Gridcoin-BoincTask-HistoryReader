@@ -787,7 +787,7 @@
             this.rbElapsed.Size = new System.Drawing.Size(111, 17);
             this.rbElapsed.TabIndex = 5;
             this.rbElapsed.Text = "Avg Elapsed Time";
-            this.toolTip1.SetToolTip(this.rbElapsed, "Averag, std of elapsed plus relative completion");
+            this.toolTip1.SetToolTip(this.rbElapsed, "Averag, std of elapsed plus relative completion.\r\nFormat is mm:mm not mm:ss");
             this.rbElapsed.UseVisualStyleBackColor = true;
             this.rbElapsed.CheckedChanged += new System.EventHandler(this.rbElapsed_CheckedChanged);
             // 
