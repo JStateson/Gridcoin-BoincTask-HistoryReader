@@ -746,12 +746,14 @@
             // cbExcludeUnk
             // 
             this.cbExcludeUnk.AutoSize = true;
+            this.cbExcludeUnk.Checked = true;
+            this.cbExcludeUnk.CheckState = System.Windows.Forms.CheckState.Checked;
             this.cbExcludeUnk.Enabled = false;
             this.cbExcludeUnk.Location = new System.Drawing.Point(6, 185);
             this.cbExcludeUnk.Name = "cbExcludeUnk";
-            this.cbExcludeUnk.Size = new System.Drawing.Size(118, 17);
+            this.cbExcludeUnk.Size = new System.Drawing.Size(107, 17);
             this.cbExcludeUnk.TabIndex = 8;
-            this.cbExcludeUnk.Text = "Exclude Unk GPUs";
+            this.cbExcludeUnk.Text = "Show Unk GPUs";
             this.cbExcludeUnk.TextAlign = System.Drawing.ContentAlignment.TopRight;
             this.toolTip1.SetToolTip(this.cbExcludeUnk, "If checked  do not show unassigned GPU\r\nwhen Show by GPU selected");
             this.cbExcludeUnk.UseVisualStyleBackColor = true;
