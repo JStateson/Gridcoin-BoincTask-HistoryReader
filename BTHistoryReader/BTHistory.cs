@@ -1267,19 +1267,27 @@ namespace BTHistoryReader
             double Std = 0.0;
             long l;
             int k, n = 0;
+            nU = 0;
+            StdU = 0.0;
+            AvgU = 0.0;
             for (int k1 = iStart; k1 <= iStop; k1++)
             {
                 k = SortToInfo[k1];
-                if (ThisProjectInfo[k].bDeviceUnk && cbExcludeUnk.Checked) continue;
-                if (!ThisProjectInfo[k].bState || iDev != ThisProjectInfo[k].iDeviceUsed) continue;
                 d = ThisProjectInfo[k].dElapsedTime;
+                d /= 60.0;
+                if (ThisProjectInfo[k].bDeviceUnk && cbExcludeUnk.Checked)
+                {
+                    nU++;
+                    AvgU += d;
+                    continue;
+                }
+                if (!ThisProjectInfo[k].bState || iDev != ThisProjectInfo[k].iDeviceUsed) continue;
+
                 if (d == 0.0)
                 {
                     Debug.Assert(false);
                     continue; // bad or missing data was finally fixed.  Problem was bitcoin utopia had 0 for cpu
                 }                                                        // so putting in "0.1" for cpu but not if gpu is 0 also
-                l = Convert.ToInt64(d);
-                d /= 60.0;
                 n++;
                 Avg += d;
             }
@@ -1288,14 +1296,20 @@ namespace BTHistoryReader
                 return strResult + " has no valid data\r\n";
             }
             Avg /= n;
+            if (nU > 0) AvgU /= nU;
             l = Convert.ToInt64(Avg * 60.0);
             Std = 0;
             for (int k1 = iStart; k1 <= iStop; k1++)
             {
                 k = SortToInfo[k1];
-                if (ThisProjectInfo[k].bDeviceUnk && cbExcludeUnk.Checked) continue;
-                if (!ThisProjectInfo[k].bState || iDev != ThisProjectInfo[k].iDeviceUsed) continue;
                 d = ThisProjectInfo[k].dElapsedTime;
+                if (ThisProjectInfo[k].bDeviceUnk && cbExcludeUnk.Checked)
+                {
+                    d = d / 60.0 - AvgU;
+                    StdU += d * d;
+                    continue;
+                }
+                if (!ThisProjectInfo[k].bState || iDev != ThisProjectInfo[k].iDeviceUsed) continue;
                 if (d == 0.0)
                 {
                     Debug.Assert(false);
@@ -1305,7 +1319,7 @@ namespace BTHistoryReader
                 Std += d * d;
             }
             Std = Math.Sqrt(Std / n);
-
+            StdU = Math.Sqrt(StdU / nU);
             return strResult + n.ToString("##,##0") + " -Stats- Avg:" + Avg.ToString("###,##0.0") + "(" + Std.ToString("#,##0.00") + ")\r\n";
         }
 
@@ -1328,11 +1342,16 @@ namespace BTHistoryReader
             return strResult + "(" + val.ToString("#,##0.00)");
         }
 
-
+        private int nU;
+        private double StdU;
+        private double AvgU;
         private string CalcGPUstats(int nDevices,int iStart, int iStop)
         {
             string strResults = "There are " + nDevices.ToString() + " GPUs, units are minutes\r\n";
             strResults += "Dev#   WU count  Avg and Std of avg\r\n";
+            nU = 0;
+            StdU = 0.0;
+            AvgU = 0.0;
             for (int i = 0; i < nDevices;i++)
             {
                 strResults += CalcOneStat(i, iStart, iStop);
@@ -1422,20 +1441,23 @@ namespace BTHistoryReader
             if (rbElapsed.Checked)
             {
                 tb_Results.Text +=  CalcGPUstats(DeviceMax + 1, i, j);
-                if(NumExcluded > 0)
+                if(NumExcluded > 0 && nU > 0)
                 {
-                    tb_Results.Text += "UnknownGPUs:" + NumExcluded.ToString() + "\r\n";
+                    tb_Results.Text += "UNK?"  + " WUs:" + nU.ToString("##,##0") + " -Stats- Avg:" + AvgU.ToString("###,##0.0") + "(" + StdU.ToString("#,##0.00") + ")\r\n";
                 }
                 return true;
             }
             else if(rbThroughput.Checked)
             {
+                double dLeftOver = Convert.ToDouble(tb_AvgCredit.Text);
                 if (tb_AvgCredit.Text == "0")
                 {
                     tb_Results.Text = "need to specify a credit value\r\nClick on Lookup Credit or just use 100\r\n";
                     return false;
                 }
                 tb_Results.Text += CalcGPUcredits(DeviceMax + 1, i, j);
+                dLeftOver *= NumExcluded;
+                tb_Results.Text += "Num ( " + NumExcluded.ToString() + ") Unknown credits: " + dLeftOver.ToString() + "\r\n";
             }
             return true;
         }
@@ -2182,8 +2204,9 @@ namespace BTHistoryReader
             {
                 rbIdle.Enabled = true;
             }
-            cbExcludeUnk.Enabled = cbGPUcompare.Checked;
-            if (!cbExcludeUnk.Enabled) cbExcludeUnk.Checked = false;
+            // 12/22/2022 always show unknown gpus
+            //cbExcludeUnk.Enabled = cbGPUcompare.Checked;
+            //if (!cbExcludeUnk.Enabled) cbExcludeUnk.Checked = false;
         }
 
         private void btnGTime_Click(object sender, EventArgs e)
