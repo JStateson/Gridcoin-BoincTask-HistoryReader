@@ -34,6 +34,7 @@ namespace BTHistoryReader
         public string strUse;
         public int iDeviceUsed; //if -1 then CPU or not known  only applies to GPUs
         public bool bDeviceUnk; // was not identified as gpu0 or whatever.  might be device 0 or might have not executed long enough to be identified
+        public bool bWasUnk; // if device was originally unknown
         public string strReceived;
         public string strVMem;
         public string strMem;
@@ -554,6 +555,18 @@ namespace BTHistoryReader
         public string strPlanClass;
         public string strName;
         public bool bUseThisAppInStatsListBox;
+        public int iLastGpuUsed;
+        public int iAssignedGPUs;
+        public List<double> dElapsedTime;
+        public List<int> DataSetGroup;
+        public List<bool> bIsValid;
+        public List<int> DeviceID;  // can be used in plot all datasets to show GPU
+        public int NumberBadWorkUnits;
+        public double AvgRunTime;
+        public double StdRunTime;
+        public bool bNoResults = false;
+        public string strAvgStd = "";
+        public int nDevices;
         public int nUsesGPU;            // if uses gpu then gpu cannot be 0 elapsed time (except bitcoin utopia crap!!)
         public List<int> LineLoc;       // offset or index into the history file. Index "4" is the history line identifier "1"
                                         // the above can be used to extract a value from the history file
@@ -561,10 +574,8 @@ namespace BTHistoryReader
                                         // as the first colume.  If the number in that first column is extracted then 3 must be added 
                                         // to it if wanting to index into the history file.  One or the other may be available in different
                                         // areas of the code.  if nUsesGPU < 0 then is not using a gpu else is device number
-        public List<double> dElapsedTime;
-        public List<int> DataSetGroup;
-        public List<bool> bIsValid;
-        public List<int>DeviceID;  // can be used in plot all datasets to show GPU
+
+
         public void AddUse(string strUse)
         {
             string strTemp = strUse.ToLower();
@@ -594,12 +605,7 @@ namespace BTHistoryReader
         {
             get { return ptrKPA.ProjName + "\\" + Name; }
         }
-        public int NumberBadWorkUnits;
-        public double AvgRunTime;
-        public double StdRunTime;
-        public bool bNoResults = false;
-        public string strAvgStd = "";
-        public int nDevices;
+
         /*
         public List<int> DeviceID;
         public string GetDeviceStats(int idev)
@@ -705,6 +711,10 @@ namespace BTHistoryReader
             bIsValid = new List<bool>();
             bIsUnknown = bIsUnk;
             //bUseThisAppInStatsListBox = true;   // unless specified otherwise in listbox
+            // jys 12/25/2022 assign unknown GPUs to the last one used
+            iLastGpuUsed = -1;
+            iAssignedGPUs = 0;
+            NumberBadWorkUnits = 0;
         }
         public bool bIsUnknown;
     }

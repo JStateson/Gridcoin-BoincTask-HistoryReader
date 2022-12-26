@@ -32,6 +32,7 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.cbUseAdvFilter = new System.Windows.Forms.CheckBox();
             this.groupBox8 = new System.Windows.Forms.GroupBox();
+            this.cbAssignGPU = new System.Windows.Forms.CheckBox();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
             this.btnAdvFilter = new System.Windows.Forms.Button();
             this.lblFilterString = new System.Windows.Forms.Label();
@@ -160,6 +161,7 @@
             // 
             // groupBox8
             // 
+            this.groupBox8.Controls.Add(this.cbAssignGPU);
             this.groupBox8.Controls.Add(this.groupBox7);
             this.groupBox8.Controls.Add(this.lblFilterString);
             this.groupBox8.Location = new System.Drawing.Point(22, 603);
@@ -168,6 +170,20 @@
             this.groupBox8.TabIndex = 16;
             this.groupBox8.TabStop = false;
             this.groupBox8.Text = "Advanced Filter (used only for single history)";
+            // 
+            // cbAssignGPU
+            // 
+            this.cbAssignGPU.AutoSize = true;
+            this.cbAssignGPU.Checked = true;
+            this.cbAssignGPU.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbAssignGPU.Location = new System.Drawing.Point(21, 59);
+            this.cbAssignGPU.Name = "cbAssignGPU";
+            this.cbAssignGPU.Size = new System.Drawing.Size(137, 17);
+            this.cbAssignGPU.TabIndex = 32;
+            this.cbAssignGPU.Text = "Assign Unknown GPUs";
+            this.toolTip1.SetToolTip(this.cbAssignGPU, "If checked assign unknown GPUs to previous GPU\r\nIf un-checked you need to re-open" +
+        " the history file");
+            this.cbAssignGPU.UseVisualStyleBackColor = true;
             // 
             // groupBox7
             // 
@@ -1116,6 +1132,7 @@
         private System.Windows.Forms.TextBox tbStartStopDate;
         private System.Windows.Forms.GroupBox groupBox9;
         private System.Windows.Forms.TextBox tbWPB;
+        private System.Windows.Forms.CheckBox cbAssignGPU;
     }
 }
 

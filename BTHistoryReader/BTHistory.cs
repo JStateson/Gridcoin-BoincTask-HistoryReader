@@ -191,7 +191,7 @@ namespace BTHistoryReader
 
         // this is our lookup table
         public List<cKnownProjApps> KnownProjApps;
-
+        public cAppName CurrentApp; // the current one selected
 
 
         // put some projects into the table but unknown (to this program) also get added
@@ -977,13 +977,32 @@ namespace BTHistoryReader
                     jWTF = LinesHistory[i].Substring(iWTF).IndexOf(")");
                     Debug.Assert(jWTF > 0); ;
                     strWTF = LinesHistory[i].Substring(iWTF, (jWTF));
-                    ThisProjectInfo[j].iDeviceUsed = Convert.ToInt32(strWTF);
+                    ThisProjectInfo[j].iDeviceUsed = AppName.iLastGpuUsed = Convert.ToInt32(strWTF);
                     ThisProjectInfo[j].bDeviceUnk = false;
+                    ThisProjectInfo[j].bWasUnk = false;
                 }
-                else
+                else // either GPU is missing or it is a CPU app
                 {
-                    ThisProjectInfo[j].iDeviceUsed = 0; // device 0 or cpu
-                    ThisProjectInfo[j].bDeviceUnk = true;
+                    ThisProjectInfo[j].bDeviceUnk = false; // assume it is CPU system
+                    if (cbAssignGPU.Checked) // either a gpu app or user mistakenly checked this box
+                    {
+                        if(AppName.iLastGpuUsed > 0) // was a GPU system, not cpu
+                        {
+                            ThisProjectInfo[j].iDeviceUsed = AppName.iLastGpuUsed;
+                            ThisProjectInfo[j].bDeviceUnk = false;// jys 12/25/22
+                            ThisProjectInfo[j].bWasUnk = true;
+                            // cannot count number of assigned GPUs here because one might be thrown out
+                        }
+                    }
+                    else
+                    {
+                        if (AppName.iLastGpuUsed > 0)
+                        {
+                            ThisProjectInfo[j].iDeviceUsed = AppName.iLastGpuUsed;
+                            ThisProjectInfo[j].bDeviceUnk = true;
+                        }
+                        else ThisProjectInfo[j].iDeviceUsed = 0; // device 0 or cpu                            
+                    }
                 }
 
                 strSymbols = LinesHistory[i].Split('\t');
@@ -1110,9 +1129,10 @@ namespace BTHistoryReader
             if (lbTimeContinunity.Text != "")
                 tb_Results.Text += lbTimeContinunity.Text + "\r\n";
             tb_Results.Text += "Number Work Units: " + nItems + "\r\n";
-            tb_Results.Text += "Units per second(system): " + dUnitsPerSecond.ToString("###,##0.0000\r\n");
-            tb_Results.Text += "Calc secs per work unit per devices: " + (nDevices / dUnitsPerSecond).ToString("###,##0\r\n");
-            tb_Results.Text += "Measured avg secs elapsed per WU: " + WUelapsed.ToString("###,##0\r\n");
+            tb_Results.Text += "Work units per second(system): " + dUnitsPerSecond.ToString("###,##0.0000\r\n");
+            tb_Results.Text += "Calc secs per work unit per device: " + (nDevices / dUnitsPerSecond).ToString("###,##0\r\n");
+            //tb_Results.Text += "Measured avg secs elapsed per WU: " + WUelapsed.ToString("###,##0\r\n");
+            // above is WTF??  Elapsed time is concurrent with other units.  Above has no meaning here!!!
             tb_Results.Text += "Secs per work unit this system: " + (1.0 / dUnitsPerSecond).ToString("###,##0\r\n");
             dAvgCreditPerUnit = Convert.ToDouble(tb_AvgCredit.Text);
             tb_Results.Text += "Credits/sec (one device): " + (dUnitsPerSecond * dAvgCreditPerUnit / nDevices).ToString("##0.00\r\n");
@@ -1246,6 +1266,7 @@ namespace BTHistoryReader
                 return;
             }
             AppName = KnownProjApps[iProject].FindApp(strAppName);
+            CurrentApp = AppName; // jys 12/25/2022 want to keep track of unknown GPUs
             CurrentDataset = AppName.DataName;
             ThisProjectInfo = new List<cProjectInfo>(AppName.nAppEntries);
             lb_SelWorkUnits.Items.Clear();
@@ -1425,6 +1446,7 @@ namespace BTHistoryReader
             {
                 k = SortToInfo[k1];
                 if (!ThisProjectInfo[k].bState) continue;
+                if(ThisProjectInfo[k].bWasUnk)  CurrentApp.iAssignedGPUs++;
                 if (ThisProjectInfo[k].bDeviceUnk && cbExcludeUnk.Checked)
                 {
                     NumExcluded++;
@@ -1456,6 +1478,7 @@ namespace BTHistoryReader
                     return false;
                 }
                 tb_Results.Text += CalcGPUcredits(DeviceMax + 1, i, j);
+                NumExcluded = Math.Max(NumExcluded, CurrentApp.iAssignedGPUs);
                 dLeftOver *= NumExcluded;
                 tb_Results.Text += "Num ( " + NumExcluded.ToString() + ") Unknown credits: " + dLeftOver.ToString() + "\r\n";
             }
@@ -1468,12 +1491,15 @@ namespace BTHistoryReader
             btnGTime.Enabled = cbGPUcompare.Checked;
             tb_Results.Text = "";
             btnScatGpu.Enabled = true;
+            CurrentApp.iAssignedGPUs = 0; // this is recalculated based on filter
+
             if (cbGPUcompare.Checked)
             {
                 MaxDeviceCount = -1;
                 iStart = -1;
                 iStop = -1;
                 FilterUsingGPUs(ref MaxDeviceCount, ref iStart, ref iStop);
+                AddUnknownStats();
                 return;
             }
             if (rbElapsed.Checked) PerformStats(true);
@@ -1482,6 +1508,21 @@ namespace BTHistoryReader
             {
                 if (PerformIdleAnalysis())
                     ShowIdleInfo();
+            }
+            AddUnknownStats();
+        }
+
+
+
+        private void AddUnknownStats()
+        {
+            if (CurrentApp.iAssignedGPUs == 0) return; // 12/25/2022 jys
+            tb_Results.Text += "Numnber Unknown GPUs:" + CurrentApp.iAssignedGPUs.ToString() + "\r\n";
+            tb_Results.Text += "Work Units Attempted: " + CurrentApp.LineLoc.Count.ToString() + "\r\n";
+            tb_Results.Text += "Work Units Completed: " + lb_SelWorkUnits.Items.Count.ToString() + "\r\n";
+            if (CurrentApp.iAssignedGPUs > 0 && cbExcludeUnk.Checked)
+            {
+                tb_Results.Text += "Above unknown GPUs were re-assigned!\r\n";
             }
         }
 
