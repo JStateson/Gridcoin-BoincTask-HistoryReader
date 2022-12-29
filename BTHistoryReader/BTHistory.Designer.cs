@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(BTHistory));
             this.panel1 = new System.Windows.Forms.Panel();
             this.cbUseAdvFilter = new System.Windows.Forms.CheckBox();
             this.groupBox8 = new System.Windows.Forms.GroupBox();
@@ -81,7 +82,6 @@
             this.btnClear = new System.Windows.Forms.Button();
             this.lb_SelWorkUnits = new System.Windows.Forms.ListBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.cbExcludeUnk = new System.Windows.Forms.CheckBox();
             this.cbGPUcompare = new System.Windows.Forms.CheckBox();
             this.rbIdle = new System.Windows.Forms.RadioButton();
             this.rbElapsed = new System.Windows.Forms.RadioButton();
@@ -181,8 +181,7 @@
             this.cbAssignGPU.Size = new System.Drawing.Size(137, 17);
             this.cbAssignGPU.TabIndex = 32;
             this.cbAssignGPU.Text = "Assign Unknown GPUs";
-            this.toolTip1.SetToolTip(this.cbAssignGPU, "If checked assign unknown GPUs to previous GPU\r\nIf un-checked you need to re-open" +
-        " the history file");
+            this.toolTip1.SetToolTip(this.cbAssignGPU, resources.GetString("cbAssignGPU.ToolTip"));
             this.cbAssignGPU.UseVisualStyleBackColor = true;
             // 
             // groupBox7
@@ -746,7 +745,6 @@
             // 
             // groupBox2
             // 
-            this.groupBox2.Controls.Add(this.cbExcludeUnk);
             this.groupBox2.Controls.Add(this.cbGPUcompare);
             this.groupBox2.Controls.Add(this.rbIdle);
             this.groupBox2.Controls.Add(this.rbElapsed);
@@ -759,24 +757,11 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Type Analysis";
             // 
-            // cbExcludeUnk
-            // 
-            this.cbExcludeUnk.AutoSize = true;
-            this.cbExcludeUnk.Checked = true;
-            this.cbExcludeUnk.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbExcludeUnk.Enabled = false;
-            this.cbExcludeUnk.Location = new System.Drawing.Point(6, 185);
-            this.cbExcludeUnk.Name = "cbExcludeUnk";
-            this.cbExcludeUnk.Size = new System.Drawing.Size(107, 17);
-            this.cbExcludeUnk.TabIndex = 8;
-            this.cbExcludeUnk.Text = "Show Unk GPUs";
-            this.cbExcludeUnk.TextAlign = System.Drawing.ContentAlignment.TopRight;
-            this.toolTip1.SetToolTip(this.cbExcludeUnk, "If checked  do not show unassigned GPU\r\nwhen Show by GPU selected");
-            this.cbExcludeUnk.UseVisualStyleBackColor = true;
-            // 
             // cbGPUcompare
             // 
             this.cbGPUcompare.AutoSize = true;
+            this.cbGPUcompare.Checked = true;
+            this.cbGPUcompare.CheckState = System.Windows.Forms.CheckState.Checked;
             this.cbGPUcompare.Location = new System.Drawing.Point(6, 152);
             this.cbGPUcompare.Name = "cbGPUcompare";
             this.cbGPUcompare.Size = new System.Drawing.Size(93, 17);
@@ -800,10 +785,12 @@
             // rbElapsed
             // 
             this.rbElapsed.AutoSize = true;
+            this.rbElapsed.Checked = true;
             this.rbElapsed.Location = new System.Drawing.Point(6, 52);
             this.rbElapsed.Name = "rbElapsed";
             this.rbElapsed.Size = new System.Drawing.Size(111, 17);
             this.rbElapsed.TabIndex = 5;
+            this.rbElapsed.TabStop = true;
             this.rbElapsed.Text = "Avg Elapsed Time";
             this.toolTip1.SetToolTip(this.rbElapsed, "Averag, std of elapsed plus relative completion.\r\nFormat is mm:mm not mm:ss");
             this.rbElapsed.UseVisualStyleBackColor = true;
@@ -822,12 +809,10 @@
             // rbThroughput
             // 
             this.rbThroughput.AutoSize = true;
-            this.rbThroughput.Checked = true;
             this.rbThroughput.Location = new System.Drawing.Point(6, 23);
             this.rbThroughput.Name = "rbThroughput";
             this.rbThroughput.Size = new System.Drawing.Size(80, 17);
             this.rbThroughput.TabIndex = 0;
-            this.rbThroughput.TabStop = true;
             this.rbThroughput.Text = "Throughput";
             this.toolTip1.SetToolTip(this.rbThroughput, "Number of tasks and time interval from first to last");
             this.rbThroughput.UseVisualStyleBackColor = true;
@@ -997,12 +982,13 @@
             // 
             // btn_OpenHistory
             // 
+            this.btn_OpenHistory.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.btn_OpenHistory.Location = new System.Drawing.Point(16, 28);
             this.btn_OpenHistory.Name = "btn_OpenHistory";
             this.btn_OpenHistory.Size = new System.Drawing.Size(82, 23);
             this.btn_OpenHistory.TabIndex = 0;
             this.btn_OpenHistory.Text = "Open History";
-            this.toolTip1.SetToolTip(this.btn_OpenHistory, "After opening, perform \"Dkisplay History\" then select and run filter");
+            this.toolTip1.SetToolTip(this.btn_OpenHistory, "After opening, perform \"Display History\" then select and run filter");
             this.btn_OpenHistory.UseVisualStyleBackColor = true;
             this.btn_OpenHistory.Click += new System.EventHandler(this.btn_OpenHistory_Click);
             // 
@@ -1128,7 +1114,6 @@
         private System.Windows.Forms.GroupBox groupBox8;
         private System.Windows.Forms.Label lblFilterString;
         private System.Windows.Forms.CheckBox cbUseAdvFilter;
-        private System.Windows.Forms.CheckBox cbExcludeUnk;
         private System.Windows.Forms.TextBox tbStartStopDate;
         private System.Windows.Forms.GroupBox groupBox9;
         private System.Windows.Forms.TextBox tbWPB;

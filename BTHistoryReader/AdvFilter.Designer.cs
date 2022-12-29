@@ -43,8 +43,12 @@
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.cbUnkGpuSelect = new System.Windows.Forms.ComboBox();
+            this.label6 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
+            this.groupBox3.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
@@ -168,11 +172,43 @@
             this.label5.TabIndex = 8;
             this.label5.Text = "You MUST re-open the history file to apply this filter";
             // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(this.label6);
+            this.groupBox3.Controls.Add(this.cbUnkGpuSelect);
+            this.groupBox3.Location = new System.Drawing.Point(374, 12);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(389, 102);
+            this.groupBox3.TabIndex = 10;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "Assign Unkown GPUs";
+            // 
+            // cbUnkGpuSelect
+            // 
+            this.cbUnkGpuSelect.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbUnkGpuSelect.FormattingEnabled = true;
+            this.cbUnkGpuSelect.Location = new System.Drawing.Point(226, 19);
+            this.cbUnkGpuSelect.Name = "cbUnkGpuSelect";
+            this.cbUnkGpuSelect.Size = new System.Drawing.Size(121, 21);
+            this.cbUnkGpuSelect.TabIndex = 10;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.BackColor = System.Drawing.SystemColors.GradientActiveCaption;
+            this.label6.Location = new System.Drawing.Point(34, 61);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(246, 26);
+            this.label6.TabIndex = 11;
+            this.label6.Text = "Do not re-open the history file after changing the\r\nunknown GPU re-assignment.  J" +
+    "ust re-run statistics";
+            // 
             // AdvFilter
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.btnCancel);
@@ -189,6 +225,8 @@
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
+            this.groupBox3.ResumeLayout(false);
+            this.groupBox3.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -209,5 +247,8 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.ToolTip toolTip1;
+        private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.ComboBox cbUnkGpuSelect;
     }
 }

@@ -120,6 +120,13 @@
   <metadata name="toolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>129, 17</value>
   </metadata>
+  <data name="cbAssignGPU.ToolTip" xml:space="preserve">
+    <value>If checked assign unknown GPUs to previous GPU
+If unchecked one can see the unknown GPU stats.
+It is possible to force the unknown GPU to be one
+of the known ones by using the Advanced Filter
+option.  Be sure to re-run the filter after any change.</value>
+  </data>
   <metadata name="ofd_history.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>

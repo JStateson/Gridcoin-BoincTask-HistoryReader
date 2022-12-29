@@ -33,8 +33,8 @@ namespace BTHistoryReader
         public long time_t_Diff_C_S;
         public string strUse;
         public int iDeviceUsed; //if -1 then CPU or not known  only applies to GPUs
+        public int iSaveDeviceUsed; // want to be able to return to the gpu res-assignement
         public bool bDeviceUnk; // was not identified as gpu0 or whatever.  might be device 0 or might have not executed long enough to be identified
-        public bool bWasUnk; // if device was originally unknown
         public string strReceived;
         public string strVMem;
         public string strMem;
@@ -42,6 +42,13 @@ namespace BTHistoryReader
         public int iSystem;    // index to system data came from
         public int DatasetGroup;
         public bool bExclude;  // used by the advanced filter program
+    }
+
+    public class cGpuReassigned
+    {
+        public int NumGPUs;
+        public int ReassignedGPU;  // if -1 then use previous gpu id else use 0..(NumGPUs-1)
+                            // it appears the unknown gpus are from the fastest one eg: the amd Vii
     }
 
     // for the time graph we need time (long) and elapsed time (double) and

@@ -14,10 +14,12 @@ namespace BTHistoryReader
     {
 
         cAdvFilter MyADF;
+        cGpuReassigned GpuRe;
 
-        public AdvFilter(ref cAdvFilter rADF)
+        public AdvFilter(ref cAdvFilter rADF, ref cGpuReassigned GpuReassignment)
         {
             MyADF = rADF;
+            GpuRe = GpuReassignment;
             InitializeComponent();
             if(MyADF.strPhrase != "")
             {
@@ -25,6 +27,18 @@ namespace BTHistoryReader
                 rbContain.Checked = MyADF.bContains;
                 rbDoNotContain.Checked = !rbContain.Checked;
             }
+            cbUnkGpuSelect.Items.Clear();
+            cbUnkGpuSelect.Items.Add("Use last known GPU");
+            if (GpuRe.NumGPUs > 1)
+            {
+                for(int i = 0; i < GpuRe.NumGPUs; i++)
+                {
+                    cbUnkGpuSelect.Items.Add("use GPU# " + i.ToString());
+                }
+            }
+
+            cbUnkGpuSelect.SelectedItem = GpuRe.ReassignedGPU + 1;
+            cbUnkGpuSelect.SelectedIndex = GpuRe.ReassignedGPU + 1;
         }
 
         private void btnOK_Click(object sender, EventArgs e)
@@ -32,6 +46,7 @@ namespace BTHistoryReader
             MyADF.strPhrase = tbFilPhrase.Text;
             MyADF.bOKreturn = tbFilPhrase.Text != "";
             MyADF.bContains = rbContain.Checked;
+            GpuRe.ReassignedGPU = cbUnkGpuSelect.SelectedIndex - 1;
             this.Close();
         }
 
