@@ -107,6 +107,7 @@
             this.ofd_history = new System.Windows.Forms.OpenFileDialog();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.TimerShowBuild = new System.Windows.Forms.Timer(this.components);
+            this.cbUseWUs = new System.Windows.Forms.CheckBox();
             this.panel1.SuspendLayout();
             this.groupBox8.SuspendLayout();
             this.groupBox7.SuspendLayout();
@@ -745,6 +746,7 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.cbUseWUs);
             this.groupBox2.Controls.Add(this.cbGPUcompare);
             this.groupBox2.Controls.Add(this.rbIdle);
             this.groupBox2.Controls.Add(this.rbElapsed);
@@ -1003,6 +1005,18 @@
             this.TimerShowBuild.Interval = 250;
             this.TimerShowBuild.Tick += new System.EventHandler(this.TimerShowBuild_Tick);
             // 
+            // cbUseWUs
+            // 
+            this.cbUseWUs.AutoSize = true;
+            this.cbUseWUs.Location = new System.Drawing.Point(6, 188);
+            this.cbUseWUs.Name = "cbUseWUs";
+            this.cbUseWUs.Size = new System.Drawing.Size(105, 17);
+            this.cbUseWUs.TabIndex = 8;
+            this.cbUseWUs.Text = "Concurrent WUs";
+            this.toolTip1.SetToolTip(this.cbUseWUs, "If checked divide the statistics by the number of\r\nconcurrent work units displaye" +
+        "d by WUs per GPU");
+            this.cbUseWUs.UseVisualStyleBackColor = true;
+            // 
             // BTHistory
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1118,6 +1132,7 @@
         private System.Windows.Forms.GroupBox groupBox9;
         private System.Windows.Forms.TextBox tbWPB;
         private System.Windows.Forms.CheckBox cbAssignGPU;
+        private System.Windows.Forms.CheckBox cbUseWUs;
     }
 }
 

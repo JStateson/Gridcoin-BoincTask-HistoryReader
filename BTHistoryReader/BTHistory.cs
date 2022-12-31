@@ -1164,6 +1164,8 @@ namespace BTHistoryReader
             double d;
             long l, l_First=0;
             string strOut = "";
+            int NumCurrent = 1;
+            if (cbUseWUs.Checked) NumCurrent = Convert.ToInt32(nudConCurrent.Value);
 
             int NumUnits = lb_SelWorkUnits.SelectedItems.Count;
             if (NumUnits != 2)
@@ -1187,7 +1189,7 @@ namespace BTHistoryReader
                 {
                     continue;
                 }
-                d = ThisProjectInfo[k].dElapsedTime;
+                d = ThisProjectInfo[k].dElapsedTime / NumCurrent;
                 if (d == 0.0)
                 {
                     Debug.Assert(false);
@@ -1213,7 +1215,7 @@ namespace BTHistoryReader
             {
                 k = SortToInfo[k1];
                 if (!ThisProjectInfo[k].bState) continue;
-                d = ThisProjectInfo[k].dElapsedTime;
+                d = ThisProjectInfo[k].dElapsedTime / NumCurrent;
                 if (d == 0.0)
                 {
                     Debug.Assert(false);        // 
@@ -1229,6 +1231,8 @@ namespace BTHistoryReader
                 tb_Results.Text += "Number of selections " + n.ToString("#,##0") + "\r\n";
                 tb_Results.Text += "AVG elapsed (minutes) " + Avg.ToString("###,##0.00") + "\t" + fmtHMS(l) + "\r\n";
                 tb_Results.Text += "STD of elapsed time " + Std.ToString("###,##0.00") + "\r\n";
+                if (cbUseWUs.Checked && NumCurrent > 1)
+                    tb_Results.Text += "Statistics divided by number of concurrent tasks:" + NumCurrent.ToString() + "\r\n";
             }
             return Avg;
         }
@@ -1295,13 +1299,15 @@ namespace BTHistoryReader
             double Std = 0.0;
             long l;
             int k, n = 0;
+            int NumCurrent = 1;
+            if (cbUseWUs.Checked)NumCurrent = Convert.ToInt32(nudConCurrent.Value);
             nU = 0;
             StdU = 0.0;
             AvgU = 0.0;
             for (int k1 = iStart; k1 <= iStop; k1++)
             {
                 k = SortToInfo[k1];
-                d = ThisProjectInfo[k].dElapsedTime;
+                d = ThisProjectInfo[k].dElapsedTime / NumCurrent;
                 d /= 60.0;
                 if (ThisProjectInfo[k].bDeviceUnk)
                 {
@@ -1330,7 +1336,7 @@ namespace BTHistoryReader
             for (int k1 = iStart; k1 <= iStop; k1++)
             {
                 k = SortToInfo[k1];
-                d = ThisProjectInfo[k].dElapsedTime;
+                d = ThisProjectInfo[k].dElapsedTime/NumCurrent;
                 if (ThisProjectInfo[k].bDeviceUnk)
                 {
                     d = d / 60.0 - AvgU;
@@ -1348,7 +1354,8 @@ namespace BTHistoryReader
             }
             Std = Math.Sqrt(Std / n);
             StdU = Math.Sqrt(StdU / nU);
-            return strResult + n.ToString("##,##0") + " -Stats- Avg:" + Avg.ToString("###,##0.0") + "(" + Std.ToString("#,##0.00") + ")\r\n";
+            strResult+= n.ToString("##,##0") + " -Stats- Avg:" + Avg.ToString("###,##0.0") + "(" + Std.ToString("#,##0.00") + ")\r\n";
+            return strResult;
         }
 
         private string CalcOnecredit(int iDev, int iStart, int iStop, ref double val)
@@ -1497,6 +1504,7 @@ namespace BTHistoryReader
         // the first number shown in the selection box is line number in the history file, not the index to the project info table
         private void btn_Filter_Click(object sender, EventArgs e)
         {
+            int NumCurrent = Convert.ToInt32(nudConCurrent.Value);
             btnGTime.Enabled = cbGPUcompare.Checked;
             tb_Results.Text = "";
             btnScatGpu.Enabled = true;
@@ -1509,6 +1517,7 @@ namespace BTHistoryReader
                 iStop = -1;
                 FilterUsingGPUs(ref MaxDeviceCount, ref iStart, ref iStop);
                 AddUnknownStats();
+                if (cbUseWUs.Checked && NumCurrent > 1) tb_Results.Text += "Statistics divided by number of concurrent tasks:" + NumCurrent.ToString() + "\r\n";
                 return;
             }
             if (rbElapsed.Checked) PerformStats(true);
