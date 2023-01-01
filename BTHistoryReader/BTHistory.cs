@@ -45,6 +45,7 @@ namespace BTHistoryReader
                 cboxStopLoad.Checked = Properties.Settings.Default.UseLimit;
                 tboxLimit.Text = Properties.Settings.Default.RecLimit;
                 lbLastFiles.Text = Properties.Settings.Default.LastFiles;
+                GpuReassignment.init();
             }
             catch
             {
@@ -91,7 +92,7 @@ namespace BTHistoryReader
 
         public string CurrentSystem;    // computer name
         public string CurrentProject;   // project being looked at
-        cDataName CurrentDataset;
+        private cDataName CurrentDataset;
         public List<cProjectInfo> ThisProjectInfo;
 
         public int LinesToReadThenIncrement = 0;   // after reading this many, increment the progress bar
@@ -195,7 +196,7 @@ namespace BTHistoryReader
 
         // this is our lookup table
         public List<cKnownProjApps> KnownProjApps;
-        public cAppName CurrentApp; // the current one selected
+        private cAppName CurrentApp; // the current one selected
 
 
         // put some projects into the table but unknown (to this program) also get added
@@ -380,7 +381,7 @@ namespace BTHistoryReader
             ClearInfoTables();
         }
 
-        // ditto onold stuff
+        // ditto on old stuff
         public void ClearPreviousHistory()
         {
             if (ThisProjectInfo != null)
@@ -535,6 +536,19 @@ namespace BTHistoryReader
         }
 
 
+        private void ShowGPUcount(ref cAppName AppName)
+        {
+            tb_Results.Text = "";
+            for (int i = 0; i < AppName.GpuReassignment.NumGPUs;  i++)
+            {
+                tb_Results.Text += "GPU-" + i.ToString() + " " + AppName.GpuReassignment.idGPUused(i).ToString() + "\r\n";
+            }
+            if(AppName.GpuReassignment.NumberGPUsUnknown > 0)
+            {
+                tb_Results.Text += "Number unknown GPUs " + AppName.GpuReassignment.NumberGPUsUnknown.ToString() + "\r\n";
+            }
+        }
+
         private void btn_OpenHistory_Click(object sender, EventArgs e)
         {
             tb_Info.Text = "";
@@ -555,7 +569,6 @@ namespace BTHistoryReader
             ClearPreviousHistory();
             ShowContinunities(false);
             ShowSelectable(false);
-
         }
 
         // see if we have a real history file and not some junk file accidently opened.
@@ -751,7 +764,9 @@ namespace BTHistoryReader
             }
 
             if (bAnyData)
+            {
                 PerformCalcAverages();
+            }
             else
                 tb_Info.Text += "Project has no data or all data is illegal\r\n";
             return 0;
@@ -894,10 +909,15 @@ namespace BTHistoryReader
                     IncrementPBAR();
                 }
                 j = iSortIndex[i];
-                if (!ThisProjectInfo[j].bState) continue;
+                if (!ThisProjectInfo[j].bState)
+                {
+                    continue;
+                }
                 sTemp = ThisProjectInfo[j].strOutput;
                 SortToInfo[n] = j; 
-                n++; 
+                n++;
+                // do not show D64
+                sTemp = sTemp.Replace("D64", "");
                 lb_SelWorkUnits.Items.Add(sTemp);
             }
             NumInSTI = n;
@@ -920,6 +940,10 @@ namespace BTHistoryReader
             return time.ToString(@"d\:hh\:mm\:ss");
         }
 
+
+
+
+
         // this fills in the "ThisProjectInfo" structure with stuff from each single line in the history files of "the app"
         public int FillProjectInfo(cAppName AppName)
         {
@@ -931,18 +955,20 @@ namespace BTHistoryReader
             string strWTF = "";
             int j = 0;
             int iWTF = 0, jWTF;
-            bool bState, bState1;
+            bool bState;
             long n, nElapsedTime;
             bool bStopReading = cboxStopLoad.Checked;
             int nLimit = Convert.ToInt32(tboxLimit.Text);
-            int i, iStart, iTraverse, iCount;
+            int i,GPUid, iStart, iTraverse, iCount;
             pbarLoading.Value = 0;
             MyAdvFilter.NumExcluded = 0;
             if (AppName.LineLoc.Count == 0) return 0;
-
+            AppName.GpuReassignment = new cGpuReassigned();
+            AppName.GpuReassignment.init();
+            AppName.bHasDevices = false;
+            AppName.bHasGPU = false;
             // this could be rewritten better but WTF, it was done before I got that splitlinestuff to work
-            // 8-1-2019 if truncating then use only last part of this table      
-            //foreach (int i in AppName.LineLoc) 
+            // 8-1-2019 if truncating then use only last part of this table     
 
             iCount = AppName.LineLoc.Count;
             iStart = 0;
@@ -954,6 +980,7 @@ namespace BTHistoryReader
                     iCount = nLimit;
                     tb_Info.Text += " skipping to get last " + tboxLimit.Text + " out of " + AppName.LineLoc.Count.ToString() + " records\r\n";
                 }
+                AppName.SkipToStart = iStart;
             }
             for (iTraverse = 0; iTraverse < iCount; iTraverse++)
             {
@@ -969,6 +996,10 @@ namespace BTHistoryReader
                 //    break;
                 //}
                 iWTF = LinesHistory[i].IndexOf("WTFaTODO_");
+                if(iTraverse == 0) // the very first data line of this application see note 1/1/2023 below
+                {
+                    AppName.bHasGPU = LinesHistory[i].Contains(" GPU");
+                }
                 if (iWTF > 0)
                 {
                     jWTF = LinesHistory[i].IndexOf("|");
@@ -980,38 +1011,43 @@ namespace BTHistoryReader
                 iWTF = LinesHistory[i].IndexOf("device ");
                 if (iWTF > 0)
                 {
+                    AppName.bHasDevices = true;
                     iWTF += 7;
                     jWTF = LinesHistory[i].Substring(iWTF).IndexOf(")");
                     Debug.Assert(jWTF > 0); ;
                     strWTF = LinesHistory[i].Substring(iWTF, (jWTF));
-                    ThisProjectInfo[j].iDeviceUsed = AppName.iLastGpuUsed = Convert.ToInt32(strWTF);
+                    GPUid = Convert.ToInt32(strWTF);
+                    ThisProjectInfo[j].iDeviceUsed = AppName.iLastGpuUsed = GPUid;
+                    AppName.GpuReassignment.AddGpu(GPUid);
                     ThisProjectInfo[j].bDeviceUnk = false;
                     nGPUnum = Math.Max(nGPUnum, AppName.iLastGpuUsed);
-                    GpuReassignment.NumGPUs = 1 + nGPUnum;
+                    AppName.GpuReassignment.NumGPUs = 1 + nGPUnum; // note that the filter may have fewer GPUs
                 }
                 else // either GPU is missing or it is a CPU app
                 {
-                    ThisProjectInfo[j].bDeviceUnk = false; // assume it is CPU system
-                    if (cbAssignGPU.Checked) // either a gpu app or user mistakenly checked this box
+/*
+ Problem 1/1/2023  Need to identify if a GPU is unknown (no device id) or if there is only one gpu 
+ and no unknown ones.  Assigne GPU #64 to any unknown GPU and if all gpus are 64 then change it to gpu 0
+*/
+                    if (AppName.bHasGPU)
                     {
-                        if(AppName.iLastGpuUsed > 0) // was a GPU system, not cpu
+                        ThisProjectInfo[j].iDeviceUsed = 64; // jys 1/1/2023 signal possible missing or just 1 gpu
+                        AppName.GpuReassignment.AddGpu(64);
+                        ThisProjectInfo[j].bDeviceUnk = true; //AppName.bHasDevices;
+                        if (cbAssignGPU.Checked && AppName.bHasDevices)
                         {
                             ThisProjectInfo[j].iDeviceUsed = AppName.iLastGpuUsed;
+                            AppName.GpuReassignment.AddBadGpu(AppName.iLastGpuUsed); // may  not be bad 
                             ThisProjectInfo[j].iSaveDeviceUsed = AppName.iLastGpuUsed;
-                            ThisProjectInfo[j].bDeviceUnk = true;
+                            AppName.GpuReassignment.NumberGPUsUnknown++;
                         }
                     }
                     else
                     {
-                        if (AppName.iLastGpuUsed > 0)
-                        {
-                            ThisProjectInfo[j].iDeviceUsed = AppName.iLastGpuUsed;
-                            ThisProjectInfo[j].bDeviceUnk = true;
-                        }
-                        else ThisProjectInfo[j].iDeviceUsed = 0; // device 0 or cpu                            
+                        ThisProjectInfo[j].iDeviceUsed = 0; // cpu 
                     }
-                }
 
+                }
                 strSymbols = LinesHistory[i].Split('\t');
                 ThisProjectInfo[j].strLineNum = strSymbols[(int)eHindex.Run];
                 //RunNumber = Convert.ToInt32(ThisProjectInfo[j].strLineNum);
@@ -1288,6 +1324,7 @@ namespace BTHistoryReader
             }
             FillProjectInfo(AppName);
             CountSelected();
+            ShowGPUcount(ref AppName);
         }
 
 
@@ -1300,6 +1337,7 @@ namespace BTHistoryReader
             long l;
             int k, n = 0;
             int NumCurrent = 1;
+            if (iDev >= CurrentApp.GpuReassignment.NumGPUs) return ""; // do not handle any of the "64"
             if (cbUseWUs.Checked)NumCurrent = Convert.ToInt32(nudConCurrent.Value);
             nU = 0;
             StdU = 0.0;
@@ -1327,7 +1365,7 @@ namespace BTHistoryReader
             }
             if(n == 0)
             {
-                return strResult + " has no valid data\r\n";
+                return ""; // strResult + " has no valid data\r\n"; do not show anything
             }
             Avg /= n;
             if (nU > 0) AvgU /= nU;
@@ -1371,7 +1409,7 @@ namespace BTHistoryReader
             }
             if (n == 0)
             {
-                return strResult + " has no valid data\r\n";
+                return ""; // strResult + " has no valid data\r\n"; //do not show anything
             }
             val = n * d / TimeIntervalMinutes;
             return strResult + "(" + val.ToString("#,##0.00)");
@@ -1432,12 +1470,95 @@ namespace BTHistoryReader
             return strResults + "System daily average " + (AvgAll * 1440.0).ToString("#,###,##0") + " credits\r\n";
         }
 
-        private bool FilterUsingGPUs(ref int DeviceMax, ref int iStart, ref int iStop)
+        // history may include fewer gpu if board was removed or failed
+        // want to count the gpus in the filter
+        private bool CountGPUs()
         {
+            int iLastDevice = 0; // use this if the device id is unkno
             // get start, stop and number of devices
-            DeviceMax = -1;
+            MaxDeviceCount = -1;
+            GpuReassignment.clear();
             int i, j, k, n;
-            long l;
+            int NumExcluded = 0;
+            int NumUnits = lb_SelWorkUnits.SelectedItems.Count;
+            if (NumUnits != 2)
+            {
+                tb_Results.Text = "you must select exactly two items\r\n";
+                return false;
+            }
+            i = lb_SelWorkUnits.SelectedIndices[0]; // difference between this shows the selection
+            j = lb_SelWorkUnits.SelectedIndices[1];
+            n = 1 + j - i;  // number of items to average
+            if (n < 2)
+            {
+                tb_Results.Text += "Need at least 2 items\r\n";
+                return false;
+            }
+            GpuReassignment.NumGPUs = CurrentApp.nDevices;
+            if (!CurrentApp.bHasGPU)
+            {
+                return true;
+            }
+            if(!CurrentApp.bHasDevices) // have a GPU but only one so backfix the 64
+            {
+                for (int k1 = i; k1 <= j; k1++)
+                {
+                    k = SortToInfo[k1];
+                    n = ThisProjectInfo[k].iDeviceUsed;
+                    if (n == 64)  // either unknown or is really gpu 0 for single gpu systems
+                    {
+                        ThisProjectInfo[k].iDeviceUsed = 0;
+                    }
+                }
+            }
+            // want to count the number of assigned or excluded GPUs
+            for (int k1 = i; k1 <= j; k1++)
+            {
+                
+                k = SortToInfo[k1];
+                n = ThisProjectInfo[k].iDeviceUsed;
+                if(n ==  64)  // either unknown or is really gpu 0 for single gpu systems
+                {
+                    if(cbAssignGPU.Checked)
+                    {
+                        int n1 = GpuReassignment.ReassignedGPU;                        
+                        if(n1 < 0) // want to use the last one but may not be known
+                        {
+                            if (k1 == i) ThisProjectInfo[k].iDeviceUsed = 0;  // use 0 if no data available (first gpu was missing)
+                            else ThisProjectInfo[k].iDeviceUsed = iLastDevice;
+                            n = iLastDevice; // not using 64 anymore
+                            ThisProjectInfo[k].iSaveDeviceUsed = n;
+                        }
+                    }
+                }
+                iLastDevice = n;
+                if (!ThisProjectInfo[k].bState)
+                {
+                    GpuReassignment.AddBadGpu(n);
+                    continue;
+                }
+                if (ThisProjectInfo[k].bDeviceUnk)
+                {
+                    CurrentApp.iAssignedGPUs++;
+                    NumExcluded++;
+                    continue;
+                }
+                MaxDeviceCount = Math.Max(MaxDeviceCount, n);
+                GpuReassignment.AddGpu(n);
+            }
+            if (MaxDeviceCount == -1)
+            {
+                tb_Results.Text += "Either only CPUs or there are no unknown GPUs\r\n";
+                return false;
+            }
+            GpuReassignment.NumGPUs = MaxDeviceCount + 1;
+            return true;
+        }
+
+        private bool FilterUsingGPUs(ref int iStart, ref int iStop)
+        {
+            // get start, stop 
+            int i, j, k, n;
             int NumExcluded = 0;
             int NumUnits = lb_SelWorkUnits.SelectedItems.Count;
             if (NumUnits != 2)
@@ -1456,30 +1577,12 @@ namespace BTHistoryReader
             n = 0;
             iStart = i;
             iStop = j;
-            // want to count the number of assigned or excluded GPUs
-            for (int k1 = i; k1 <= j; k1++)
-            {
-                k = SortToInfo[k1];
-                if (!ThisProjectInfo[k].bState) continue;
-                if(ThisProjectInfo[k].bDeviceUnk)
-                {
-                    CurrentApp.iAssignedGPUs++;
-                    NumExcluded++;
-                    continue;
-                }
 
-                DeviceMax = Math.Max(DeviceMax, ThisProjectInfo[k].iDeviceUsed);
-            }
-            if(DeviceMax == -1)
-            {
-                    tb_Results.Text += "Either only CPUs or there are no unknown GPUs\r\n";
-                    return false;
-            }
 
             if (rbElapsed.Checked)
             {
-                tb_Results.Text +=  CalcGPUstats(DeviceMax + 1, i, j);
-                if (nU > 0) ; // if(NumExcluded > 0 && nU > 0)
+                tb_Results.Text +=  CalcGPUstats(MaxDeviceCount + 1, i, j);
+                if (nU > 0)  // if(NumExcluded > 0 && nU > 0)
                 {
                     tb_Results.Text += "UNK?"  + " WUs:" + nU.ToString("##,##0") + " -Stats- Avg:" + AvgU.ToString("###,##0.0") + "(" + StdU.ToString("#,##0.00") + ")\r\n";
                 }
@@ -1493,7 +1596,7 @@ namespace BTHistoryReader
                     tb_Results.Text = "need to specify a credit value\r\nClick on Lookup Credit or just use 100\r\n";
                     return false;
                 }
-                tb_Results.Text += CalcGPUcredits(DeviceMax + 1, i, j);
+                tb_Results.Text += CalcGPUcredits(MaxDeviceCount + 1, i, j);
                 NumExcluded = Math.Max(NumExcluded, CurrentApp.iAssignedGPUs);
                 dLeftOver *= NumExcluded;
                 tb_Results.Text += "Num ( " + NumExcluded.ToString() + ") Unknown credits: " + dLeftOver.ToString() + "\r\n";
@@ -1508,14 +1611,13 @@ namespace BTHistoryReader
             btnGTime.Enabled = cbGPUcompare.Checked;
             tb_Results.Text = "";
             btnScatGpu.Enabled = true;
-            CurrentApp.iAssignedGPUs = 0; // this is recalculated based on filter
-
+            CurrentApp.iAssignedGPUs = 0;   // this is recalculated based on filter and is the number reassigned
+            if (!CountGPUs()) return;
             if (cbGPUcompare.Checked)
             {
-                MaxDeviceCount = -1;
                 iStart = -1;
                 iStop = -1;
-                FilterUsingGPUs(ref MaxDeviceCount, ref iStart, ref iStop);
+                FilterUsingGPUs(ref iStart, ref iStop);
                 AddUnknownStats();
                 if (cbUseWUs.Checked && NumCurrent > 1) tb_Results.Text += "Statistics divided by number of concurrent tasks:" + NumCurrent.ToString() + "\r\n";
                 return;
@@ -1537,7 +1639,7 @@ namespace BTHistoryReader
             if (nU == 0) return; // no unknown GPUs
             if(CurrentApp.iAssignedGPUs > 0) // no need to show number of unknowns as that was displayed in statistics earlier
                 tb_Results.Text += "Number Unknown GPUs:" + CurrentApp.iAssignedGPUs.ToString() + "\r\n";
-            tb_Results.Text += "Work Units Attempted: " + CurrentApp.LineLoc.Count.ToString() + "\r\n";
+            tb_Results.Text += "Work Units Attempted: " + (CurrentApp.LineLoc.Count-CurrentApp.SkipToStart).ToString() + "\r\n";
             tb_Results.Text += "Work Units Completed: " + lb_SelWorkUnits.Items.Count.ToString() + "\r\n";
             if (cbAssignGPU.Checked) // used to have CurrentApp.iAssignedGPUs
             {

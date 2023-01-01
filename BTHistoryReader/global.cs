@@ -44,11 +44,59 @@ namespace BTHistoryReader
         public bool bExclude;  // used by the advanced filter program
     }
 
-    public class cGpuReassigned
+    public class 
+        cGpuReassigned
     {
-        public int NumGPUs;
-        public int ReassignedGPU;  // if -1 then use previous gpu id else use 0..(NumGPUs-1)
-                            // it appears the unknown gpus are from the fastest one eg: the amd Vii
+        public int NumGPUs; // this is actually the orginal of the largest GPU id + 1 which may or may not be the total number of gpus
+        public int ReassignedGPU;   // if -1 then use previous gpu id else use 0..(NumGPUs-1)
+                                    // it appears the unknown gpus are from the fastest one eg: the amd Vii
+        public int NumberGPUsUnknown;
+        public int[] NumUsedGPUS;
+        public int[] NumBadGPUS;
+        public int NumInArray;
+        public int NumBadInArray;
+        private bool bUseID0;
+        public void init()
+        {
+            NumUsedGPUS = new int[65];
+            NumBadGPUS = new int[65];
+            NumInArray = 0;
+            NumberGPUsUnknown = 0;
+            NumBadInArray = 0;
+            bUseID0 = true; // assume there is only 1 gpu in system
+        }
+        public void clear()
+        {
+            for (int i = 0; i < 65; i++)
+            {
+                NumUsedGPUS[i] = 0;
+                NumBadGPUS[i] = 0;
+            }
+            NumInArray = 0;
+            NumberGPUsUnknown = 0;
+            NumBadInArray = 0;
+        }
+        public void AddGpu(int GPUid)
+        {
+            NumUsedGPUS[GPUid]++;
+            NumInArray++;
+            if (GPUid < 64)
+                bUseID0 = false; // looks like we have gpus number 0..63
+        }
+        public void AddBadGpu(int GPUid)
+        {
+            NumBadGPUS[GPUid]++;
+            NumBadInArray++;
+        }
+        public int idGPUused(int id) // how many of these are there
+        {
+            if (bUseID0) return 0; // if no gpu 0..63 then assume 0
+            return NumUsedGPUS[id];
+        }
+        public int idGPUbad(int id) // how many of these are there that were invalid
+        {
+            return NumBadGPUS[id];
+        }
     }
 
     // for the time graph we need time (long) and elapsed time (double) and
@@ -562,6 +610,8 @@ namespace BTHistoryReader
         public string strPlanClass;
         public string strName;
         public bool bUseThisAppInStatsListBox;
+        public bool bHasDevices;    // more than 1 gpu was listed
+        public bool bHasGPU;
         public int iLastGpuUsed;
         public int iAssignedGPUs;
         public List<double> dElapsedTime;
@@ -573,7 +623,9 @@ namespace BTHistoryReader
         public double StdRunTime;
         public bool bNoResults = false;
         public string strAvgStd = "";
-        public int nDevices;
+        public int SkipToStart; // if > 0 then we are skipping to this record to start processsing
+        // note that all records are read in but only last n-Skip will be processed
+        public int nDevices;            // this is the total number of different GPUs
         public int nUsesGPU;            // if uses gpu then gpu cannot be 0 elapsed time (except bitcoin utopia crap!!)
         public List<int> LineLoc;       // offset or index into the history file. Index "4" is the history line identifier "1"
                                         // the above can be used to extract a value from the history file
@@ -582,7 +634,7 @@ namespace BTHistoryReader
                                         // to it if wanting to index into the history file.  One or the other may be available in different
                                         // areas of the code.  if nUsesGPU < 0 then is not using a gpu else is device number
 
-
+        public cGpuReassigned GpuReassignment;
         public void AddUse(string strUse)
         {
             string strTemp = strUse.ToLower();

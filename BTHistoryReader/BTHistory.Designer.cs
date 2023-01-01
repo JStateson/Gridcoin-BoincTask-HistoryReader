@@ -82,6 +82,7 @@
             this.btnClear = new System.Windows.Forms.Button();
             this.lb_SelWorkUnits = new System.Windows.Forms.ListBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.cbUseWUs = new System.Windows.Forms.CheckBox();
             this.cbGPUcompare = new System.Windows.Forms.CheckBox();
             this.rbIdle = new System.Windows.Forms.RadioButton();
             this.rbElapsed = new System.Windows.Forms.RadioButton();
@@ -107,7 +108,6 @@
             this.ofd_history = new System.Windows.Forms.OpenFileDialog();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.TimerShowBuild = new System.Windows.Forms.Timer(this.components);
-            this.cbUseWUs = new System.Windows.Forms.CheckBox();
             this.panel1.SuspendLayout();
             this.groupBox8.SuspendLayout();
             this.groupBox7.SuspendLayout();
@@ -175,8 +175,6 @@
             // cbAssignGPU
             // 
             this.cbAssignGPU.AutoSize = true;
-            this.cbAssignGPU.Checked = true;
-            this.cbAssignGPU.CheckState = System.Windows.Forms.CheckState.Checked;
             this.cbAssignGPU.Location = new System.Drawing.Point(21, 59);
             this.cbAssignGPU.Name = "cbAssignGPU";
             this.cbAssignGPU.Size = new System.Drawing.Size(137, 17);
@@ -741,7 +739,7 @@
             this.lb_SelWorkUnits.SelectionMode = System.Windows.Forms.SelectionMode.MultiSimple;
             this.lb_SelWorkUnits.Size = new System.Drawing.Size(412, 214);
             this.lb_SelWorkUnits.TabIndex = 7;
-            this.toolTip1.SetToolTip(this.lb_SelWorkUnits, "Select a start and a stop");
+            this.toolTip1.SetToolTip(this.lb_SelWorkUnits, "Select a start and a stop.\r\n");
             this.lb_SelWorkUnits.SelectedIndexChanged += new System.EventHandler(this.lb_SelWorkUnits_SelectedIndexChanged);
             // 
             // groupBox2
@@ -758,6 +756,18 @@
             this.groupBox2.TabIndex = 5;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Type Analysis";
+            // 
+            // cbUseWUs
+            // 
+            this.cbUseWUs.AutoSize = true;
+            this.cbUseWUs.Location = new System.Drawing.Point(6, 188);
+            this.cbUseWUs.Name = "cbUseWUs";
+            this.cbUseWUs.Size = new System.Drawing.Size(105, 17);
+            this.cbUseWUs.TabIndex = 8;
+            this.cbUseWUs.Text = "Concurrent WUs";
+            this.toolTip1.SetToolTip(this.cbUseWUs, "If checked divide the statistics by the number of\r\nconcurrent work units displaye" +
+        "d by WUs per GPU");
+            this.cbUseWUs.UseVisualStyleBackColor = true;
             // 
             // cbGPUcompare
             // 
@@ -1004,18 +1014,6 @@
             this.TimerShowBuild.Enabled = true;
             this.TimerShowBuild.Interval = 250;
             this.TimerShowBuild.Tick += new System.EventHandler(this.TimerShowBuild_Tick);
-            // 
-            // cbUseWUs
-            // 
-            this.cbUseWUs.AutoSize = true;
-            this.cbUseWUs.Location = new System.Drawing.Point(6, 188);
-            this.cbUseWUs.Name = "cbUseWUs";
-            this.cbUseWUs.Size = new System.Drawing.Size(105, 17);
-            this.cbUseWUs.TabIndex = 8;
-            this.cbUseWUs.Text = "Concurrent WUs";
-            this.toolTip1.SetToolTip(this.cbUseWUs, "If checked divide the statistics by the number of\r\nconcurrent work units displaye" +
-        "d by WUs per GPU");
-            this.cbUseWUs.UseVisualStyleBackColor = true;
             // 
             // BTHistory
             // 
