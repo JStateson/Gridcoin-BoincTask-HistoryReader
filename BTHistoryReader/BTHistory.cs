@@ -1330,14 +1330,14 @@ namespace BTHistoryReader
 
         private string CalcOneStat(int iDev, int iStart, int iStop)
         {
-            string strResult = "GPU" + iDev.ToString() + " WUs:";
+            string strResult = (CurrentApp.bHasGPU ? "GPU" : "CPU") + iDev.ToString() + " WUs:";
             double d;
             double Avg = 0.0;
             double Std = 0.0;
             long l;
             int k, n = 0;
             int NumCurrent = 1;
-            if (iDev >= CurrentApp.GpuReassignment.NumGPUs) return ""; // do not handle any of the "64"
+            //if (iDev >= CurrentApp.GpuReassignment.NumGPUs) return ""; // do not handle any of the "64"
             if (cbUseWUs.Checked)NumCurrent = Convert.ToInt32(nudConCurrent.Value);
             nU = 0;
             StdU = 0.0;
@@ -1420,7 +1420,7 @@ namespace BTHistoryReader
         private double AvgU;
         private string CalcGPUstats(int nDevices,int iStart, int iStop)
         {
-            string strResults = "There are " + nDevices.ToString() + " GPUs, units are minutes\r\n";
+            string strResults = "There are " + nDevices.ToString() + (CurrentApp.bHasGPU ? " GPUs" : " CPUs") + ", units are minutes\r\n";
             strResults += "Dev#   WU count  Avg and Std of avg\r\n";
             nU = 0;
             StdU = 0.0;
@@ -1497,6 +1497,9 @@ namespace BTHistoryReader
             GpuReassignment.NumGPUs = CurrentApp.nDevices;
             if (!CurrentApp.bHasGPU)
             {
+                // is a cpu
+                MaxDeviceCount = 0;  //sorry - not a count, just the ordinal
+                CurrentApp.nDevices = 1;
                 return true;
             }
             if(!CurrentApp.bHasDevices) // have a GPU but only one so backfix the 64
@@ -1508,6 +1511,10 @@ namespace BTHistoryReader
                     if (n == 64)  // either unknown or is really gpu 0 for single gpu systems
                     {
                         ThisProjectInfo[k].iDeviceUsed = 0;
+                        ThisProjectInfo[k].bDeviceUnk = false;
+                        CurrentApp.nDevices = 1;
+                        CurrentApp.GpuReassignment.NumGPUs = 1;
+                        MaxDeviceCount = 0;
                     }
                 }
             }
