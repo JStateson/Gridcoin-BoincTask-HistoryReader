@@ -67,6 +67,7 @@
             this.cbShowError = new System.Windows.Forms.CheckBox();
             this.btnScatSets = new System.Windows.Forms.Button();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.cbIdleGpu = new System.Windows.Forms.ComboBox();
             this.btnPlotET = new System.Windows.Forms.Button();
             this.btnPlot = new System.Windows.Forms.Button();
             this.btn_Filter = new System.Windows.Forms.Button();
@@ -82,6 +83,7 @@
             this.btnClear = new System.Windows.Forms.Button();
             this.lb_SelWorkUnits = new System.Windows.Forms.ListBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.cbShowTotals = new System.Windows.Forms.CheckBox();
             this.cbUseWUs = new System.Windows.Forms.CheckBox();
             this.cbGPUcompare = new System.Windows.Forms.CheckBox();
             this.rbIdle = new System.Windows.Forms.RadioButton();
@@ -572,19 +574,28 @@
             // 
             // groupBox5
             // 
+            this.groupBox5.Controls.Add(this.cbIdleGpu);
             this.groupBox5.Controls.Add(this.btnPlotET);
             this.groupBox5.Controls.Add(this.btnPlot);
             this.groupBox5.Location = new System.Drawing.Point(320, 269);
             this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(110, 93);
+            this.groupBox5.Size = new System.Drawing.Size(110, 127);
             this.groupBox5.TabIndex = 21;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Above Selections";
             // 
+            // cbIdleGpu
+            // 
+            this.cbIdleGpu.FormattingEnabled = true;
+            this.cbIdleGpu.Location = new System.Drawing.Point(19, 75);
+            this.cbIdleGpu.Name = "cbIdleGpu";
+            this.cbIdleGpu.Size = new System.Drawing.Size(79, 21);
+            this.cbIdleGpu.TabIndex = 27;
+            // 
             // btnPlotET
             // 
             this.btnPlotET.Enabled = false;
-            this.btnPlotET.Location = new System.Drawing.Point(18, 57);
+            this.btnPlotET.Location = new System.Drawing.Point(6, 44);
             this.btnPlotET.Name = "btnPlotET";
             this.btnPlotET.Size = new System.Drawing.Size(75, 23);
             this.btnPlotET.TabIndex = 22;
@@ -597,7 +608,7 @@
             // 
             this.btnPlot.Enabled = false;
             this.btnPlot.ForeColor = System.Drawing.SystemColors.HotTrack;
-            this.btnPlot.Location = new System.Drawing.Point(18, 21);
+            this.btnPlot.Location = new System.Drawing.Point(6, 19);
             this.btnPlot.Name = "btnPlot";
             this.btnPlot.Size = new System.Drawing.Size(75, 23);
             this.btnPlot.TabIndex = 21;
@@ -744,6 +755,7 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.cbShowTotals);
             this.groupBox2.Controls.Add(this.cbUseWUs);
             this.groupBox2.Controls.Add(this.cbGPUcompare);
             this.groupBox2.Controls.Add(this.rbIdle);
@@ -757,10 +769,24 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Type Analysis";
             // 
+            // cbShowTotals
+            // 
+            this.cbShowTotals.AutoSize = true;
+            this.cbShowTotals.Checked = true;
+            this.cbShowTotals.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbShowTotals.Location = new System.Drawing.Point(6, 175);
+            this.cbShowTotals.Name = "cbShowTotals";
+            this.cbShowTotals.Size = new System.Drawing.Size(79, 17);
+            this.cbShowTotals.TabIndex = 9;
+            this.cbShowTotals.Text = "Totals Only";
+            this.toolTip1.SetToolTip(this.cbShowTotals, "If unchecked then individual elapsed times will be shown\r\nWhen checked, only the " +
+        "summery or totals");
+            this.cbShowTotals.UseVisualStyleBackColor = true;
+            // 
             // cbUseWUs
             // 
             this.cbUseWUs.AutoSize = true;
-            this.cbUseWUs.Location = new System.Drawing.Point(6, 188);
+            this.cbUseWUs.Location = new System.Drawing.Point(6, 198);
             this.cbUseWUs.Name = "cbUseWUs";
             this.cbUseWUs.Size = new System.Drawing.Size(105, 17);
             this.cbUseWUs.TabIndex = 8;
@@ -1131,6 +1157,8 @@
         private System.Windows.Forms.TextBox tbWPB;
         private System.Windows.Forms.CheckBox cbAssignGPU;
         private System.Windows.Forms.CheckBox cbUseWUs;
+        private System.Windows.Forms.CheckBox cbShowTotals;
+        private System.Windows.Forms.ComboBox cbIdleGpu;
     }
 }
 

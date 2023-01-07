@@ -1240,7 +1240,7 @@ namespace BTHistoryReader
                 Avg += d;
                 //11/12/21     strOut += d.ToString("###,##0.00") + "\t" + fmtHMS(l) + " D" +ThisProjectInfo[k].iDeviceUsed.ToString() + "\r\n";
                 //
-                if(bShow)
+                if(bShow && !cbShowTotals.Checked)
                     strOut += d.ToString("###,##0.00") + " D" +ThisProjectInfo[k].iDeviceUsed.ToString() + "\t" + fmtHMS(l) + "\r\n";
             }
             if (n == 0) return -1.0;
@@ -1392,7 +1392,7 @@ namespace BTHistoryReader
             }
             Std = Math.Sqrt(Std / n);
             StdU = Math.Sqrt(StdU / nU);
-            strResult+= n.ToString("##,##0") + " -Stats- Avg:" + Avg.ToString("###,##0.0") + "(" + Std.ToString("#,##0.00") + ")\r\n";
+            strResult+= n.ToString("##,##0") + " -Stats- Avg:" + Avg.ToString("###,##0.00") + "(" + Std.ToString("#,##0.00") + ")\r\n";
             return strResult;
         }
 
@@ -1559,6 +1559,7 @@ namespace BTHistoryReader
                 return false;
             }
             GpuReassignment.NumGPUs = MaxDeviceCount + 1;
+            CountGpuIdles(GpuReassignment.NumGPUs);
             return true;
         }
 
@@ -1591,7 +1592,7 @@ namespace BTHistoryReader
                 tb_Results.Text +=  CalcGPUstats(MaxDeviceCount + 1, i, j);
                 if (nU > 0)  // if(NumExcluded > 0 && nU > 0)
                 {
-                    tb_Results.Text += "UNK?"  + " WUs:" + nU.ToString("##,##0") + " -Stats- Avg:" + AvgU.ToString("###,##0.0") + "(" + StdU.ToString("#,##0.00") + ")\r\n";
+                    tb_Results.Text += "UNK?"  + " WUs:" + nU.ToString("##,##0") + " -Stats- Avg:" + AvgU.ToString("###,##0.00") + "(" + StdU.ToString("#,##0.00") + ")\r\n";
                 }
                 return true;
             }
@@ -1615,11 +1616,15 @@ namespace BTHistoryReader
         private void btn_Filter_Click(object sender, EventArgs e)
         {
             int NumCurrent = Convert.ToInt32(nudConCurrent.Value);
+            double d = RunContinunityCheck();
+            
             btnGTime.Enabled = cbGPUcompare.Checked;
             tb_Results.Text = "";
             btnScatGpu.Enabled = true;
             CurrentApp.iAssignedGPUs = 0;   // this is recalculated based on filter and is the number reassigned
             if (!CountGPUs()) return;
+            if (d > 0.0)
+                tb_Results.Text += lbTimeContinunity.Text + "\r\n";
             if (cbGPUcompare.Checked)
             {
                 iStart = -1;
@@ -1648,13 +1653,16 @@ namespace BTHistoryReader
                 tb_Results.Text += "Number Unknown GPUs:" + CurrentApp.iAssignedGPUs.ToString() + "\r\n";
             tb_Results.Text += "Work Units Attempted: " + (CurrentApp.LineLoc.Count-CurrentApp.SkipToStart).ToString() + "\r\n";
             tb_Results.Text += "Work Units Completed: " + lb_SelWorkUnits.Items.Count.ToString() + "\r\n";
-            if (cbAssignGPU.Checked) // used to have CurrentApp.iAssignedGPUs
+            if(cbGPUcompare.Checked) // only applicable if comparing GPU
             {
-                tb_Results.Text += "Above unknown GPUs were re-assigned and are included in statistics\r\n";
-            }
-            else
-            {
-                tb_Results.Text += "Above unknown GPUs are not included in statistics\r\n";
+                if (cbAssignGPU.Checked) // used to have CurrentApp.iAssignedGPUs
+                {
+                    tb_Results.Text += "Above unknown GPUs were re-assigned and are included in statistics\r\n";
+                }
+                else
+                {
+                    tb_Results.Text += "Above unknown GPUs are not included in statistics\r\n";
+                }
             }
         }
 
@@ -1674,8 +1682,18 @@ namespace BTHistoryReader
             DisplayHistory();
             if (lb_SelWorkUnits.Items.Count == 0)
                 tb_Results.Text = "No good data for this app\r\n";
+            CountGpuIdles(0);
         }
 
+
+        private void CountGpuIdles(int nGpu)
+        {
+            cbIdleGpu.Items.Clear();
+            cbIdleGpu.Items.Add("All GPUs");
+            for (int i = 0; i < nGpu; i++)
+                cbIdleGpu.Items.Add(i.ToString());
+            cbIdleGpu.SelectedIndex = 0;
+        }
 
         //frm2.ShowDialog(); //shows form as a modal dialog
         //frm2.Show();    //shows form as a non modal dialog
@@ -1694,7 +1712,7 @@ namespace BTHistoryReader
 
         // find the biggest gap in the difference between completion time
         // only is idle if the elapsed time is less then the gap
-        private void RunContinunityCheck()
+        private double RunContinunityCheck()
         {
 
             int NumUnits = lb_SelWorkUnits.SelectedItems.Count; ;
@@ -1711,7 +1729,7 @@ namespace BTHistoryReader
             {
                 tb_Results.Text = "you must select exactly two items\r\n";
                 ShowContinunities(false);
-                return;
+                return 0.0;
             }
             i = lb_SelWorkUnits.SelectedIndices[0]; // difference between this shows the selection
             j = lb_SelWorkUnits.SelectedIndices[1];
@@ -1752,7 +1770,7 @@ namespace BTHistoryReader
                 lb_LocMax.Text = "Near # " + strLine.Substring(0, i) + strUnits;
             }
             ShowContinunities(true);
-
+            return MaxDiff;
         }
 
         private void btnContinunity_Click(object sender, EventArgs e)
@@ -1927,7 +1945,9 @@ namespace BTHistoryReader
         {
             int i, j, n;
             long l;
-            double d;
+            double d,dd;
+            int iRequestedGPU = (cbIdleGpu.SelectedIndex - 1);  // index 0 is "Use all gpu"
+            bool bJust1GPU = (iRequestedGPU >= 0);             // index 1 is gpu 0
 
             if (lb_SelWorkUnits.Items.Count < 2) return false;
             if (lb_SelWorkUnits.SelectedIndices.Count != 2) return false;
@@ -1939,10 +1959,15 @@ namespace BTHistoryReader
             IdleGap = new List<double>(n);
             AvgGap = 0;
             // need to make sure the first one valid
+            // 1/6/2023 and select only the GPUs wanted
             do
             {
                 int k = SortToInfo[i]; 
                 if (ThisProjectInfo[k].bState) break;
+                if(bJust1GPU)
+                {
+                    if (ThisProjectInfo[k].iDeviceUsed != iRequestedGPU) continue;
+                }
                 i++;
                 if (i >= j) return false;
             }
@@ -1952,10 +1977,14 @@ namespace BTHistoryReader
             {
                 int k = iSortIndex[n];
                 if (!ThisProjectInfo[k].bState) continue;
+                if (bJust1GPU)
+                {
+                    if (ThisProjectInfo[k].iDeviceUsed != iRequestedGPU) continue;
+                }
                 l = ThisProjectInfo[k].time_t_Completed;
                 if (CompletionTimes.Count > 0) //(n > i) jys 9-12-2019 bug if first record is bad
                 {
-                    double dd = l - CompletionTimes.Last();
+                    dd = l - CompletionTimes.Last();
                     IdleGap.Add(dd);
                     AvgGap += dd;
                 }
@@ -2006,7 +2035,8 @@ namespace BTHistoryReader
             long l;
             double d, d1;
             int k;
-
+            int iRequestedGPU = (cbIdleGpu.SelectedIndex - 1);  // index 0 is "Use all gpu"
+            bool bJust1GPU = (iRequestedGPU >= 0);
             if (lb_SelWorkUnits.Items.Count < 2) return false;
             if (lb_SelWorkUnits.SelectedIndices.Count != 2) return false;
             i = lb_SelWorkUnits.SelectedIndices[0]; // difference between this shows the selection
@@ -2020,6 +2050,10 @@ namespace BTHistoryReader
             {
                 k = iSortIndex[n];
                 if (!ThisProjectInfo[k].bState) continue;
+                if (bJust1GPU)
+                {
+                    if (ThisProjectInfo[k].iDeviceUsed != iRequestedGPU) continue;
+                }
                 d = ThisProjectInfo[k].dElapsedTime / 60.0;
                 IdleGap.Add(d);
                 //GrpList.Add(ThisProjectInfo[k].DatasetGroup);
