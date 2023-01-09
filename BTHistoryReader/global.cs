@@ -783,6 +783,7 @@ namespace BTHistoryReader
     public class cKnownProjApps
     {
         public string ProjName;
+        public double dDefaultAppCredit; // if credit is 0 then use this if not 0
         public bool bIsUnknown;
         public bool bContainsUnknownApps;
         public int NumberBadWorkUnits;
@@ -832,12 +833,22 @@ namespace BTHistoryReader
             bContainsUnknownApps = false;   // assume apps are known
             bIsUnknown = false;
         }
+        public void AddName(string strIn, double dDefaultCredit)
+        {
+            ProjName = strIn;
+            KnownApps = new List<cAppName>();
+            bIgnore = true; // assume no apps for this project
+            bContainsUnknownApps = false;   // assume apps are known
+            bIsUnknown = false;
+            dDefaultAppCredit = dDefaultCredit;
+        }
         public void AddUnkProj(string strIn)
         {
             ProjName = strIn;
             KnownApps = new List<cAppName>();
             bIgnore = true; // assume no apps for this project
             bIsUnknown = true;
+            dDefaultAppCredit = 0.0;
         }
 
         public cAppName AddApp(string strName, string strPC)
@@ -850,8 +861,24 @@ namespace BTHistoryReader
             KnownApps.Add(AppName);
             bIgnore = false;  
             bIsUnknown = false;
+            AppName.AppCredit = dDefaultAppCredit;
             return AppName;
         }
+
+        public cAppName AddApp(string strName, string strPC, double dCredit)
+        {
+            cAppName AppName = new cAppName();
+            AppName.init(strName, ProjName, false);
+            AppName.ptrKPA = this;
+            AppName.strPlanClass = strPC;
+            AppName.Name = strName + " [" + strPC + "]";
+            KnownApps.Add(AppName);
+            bIgnore = false;
+            bIsUnknown = false;
+            AppName.AppCredit = dCredit;
+            return AppName;
+        }
+
         public cAppName AddUnkApp(string strIn)
         {
             cAppName AppName = new cAppName();

@@ -832,7 +832,6 @@
             this.rbElapsed.Text = "Avg Elapsed Time";
             this.toolTip1.SetToolTip(this.rbElapsed, "Averag, std of elapsed plus relative completion.\r\nFormat is mm:mm not mm:ss");
             this.rbElapsed.UseVisualStyleBackColor = true;
-            this.rbElapsed.CheckedChanged += new System.EventHandler(this.rbElapsed_CheckedChanged);
             // 
             // tb_Results
             // 
@@ -854,7 +853,6 @@
             this.rbThroughput.Text = "Throughput";
             this.toolTip1.SetToolTip(this.rbThroughput, "Number of tasks and time interval from first to last");
             this.rbThroughput.UseVisualStyleBackColor = true;
-            this.rbThroughput.CheckedChanged += new System.EventHandler(this.rbThroughput_CheckedChanged);
             // 
             // groupBox1
             // 

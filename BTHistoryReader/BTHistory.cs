@@ -208,11 +208,11 @@ namespace BTHistoryReader
             KnownProjApps = new List<cKnownProjApps>();
             OneSplitLine = new cSplitHistoryValues();
             kpa = new cKnownProjApps();
-            kpa.AddName("Milkyway@Home");
-            kpa.AddApp("Milkyway@home Separation", "opencl_ati_101");
-            kpa.AddApp("Milkyway@home Separation", "opencl_nvidia_101");
-            kpa.AddApp("Milkyway@home", "opencl_ati_101");
-            kpa.AddApp("Milkyway@home Separation", "");
+            kpa.AddName("Milkyway@Home",228.0);
+            kpa.AddApp("Milkyway@home Separation", "opencl_ati_101",228.0);
+            kpa.AddApp("Milkyway@home Separation", "opencl_nvidia_101",228.0);
+            kpa.AddApp("Milkyway@home", "opencl_ati_101",228.0);
+            kpa.AddApp("Milkyway@home Separation", "",228.0);
             KnownProjApps.Add(kpa);
 
             kpa = new cKnownProjApps();
@@ -246,19 +246,20 @@ namespace BTHistoryReader
             KnownProjApps.Add(kpa);
 
             kpa = new cKnownProjApps();
-            kpa.AddName("Amicable Numbers");
+            kpa.AddName("Amicable Numbers",6836.19);
             kpa.AddApp("Amicable Numbers up to 10^20", "opencl_amd");
             KnownProjApps.Add(kpa);
 
             kpa = new cKnownProjApps();
             kpa.AddName("LHC@home");
-            kpa.AddApp("SixTrack", "");
-            kpa.AddApp("SixTrack", "avx");
-            kpa.AddApp("SixTrack", "sse2");
+            kpa.AddApp("SixTrack", "",3.0);  // estimate as a lot are less than 1.0
+            kpa.AddApp("CMS Simulation", "");
+            kpa.AddApp("Theory Simulation", "", 50.0); // average
+            kpa.AddApp("Atlas Simulation", "",1300.0); // average as really large swings
             KnownProjApps.Add(kpa);
 
             kpa = new cKnownProjApps();
-            kpa.AddName("World Community Grid");
+            kpa.AddName("World Community Grid",110.0); // looks like 110 is average for mcm and covid
             kpa.AddApp("Mapping Cancer Markers", "");
             kpa.AddApp("FightAIDS@Home - Phase 1", "");
             kpa.AddApp("FightAIDS@Home - Phase 2", "");
@@ -273,31 +274,35 @@ namespace BTHistoryReader
             KnownProjApps.Add(kpa);
 
             kpa = new cKnownProjApps();
-            kpa.AddName("NFS@Home");
-            kpa.AddApp("15e Lattice Sieve", "");
-            kpa.AddApp("15e Lattice Sieve", "notphenomiix6");
-            kpa.AddApp("16e Lattice Sieve V5", "");
-            kpa.AddApp("14e Lattice Sieve", "");
+            kpa.AddName("NFS@Home",44.0);
+            kpa.AddApp("14e Lattice Sieve", "",36.0);
+            kpa.AddApp("14e Lattice Sieve", "notphenomiix6",36.0);
+            kpa.AddApp("15e Lattice Sieve", "notphenomiix6", 44.0);
+            kpa.AddApp("15e Lattice Sieve", "",44.0);
+            kpa.AddApp("16e Lattice Sieve V5", "",130.0);
+            kpa.AddApp("15e Lattice Sieve for smaller numbers", "",44.0);
+            kpa.AddApp("16e Lattice Sieve for smaller numbers", "",50.0);
+            kpa.AddApp("16e Lattice Sieve", "notphenomiix6");
             KnownProjApps.Add(kpa);
 
             kpa = new cKnownProjApps();
-            kpa.AddName("Cosmology@Home");
+            kpa.AddName("Cosmology@Home",375.0);  // averages about 375
             kpa.AddApp("camb_legacy", "");
             KnownProjApps.Add(kpa);
 
             kpa = new cKnownProjApps();
-            kpa.AddName("Rosetta@home");
+            kpa.AddName("Rosetta@home",400.0);  // this is an average
             kpa.AddApp("Rosetta", "");
             kpa.AddApp("Rosetta Mini", "");
             KnownProjApps.Add(kpa);
 
             kpa = new cKnownProjApps();
-            kpa.AddName("TN-Grid Platform");
+            kpa.AddName("TN-Grid Platform",130.0); // another average
             kpa.AddApp("gene@home PC-IM", "sse2");
             KnownProjApps.Add(kpa);
 
             kpa = new cKnownProjApps();
-            kpa.AddName("NumberFields@home");
+            kpa.AddName("NumberFields@home",190.0);
             kpa.AddApp("Get Decic Fields", "default");
             KnownProjApps.Add(kpa);
 
@@ -308,16 +313,20 @@ namespace BTHistoryReader
             KnownProjApps.Add(kpa);
 
             kpa = new cKnownProjApps();
-            kpa.AddName("PrimeGrid");
+            kpa.AddName("PrimeGrid",3371.0);
             kpa.AddApp("PPS (Sieve)", "cudaPPSsieve");
             KnownProjApps.Add(kpa);
 
             kpa = new cKnownProjApps();
-            kpa.AddName("Einstein@Home");
+            kpa.AddName("Einstein@Home",3333.0);
             kpa.AddApp("Gravitational Wave Engineering run on LIGO O1 Open Data", "");
-            kpa.AddApp("Gamma-ray pulsar binary search #1 on GPUs", "FGRPopencl1K-ati");
-            kpa.AddApp("Gamma-ray pulsar binary search #1 on GPUs", "FGRPopencl1K-nvidia");
-            kpa.AddApp("Gamma-ray pulsar binary search #1 on GPUs", "FGRPopencl-nvidia");
+            kpa.AddApp("Gamma-ray pulsar binary search #1 on GPUs", "FGRPopencl1K-ati",3465.0);
+            kpa.AddApp("Gamma-ray pulsar binary search #1 on GPUs", "FGRPopencl1K-nvidia",3465.0);
+            kpa.AddApp("Gamma-ray pulsar binary search #1 on GPUs", "FGRPopencl-nvidia",3465.0);
+            kpa.AddApp("Binary Radio Pulsar Search (MeerKAT)", "BRP7-cuda55",3333.0);
+            kpa.AddApp("Binary Radio Pulsar Search (MeerKAT)", "BRP7-opencl-nvidia", 3333.0);
+            kpa.AddApp("Binary Radio Pulsar Search (MeerKAT)", "BRP7-opencl-ati", 3333.0);
+            kpa.AddApp("Gamma-ray pulsar binary search #1 on GPUs", "FGRPopencl2Pup-nvidia", 3465.0);
             KnownProjApps.Add(kpa);
 
 
@@ -327,20 +336,20 @@ namespace BTHistoryReader
             KnownProjApps.Add(kpa);
 
             kpa = new cKnownProjApps();
-            kpa.AddName("latinsquares");
+            kpa.AddName("latinsquares",11.0);
             kpa.AddApp("odlk3@home", "");
             kpa.AddApp("odlkmax@home", "");
             KnownProjApps.Add(kpa);
 
             kpa = new cKnownProjApps();
-            kpa.AddName("yoyo@home");
+            kpa.AddName("yoyo@home",835.73);
             kpa.AddApp("Siever", "");
             kpa.AddApp("Cruncher ogr", "");
             kpa.AddApp("ecm", "");
             KnownProjApps.Add(kpa);
 
             kpa = new cKnownProjApps();
-            kpa.AddName("Asteroids@home");
+            kpa.AddName("Asteroids@home",63.0);
             kpa.AddApp("Period Search Application", "cuda55");
             kpa.AddApp("Period Search Application", "");
             KnownProjApps.Add(kpa);
@@ -357,7 +366,7 @@ namespace BTHistoryReader
             KnownProjApps.Add(kpa);
 
             kpa = new cKnownProjApps();
-            kpa.AddName("Universe@Home");
+            kpa.AddName("Universe@Home",666.67);
             kpa.AddApp("Universe BHspin v2", "");
             KnownProjApps.Add(kpa);
 
@@ -369,7 +378,7 @@ namespace BTHistoryReader
         // remove old stuff
         public void ClearInfoTables()
         {
-            tb_AvgCredit.Text = "0";
+            //tb_AvgCredit.Text = "0";
             //tb_Info.Text = "";
             tb_Results.Text = "";
         }
@@ -847,6 +856,7 @@ namespace BTHistoryReader
             ShowNumberApps();
             if (lb_SelWorkUnits.Items.Count == 0)
                 tb_Results.Text = "No good data for this app\r\n";
+            cb_AppNames_SelectedIndexChanged(null, null);   // need to propagate the change
         }
 
         // standard bubble sort with exchange on index
@@ -1653,7 +1663,7 @@ namespace BTHistoryReader
                 tb_Results.Text += "Number Unknown GPUs:" + CurrentApp.iAssignedGPUs.ToString() + "\r\n";
             tb_Results.Text += "Work Units Attempted: " + (CurrentApp.LineLoc.Count-CurrentApp.SkipToStart).ToString() + "\r\n";
             tb_Results.Text += "Work Units Completed: " + lb_SelWorkUnits.Items.Count.ToString() + "\r\n";
-            if(cbGPUcompare.Checked) // only applicable if comparing GPU
+            if(cbGPUcompare.Checked && rbElapsed.Checked) // only applicable if comparing GPU for elapsed time
             {
                 if (cbAssignGPU.Checked) // used to have CurrentApp.iAssignedGPUs
                 {
@@ -1683,6 +1693,7 @@ namespace BTHistoryReader
             if (lb_SelWorkUnits.Items.Count == 0)
                 tb_Results.Text = "No good data for this app\r\n";
             CountGpuIdles(0);
+            tb_AvgCredit.Text = CurrentApp.AppCredit.ToString();
         }
 
 
@@ -1797,15 +1808,6 @@ namespace BTHistoryReader
             }
             reportbug MyReport = new reportbug(lbLastFiles.Text, ofd_history.InitialDirectory);
             MyReport.ShowDialog();
-        }
-
-        private void rbElapsed_CheckedChanged(object sender, EventArgs e)
-        {
-        }
-
-        private void rbThroughput_CheckedChanged(object sender, EventArgs e)
-        {
-
         }
 
         // the following two routines make certain object visible depending on whether
