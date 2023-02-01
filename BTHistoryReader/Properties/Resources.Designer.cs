@@ -19,7 +19,7 @@ namespace BTHistoryReader.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -91,7 +91,7 @@ namespace BTHistoryReader.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Mon 12/09/2019 10:31:21.75 
+        ///   Looks up a localized string similar to Sat 01/28/2023 11:56:49.11 
         ///.
         /// </summary>
         internal static string BuildDate {

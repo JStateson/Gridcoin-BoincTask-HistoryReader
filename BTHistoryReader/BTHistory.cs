@@ -265,6 +265,7 @@ namespace BTHistoryReader
             kpa.AddApp("FightAIDS@Home - Phase 2", "");
             kpa.AddApp("OpenZika", "");
             kpa.AddApp("Microbiome Immunity Project", "");
+            kpa.AddApp("OpenPandemics - COVID 19", "");
             KnownProjApps.Add(kpa);
 
             kpa = new cKnownProjApps();
@@ -289,6 +290,7 @@ namespace BTHistoryReader
             kpa.AddName("Cosmology@Home",375.0);  // averages about 375
             kpa.AddApp("camb_legacy", "");
             KnownProjApps.Add(kpa);
+
 
             kpa = new cKnownProjApps();
             kpa.AddName("Rosetta@home",400.0);  // this is an average
@@ -349,8 +351,7 @@ namespace BTHistoryReader
             KnownProjApps.Add(kpa);
 
             kpa = new cKnownProjApps();
-            kpa.AddName("Asteroids@home",63.0);
-            kpa.AddApp("Period Search Application", "cuda55");
+            kpa.AddName("Asteroids@home",65.0);
             kpa.AddApp("Period Search Application", "");
             KnownProjApps.Add(kpa);
 
@@ -737,8 +738,9 @@ namespace BTHistoryReader
                     }
                     else continue;
                 }
+                else kpa = KnownProjApps[RtnCode];
                 bAnyData = true;
-                AppName = KnownProjApps[RtnCode].SymbolInsert(OneSplitLine.Application + " [" + OneSplitLine.PlanClass + "]", 3 + iLine);  // first real data is in 5th line (0..4)
+                AppName = kpa.SymbolInsert(OneSplitLine.Application + " [" + OneSplitLine.PlanClass + "]", 3 + iLine);  // first real data is in 5th line (0..4)
                 AppName.AddUse(OneSplitLine.use);   
                 iGrp = AppName.DataName.NameInsert(OneSplitLine.Name, OneSplitLine.Project);
                 iLocDevice = OneSplitLine.use.IndexOf("device "); //1234567  note that sometimes the device is missing, if so, then use 0 as

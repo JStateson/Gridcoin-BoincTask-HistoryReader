@@ -132,6 +132,8 @@ Std shown in the main form are from the selection only
 and the ones here are all results that completed.
 
 The color green shows dataset names, if any defined, and
-the number of datasets matching that name</value>
+the number of datasets matching that name
+
+Known credit values, if any, are shown between the $</value>
   </data>
 </root>

@@ -908,6 +908,7 @@ namespace BTHistoryReader
             UnkAppName = AddUnkApp(strAppName);
             UnkAppName.LineLoc.Add(iLoc);
             UnkAppName.bIsUnknown = true;
+            UnkAppName.AppCredit = Math.Max(1.0, dDefaultAppCredit);
             return UnkAppName; // was an unknown app
         }
 

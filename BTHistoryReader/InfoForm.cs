@@ -69,7 +69,7 @@ namespace BTHistoryReader
                         ((ShowType == eShowType.eShowHis) || (ShowType == eShowType.eShowStats))) // do not show unused apps
                         continue;
                     c = new TreeNode();
-                    c.Text = appName.Name;
+                    c.Text ="$" + appName.AppCredit.ToString() +"$-" + appName.Name;
                     if (appName.nAppEntries > 0)     // http://www.99colors.net/dot-net-colors
                     {
                         if (appName.bIsUnknown)
