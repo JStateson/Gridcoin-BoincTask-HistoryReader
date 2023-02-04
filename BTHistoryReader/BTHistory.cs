@@ -975,6 +975,7 @@ namespace BTHistoryReader
             pbarLoading.Value = 0;
             MyAdvFilter.NumExcluded = 0;
             if (AppName.LineLoc.Count == 0) return 0;
+            
             AppName.GpuReassignment = new cGpuReassigned();
             AppName.GpuReassignment.init();
             AppName.bHasDevices = false;
@@ -1128,8 +1129,7 @@ namespace BTHistoryReader
             {
                 tb_Info.Text += "Seems " + (MyAdvFilter.NumExcluded).ToString() + " items were excluded by the advanced filter\r\n";
             }
-            return j;
-        }
+            return j;        }
 
 
         // calculates amount of credit the system can do
@@ -1514,7 +1514,7 @@ namespace BTHistoryReader
                 CurrentApp.nDevices = 1;
                 return true;
             }
-            if(!CurrentApp.bHasDevices) // have a GPU but only one so backfix the 64
+            if(!CurrentApp.bHasDevices || CurrentApp.bHasGPU) // have a GPU but only one so backfix the 64
             {
                 for (int k1 = i; k1 <= j; k1++)
                 {
