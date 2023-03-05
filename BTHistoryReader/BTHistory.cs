@@ -350,8 +350,9 @@ namespace BTHistoryReader
             KnownProjApps.Add(kpa);
 
             kpa = new cKnownProjApps();
-            kpa.AddName("Asteroids@home",65.0);
-            kpa.AddApp("Period Search Application", "");
+            kpa.AddName("Asteroids@home",60.0);
+            kpa.AddApp("Period Search Application", "cuda118_linux");
+            kpa.AddApp("Period Search Application", "cuda118_win10");
             KnownProjApps.Add(kpa);
 
 

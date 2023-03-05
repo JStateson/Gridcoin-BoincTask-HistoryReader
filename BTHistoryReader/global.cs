@@ -837,7 +837,8 @@ namespace BTHistoryReader
         {
             ProjName = strIn;
             KnownApps = new List<cAppName>();
-            bIgnore = true; // assume no apps for this project
+            //bIgnore = true; // assume no apps for this project
+            // the above stopped unknown but good apps from showing up!!
             bContainsUnknownApps = false;   // assume apps are known
             bIsUnknown = false;
             dDefaultAppCredit = dDefaultCredit;
@@ -847,6 +848,7 @@ namespace BTHistoryReader
             ProjName = strIn;
             KnownApps = new List<cAppName>();
             bIgnore = true; // assume no apps for this project
+            // any apps added make the above false
             bIsUnknown = true;
             dDefaultAppCredit = 0.0;
         }
