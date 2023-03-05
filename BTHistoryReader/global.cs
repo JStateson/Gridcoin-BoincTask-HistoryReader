@@ -857,7 +857,11 @@ namespace BTHistoryReader
             AppName.init(strName, ProjName,false);
             AppName.ptrKPA = this;
             AppName.strPlanClass = strPC;
-            AppName.Name = strName + " [" + strPC + "]";
+            if (strPC != "")
+            {
+                strPC = " [" + strPC + "]";
+            }
+            AppName.Name = strName + strPC;
             KnownApps.Add(AppName);
             bIgnore = false;  
             bIsUnknown = false;
@@ -867,11 +871,13 @@ namespace BTHistoryReader
 
         public cAppName AddApp(string strName, string strPC, double dCredit)
         {
+            string strClass = "";
             cAppName AppName = new cAppName();
             AppName.init(strName, ProjName, false);
             AppName.ptrKPA = this;
             AppName.strPlanClass = strPC;
-            AppName.Name = strName + " [" + strPC + "]";
+            if (strPC != "") strClass = " [" + strPC + "]";
+            AppName.Name = strName + strClass;
             KnownApps.Add(AppName);
             bIgnore = false;
             bIsUnknown = false;

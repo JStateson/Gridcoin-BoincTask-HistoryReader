@@ -5,9 +5,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-
-
-
 namespace BTHistoryReader
 {
 
@@ -260,12 +257,14 @@ namespace BTHistoryReader
 
             kpa = new cKnownProjApps();
             kpa.AddName("World Community Grid",110.0); // looks like 110 is average for mcm and covid
-            kpa.AddApp("Mapping Cancer Markers", "");
+            kpa.AddApp("Mapping Cancer Markers","", 97.0);
             kpa.AddApp("FightAIDS@Home - Phase 1", "");
             kpa.AddApp("FightAIDS@Home - Phase 2", "");
             kpa.AddApp("OpenZika", "");
             kpa.AddApp("Microbiome Immunity Project", "");
-            kpa.AddApp("OpenPandemics - COVID 19", "");
+            kpa.AddApp("OpenPandemics - COVID 19", "", 85.0);
+            kpa.AddApp("OpenPandemics - COVID-19 - GPU [opencl_ati_102]","", 1350.0);
+            kpa.AddApp("OpenPandemics - COVID-19 - GPU [opencl_nvidia_102]", "", 1350.0);
             KnownProjApps.Add(kpa);
 
             kpa = new cKnownProjApps();
@@ -354,6 +353,13 @@ namespace BTHistoryReader
             kpa.AddName("Asteroids@home",65.0);
             kpa.AddApp("Period Search Application", "");
             KnownProjApps.Add(kpa);
+
+
+            kpa = new cKnownProjApps();
+            kpa.AddName("SiDock@home", 960.0); // average of 54 results
+            kpa.AddApp("CurieMarieDock 0.2.0 long tasks", "");
+            KnownProjApps.Add(kpa);
+
 
             kpa = new cKnownProjApps();
             kpa.AddName("Moo! Wrapper");
@@ -493,7 +499,7 @@ namespace BTHistoryReader
             if (DialogResult.OK != ofd_history.ShowDialog())
                 return false;
             AllHistories = ofd_history.FileNames;
-            if (AllHistories.Length > 1)
+            if (AllHistories.Length > 1) // more than one history has been selected
             {
                 lbLastFiles.Text = "";
                 foreach (string strHisFile in AllHistories)
@@ -523,7 +529,7 @@ namespace BTHistoryReader
                     CurrentSystem = LinesHistory[1];
                     if (BTHistory.ActiveForm != null)    // can occur during debugging
                         BTHistory.ActiveForm.Text = CurrentSystem; ;   // this is name of the computer
-                    ProcessHistoryFile();
+                    ProcessHistoryFile(); // provide statistics on this history file
                     FillSelectBoxes();
                 }
                 else
@@ -699,7 +705,7 @@ namespace BTHistoryReader
             cAppName AppName;
             cKnownProjApps kpa;
             int iLocDevice, jloc, iGrp;   // which dataset group the record is in (dataset is the "name" of the data
-
+            string strClass = "";
             bool bInformOnlyOnce = true;
             // find and identify any project in the file
             foreach (string s in LinesHistory)
@@ -740,7 +746,9 @@ namespace BTHistoryReader
                 }
                 else kpa = KnownProjApps[RtnCode];
                 bAnyData = true;
-                AppName = kpa.SymbolInsert(OneSplitLine.Application + " [" + OneSplitLine.PlanClass + "]", 3 + iLine);  // first real data is in 5th line (0..4)
+                strClass = OneSplitLine.PlanClass;
+                if (strClass != "") strClass = " [" + strClass + "]";
+                AppName = kpa.SymbolInsert(OneSplitLine.Application + strClass, 3 + iLine);  // first real data is in 5th line (0..4)
                 AppName.AddUse(OneSplitLine.use);   
                 iGrp = AppName.DataName.NameInsert(OneSplitLine.Name, OneSplitLine.Project);
                 iLocDevice = OneSplitLine.use.IndexOf("device "); //1234567  note that sometimes the device is missing, if so, then use 0 as
@@ -1472,7 +1480,7 @@ namespace BTHistoryReader
             string strResults = "Using " + tb_AvgCredit.Text + " for average credit\r\nCredit per minute for " + nDevices.ToString() + " GPUs is\r\n";
             for (int i = 0; i < nDevices; i++)
             {
-                string strTemp = CalcOnecredit(i, iStart, iStop, ref d) + "        ".Substring(0, CostSizes[i]);
+                string strTemp = CalcOnecredit(i, iStart, iStop, ref d) + "".PadRight(CostSizes[i]);
                 AvgAll += d;
                 double x = r * d / e;
                 int j = Convert.ToInt32(x) ;
@@ -1628,8 +1636,7 @@ namespace BTHistoryReader
         private void btn_Filter_Click(object sender, EventArgs e)
         {
             int NumCurrent = Convert.ToInt32(nudConCurrent.Value);
-            double d = RunContinunityCheck();
-            
+            double d = RunContinunityCheck();            
             btnGTime.Enabled = cbGPUcompare.Checked;
             tb_Results.Text = "";
             btnScatGpu.Enabled = true;
@@ -2346,7 +2353,7 @@ namespace BTHistoryReader
                 "PrimeGrid","Universe@Home","Bitcoin Utopia", "nfs@home", "enigma",
                 "Amicable"}; 
         */
-
+        // this really needs to come from all_projects_list.xml
         private void btnLkCr_Click(object sender, EventArgs e)
         {
             string[] strProjNames =  {
@@ -2354,7 +2361,7 @@ namespace BTHistoryReader
                 "GPUGRID","Einstein","LHC@home","Asteroids","NumberFields",
                 "latinsquares","TN-Grid Platform","ollatz",
                 "PrimeGrid","Universe","Bitcoin Utopia", "nfs@home", "enigma",
-                "Amicable"};
+                "Amicable","SiDock"};
             string[] ProjUrls = {
                 "https://milkyway.cs.rpi.edu/milkyway",
                 "https://www.worldcommunitygrid.org/",
@@ -2375,9 +2382,12 @@ namespace BTHistoryReader
                 "https://universeathome.pl/universe/",
                 "", // project info no longer exists
                 "https://escatter11.fullerton.edu/nfs/",
-                "http://www.enigmaathome.net"
+                "http://www.enigmaathome.net",
+                "https://sech.me/boinc/Amicable",
+                "https://www.sidock.si/sidock"
             };
-            GoToSite("www.stateson.net/hostprojectstats");
+
+            if (cb_SelProj.Items.Count == 0) return;
             string strProj = cb_SelProj.SelectedItem.ToString().ToLower();
             int iIndex= 0;
             bool bFound = false;
@@ -2401,6 +2411,7 @@ namespace BTHistoryReader
             {
                 tb_Info.Text += "missing url to " + strProj + "\r\n";
             }
+            else GoToSite("www.stateson.net/hostprojectstats");
         }
 
         private void cbGPUcompare_CheckedChanged(object sender, EventArgs e)
