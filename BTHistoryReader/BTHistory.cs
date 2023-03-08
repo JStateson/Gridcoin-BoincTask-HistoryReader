@@ -2353,6 +2353,57 @@ namespace BTHistoryReader
                 "latinsquares","TN-Grid Platform","collatz","Collatz Conjecture",
                 "PrimeGrid","Universe@Home","Bitcoin Utopia", "nfs@home", "enigma",
                 "Amicable"}; 
+Amicable
+Asteroids@Home
+boinc@tacc
+climate prediction
+collatz
+cosmology(g)home
+cosmology@home(http)
+DENIS@Home
+einstein
+gaia@home
+Gerasim
+gpugrid
+ithenaComputational
+ithenaMeasurements
+lhc@home
+lhc@home-dev
+LODA
+milkyway@home
+MindModeling@Home
+Minecraft@home
+MLC@Home
+MoolWrapper
+nanoHUB@Home
+NFS@Home
+NumberFields@home
+ODLK
+ODLK1
+PrimeGrid
+PrivateGFNServer
+QCN
+QuChemPedlA@home
+Radioactive@Home
+RakeSearch
+Ralph@Home
+Ramanujan Machine
+RNAWorld
+Rosetta@Home
+SiDock
+srBase
+T.Brada
+TN-Grid
+Universe(a)Home
+WEP-M+2
+WUProp@Home
+Yafu
+yoyo@home
+
+
+        https://grafana.kiska.pw/d/boinc/boinc?refresh=5m&var-project=milkyway@home
+        https://grafana.kiska.pw/d/boinc/boinc?var-project=Asteroids@Home
+        https://grafana.kiska.pw/d/boinc/boinc?orgId=1&var-project=Asteroids@Home
         */
         // this really needs to come from all_projects_list.xml
         private void btnLkCr_Click(object sender, EventArgs e)
@@ -2363,6 +2414,12 @@ namespace BTHistoryReader
                 "latinsquares","TN-Grid Platform","ollatz",
                 "PrimeGrid","Universe","Bitcoin Utopia", "nfs@home", "enigma",
                 "Amicable","SiDock"};
+            string[] strGraf = {"milkyway@home", "","","Rosetta@home",
+                "gpugrid", "einstein","lhc@home","Asteroids@home", "NumberFields@home",
+                "ODLK1", "TN-Grid", "collatz", 
+                "PrimeGrid","Universe@Home", "", "NFS@LHome", "",
+                "Amicable", "SiDock"
+            };
             string[] ProjUrls = {
                 "https://milkyway.cs.rpi.edu/milkyway",
                 "https://www.worldcommunitygrid.org/",
@@ -2403,6 +2460,12 @@ namespace BTHistoryReader
                         break;
                     }
                     GoToSite(strUrl);
+                    strUrl = strGraf[iIndex];
+                    if(strUrl != "")
+                    {
+                        strUrl = "https://grafana.kiska.pw/d/boinc/boinc?orgId=1&var-project=" + strUrl;
+                        GoToSite(strUrl);
+                    }
                     bFound = true;
                     break;
                 }

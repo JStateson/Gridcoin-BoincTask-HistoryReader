@@ -902,7 +902,8 @@
             this.btnLkCr.Size = new System.Drawing.Size(68, 39);
             this.btnLkCr.TabIndex = 25;
             this.btnLkCr.Text = "Lookup\r\nCredit";
-            this.toolTip1.SetToolTip(this.btnLkCr, "Launches Project Info Pages");
+            this.toolTip1.SetToolTip(this.btnLkCr, "Launches Project Info Pages.   Server status requries\r\nthat you select the projec" +
+        "t.");
             this.btnLkCr.UseVisualStyleBackColor = false;
             this.btnLkCr.Click += new System.EventHandler(this.btnLkCr_Click);
             // 
