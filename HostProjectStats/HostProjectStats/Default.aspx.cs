@@ -263,10 +263,10 @@ namespace HostProjectStats
             }
             try
             { 
-                //client.Credentials.GetCredential(myUri,"Basic");
-                //client.UseDefaultCredentials = true;
+                client.Credentials.GetCredential(myUri,"Basic");
+                client.UseDefaultCredentials = true;
                 //client.Headers.Add("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.2; .NET CLR 1.0.3705;)");
-                //client.Headers.Add("user-agent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:47.0) Gecko/20100101 Firefox/47.0");
+                client.Headers.Add("user-agent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:47.0) Gecko/20100101 Firefox/47.0");
                 //HttpRequestCachePolicy requestPolicy =  new HttpRequestCachePolicy(HttpCacheAgeControl.MaxAge, TimeSpan.FromDays(1));
                 //client.CachePolicy = requestPolicy;
                 // wcg and lhc have a problem
@@ -314,7 +314,12 @@ namespace HostProjectStats
                     if (iStart < 0 || iEnd < 0 || (iStart >= iEnd)) return -4;
                     RawTable = RawPage.Substring(iStart, iEnd - iStart);
                     return BuildStatsTable();
-                    break;
+                case eProjectID.asteroids:
+                    iStart = RawPage.IndexOf("<table class");
+                    iEnd = RawPage.IndexOf("</table>");
+                    if (iStart < 0 || iEnd < 0 || (iStart >= iEnd)) return -4;
+                    RawTable = RawPage.Substring(iStart, iEnd - iStart);
+                    return BuildStatsTable();
                 default:
                     iStart = RawPage.IndexOf("<tr class=row0>");
                     if(iStart < 0)

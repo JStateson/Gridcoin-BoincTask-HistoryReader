@@ -1660,6 +1660,7 @@ namespace BTHistoryReader
             {
                 if (PerformIdleAnalysis())
                     ShowIdleInfo();
+                else tb_Info.Text = "Probably no data for idle analysis\r\n";
             }
             AddUnknownStats();
         }
@@ -2002,6 +2003,7 @@ namespace BTHistoryReader
                 }
                 CompletionTimes.Add(l);
             }
+            if (IdleGap.Count == 0) return false;
             AvgGap /= IdleGap.Count;
             if (AvgGap == 0)
             {
@@ -2071,6 +2073,7 @@ namespace BTHistoryReader
                 //GrpList.Add(ThisProjectInfo[k].DatasetGroup);
                 AvgGap += d;
             }
+            if (IdleGap.Count == 0) return false;
             AvgGap /= IdleGap.Count;
             StdGap = CalcStd(AvgGap, ref IdleGap);
 
@@ -2110,6 +2113,7 @@ namespace BTHistoryReader
                 DrawThruput.ShowDialog();
                 DrawThruput.Dispose();
             }
+            else tb_Info.Text = "Probably no data for idle analysis\r\n";
         }
 
         // elapsed time is identified using the -1 arguments, the vars are misnamed but I prefer reused instead.
@@ -2121,6 +2125,7 @@ namespace BTHistoryReader
                 DrawThruput.ShowDialog();
                 DrawThruput.Dispose();
             }
+            else tb_Info.Text = "Probably no data for ET analysis\r\n";
         }
 
         // the next group in ascending order of time

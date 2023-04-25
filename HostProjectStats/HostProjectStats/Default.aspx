@@ -5,7 +5,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
     <title>Statistics for BOINC project at a specified host</title>
-</head>
+</head>8
 <body>
 
       
@@ -22,7 +22,7 @@
             <asp:ListItem Value="https://boinc.thesonntags.com/collatz/results.php?hostid=833335&amp;offset=0&amp;show_names=0&amp;state=4&amp;appid=">Collatz</asp:ListItem>
             <asp:ListItem Value="http://www.gpugrid.net/results.php?hostid=467730&amp;offset=0&amp;show_names=0&amp;state=3&amp;appid=">GpuGrid</asp:ListItem>
             <asp:ListItem Value="https://sech.me/boinc/Amicable/results.php?hostid=33751&amp;offset=0&amp;show_names=0&amp;state=4&amp;appid=">Amicable</asp:ListItem>
-            <asp:ListItem Value="http://asteroidsathome.net/boinc/results.php?hostid=512380&amp;offset=0&amp;show_names=0&amp;state=4&amp;appid=">Astroids</asp:ListItem>
+            <asp:ListItem Value="https://asteroidsathome.net/boinc/results.php?hostid=732906&offset=0&show_names=0&state=4&appid=">Asteroids</asp:ListItem>
             <asp:ListItem Value="https://www.cosmologyathome.org/results.php?hostid=268457&amp;offset=0&amp;show_names=0&amp;state=4&amp;appid=">Cosmology</asp:ListItem>
             <asp:ListItem Value="http://www.enigmaathome.net/results.php?hostid=220602&amp;offset=0&amp;show_names=0&amp;state=4&amp;appid=">Enigma</asp:ListItem>
             <asp:ListItem Value="https://boinc.multi-pool.info/latinsquares/results.php?hostid=14170&amp;offset=0&amp;show_names=0&amp;state=4&amp;appid=">Odka1</asp:ListItem>
