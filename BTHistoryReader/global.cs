@@ -44,8 +44,7 @@ namespace BTHistoryReader
         public bool bExclude;  // used by the advanced filter program
     }
 
-    public class 
-        cGpuReassigned
+    public class cGpuReassigned
     {
         public int NumGPUs; // this is actually the orginal of the largest GPU id + 1 which may or may not be the total number of gpus
         public int ReassignedGPU;   // if -1 then use previous gpu id else use 0..(NumGPUs-1)

@@ -53,6 +53,9 @@
             this.btnAbout = new System.Windows.Forms.Button();
             this.btnShowProjectTree = new System.Windows.Forms.Button();
             this.gb_filter = new System.Windows.Forms.GroupBox();
+            this.groupBox10 = new System.Windows.Forms.GroupBox();
+            this.tbFilterRemoved = new System.Windows.Forms.TextBox();
+            this.cbFilterSTD = new System.Windows.Forms.ComboBox();
             this.tbStartStopDate = new System.Windows.Forms.TextBox();
             this.btn8hr = new System.Windows.Forms.Button();
             this.btn4hr = new System.Windows.Forms.Button();
@@ -116,6 +119,7 @@
             this.gboxOPFsettings.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.gb_filter.SuspendLayout();
+            this.groupBox10.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox6.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudConCurrent)).BeginInit();
@@ -146,7 +150,7 @@
             this.panel1.Controls.Add(this.btn_OpenHistory);
             this.panel1.Location = new System.Drawing.Point(12, 12);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1000, 696);
+            this.panel1.Size = new System.Drawing.Size(1063, 740);
             this.panel1.TabIndex = 0;
             this.panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.panel1_Paint);
             // 
@@ -160,6 +164,7 @@
             this.cbUseAdvFilter.Size = new System.Drawing.Size(70, 17);
             this.cbUseAdvFilter.TabIndex = 17;
             this.cbUseAdvFilter.Text = "Use Filter";
+            this.toolTip1.SetToolTip(this.cbUseAdvFilter, "Uses the Advanced filtering\r\nif any was created and enabled");
             this.cbUseAdvFilter.UseVisualStyleBackColor = false;
             // 
             // groupBox8
@@ -167,7 +172,7 @@
             this.groupBox8.Controls.Add(this.cbAssignGPU);
             this.groupBox8.Controls.Add(this.groupBox7);
             this.groupBox8.Controls.Add(this.lblFilterString);
-            this.groupBox8.Location = new System.Drawing.Point(22, 603);
+            this.groupBox8.Location = new System.Drawing.Point(22, 634);
             this.groupBox8.Name = "groupBox8";
             this.groupBox8.Size = new System.Drawing.Size(476, 86);
             this.groupBox8.TabIndex = 16;
@@ -231,7 +236,7 @@
             // lbLastFiles
             // 
             this.lbLastFiles.AutoSize = true;
-            this.lbLastFiles.Location = new System.Drawing.Point(19, 587);
+            this.lbLastFiles.Location = new System.Drawing.Point(19, 610);
             this.lbLastFiles.Name = "lbLastFiles";
             this.lbLastFiles.Size = new System.Drawing.Size(79, 13);
             this.lbLastFiles.TabIndex = 14;
@@ -380,6 +385,7 @@
             // 
             // gb_filter
             // 
+            this.gb_filter.Controls.Add(this.groupBox10);
             this.gb_filter.Controls.Add(this.tbStartStopDate);
             this.gb_filter.Controls.Add(this.btn8hr);
             this.gb_filter.Controls.Add(this.btn4hr);
@@ -402,10 +408,48 @@
             this.gb_filter.Controls.Add(this.lb_SelWorkUnits);
             this.gb_filter.Location = new System.Drawing.Point(534, 41);
             this.gb_filter.Name = "gb_filter";
-            this.gb_filter.Size = new System.Drawing.Size(448, 624);
+            this.gb_filter.Size = new System.Drawing.Size(502, 679);
             this.gb_filter.TabIndex = 6;
             this.gb_filter.TabStop = false;
             this.gb_filter.Text = "Filter";
+            // 
+            // groupBox10
+            // 
+            this.groupBox10.Controls.Add(this.tbFilterRemoved);
+            this.groupBox10.Controls.Add(this.cbFilterSTD);
+            this.groupBox10.Location = new System.Drawing.Point(19, 543);
+            this.groupBox10.Name = "groupBox10";
+            this.groupBox10.Size = new System.Drawing.Size(185, 126);
+            this.groupBox10.TabIndex = 32;
+            this.groupBox10.TabStop = false;
+            this.groupBox10.Text = "Outlier Filtering";
+            // 
+            // tbFilterRemoved
+            // 
+            this.tbFilterRemoved.Location = new System.Drawing.Point(18, 65);
+            this.tbFilterRemoved.Multiline = true;
+            this.tbFilterRemoved.Name = "tbFilterRemoved";
+            this.tbFilterRemoved.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.tbFilterRemoved.Size = new System.Drawing.Size(161, 49);
+            this.tbFilterRemoved.TabIndex = 1;
+            // 
+            // cbFilterSTD
+            // 
+            this.cbFilterSTD.ForeColor = System.Drawing.SystemColors.HotTrack;
+            this.cbFilterSTD.FormattingEnabled = true;
+            this.cbFilterSTD.Items.AddRange(new object[] {
+            "1/4 Remove most",
+            "1/3 Remove some",
+            "1/2 Remove a few",
+            "Remove none",
+            "1.0 Remove the biggest",
+            "2.0 Remove the extreme",
+            "3.0 Remove only the worst"});
+            this.cbFilterSTD.Location = new System.Drawing.Point(18, 27);
+            this.cbFilterSTD.MaxDropDownItems = 4;
+            this.cbFilterSTD.Name = "cbFilterSTD";
+            this.cbFilterSTD.Size = new System.Drawing.Size(139, 21);
+            this.cbFilterSTD.TabIndex = 0;
             // 
             // tbStartStopDate
             // 
@@ -414,13 +458,13 @@
             this.tbStartStopDate.Multiline = true;
             this.tbStartStopDate.Name = "tbStartStopDate";
             this.tbStartStopDate.ReadOnly = true;
-            this.tbStartStopDate.Size = new System.Drawing.Size(220, 59);
+            this.tbStartStopDate.Size = new System.Drawing.Size(261, 59);
             this.tbStartStopDate.TabIndex = 31;
             // 
             // btn8hr
             // 
             this.btn8hr.ForeColor = System.Drawing.SystemColors.HotTrack;
-            this.btn8hr.Location = new System.Drawing.Point(19, 588);
+            this.btn8hr.Location = new System.Drawing.Point(419, 634);
             this.btn8hr.Name = "btn8hr";
             this.btn8hr.Size = new System.Drawing.Size(52, 23);
             this.btn8hr.TabIndex = 30;
@@ -431,7 +475,7 @@
             // btn4hr
             // 
             this.btn4hr.ForeColor = System.Drawing.SystemColors.HotTrack;
-            this.btn4hr.Location = new System.Drawing.Point(92, 554);
+            this.btn4hr.Location = new System.Drawing.Point(318, 634);
             this.btn4hr.Name = "btn4hr";
             this.btn4hr.Size = new System.Drawing.Size(50, 23);
             this.btn4hr.TabIndex = 29;
@@ -442,7 +486,7 @@
             // btn2hr
             // 
             this.btn2hr.ForeColor = System.Drawing.SystemColors.HotTrack;
-            this.btn2hr.Location = new System.Drawing.Point(18, 554);
+            this.btn2hr.Location = new System.Drawing.Point(210, 634);
             this.btn2hr.Name = "btn2hr";
             this.btn2hr.Size = new System.Drawing.Size(52, 23);
             this.btn2hr.TabIndex = 28;
@@ -479,7 +523,7 @@
             this.groupBox3.Controls.Add(this.btnGTime);
             this.groupBox3.Controls.Add(this.cbShowError);
             this.groupBox3.Controls.Add(this.btnScatSets);
-            this.groupBox3.Location = new System.Drawing.Point(176, 480);
+            this.groupBox3.Location = new System.Drawing.Point(210, 480);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(260, 131);
             this.groupBox3.TabIndex = 25;
@@ -490,7 +534,7 @@
             // 
             this.groupBox6.Controls.Add(this.nudConCurrent);
             this.groupBox6.ForeColor = System.Drawing.Color.DarkGreen;
-            this.groupBox6.Location = new System.Drawing.Point(6, 57);
+            this.groupBox6.Location = new System.Drawing.Point(12, 57);
             this.groupBox6.Name = "groupBox6";
             this.groupBox6.Size = new System.Drawing.Size(99, 67);
             this.groupBox6.TabIndex = 29;
@@ -577,7 +621,7 @@
             this.groupBox5.Controls.Add(this.cbIdleGpu);
             this.groupBox5.Controls.Add(this.btnPlotET);
             this.groupBox5.Controls.Add(this.btnPlot);
-            this.groupBox5.Location = new System.Drawing.Point(320, 269);
+            this.groupBox5.Location = new System.Drawing.Point(361, 269);
             this.groupBox5.Name = "groupBox5";
             this.groupBox5.Size = new System.Drawing.Size(110, 127);
             this.groupBox5.TabIndex = 21;
@@ -587,7 +631,7 @@
             // cbIdleGpu
             // 
             this.cbIdleGpu.FormattingEnabled = true;
-            this.cbIdleGpu.Location = new System.Drawing.Point(19, 75);
+            this.cbIdleGpu.Location = new System.Drawing.Point(11, 75);
             this.cbIdleGpu.Name = "cbIdleGpu";
             this.cbIdleGpu.Size = new System.Drawing.Size(79, 21);
             this.cbIdleGpu.TabIndex = 27;
@@ -748,7 +792,7 @@
             this.lb_SelWorkUnits.Location = new System.Drawing.Point(6, 32);
             this.lb_SelWorkUnits.Name = "lb_SelWorkUnits";
             this.lb_SelWorkUnits.SelectionMode = System.Windows.Forms.SelectionMode.MultiSimple;
-            this.lb_SelWorkUnits.Size = new System.Drawing.Size(412, 214);
+            this.lb_SelWorkUnits.Size = new System.Drawing.Size(465, 214);
             this.lb_SelWorkUnits.TabIndex = 7;
             this.toolTip1.SetToolTip(this.lb_SelWorkUnits, "Select a start and a stop.\r\n");
             this.lb_SelWorkUnits.SelectedIndexChanged += new System.EventHandler(this.lb_SelWorkUnits_SelectedIndexChanged);
@@ -762,7 +806,7 @@
             this.groupBox2.Controls.Add(this.rbElapsed);
             this.groupBox2.Controls.Add(this.tb_Results);
             this.groupBox2.Controls.Add(this.rbThroughput);
-            this.groupBox2.Location = new System.Drawing.Point(16, 352);
+            this.groupBox2.Location = new System.Drawing.Point(16, 366);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(500, 232);
             this.groupBox2.TabIndex = 5;
@@ -1044,7 +1088,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1038, 720);
+            this.ClientSize = new System.Drawing.Size(1101, 764);
             this.Controls.Add(this.panel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
@@ -1062,6 +1106,8 @@
             this.groupBox4.PerformLayout();
             this.gb_filter.ResumeLayout(false);
             this.gb_filter.PerformLayout();
+            this.groupBox10.ResumeLayout(false);
+            this.groupBox10.PerformLayout();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             this.groupBox6.ResumeLayout(false);
@@ -1158,6 +1204,9 @@
         private System.Windows.Forms.CheckBox cbUseWUs;
         private System.Windows.Forms.CheckBox cbShowTotals;
         private System.Windows.Forms.ComboBox cbIdleGpu;
+        private System.Windows.Forms.GroupBox groupBox10;
+        private System.Windows.Forms.ComboBox cbFilterSTD;
+        private System.Windows.Forms.TextBox tbFilterRemoved;
     }
 }
 
