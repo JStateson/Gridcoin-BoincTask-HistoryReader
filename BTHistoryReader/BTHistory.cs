@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Mime;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 namespace BTHistoryReader
 {
@@ -1397,11 +1398,11 @@ namespace BTHistoryReader
             return RemoveOutliers(ref data, t);
         }
 
-        private string CalcOneStat(int iDev, int iStart, int iStop, ref int nRemoved)
+        private cNAvgStd CalcOneStat(int iDev, int iStart, int iStop, ref int nRemoved)
         {
-            string strResult = "";
             int nOriginal = 0;
             int NumCurrent = 1;
+            cNAvgStd cNAS = new cNAvgStd();
             if (cbUseWUs.Checked) NumCurrent = Convert.ToInt32(nudConCurrent.Value);
             List<double> data = GetOneStatList(iDev, iStart, iStop, ref nOriginal);
             for (int k1 = iStart; k1 <= iStop; k1++)
@@ -1416,82 +1417,16 @@ namespace BTHistoryReader
                 }
             }
             if(nU > 0)StdU = Math.Sqrt(StdU / nU);
-            if (data == null) return "";
-            if (data.Count == 0) return "";
+            if (data == null) return null;
+            if (data.Count == 0) return null;
             nRemoved = nOriginal - data.Count;
             double Avg = data.Average();
             double Std  = Math.Sqrt(data.Average(v => Math.Pow(v - Avg, 2)));
             int n = data.Count;
-            strResult += n.ToString("##,##0") + " -Stats- Avg:" + Avg.ToString("###,##0.00") + "(" + Std.ToString("#,##0.00") + ")\r\n";
-            return strResult;
-        }
-
-        private string CalcOneStatx(int iDev, int iStart, int iStop)
-        {
-            string strResult = (CurrentApp.bHasGPU ? "GPU" : "CPU") + iDev.ToString() + " WUs:";
-            double d;
-            double Avg = 0.0;
-            double Std = 0.0;
-            long l;
-            int k, n = 0;
-            int NumCurrent = 1;
-            //if (iDev >= CurrentApp.GpuReassignment.NumGPUs) return ""; // do not handle any of the "64"
-            if (cbUseWUs.Checked)NumCurrent = Convert.ToInt32(nudConCurrent.Value);
-            nU = 0;
-            StdU = 0.0;
-            AvgU = 0.0;
-            for (int k1 = iStart; k1 <= iStop; k1++)
-            {
-                k = SortToInfo[k1];
-                d = ThisProjectInfo[k].dElapsedTime / NumCurrent;
-                d /= 60.0;
-                if (ThisProjectInfo[k].bDeviceUnk)
-                {
-                    nU++;
-                    AvgU += d;
-                    if(!cbAssignGPU.Checked) continue; // if not assigning the unknown GPU then do not include it in gpu stats
-                }
-                if (!ThisProjectInfo[k].bState || iDev != ThisProjectInfo[k].iDeviceUsed) continue;
-
-                if (d == 0.0)
-                {
-                    Debug.Assert(false);
-                    continue; // bad or missing data was finally fixed.  Problem was bitcoin utopia had 0 for cpu
-                }                                                        // so putting in "0.1" for cpu but not if gpu is 0 also
-                n++;
-                Avg += d;
-            }
-            if(n == 0)
-            {
-                return ""; // strResult + " has no valid data\r\n"; do not show anything
-            }
-            Avg /= n;
-            if (nU > 0) AvgU /= nU;
-            l = Convert.ToInt64(Avg * 60.0);
-            Std = 0;
-            for (int k1 = iStart; k1 <= iStop; k1++)
-            {
-                k = SortToInfo[k1];
-                d = ThisProjectInfo[k].dElapsedTime/NumCurrent;
-                if (ThisProjectInfo[k].bDeviceUnk)
-                {
-                    d = d / 60.0 - AvgU;
-                    StdU += d * d;
-                    continue;
-                }
-                if (!ThisProjectInfo[k].bState || iDev != ThisProjectInfo[k].iDeviceUsed) continue;
-                if (d == 0.0)
-                {
-                    Debug.Assert(false);
-                    continue;
-                }
-                d = d / 60.0 - Avg;
-                Std += d * d;
-            }
-            Std = Math.Sqrt(Std / n);
-            if(nU > 0)StdU = Math.Sqrt(StdU / nU);            
-            strResult+= n.ToString("##,##0") + " -Stats- Avg:" + Avg.ToString("###,##0.00") + "(" + Std.ToString("#,##0.00") + ")\r\n";
-            return strResult;
+            cNAS.n = n;
+            cNAS.avg = Avg;
+            cNAS.std = Std;
+            return cNAS;
         }
 
         private string CalcOnecredit(int iDev, int iStart, int iStop, ref double val)
@@ -1507,7 +1442,7 @@ namespace BTHistoryReader
             }
             if (n == 0)
             {
-                return ""; // strResult + " has no valid data\r\n"; //do not show anything
+                return ""; 
             }
             val = n * d / TimeIntervalMinutes;
             return strResult + "(" + val.ToString("#,##0.00)");
@@ -1520,14 +1455,22 @@ namespace BTHistoryReader
         {
             int nRemoved = 0;
             string strResults = "There are " + nDevices.ToString() + (CurrentApp.bHasGPU ? " GPUs" : " CPUs") + ", units are minutes\r\n";
-            strResults += "Dev#   WU count  Avg and Std of avg\r\n";
+            strResults += "Dev# WU count  Avg and Std of avg\r\n";
             nU = 0;
             StdU = 0.0;
             AvgU = 0.0;
             tbFilterRemoved.Text = "";
+            List<cNAvgStd> lNAS = new List<cNAvgStd>();
+            int[] dc = {0,0,0};
             for (int i = 0; i < nDevices;i++)
             {
-                strResults += CalcOneStat(i, iStart, iStop, ref nRemoved);
+                //strResults += CalcOneStat(i, iStart, iStop, ref nRemoved);
+                cNAvgStd cnas = CalcOneStat(i, iStart, iStop, ref nRemoved);
+                if (cnas == null) continue;
+                lNAS.Add(cnas);
+                dc[0] = Math.Max(dc[0], lNAS[i].n.ToString().Length);
+                dc[1] = Math.Max(dc[1], lNAS[i].avg.ToString("#.00").Length); // 0.00 has length 4
+                dc[2] = Math.Max(dc[2], lNAS[i].std.ToString("#.00").Length);
                 string sN = "None removed";
                 if(nRemoved == 1)
                 {
@@ -1539,6 +1482,14 @@ namespace BTHistoryReader
                 }
                 tbFilterRemoved.Text += "GPU" + (i + 1).ToString() + ": " + sN;
                 if (i < nDevices - 1) tbFilterRemoved.Text += "\r\n";
+            }
+            int iDev = 1;
+            foreach(cNAvgStd cnas in lNAS)
+            {
+                strResults+= (CurrentApp.bHasGPU ? "GPU" : "CPU") + iDev.ToString() + " WUs:";
+                strResults += cnas.n.ToString().PadLeft(dc[0],' ') + " -Stats- Avg:" + cnas.avg.ToString("0.00").PadLeft(dc[1],' ') +
+                    "(" + cnas.std.ToString("0.00").PadLeft(dc[2],' ') + ")\r\n";
+                iDev++;
             }
             return strResults;
         }

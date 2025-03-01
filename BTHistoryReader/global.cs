@@ -44,6 +44,13 @@ namespace BTHistoryReader
         public bool bExclude;  // used by the advanced filter program
     }
 
+    public class cNAvgStd
+    {
+        public int n;
+        public double avg;
+        public double std;
+    }
+
     public class cGpuReassigned
     {
         public int NumGPUs; // this is actually the orginal of the largest GPU id + 1 which may or may not be the total number of gpus
