@@ -7,6 +7,7 @@ using System.Linq;
 using System.Net.Mime;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Button;
 namespace BTHistoryReader
 {
 
@@ -44,7 +45,9 @@ namespace BTHistoryReader
                 cboxStopLoad.Checked = Properties.Settings.Default.UseLimit;
                 tboxLimit.Text = Properties.Settings.Default.RecLimit;
                 lbLastFiles.Text = Properties.Settings.Default.LastFiles;
+                cbFilterSTD.SelectedIndexChanged -= cbFilterSTD_SelectedIndexChanged;
                 cbFilterSTD.SelectedIndex = 3;  // no filtering
+                cbFilterSTD.SelectedIndexChanged += cbFilterSTD_SelectedIndexChanged;
                 GpuReassignment.init();
             }
             catch
@@ -89,6 +92,7 @@ namespace BTHistoryReader
         const int LKUP_TOBE_IGNORED = -2;   // do not use this project
         const int LKUP_INVALID_LINE = -3;   // line in history is invalid 
 
+        private List<cOutFilter> lNAS = new List<cOutFilter>();
 
         public string CurrentSystem;    // computer name
         public string CurrentProject;   // project being looked at
@@ -487,6 +491,7 @@ namespace BTHistoryReader
             btnScatSets.Enabled = b;
             btn_OpenHistory.Enabled = b;
             gboxOPFsettings.Enabled = b;
+            groupBox10.Enabled = b;
             lb_SelWorkUnits.Enabled = b;
         }
 
@@ -1351,14 +1356,77 @@ namespace BTHistoryReader
             ShowGPUcount(ref AppName);
         }
 
+        private (List<double>, List<int>) RemoveOutliersWithIndexes(ref List<double> data, double threshold = 2)
+        {
+            double mean = data.Average();
+            double stdDev = Math.Sqrt(data.Average(v => Math.Pow(v - mean, 2)));
+
+            // Track indexes of removed outliers
+            List<int> outlierIndexes = new List<int>();
+
+            // Filter data while keeping track of original indexes
+            List<double> filteredData = data
+                .Select((value, index) => new { value, index }) // Store original index
+                .Where(item =>
+                {
+                    bool isOutlier = Math.Abs(item.value - mean) > threshold * stdDev;
+                    if (!isOutlier) outlierIndexes.Add(item.index);
+                    return !isOutlier;
+                })
+                .Select(item => item.value)
+                .ToList();
+
+            return (filteredData, outlierIndexes);
+        }
+
+
         private List<double> RemoveOutliers(ref List<double> data, double threshold)
         {
             double mean = data.Average();
             double stdDev = Math.Sqrt(data.Average(v => Math.Pow(v - mean, 2)));
             return data.Where(x => Math.Abs(x - mean) <= threshold * stdDev).ToList();
         }
+        private (List<double>, List<int>) GetOneStatList(int iDev, int iStart, int iStop, ref int nOriginal)
+        {
+            List<double> data = new List<double>();
+            int n = 0, nU = 0;
+            StdU = 0.0;
+            AvgU = 0.0;
+            double t = GetOutlierFilter();
+            int NumCurrent = 1;
+            if (cbUseWUs.Checked) NumCurrent = Convert.ToInt32(nudConCurrent.Value);
+            for (int k1 = iStart; k1 <= iStop; k1++)
+            {
+                int k = SortToInfo[k1];
+                double d = ThisProjectInfo[k].dElapsedTime / NumCurrent;
+                d /= 60.0;
+                if (ThisProjectInfo[k].bDeviceUnk)
+                {
+                    nU++;
+                    AvgU += d;
+                    if (!cbAssignGPU.Checked) continue; // if not assigning the unknown GPU then do not include it in gpu stats
+                }
+                if (!ThisProjectInfo[k].bState || iDev != ThisProjectInfo[k].iDeviceUsed) continue;
 
-        private List<double> GetOneStatList(int iDev, int iStart, int iStop, ref int nOriginal)
+                if (d == 0.0)
+                {
+                    Debug.Assert(false);
+                    continue; // bad or missing data was finally fixed.  Problem was bitcoin utopia had 0 for cpu
+                }
+                data.Add(d);
+                n++;
+            }
+            if (n == 0)
+            {
+                return (null,null); // strResult + " has no valid data\r\n"; do not show anything
+            }
+            nOriginal = data.Count;
+            if (t == 0) return (data,null);
+            AvgU /= nU;
+            return RemoveOutliersWithIndexes(ref data, t);
+        }
+
+        private List<double> GetOneStatListx(int iDev, int iStart, int iStop, ref int nOriginal)
         {
             List<double> data = new List<double>();            
             int n = 0, nU = 0;
@@ -1398,13 +1466,23 @@ namespace BTHistoryReader
             return RemoveOutliers(ref data, t);
         }
 
-        private cNAvgStd CalcOneStat(int iDev, int iStart, int iStop, ref int nRemoved)
+        private cOutFilter CalcOneStat(int iDev, int iStart, int iStop, ref int nRemoved)
         {
             int nOriginal = 0;
             int NumCurrent = 1;
-            cNAvgStd cNAS = new cNAvgStd();
+            cOutFilter cNAS = new cOutFilter();
             if (cbUseWUs.Checked) NumCurrent = Convert.ToInt32(nudConCurrent.Value);
-            List<double> data = GetOneStatList(iDev, iStart, iStop, ref nOriginal);
+            (cNAS.data,cNAS.outlierIndexes) = GetOneStatList(iDev, iStart, iStop, ref nOriginal);
+            cNAS.time_t = new List<long>();
+            for(int i = 0; i < cNAS.data.Count; i++)
+            {
+                int k = i;
+                if(cNAS.outlierIndexes != null)
+                    k = cNAS.outlierIndexes[i];
+                cNAS.time_t.Add(ThisProjectInfo[k].time_t_Completed);
+            }
+
+
             for (int k1 = iStart; k1 <= iStop; k1++)
             {
                 int k = SortToInfo[k1];
@@ -1417,12 +1495,12 @@ namespace BTHistoryReader
                 }
             }
             if(nU > 0)StdU = Math.Sqrt(StdU / nU);
-            if (data == null) return null;
-            if (data.Count == 0) return null;
-            nRemoved = nOriginal - data.Count;
-            double Avg = data.Average();
-            double Std  = Math.Sqrt(data.Average(v => Math.Pow(v - Avg, 2)));
-            int n = data.Count;
+            if (cNAS.data == null) return null;
+            if (cNAS.data.Count == 0) return null;
+            nRemoved = nOriginal - cNAS.data.Count;
+            double Avg = cNAS.data.Average();
+            double Std  = Math.Sqrt(cNAS.data.Average(v => Math.Pow(v - Avg, 2)));
+            int n = cNAS.data.Count;
             cNAS.n = n;
             cNAS.avg = Avg;
             cNAS.std = Std;
@@ -1451,6 +1529,7 @@ namespace BTHistoryReader
         private int nU;
         private double StdU;
         private double AvgU;
+        
         private string CalcGPUstats(int nDevices,int iStart, int iStop)
         {
             int nRemoved = 0;
@@ -1460,12 +1539,11 @@ namespace BTHistoryReader
             StdU = 0.0;
             AvgU = 0.0;
             tbFilterRemoved.Text = "";
-            List<cNAvgStd> lNAS = new List<cNAvgStd>();
+            lNAS.Clear();
             int[] dc = {0,0,0};
             for (int i = 0; i < nDevices;i++)
-            {
-                //strResults += CalcOneStat(i, iStart, iStop, ref nRemoved);
-                cNAvgStd cnas = CalcOneStat(i, iStart, iStop, ref nRemoved);
+            {                
+                cOutFilter cnas = CalcOneStat(i, iStart, iStop, ref nRemoved);
                 if (cnas == null) continue;
                 lNAS.Add(cnas);
                 dc[0] = Math.Max(dc[0], lNAS[i].n.ToString().Length);
@@ -1484,7 +1562,7 @@ namespace BTHistoryReader
                 if (i < nDevices - 1) tbFilterRemoved.Text += "\r\n";
             }
             int iDev = 1;
-            foreach(cNAvgStd cnas in lNAS)
+            foreach(cOutFilter cnas in lNAS)
             {
                 strResults+= (CurrentApp.bHasGPU ? "GPU" : "CPU") + iDev.ToString() + " WUs:";
                 strResults += cnas.n.ToString().PadLeft(dc[0],' ') + " -Stats- Avg:" + cnas.avg.ToString("0.00").PadLeft(dc[1],' ') +
@@ -1674,11 +1752,10 @@ namespace BTHistoryReader
             return true;
         }
 
-        // the first number shown in the selection box is line number in the history file, not the index to the project info table
-        private void btn_Filter_Click(object sender, EventArgs e)
+        private void RunFilter()
         {
             int NumCurrent = Convert.ToInt32(nudConCurrent.Value);
-            double d = RunContinunityCheck();            
+            double d = RunContinunityCheck();
             btnGTime.Enabled = cbGPUcompare.Checked;
             tb_Results.Text = "";
             btnScatGpu.Enabled = true;
@@ -1704,6 +1781,12 @@ namespace BTHistoryReader
                 else tb_Info.Text = "Probably no data for idle analysis\r\n";
             }
             AddUnknownStats();
+        }
+
+        // the first number shown in the selection box is line number in the history file, not the index to the project info table
+        private void btn_Filter_Click(object sender, EventArgs e)
+        {
+            RunFilter();
         }
 
 
@@ -1877,8 +1960,11 @@ namespace BTHistoryReader
             btn_Filter.Enabled = bShow; ;
             lb_NumSel.Visible = bShow;
             lb_LocMax.Visible = bShow;
-            btnPlot.Enabled = bShow;
-            btnPlotET.Enabled = bShow;
+            //btnPlot.Enabled = bShow;
+            //btnPlotET.Enabled = bShow;
+            groupBox3.Enabled = bShow;
+            groupBox5.Enabled = bShow;
+            groupBox10.Enabled = bShow;
             btnCheckNext.Enabled = bShow;
             btnCheckPrev.Enabled = bShow;
         }
@@ -2553,7 +2639,7 @@ yoyo@home
                 }
                 else continue;
             }
-            timegraph DeviceGraph = new timegraph (ref ThisProjectInfo, 1+MaxDeviceCount, iStart, iStop,dMax/nCon, ref SortToInfo, nCon);
+            timegraph DeviceGraph = new timegraph (ref lNAS, ref ThisProjectInfo, 1+MaxDeviceCount, iStart, iStop,dMax/nCon, ref SortToInfo, nCon);
             DeviceGraph.ShowDialog();
             DeviceGraph.Dispose();
         }
@@ -2657,6 +2743,11 @@ yoyo@home
             int n = cbFilterSTD.SelectedIndex;
             double[] Vals = {0.25, 0.333, 0.5, 0.0, 1.0, 2.0, 3.0};
             return Vals[n];
+        }
+
+        private void cbFilterSTD_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            RunFilter();
         }
     }    
 }

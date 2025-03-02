@@ -40,10 +40,13 @@ namespace BTHistoryReader
         string strYscale = "seconds";
         double dYscale = 1.0;
         double dNumConcurrent = 1.0;
+        List<cOutFilter> lNAS;
+        private bool bTypeP = true;
         // nCon is number of concurrent tasks and has been divided intod dMax already
-        public timegraph(ref List<cProjectInfo> rThisProjectInfo, int rnDevices, int iiStart, int iiStop, double dMax, ref int[] SortToInfo, int nCon)
+        public timegraph(ref List<cOutFilter> rlNAS, ref List<cProjectInfo> rThisProjectInfo, int rnDevices, int iiStart, int iiStop, double dMax, ref int[] SortToInfo, int nCon)
         {
             InitializeComponent();
+            lNAS = rlNAS;
             nDevices = rnDevices;
             ThisProjectInfo = rThisProjectInfo;
             DeviceCount = nDevices;
@@ -53,7 +56,7 @@ namespace BTHistoryReader
             nudAvg.SelectedIndex = 3;
             strYscale = BestTimeUnits(dMax, ref dYscale);
             dNumConcurrent = nCon;
-            PerformGraph();
+            PerformGraph(bTypeP);
         }
 
         // the input to this must be in seconds
@@ -65,116 +68,173 @@ namespace BTHistoryReader
             return "mins";
         }
 
-        private void PerformGraph()
+        private void PerformGraph(bool bUseOutliers)
         {
-            GraphInfo = new List<cGraphInfo>(nDevices);
-            
+            int i = 0;
+            int j = 0;
+            int k = 0;
+            GraphInfo = new List<cGraphInfo>(nDevices);            
             Offline = new List<double>();
             TimeOffline = new List<double>();
-            for (int i = 0; i < nDevices; i++)
+            for (i = 0; i < nDevices; i++)
             {
                 cGraphInfo gi = new cGraphInfo();
                 gi.RawDevice = new List<cDeviceGraphInfo>();
                 // not used gi.dYscale = dYscale;   // same for all gpus
                 GraphInfo.Add(gi);
-                if (i >= 0)
-                {
-                    Series gpus = new Series("GPU" + i.ToString());
-                    gpus.ChartType = SeriesChartType.Line;
-                    tgraph.Series.Add(gpus);
-                }
+                Series gpus = new Series("GPU" + i.ToString());
+                gpus.ChartType = SeriesChartType.Line;
+                tgraph.Series.Add(gpus);
             }
             tgraph.ChartAreas[0].AxisX.Minimum = 0;
             tgraph.ChartAreas[0].AxisX.Interval = x_interval;
             dtStart = DateTime.SpecifyKind(dt_1970.AddSeconds(ThisProjectInfo[iSortToInfo[iStart]].time_t_Completed), DateTimeKind.Utc);
-            for (int i1 = iStart; i1 < iStop; i1++)
+            if(bUseOutliers)
             {
-                int i = iSortToInfo[i1];
-                if (!ThisProjectInfo[i].bState)
-                    continue;
-                int k = ThisProjectInfo[i].iDeviceUsed;
-                for (int j = 0; j < nDevices; j++)
+                j = 0;
+                foreach(cOutFilter cof in lNAS)
                 {
-                    if (k == j)
+                    for(i = 0;i < cof.n; i++)
                     {
                         cDeviceGraphInfo dgi = new cDeviceGraphInfo();
-                        dgi.dElapsed = ThisProjectInfo[i].dElapsedTime / dNumConcurrent;  
-                        dgi.time_t = ThisProjectInfo[i].time_t_Completed;
+                        dgi.dElapsed = cof.data[i] / dNumConcurrent;
+                        dgi.time_t = cof.time_t[i];
                         GraphInfo[j].RawDevice.Add(dgi);
-                        break;
                     }
+                    j++;
                 }
-            }
-            dElapsedOffset = 0;
-            iElapsedCount = 0;
-            mFilter = Convert.ToInt32(nudAvg.Text);
-            for (int i = 0; i < nDevices; i++)
-            {
-                // problem:  AvgMinutes expects mFilter to be in minutes and changes to seconds but data scale changes
-                // since I added that get best scale
-                GraphInfo[i].AvgMinutes = mFilter ;
-                if (i == 0) lSmallest = GraphInfo[i].lStart;
-                lSmallest = Math.Min(lSmallest, GraphInfo[i].lStart);
-                iElapsedCount += GraphInfo[i].RawDevice.Count;
-                dElapsedOffset += GraphInfo[i].sAverageElapsed;
-            }
-            dElapsedOffset /= iElapsedCount;
 
-            //  would like to know if system was offline:  use 3 * elapsed offset to determine if offline
-            dOffline = (mFilter * dElapsedOffset) / 60.0; // multipler was 3 ??do I need dyscale here??
-            for (int i1 = iStart; i1 < iStop - 1; i1++)
-            {
-                int i = iSortToInfo[i1];
-                // even bad points count as system still being on line
-                int j = iSortToInfo[i1 + 1];
-                double dij = (ThisProjectInfo[j].time_t_Completed - ThisProjectInfo[i].time_t_Completed) / 60.0;
-                if (dij > dOffline)
-                {
-                    // x axis is in hours not minutes
-                    Offline.Add((ThisProjectInfo[i].time_t_Completed - ThisProjectInfo[iSortToInfo[iStart]].time_t_Completed) / 3600.0);
-                    TimeOffline.Add(dij / 60.0);
-                }
-            }
+                dElapsedOffset = 0;
+                iElapsedCount = 0;
+                mFilter = Convert.ToInt32(nudAvg.Text);
 
-           if (Offline.Count > 0 )
-            {
-                gpusOffline = new Series("Offline");
-                int NumMarkers = 10; 
-                gpusOffline.ChartType = SeriesChartType.Point;
-                for (int i = 0; i < Offline.Count; i++)
+                for (i = 0; i < nDevices; i++)
                 {
-                    // add some points between x and x + the span
-                    NumMarkers = GetBestNumMarkers(TimeOffline[i]);
-                    double dSpan = TimeOffline[i] / NumMarkers;
-                    for (int j = 0; j < NumMarkers; j++)
+                    GraphInfo[i].AvgMinutes = mFilter;
+                    if (GraphInfo[i].NumEntries > 1)
                     {
-                        gpusOffline.Points.AddXY(Offline[i] + j * dSpan, 2);
+                        if (i == 0) lSmallest = GraphInfo[i].lStart;
+                        lSmallest = Math.Min(lSmallest, GraphInfo[i].lStart);
+                        iElapsedCount += GraphInfo[i].RawDevice.Count;
+                        dElapsedOffset += GraphInfo[i].sAverageElapsed;
                     }
                 }
-                if (cbShowOffline.Checked)
-                    AddOffline();
-            }
-            mLargestTimeSpan = -1;
-            for (int i = 0; i < nDevices; i++)
-            {
-                dSmallOffset = (GraphInfo[i].lStart - lSmallest) / 60.0;
-                mLargestTimeSpan = Math.Max(mLargestTimeSpan, GraphInfo[i].mTimeSpan);
-                for (int j = 0; j < GraphInfo[i].NumEntries; j++)
+                dElapsedOffset /= iElapsedCount;
+
+
+                mLargestTimeSpan = -1;
+                int nIdInx = 0;
+                for (i = 0; i < nDevices; i++)
                 {
-                    double dHours = (GraphInfo[i].time_m[j] + dSmallOffset) / 60.0;
-                    tgraph.Series[i].Points.AddXY(dHours, (GraphInfo[i].dElapsed[j] + dElapsedOffset * i) / dYscale);
+                    if (GraphInfo[i].NumEntries > 1)
+                    {
+                        dSmallOffset = (GraphInfo[i].lStart - lSmallest) / 60.0;
+                        mLargestTimeSpan = Math.Max(mLargestTimeSpan, GraphInfo[i].mTimeSpan);
+                        for (j = 0; j < GraphInfo[i].NumEntries; j++)
+                        {
+                            double dHours = (GraphInfo[i].time_m[j] + dSmallOffset) / 60.0;
+                            tgraph.Series[nIdInx].Points.AddXY(dHours, (GraphInfo[i].dElapsed[j] + dElapsedOffset * i) / dYscale);
+                        }
+                        tgraph.Series[nIdInx].ChartType = SeriesChartType.Point;
+                        nIdInx++;
+                    }
+
                 }
-                if (GraphInfo[i].NumEntries < 2)
+                tgraph.ChartAreas[0].AxisX.Maximum = BestXmax(mLargestTimeSpan);
+                lbxaxis.Text = "xAxis time since " + dtStart.ToLocalTime() + " in hours";
+                lbyaxis.Text = "yAxis elapsed time (" + strYscale + ") offset by " + (dElapsedOffset / dYscale).ToString("##.0 " + strYscale);
+                //tgraph.Series[0].Points.DataBindXY(GraphInfo[0].time_t, GraphInfo[0].dElapsed);
+                tgraph.Invalidate();
+            }
+            else
+            {
+                for (int i1 = iStart; i1 < iStop; i1++)
                 {
+                    i = iSortToInfo[i1];
+                    if (!ThisProjectInfo[i].bState)
+                        continue;
+                    k = ThisProjectInfo[i].iDeviceUsed;
+                    for (j = 0; j < nDevices; j++)
+                    {
+                        if (k == j)
+                        {
+                            cDeviceGraphInfo dgi = new cDeviceGraphInfo();
+                            dgi.dElapsed = ThisProjectInfo[i].dElapsedTime / dNumConcurrent;
+                            dgi.time_t = ThisProjectInfo[i].time_t_Completed;
+                            GraphInfo[j].RawDevice.Add(dgi);
+                            break;
+                        }
+                    }
+                }
+
+                dElapsedOffset = 0;
+                iElapsedCount = 0;
+                mFilter = Convert.ToInt32(nudAvg.Text);
+                for (i = 0; i < nDevices; i++)
+                {
+                    // problem:  AvgMinutes expects mFilter to be in minutes and changes to seconds but data scale changes
+                    // since I added that get best scale
+                    GraphInfo[i].AvgMinutes = mFilter;
+                    if (i == 0) lSmallest = GraphInfo[i].lStart;
+                    lSmallest = Math.Min(lSmallest, GraphInfo[i].lStart);
+                    iElapsedCount += GraphInfo[i].RawDevice.Count;
+                    dElapsedOffset += GraphInfo[i].sAverageElapsed;
+                }
+                dElapsedOffset /= iElapsedCount;
+
+                //  would like to know if system was offline:  use 3 * elapsed offset to determine if offline
+                dOffline = (mFilter * dElapsedOffset) / 60.0; // multipler was 3 ??do I need dyscale here??
+                for (int i1 = iStart; i1 < iStop - 1; i1++)
+                {
+                    i = iSortToInfo[i1];
+                    // even bad points count as system still being on line
+                    j = iSortToInfo[i1 + 1];
+                    double dij = (ThisProjectInfo[j].time_t_Completed - ThisProjectInfo[i].time_t_Completed) / 60.0;
+                    if (dij > dOffline)
+                    {
+                        // x axis is in hours not minutes
+                        Offline.Add((ThisProjectInfo[i].time_t_Completed - ThisProjectInfo[iSortToInfo[iStart]].time_t_Completed) / 3600.0);
+                        TimeOffline.Add(dij / 60.0);
+                    }
+                }
+
+                if (Offline.Count > 0)
+                {
+                    gpusOffline = new Series("Offline");
+                    int NumMarkers = 10;
+                    gpusOffline.ChartType = SeriesChartType.Point;
+                    for (i = 0; i < Offline.Count; i++)
+                    {
+                        // add some points between x and x + the span
+                        NumMarkers = GetBestNumMarkers(TimeOffline[i]);
+                        double dSpan = TimeOffline[i] / NumMarkers;
+                        for (j = 0; j < NumMarkers; j++)
+                        {
+                            gpusOffline.Points.AddXY(Offline[i] + j * dSpan, 2);
+                        }
+                    }
+                    if (cbShowOffline.Checked)
+                        AddOffline();
+                }
+                mLargestTimeSpan = -1;
+                for (i = 0; i < nDevices; i++)
+                {
+                    dSmallOffset = (GraphInfo[i].lStart - lSmallest) / 60.0;
+                    mLargestTimeSpan = Math.Max(mLargestTimeSpan, GraphInfo[i].mTimeSpan);
+                    for (j = 0; j < GraphInfo[i].NumEntries; j++)
+                    {
+                        double dHours = (GraphInfo[i].time_m[j] + dSmallOffset) / 60.0;
+                        tgraph.Series[i].Points.AddXY(dHours, (GraphInfo[i].dElapsed[j] + dElapsedOffset * i) / dYscale);
+                    }
                     tgraph.Series[i].ChartType = SeriesChartType.Point;
                 }
-                else tgraph.Series[i].ChartType = SeriesChartType.Line;
+                tgraph.ChartAreas[0].AxisX.Maximum = BestXmax(mLargestTimeSpan);
+                lbxaxis.Text = "xAxis time since " + dtStart.ToLocalTime() + " in hours";
+                lbyaxis.Text = "yAxis elapsed time (" + strYscale + ") offset by " + (dElapsedOffset / dYscale).ToString("##.0 " + strYscale);
+                //tgraph.Series[0].Points.DataBindXY(GraphInfo[0].time_t, GraphInfo[0].dElapsed);
+                tgraph.Invalidate();
             }
-            tgraph.ChartAreas[0].AxisX.Maximum = BestXmax(mLargestTimeSpan);
-            lbxaxis.Text = "xAxis time since " + dtStart.ToLocalTime() + " in hours";
-            lbyaxis.Text = "yAxis elapsed time ("+strYscale + ") offset by " + (dElapsedOffset/dYscale).ToString("##.0 " + strYscale);
-            //tgraph.Series[0].Points.DataBindXY(GraphInfo[0].time_t, GraphInfo[0].dElapsed);
-            tgraph.Invalidate();
+
         }
 
         private void AddOffline()
@@ -219,7 +279,15 @@ namespace BTHistoryReader
             for (int i = n - 1; i >= 0; i--)
                 tgraph.Series.RemoveAt(i);
             offlineAdded = false;
-            PerformGraph();
+            PerformGraph(bTypeP);
+        }
+
+        private void cbShowOffline_CheckedChanged(object sender, EventArgs e)
+        {
+            if(cbShowOffline.Checked)
+            {
+                nudAvg.SelectedIndex = 0; 
+            }
         }
     }
 }

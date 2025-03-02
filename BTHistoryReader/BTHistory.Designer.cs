@@ -417,6 +417,7 @@
             // 
             this.groupBox10.Controls.Add(this.tbFilterRemoved);
             this.groupBox10.Controls.Add(this.cbFilterSTD);
+            this.groupBox10.Enabled = false;
             this.groupBox10.Location = new System.Drawing.Point(19, 543);
             this.groupBox10.Name = "groupBox10";
             this.groupBox10.Size = new System.Drawing.Size(185, 126);
@@ -450,6 +451,7 @@
             this.cbFilterSTD.Name = "cbFilterSTD";
             this.cbFilterSTD.Size = new System.Drawing.Size(139, 21);
             this.cbFilterSTD.TabIndex = 0;
+            this.cbFilterSTD.SelectedIndexChanged += new System.EventHandler(this.cbFilterSTD_SelectedIndexChanged);
             // 
             // tbStartStopDate
             // 

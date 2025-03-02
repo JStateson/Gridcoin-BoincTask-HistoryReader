@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
             System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             this.tgraph = new System.Windows.Forms.DataVisualization.Charting.Chart();
@@ -37,6 +38,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.btnDoGraph = new System.Windows.Forms.Button();
             this.cbShowOffline = new System.Windows.Forms.CheckBox();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.tgraph)).BeginInit();
             this.SuspendLayout();
             // 
@@ -113,7 +115,10 @@
             this.cbShowOffline.Size = new System.Drawing.Size(99, 17);
             this.cbShowOffline.TabIndex = 6;
             this.cbShowOffline.Text = "Estimate Offline";
+            this.toolTip1.SetToolTip(this.cbShowOffline, "Time that no GPUs were working\r\nSet minutes to average to 1");
             this.cbShowOffline.UseVisualStyleBackColor = true;
+            this.cbShowOffline.Visible = false;
+            this.cbShowOffline.CheckedChanged += new System.EventHandler(this.cbShowOffline_CheckedChanged);
             // 
             // timegraph
             // 
@@ -146,5 +151,6 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button btnDoGraph;
         private System.Windows.Forms.CheckBox cbShowOffline;
+        private System.Windows.Forms.ToolTip toolTip1;
     }
 }

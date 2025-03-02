@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using System.ComponentModel;
 
 namespace BTHistoryReader
 {
@@ -42,6 +43,16 @@ namespace BTHistoryReader
         public int iSystem;    // index to system data came from
         public int DatasetGroup;
         public bool bExclude;  // used by the advanced filter program
+    }
+
+    public class cOutFilter
+    {
+        public int n;
+        public double avg;
+        public double std;
+        public List<double> data;
+        public List<int> outlierIndexes;
+        public List<long> time_t;
     }
 
     public class cNAvgStd
