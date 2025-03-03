@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Mime;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Button;
@@ -33,9 +34,32 @@ namespace BTHistoryReader
 
         cAdvFilter MyAdvFilter = new cAdvFilter();
 
+        public class cGpuFilter
+        {
+            public string nGpu { get; set; }
+            public bool bGpu { get; set; }
+            public string sStats { get; set; }
+        }
+
+        private List<cGpuFilter> GpuFilters;
+
+        private void FillGPU()
+        {
+            dgvOF.DataSource = GpuFilters;
+            dgvOF.AutoGenerateColumns = false;
+            dgvOF.Columns[0].HeaderText = "gpu";
+            dgvOF.Columns[0].Width = 32;
+            dgvOF.Columns[1].HeaderText = "filter";
+            dgvOF.Columns[1].Width = 32;
+            dgvOF.Columns[2].HeaderText = "statistics";
+            dgvOF.Columns[0].ReadOnly = true;
+            dgvOF.Columns[2].ReadOnly = true;
+        }
+
         public BTHistory()
         {
             InitializeComponent();
+            GpuFilters = new List<cGpuFilter>(); 
             try
             {
                 // DEFAULT IS TO USE CVS1  note that the 3 files slowly change in real time as they are updated
@@ -564,13 +588,26 @@ namespace BTHistoryReader
         private void ShowGPUcount(ref cAppName AppName)
         {
             tb_Results.Text = "";
+            GpuFilters.Clear();
+            dgvOF.DataSource = null;
             for (int i = 0; i < AppName.GpuReassignment.NumGPUs;  i++)
             {
-                tb_Results.Text += "GPU-" + i.ToString() + " " + AppName.GpuReassignment.idGPUused(i).ToString() + "\r\n";
+                string sName = AppName.GpuReassignment.idGPUused(i).ToString();
+                cGpuFilter cGF = new cGpuFilter();
+                cGF.nGpu = (i + 1).ToString();
+                cGF.bGpu = false;
+                cGF.sStats = "";
+                GpuFilters.Add(cGF);
+                tb_Results.Text += "GPU-" + (i+1).ToString() + " " + sName + "\r\n";
             }
             if(AppName.GpuReassignment.NumberGPUsUnknown > 0)
             {
-                tb_Results.Text += "Number unknown GPUs " + AppName.GpuReassignment.NumberGPUsUnknown.ToString() + "\r\n";
+                string sName = AppName.GpuReassignment.NumberGPUsUnknown.ToString();
+                tb_Results.Text += "Number unknown GPUs " + sName + "\r\n";
+            }
+            if (GpuFilters.Count > 0)
+            {
+                FillGPU();
             }
         }
 
@@ -1392,7 +1429,7 @@ namespace BTHistoryReader
             int n = 0, nU = 0;
             StdU = 0.0;
             AvgU = 0.0;
-            double t = GetOutlierFilter();
+            double t = GetOutlierFilter(iDev);
             int NumCurrent = 1;
             if (cbUseWUs.Checked) NumCurrent = Convert.ToInt32(nudConCurrent.Value);
             for (int k1 = iStart; k1 <= iStop; k1++)
@@ -1432,7 +1469,7 @@ namespace BTHistoryReader
             int n = 0, nU = 0;
             StdU = 0.0;
             AvgU = 0.0;
-            double t = GetOutlierFilter();
+            double t = GetOutlierFilter(iDev);
             int NumCurrent = 1;
             if (cbUseWUs.Checked) NumCurrent = Convert.ToInt32(nudConCurrent.Value);
             for (int k1 = iStart; k1 <= iStop; k1++)
@@ -1470,22 +1507,30 @@ namespace BTHistoryReader
         {
             int nOriginal = 0;
             int NumCurrent = 1;
+            int k;
+            long lS=0, lE=0;
             cOutFilter cNAS = new cOutFilter();
             if (cbUseWUs.Checked) NumCurrent = Convert.ToInt32(nudConCurrent.Value);
             (cNAS.data,cNAS.outlierIndexes) = GetOneStatList(iDev, iStart, iStop, ref nOriginal);
             cNAS.time_t = new List<long>();
             for(int i = 0; i < cNAS.data.Count; i++)
             {
-                int k = i;
+                k = i;
                 if(cNAS.outlierIndexes != null)
+                {
                     k = cNAS.outlierIndexes[i];
+                }
+                if (i == 0)
+                    lS = ThisProjectInfo[k].time_t_Completed;
+                if (i == (cNAS.data.Count - 1))
+                    lE = ThisProjectInfo[k].time_t_Completed;
                 cNAS.time_t.Add(ThisProjectInfo[k].time_t_Completed);
             }
-
+            cNAS.nWidth = lE - lS;
 
             for (int k1 = iStart; k1 <= iStop; k1++)
             {
-                int k = SortToInfo[k1];
+                k = SortToInfo[k1];
                 double d = ThisProjectInfo[k].dElapsedTime / NumCurrent;
                 if (ThisProjectInfo[k].bDeviceUnk)
                 {
@@ -1529,7 +1574,8 @@ namespace BTHistoryReader
         private int nU;
         private double StdU;
         private double AvgU;
-        
+
+        string tbTemp = "";
         private string CalcGPUstats(int nDevices,int iStart, int iStop)
         {
             int nRemoved = 0;
@@ -1538,7 +1584,7 @@ namespace BTHistoryReader
             nU = 0;
             StdU = 0.0;
             AvgU = 0.0;
-            tbFilterRemoved.Text = "";
+            tbTemp = "";
             lNAS.Clear();
             int[] dc = {0,0,0};
             for (int i = 0; i < nDevices;i++)
@@ -1558,8 +1604,14 @@ namespace BTHistoryReader
                 {
                     sN = nRemoved.ToString() + " were removed";
                 }
-                tbFilterRemoved.Text += "GPU" + (i + 1).ToString() + ": " + sN;
-                if (i < nDevices - 1) tbFilterRemoved.Text += "\r\n";
+                tbTemp += "GPU" + (i + 1).ToString() + ": " + sN;
+                GpuFilters[i].nGpu = (i + 1).ToString();
+                GpuFilters[i].sStats = sN;
+                if (i < nDevices - 1) tbTemp += "\r\n";
+            }
+            if(GpuFilters.Count > 0)
+            {
+                dgvOF.Invalidate();
             }
             int iDev = 1;
             foreach(cOutFilter cnas in lNAS)
@@ -2627,6 +2679,16 @@ yoyo@home
         private void btnGTime_Click(object sender, EventArgs e)
         {
             if (iStart < 0 || iStop < 0) return;
+            bool bNoPoints = true;
+            foreach(cOutFilter cnas in lNAS)
+            {
+                if(cnas.n > 1)
+                {
+                    bNoPoints = false;
+                    break;
+                }
+            }
+            if (bNoPoints) return;
             double dMax = -1.0;
             int nCon = Convert.ToInt32(nudConCurrent.Value);
             for (int i=iStart; i<=iStop; i++)
@@ -2738,11 +2800,18 @@ yoyo@home
             tb_Results.Text = "";
         }
         
-        private double GetOutlierFilter()
+        private double GetOutlierFilter(int iGpu)
         {
             int n = cbFilterSTD.SelectedIndex;
-            double[] Vals = {0.25, 0.333, 0.5, 0.0, 1.0, 2.0, 3.0};
-            return Vals[n];
+            double[] Vals = { 0.25, 0.333, 0.5, 0.0, 1.0, 2.0, 3.0 };
+            if (dgvOF.RowCount == 0) return 0.0;
+            if(dgvOF[1, iGpu].Value == null)return 0.0;
+            if ((bool)dgvOF[1,iGpu].EditedFormattedValue)
+            {
+                return Vals[n];
+            }
+            
+            return 0.0;
         }
 
         private void cbFilterSTD_SelectedIndexChanged(object sender, EventArgs e)

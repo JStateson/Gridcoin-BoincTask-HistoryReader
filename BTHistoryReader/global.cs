@@ -48,6 +48,7 @@ namespace BTHistoryReader
     public class cOutFilter
     {
         public int n;
+        public long nWidth;
         public double avg;
         public double std;
         public List<double> data;
@@ -141,16 +142,38 @@ namespace BTHistoryReader
             set
             {
                 mAvg = value;   // units are minutes and is used only for x-axis to see how many to add for each x point
+                int t;
+                int i = 0, n, np = 0;
+                int c = RawDevice.Count;
+                if (c < 2) return;
+                long diff = 0;
+                sAverageElapsed = 0;
+                if (mAvg == 0.0)
+                {                    
+                    dElapsed = new double[c];
+                    time_m = new double[c];
+                    NumEntries = c;
+                    lStart = RawDevice[0].time_t;
+                    diff = RawDevice[c - 1].time_t - lStart;
+                    mTimeSpan = diff / 60;
+                    for (i = 0; i < c; i++)
+                    {
+                        time_m[i] = (RawDevice[i].time_t - lStart) / 60;
+                        dElapsed[i] = RawDevice[i].dElapsed;
+                        sAverageElapsed += RawDevice[i].dElapsed;
+                    }
+                    return;
+                }
                 sAvg = mAvg * 60.0;
                 double d;
                 NumEntries = 0;
-                if (RawDevice.Count < 2) return;
-                lStart = RawDevice[0].time_t; 
+
                 // estimate number of intervals
-                int t;
-                int i=0,n, np=0;
-                int c = RawDevice.Count;
-                long nL, delta, time_t, diff = RawDevice[c - 1].time_t - lStart;
+
+                i = 0;
+                long nL, delta, time_t;
+                lStart = RawDevice[0].time_t;
+                diff = RawDevice[c - 1].time_t - lStart;
                 t = 1 + Convert.ToInt32(diff / sAvg);
                 dElapsed = new double[t];
                 mTimeSpan = diff / 60;

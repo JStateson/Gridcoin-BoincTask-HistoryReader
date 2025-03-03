@@ -75,18 +75,22 @@
             // nudAvg
             // 
             this.nudAvg.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.nudAvg.Items.Add("1");
-            this.nudAvg.Items.Add("2");
-            this.nudAvg.Items.Add("4");
-            this.nudAvg.Items.Add("8");
-            this.nudAvg.Items.Add("15");
-            this.nudAvg.Items.Add("30");
+            this.nudAvg.Items.Add("1440");
+            this.nudAvg.Items.Add("720");
+            this.nudAvg.Items.Add("360");
             this.nudAvg.Items.Add("60");
+            this.nudAvg.Items.Add("30");
+            this.nudAvg.Items.Add("15");
+            this.nudAvg.Items.Add("8");
+            this.nudAvg.Items.Add("4");
+            this.nudAvg.Items.Add("2");
+            this.nudAvg.Items.Add("1");
+            this.nudAvg.Items.Add("0");
             this.nudAvg.Location = new System.Drawing.Point(688, 409);
             this.nudAvg.Name = "nudAvg";
             this.nudAvg.Size = new System.Drawing.Size(59, 22);
             this.nudAvg.TabIndex = 3;
-            this.nudAvg.Text = "15";
+            this.nudAvg.Text = "0";
             // 
             // label1
             // 

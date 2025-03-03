@@ -54,7 +54,7 @@
             this.btnShowProjectTree = new System.Windows.Forms.Button();
             this.gb_filter = new System.Windows.Forms.GroupBox();
             this.groupBox10 = new System.Windows.Forms.GroupBox();
-            this.tbFilterRemoved = new System.Windows.Forms.TextBox();
+            this.dgvOF = new System.Windows.Forms.DataGridView();
             this.cbFilterSTD = new System.Windows.Forms.ComboBox();
             this.tbStartStopDate = new System.Windows.Forms.TextBox();
             this.btn8hr = new System.Windows.Forms.Button();
@@ -120,6 +120,7 @@
             this.groupBox4.SuspendLayout();
             this.gb_filter.SuspendLayout();
             this.groupBox10.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvOF)).BeginInit();
             this.groupBox3.SuspendLayout();
             this.groupBox6.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudConCurrent)).BeginInit();
@@ -415,24 +416,24 @@
             // 
             // groupBox10
             // 
-            this.groupBox10.Controls.Add(this.tbFilterRemoved);
+            this.groupBox10.Controls.Add(this.dgvOF);
             this.groupBox10.Controls.Add(this.cbFilterSTD);
             this.groupBox10.Enabled = false;
-            this.groupBox10.Location = new System.Drawing.Point(19, 543);
+            this.groupBox10.Location = new System.Drawing.Point(15, 462);
             this.groupBox10.Name = "groupBox10";
-            this.groupBox10.Size = new System.Drawing.Size(185, 126);
+            this.groupBox10.Size = new System.Drawing.Size(185, 207);
             this.groupBox10.TabIndex = 32;
             this.groupBox10.TabStop = false;
             this.groupBox10.Text = "Outlier Filtering";
             // 
-            // tbFilterRemoved
+            // dgvOF
             // 
-            this.tbFilterRemoved.Location = new System.Drawing.Point(18, 65);
-            this.tbFilterRemoved.Multiline = true;
-            this.tbFilterRemoved.Name = "tbFilterRemoved";
-            this.tbFilterRemoved.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.tbFilterRemoved.Size = new System.Drawing.Size(161, 49);
-            this.tbFilterRemoved.TabIndex = 1;
+            this.dgvOF.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvOF.Location = new System.Drawing.Point(6, 61);
+            this.dgvOF.Name = "dgvOF";
+            this.dgvOF.RowHeadersVisible = false;
+            this.dgvOF.Size = new System.Drawing.Size(171, 134);
+            this.dgvOF.TabIndex = 1;
             // 
             // cbFilterSTD
             // 
@@ -446,7 +447,7 @@
             "1.0 Remove the biggest",
             "2.0 Remove the extreme",
             "3.0 Remove only the worst"});
-            this.cbFilterSTD.Location = new System.Drawing.Point(18, 27);
+            this.cbFilterSTD.Location = new System.Drawing.Point(18, 20);
             this.cbFilterSTD.MaxDropDownItems = 4;
             this.cbFilterSTD.Name = "cbFilterSTD";
             this.cbFilterSTD.Size = new System.Drawing.Size(139, 21);
@@ -456,11 +457,11 @@
             // tbStartStopDate
             // 
             this.tbStartStopDate.Enabled = false;
-            this.tbStartStopDate.Location = new System.Drawing.Point(210, 406);
+            this.tbStartStopDate.Location = new System.Drawing.Point(289, 406);
             this.tbStartStopDate.Multiline = true;
             this.tbStartStopDate.Name = "tbStartStopDate";
             this.tbStartStopDate.ReadOnly = true;
-            this.tbStartStopDate.Size = new System.Drawing.Size(261, 59);
+            this.tbStartStopDate.Size = new System.Drawing.Size(182, 59);
             this.tbStartStopDate.TabIndex = 31;
             // 
             // btn8hr
@@ -499,22 +500,22 @@
             // btnLastHour
             // 
             this.btnLastHour.ForeColor = System.Drawing.SystemColors.HotTrack;
-            this.btnLastHour.Location = new System.Drawing.Point(18, 514);
+            this.btnLastHour.Location = new System.Drawing.Point(112, 435);
             this.btnLastHour.Name = "btnLastHour";
-            this.btnLastHour.Size = new System.Drawing.Size(125, 23);
+            this.btnLastHour.Size = new System.Drawing.Size(78, 23);
             this.btnLastHour.TabIndex = 27;
-            this.btnLastHour.Text = "Select Last Hour";
+            this.btnLastHour.Text = "Last Hour";
             this.btnLastHour.UseVisualStyleBackColor = true;
             this.btnLastHour.Click += new System.EventHandler(this.btnLastHour_Click);
             // 
             // btnLastDay
             // 
             this.btnLastDay.ForeColor = System.Drawing.SystemColors.HotTrack;
-            this.btnLastDay.Location = new System.Drawing.Point(18, 478);
+            this.btnLastDay.Location = new System.Drawing.Point(18, 435);
             this.btnLastDay.Name = "btnLastDay";
-            this.btnLastDay.Size = new System.Drawing.Size(125, 23);
+            this.btnLastDay.Size = new System.Drawing.Size(78, 21);
             this.btnLastDay.TabIndex = 26;
-            this.btnLastDay.Text = "Select Last Day";
+            this.btnLastDay.Text = "Last Day";
             this.btnLastDay.UseVisualStyleBackColor = true;
             this.btnLastDay.Click += new System.EventHandler(this.btnLastDay_Click);
             // 
@@ -679,9 +680,9 @@
             // 
             this.btnCheckPrev.BackColor = System.Drawing.SystemColors.Control;
             this.btnCheckPrev.Enabled = false;
-            this.btnCheckPrev.Location = new System.Drawing.Point(19, 442);
+            this.btnCheckPrev.Location = new System.Drawing.Point(112, 406);
             this.btnCheckPrev.Name = "btnCheckPrev";
-            this.btnCheckPrev.Size = new System.Drawing.Size(125, 23);
+            this.btnCheckPrev.Size = new System.Drawing.Size(77, 23);
             this.btnCheckPrev.TabIndex = 19;
             this.btnCheckPrev.Text = "Check Prev";
             this.toolTip1.SetToolTip(this.btnCheckPrev, "avoid any large change in time");
@@ -703,7 +704,7 @@
             this.btnCheckNext.Enabled = false;
             this.btnCheckNext.Location = new System.Drawing.Point(19, 406);
             this.btnCheckNext.Name = "btnCheckNext";
-            this.btnCheckNext.Size = new System.Drawing.Size(125, 23);
+            this.btnCheckNext.Size = new System.Drawing.Size(77, 23);
             this.btnCheckNext.TabIndex = 15;
             this.btnCheckNext.Text = "Check Next";
             this.toolTip1.SetToolTip(this.btnCheckNext, "avoid any large change in time");
@@ -1109,7 +1110,7 @@
             this.gb_filter.ResumeLayout(false);
             this.gb_filter.PerformLayout();
             this.groupBox10.ResumeLayout(false);
-            this.groupBox10.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvOF)).EndInit();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             this.groupBox6.ResumeLayout(false);
@@ -1208,7 +1209,7 @@
         private System.Windows.Forms.ComboBox cbIdleGpu;
         private System.Windows.Forms.GroupBox groupBox10;
         private System.Windows.Forms.ComboBox cbFilterSTD;
-        private System.Windows.Forms.TextBox tbFilterRemoved;
+        private System.Windows.Forms.DataGridView dgvOF;
     }
 }
 

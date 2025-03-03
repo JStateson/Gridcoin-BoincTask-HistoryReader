@@ -4,7 +4,9 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
@@ -53,7 +55,7 @@ namespace BTHistoryReader
             iSortToInfo = SortToInfo;
             iStart = iiStart;
             iStop = iiStop;
-            nudAvg.SelectedIndex = 3;
+            nudAvg.SelectedIndex = 10;
             strYscale = BestTimeUnits(dMax, ref dYscale);
             dNumConcurrent = nCon;
             PerformGraph(bTypeP);
@@ -66,6 +68,16 @@ namespace BTHistoryReader
             if (d < 600.0) return "secs";
             dOut = 60.0;
             return "mins";
+        }
+
+        //dval is elapsed time in minutes and PxPh is pixels per hour x-axis scaling
+        private int GetBestPntSize(double dval, double PxPh, double d)
+        {
+            int MaxSpa = 1+Convert.ToInt32(d);
+            double m = PxPh * dval / 60.0;
+            int n = Convert.ToInt32(m);
+            if(n > MaxSpa) n = MaxSpa;
+            return 4+n;
         }
 
         private void PerformGraph(bool bUseOutliers)
@@ -82,14 +94,17 @@ namespace BTHistoryReader
                 gi.RawDevice = new List<cDeviceGraphInfo>();
                 // not used gi.dYscale = dYscale;   // same for all gpus
                 GraphInfo.Add(gi);
-                Series gpus = new Series("GPU" + i.ToString());
+                Series gpus = new Series("GPU" + (i+1).ToString());
                 gpus.ChartType = SeriesChartType.Line;
                 tgraph.Series.Add(gpus);
             }
             tgraph.ChartAreas[0].AxisX.Minimum = 0;
             tgraph.ChartAreas[0].AxisX.Interval = x_interval;
             dtStart = DateTime.SpecifyKind(dt_1970.AddSeconds(ThisProjectInfo[iSortToInfo[iStart]].time_t_Completed), DateTimeKind.Utc);
-            if(bUseOutliers)
+            double cWidth = tgraph.ClientSize.Width;
+            long lWidth = 0;
+
+            if (bUseOutliers)
             {
                 j = 0;
                 foreach(cOutFilter cof in lNAS)
@@ -101,9 +116,14 @@ namespace BTHistoryReader
                         dgi.time_t = cof.time_t[i];
                         GraphInfo[j].RawDevice.Add(dgi);
                     }
+                    if(cof.n > 1)
+                    {
+                        lWidth = Math.Max(lWidth, cof.nWidth);
+                    }
                     j++;
                 }
 
+                cWidth = cWidth*3600/lWidth;    // pixels per hour x-axis
                 dElapsedOffset = 0;
                 iElapsedCount = 0;
                 mFilter = Convert.ToInt32(nudAvg.Text);
@@ -124,21 +144,38 @@ namespace BTHistoryReader
 
                 mLargestTimeSpan = -1;
                 int nIdInx = 0;
+
+                Random rnd = new Random();
                 for (i = 0; i < nDevices; i++)
                 {
-                    if (GraphInfo[i].NumEntries > 1)
+                    double d = 0.0;
+                    int nPSize = 1;
+                    int n = GraphInfo[i].NumEntries;
+                    if (n > 1)
                     {
+                        cOutFilter cof = lNAS[i];
                         dSmallOffset = (GraphInfo[i].lStart - lSmallest) / 60.0;
                         mLargestTimeSpan = Math.Max(mLargestTimeSpan, GraphInfo[i].mTimeSpan);
-                        for (j = 0; j < GraphInfo[i].NumEntries; j++)
+                        for (j = 0; j < n; j++)
                         {
                             double dHours = (GraphInfo[i].time_m[j] + dSmallOffset) / 60.0;
-                            tgraph.Series[nIdInx].Points.AddXY(dHours, (GraphInfo[i].dElapsed[j] + dElapsedOffset * i) / dYscale);
+                            
+                            if(j < n-1)
+                            {
+                                d = (GraphInfo[i].time_m[j+1] + dSmallOffset) / 60.0;
+                                d -= dHours;                                
+                            }
+                            
+                            DataPoint point = new DataPoint(dHours, (GraphInfo[i].dElapsed[j] + dElapsedOffset * i) / dYscale);
+                            //tgraph.Series[nIdInx].Points.AddXY(dHours, (GraphInfo[i].dElapsed[j] + dElapsedOffset * i) / dYscale);
+                            point.MarkerStyle = MarkerStyle.Square;
+                            nPSize = GetBestPntSize(cof.data[j], cWidth, d);
+                            point.MarkerSize = nPSize; // *Convert.ToInt32(d) + nPSize;
+                            tgraph.Series[nIdInx].Points.Add(point);
                         }
                         tgraph.Series[nIdInx].ChartType = SeriesChartType.Point;
                         nIdInx++;
                     }
-
                 }
                 tgraph.ChartAreas[0].AxisX.Maximum = BestXmax(mLargestTimeSpan);
                 lbxaxis.Text = "xAxis time since " + dtStart.ToLocalTime() + " in hours";
