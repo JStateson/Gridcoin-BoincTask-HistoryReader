@@ -54,6 +54,7 @@
             this.btnShowProjectTree = new System.Windows.Forms.Button();
             this.gb_filter = new System.Windows.Forms.GroupBox();
             this.groupBox10 = new System.Windows.Forms.GroupBox();
+            this.btAppOF = new System.Windows.Forms.Button();
             this.dgvOF = new System.Windows.Forms.DataGridView();
             this.cbFilterSTD = new System.Windows.Forms.ComboBox();
             this.tbStartStopDate = new System.Windows.Forms.TextBox();
@@ -416,15 +417,28 @@
             // 
             // groupBox10
             // 
+            this.groupBox10.Controls.Add(this.btAppOF);
             this.groupBox10.Controls.Add(this.dgvOF);
             this.groupBox10.Controls.Add(this.cbFilterSTD);
             this.groupBox10.Enabled = false;
             this.groupBox10.Location = new System.Drawing.Point(15, 462);
             this.groupBox10.Name = "groupBox10";
-            this.groupBox10.Size = new System.Drawing.Size(185, 207);
+            this.groupBox10.Size = new System.Drawing.Size(204, 207);
             this.groupBox10.TabIndex = 32;
             this.groupBox10.TabStop = false;
             this.groupBox10.Text = "Outlier Filtering";
+            // 
+            // btAppOF
+            // 
+            this.btAppOF.ForeColor = System.Drawing.SystemColors.HotTrack;
+            this.btAppOF.Location = new System.Drawing.Point(155, 17);
+            this.btAppOF.Name = "btAppOF";
+            this.btAppOF.Size = new System.Drawing.Size(42, 23);
+            this.btAppOF.TabIndex = 22;
+            this.btAppOF.Text = "Apply";
+            this.toolTip1.SetToolTip(this.btAppOF, "runs the filter");
+            this.btAppOF.UseVisualStyleBackColor = true;
+            this.btAppOF.Click += new System.EventHandler(this.btAppOF_Click);
             // 
             // dgvOF
             // 
@@ -432,7 +446,7 @@
             this.dgvOF.Location = new System.Drawing.Point(6, 61);
             this.dgvOF.Name = "dgvOF";
             this.dgvOF.RowHeadersVisible = false;
-            this.dgvOF.Size = new System.Drawing.Size(171, 134);
+            this.dgvOF.Size = new System.Drawing.Size(183, 134);
             this.dgvOF.TabIndex = 1;
             // 
             // cbFilterSTD
@@ -447,17 +461,16 @@
             "1.0 Remove the biggest",
             "2.0 Remove the extreme",
             "3.0 Remove only the worst"});
-            this.cbFilterSTD.Location = new System.Drawing.Point(18, 20);
+            this.cbFilterSTD.Location = new System.Drawing.Point(6, 19);
             this.cbFilterSTD.MaxDropDownItems = 4;
             this.cbFilterSTD.Name = "cbFilterSTD";
             this.cbFilterSTD.Size = new System.Drawing.Size(139, 21);
             this.cbFilterSTD.TabIndex = 0;
-            this.cbFilterSTD.SelectedIndexChanged += new System.EventHandler(this.cbFilterSTD_SelectedIndexChanged);
             // 
             // tbStartStopDate
             // 
             this.tbStartStopDate.Enabled = false;
-            this.tbStartStopDate.Location = new System.Drawing.Point(289, 406);
+            this.tbStartStopDate.Location = new System.Drawing.Point(304, 406);
             this.tbStartStopDate.Multiline = true;
             this.tbStartStopDate.Name = "tbStartStopDate";
             this.tbStartStopDate.ReadOnly = true;
@@ -467,7 +480,7 @@
             // btn8hr
             // 
             this.btn8hr.ForeColor = System.Drawing.SystemColors.HotTrack;
-            this.btn8hr.Location = new System.Drawing.Point(419, 634);
+            this.btn8hr.Location = new System.Drawing.Point(434, 634);
             this.btn8hr.Name = "btn8hr";
             this.btn8hr.Size = new System.Drawing.Size(52, 23);
             this.btn8hr.TabIndex = 30;
@@ -478,7 +491,7 @@
             // btn4hr
             // 
             this.btn4hr.ForeColor = System.Drawing.SystemColors.HotTrack;
-            this.btn4hr.Location = new System.Drawing.Point(318, 634);
+            this.btn4hr.Location = new System.Drawing.Point(333, 634);
             this.btn4hr.Name = "btn4hr";
             this.btn4hr.Size = new System.Drawing.Size(50, 23);
             this.btn4hr.TabIndex = 29;
@@ -489,7 +502,7 @@
             // btn2hr
             // 
             this.btn2hr.ForeColor = System.Drawing.SystemColors.HotTrack;
-            this.btn2hr.Location = new System.Drawing.Point(210, 634);
+            this.btn2hr.Location = new System.Drawing.Point(225, 634);
             this.btn2hr.Name = "btn2hr";
             this.btn2hr.Size = new System.Drawing.Size(52, 23);
             this.btn2hr.TabIndex = 28;
@@ -526,7 +539,7 @@
             this.groupBox3.Controls.Add(this.btnGTime);
             this.groupBox3.Controls.Add(this.cbShowError);
             this.groupBox3.Controls.Add(this.btnScatSets);
-            this.groupBox3.Location = new System.Drawing.Point(210, 480);
+            this.groupBox3.Location = new System.Drawing.Point(225, 480);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(260, 131);
             this.groupBox3.TabIndex = 25;
@@ -624,7 +637,7 @@
             this.groupBox5.Controls.Add(this.cbIdleGpu);
             this.groupBox5.Controls.Add(this.btnPlotET);
             this.groupBox5.Controls.Add(this.btnPlot);
-            this.groupBox5.Location = new System.Drawing.Point(361, 269);
+            this.groupBox5.Location = new System.Drawing.Point(376, 269);
             this.groupBox5.Name = "groupBox5";
             this.groupBox5.Size = new System.Drawing.Size(110, 127);
             this.groupBox5.TabIndex = 21;
@@ -1210,6 +1223,7 @@
         private System.Windows.Forms.GroupBox groupBox10;
         private System.Windows.Forms.ComboBox cbFilterSTD;
         private System.Windows.Forms.DataGridView dgvOF;
+        private System.Windows.Forms.Button btAppOF;
     }
 }
 

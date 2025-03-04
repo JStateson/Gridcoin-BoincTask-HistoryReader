@@ -2817,6 +2817,11 @@ yoyo@home
 
         private void cbFilterSTD_SelectedIndexChanged(object sender, EventArgs e)
         {
+
+        }
+
+        private void btAppOF_Click(object sender, EventArgs e)
+        {
             RunFilter();
         }
     }    
