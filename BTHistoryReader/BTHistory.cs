@@ -43,19 +43,6 @@ namespace BTHistoryReader
 
         private List<cGpuFilter> GpuFilters;
 
-        private void FillGPU()
-        {
-            dgvOF.DataSource = GpuFilters;
-            dgvOF.AutoGenerateColumns = false;
-            dgvOF.Columns[0].HeaderText = "gpu";
-            dgvOF.Columns[0].Width = 32;
-            dgvOF.Columns[1].HeaderText = "filter";
-            dgvOF.Columns[1].Width = 32;
-            dgvOF.Columns[2].HeaderText = "statistics";
-            dgvOF.Columns[0].ReadOnly = true;
-            dgvOF.Columns[2].ReadOnly = true;
-        }
-
         public BTHistory()
         {
             InitializeComponent();
@@ -588,26 +575,16 @@ namespace BTHistoryReader
         private void ShowGPUcount(ref cAppName AppName)
         {
             tb_Results.Text = "";
-            GpuFilters.Clear();
-            dgvOF.DataSource = null;
+            // number of GPUs may not always be known here
             for (int i = 0; i < AppName.GpuReassignment.NumGPUs;  i++)
             {
                 string sName = AppName.GpuReassignment.idGPUused(i).ToString();
-                cGpuFilter cGF = new cGpuFilter();
-                cGF.nGpu = (i + 1).ToString();
-                cGF.bGpu = false;
-                cGF.sStats = "";
-                GpuFilters.Add(cGF);
                 tb_Results.Text += "GPU-" + (i+1).ToString() + " " + sName + "\r\n";
             }
             if(AppName.GpuReassignment.NumberGPUsUnknown > 0)
             {
                 string sName = AppName.GpuReassignment.NumberGPUsUnknown.ToString();
                 tb_Results.Text += "Number unknown GPUs " + sName + "\r\n";
-            }
-            if (GpuFilters.Count > 0)
-            {
-                FillGPU();
             }
         }
 
@@ -1013,8 +990,8 @@ namespace BTHistoryReader
         // this fills in the "ThisProjectInfo" structure with stuff from each single line in the history files of "the app"
         public int FillProjectInfo(cAppName AppName)
         {
-            int nGPUnum = 0; // need to find the number of gpus, if any
             string[] strSymbols;
+            int nGPUnum = 0; // 0 is CPU, 0,1,2 is three GPUs
             string sTemp;
             System.DateTime dt_1970 = new System.DateTime(1970, 1, 1);
             System.DateTime dt_this;
@@ -1354,7 +1331,6 @@ namespace BTHistoryReader
             int iProject, iApp, i;
             cAppName AppName;
             string strProjName, strAppName;
-
             i = cb_SelProj.SelectedIndex;
             if (i < 0)   // invalid selection. restore original project name using "tag"
             {
@@ -1391,6 +1367,7 @@ namespace BTHistoryReader
             FillProjectInfo(AppName);
             CountSelected();
             ShowGPUcount(ref AppName);
+            InitGpuFilters(Math.Max(1, AppName.GpuReassignment.NumGPUs)); // 0 is the CPU
         }
 
         private (List<double>, List<int>) RemoveOutliersWithIndexes(ref List<double> data, double threshold = 2)
@@ -1574,8 +1551,31 @@ namespace BTHistoryReader
         private int nU;
         private double StdU;
         private double AvgU;
-
         string tbTemp = "";
+
+        private void InitGpuFilters(int n)
+        {
+            GpuFilters.Clear();
+            dgvOF.DataSource = null;
+            for (int i = 0; i < n; i++)
+            {
+                cGpuFilter cGF = new cGpuFilter();
+                cGF.nGpu = (i + 1).ToString();
+                cGF.bGpu = false;
+                cGF.sStats = "";
+                GpuFilters.Add(cGF);
+            }
+            dgvOF.DataSource = GpuFilters;
+            //dgvOF.AutoGenerateColumns = false;
+            dgvOF.Columns[0].HeaderText = "gpu";
+            dgvOF.Columns[0].Width = 32;
+            dgvOF.Columns[1].HeaderText = "filter";
+            dgvOF.Columns[1].Width = 32;
+            dgvOF.Columns[2].HeaderText = "statistics";
+            dgvOF.Columns[0].ReadOnly = true;
+            dgvOF.Columns[2].ReadOnly = true;
+        }
+
         private string CalcGPUstats(int nDevices,int iStart, int iStop)
         {
             int nRemoved = 0;
@@ -1605,13 +1605,13 @@ namespace BTHistoryReader
                     sN = nRemoved.ToString() + " were removed";
                 }
                 tbTemp += "GPU" + (i + 1).ToString() + ": " + sN;
-                GpuFilters[i].nGpu = (i + 1).ToString();
                 GpuFilters[i].sStats = sN;
                 if (i < nDevices - 1) tbTemp += "\r\n";
             }
             if(GpuFilters.Count > 0)
             {
                 dgvOF.Invalidate();
+                dgvOF.Refresh();
             }
             int iDev = 1;
             foreach(cOutFilter cnas in lNAS)
@@ -1870,6 +1870,7 @@ namespace BTHistoryReader
             btnGTime.Enabled = false;
             tb_Results.Text = "";
         }
+
 
         private void cb_AppNames_SelectedIndexChanged(object sender, EventArgs e)
         {
