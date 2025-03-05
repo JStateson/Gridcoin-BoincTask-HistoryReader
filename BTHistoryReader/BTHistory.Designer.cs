@@ -426,7 +426,7 @@
             this.groupBox10.Size = new System.Drawing.Size(204, 207);
             this.groupBox10.TabIndex = 32;
             this.groupBox10.TabStop = false;
-            this.groupBox10.Text = "Outlier Filtering";
+            this.groupBox10.Text = "Outlier Filtering by Standard Deviation";
             // 
             // btAppOF
             // 
@@ -513,7 +513,7 @@
             // btnLastHour
             // 
             this.btnLastHour.ForeColor = System.Drawing.SystemColors.HotTrack;
-            this.btnLastHour.Location = new System.Drawing.Point(112, 435);
+            this.btnLastHour.Location = new System.Drawing.Point(112, 431);
             this.btnLastHour.Name = "btnLastHour";
             this.btnLastHour.Size = new System.Drawing.Size(78, 23);
             this.btnLastHour.TabIndex = 27;
@@ -524,7 +524,7 @@
             // btnLastDay
             // 
             this.btnLastDay.ForeColor = System.Drawing.SystemColors.HotTrack;
-            this.btnLastDay.Location = new System.Drawing.Point(18, 435);
+            this.btnLastDay.Location = new System.Drawing.Point(18, 431);
             this.btnLastDay.Name = "btnLastDay";
             this.btnLastDay.Size = new System.Drawing.Size(78, 21);
             this.btnLastDay.TabIndex = 26;

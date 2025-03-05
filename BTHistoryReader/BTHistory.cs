@@ -1574,6 +1574,7 @@ namespace BTHistoryReader
             dgvOF.Columns[2].HeaderText = "statistics";
             dgvOF.Columns[0].ReadOnly = true;
             dgvOF.Columns[2].ReadOnly = true;
+            dgvOF.Columns[2].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
         }
 
         private string CalcGPUstats(int nDevices,int iStart, int iStop)
@@ -2013,8 +2014,8 @@ namespace BTHistoryReader
             btn_Filter.Enabled = bShow; ;
             lb_NumSel.Visible = bShow;
             lb_LocMax.Visible = bShow;
-            //btnPlot.Enabled = bShow;
-            //btnPlotET.Enabled = bShow;
+            btnPlot.Enabled = bShow;
+            btnPlotET.Enabled = bShow;
             groupBox3.Enabled = bShow;
             groupBox5.Enabled = bShow;
             groupBox10.Enabled = bShow;
