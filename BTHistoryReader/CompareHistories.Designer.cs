@@ -30,6 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.lbAdvFilter = new System.Windows.Forms.Label();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.rbScatProj = new System.Windows.Forms.RadioButton();
             this.rbScatApps = new System.Windows.Forms.RadioButton();
@@ -67,7 +68,6 @@
             this.cboxFL = new System.Windows.Forms.CheckBox();
             this.TBoxResults = new System.Windows.Forms.TextBox();
             this.lblWarnApps = new System.Windows.Forms.Label();
-            this.lbAdvFilter = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.groupBox5.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -95,6 +95,16 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(937, 203);
             this.panel1.TabIndex = 1;
+            // 
+            // lbAdvFilter
+            // 
+            this.lbAdvFilter.AutoSize = true;
+            this.lbAdvFilter.BackColor = System.Drawing.SystemColors.Info;
+            this.lbAdvFilter.Location = new System.Drawing.Point(24, 169);
+            this.lbAdvFilter.Name = "lbAdvFilter";
+            this.lbAdvFilter.Size = new System.Drawing.Size(135, 13);
+            this.lbAdvFilter.TabIndex = 17;
+            this.lbAdvFilter.Text = "Reserve for filter info, if any";
             // 
             // groupBox5
             // 
@@ -367,6 +377,7 @@
             // 
             // BtnCmpSave
             // 
+            this.BtnCmpSave.Enabled = false;
             this.BtnCmpSave.Location = new System.Drawing.Point(730, 420);
             this.BtnCmpSave.Name = "BtnCmpSave";
             this.BtnCmpSave.Size = new System.Drawing.Size(75, 23);
@@ -492,16 +503,6 @@
             this.lblWarnApps.Size = new System.Drawing.Size(230, 13);
             this.lblWarnApps.TabIndex = 19;
             this.lblWarnApps.Text = "Cannot edit table if more than one app selected";
-            // 
-            // lbAdvFilter
-            // 
-            this.lbAdvFilter.AutoSize = true;
-            this.lbAdvFilter.BackColor = System.Drawing.SystemColors.Info;
-            this.lbAdvFilter.Location = new System.Drawing.Point(24, 169);
-            this.lbAdvFilter.Name = "lbAdvFilter";
-            this.lbAdvFilter.Size = new System.Drawing.Size(135, 13);
-            this.lbAdvFilter.TabIndex = 17;
-            this.lbAdvFilter.Text = "Reserve for filter info, if any";
             // 
             // CompareHistories
             // 

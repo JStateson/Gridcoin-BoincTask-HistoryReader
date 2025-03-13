@@ -707,7 +707,7 @@ namespace BTHistoryReader
                                     // the ignored app and the value calcualateds was correct to to 0 being set for credit
                                     // all calculations were correct whether LineLoc was used or not
                                     AppName.CreditPerDay = 0.0; // 2-9-2020 did see a huge negative number here but could not reproduce it
-                                    Debug.Assert(false);
+                                    //Debug.Assert(false); // jys 2025
                                 }
                             }
                             else AppName.CreditPerDay = 0.0;
