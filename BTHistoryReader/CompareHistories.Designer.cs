@@ -68,6 +68,8 @@
             this.cboxFL = new System.Windows.Forms.CheckBox();
             this.TBoxResults = new System.Windows.Forms.TextBox();
             this.lblWarnApps = new System.Windows.Forms.Label();
+            this.colDistinct = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.tbTotalDev = new System.Windows.Forms.TextBox();
             this.panel1.SuspendLayout();
             this.groupBox5.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -305,12 +307,12 @@
             // TBoxStats
             // 
             this.TBoxStats.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TBoxStats.Location = new System.Drawing.Point(251, 19);
+            this.TBoxStats.Location = new System.Drawing.Point(397, 30);
             this.TBoxStats.Multiline = true;
             this.TBoxStats.Name = "TBoxStats";
             this.TBoxStats.ReadOnly = true;
             this.TBoxStats.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.TBoxStats.Size = new System.Drawing.Size(178, 150);
+            this.TBoxStats.Size = new System.Drawing.Size(293, 182);
             this.TBoxStats.TabIndex = 9;
             this.TBoxStats.WordWrap = false;
             // 
@@ -320,7 +322,8 @@
             this.LViewConc.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.colUSE,
             this.colSysName,
-            this.colCount});
+            this.colCount,
+            this.colDistinct});
             this.LViewConc.FullRowSelect = true;
             this.LViewConc.GridLines = true;
             this.LViewConc.HideSelection = false;
@@ -329,7 +332,7 @@
             this.LViewConc.Location = new System.Drawing.Point(143, 273);
             this.LViewConc.MultiSelect = false;
             this.LViewConc.Name = "LViewConc";
-            this.LViewConc.Size = new System.Drawing.Size(338, 142);
+            this.LViewConc.Size = new System.Drawing.Size(465, 142);
             this.LViewConc.TabIndex = 10;
             this.LViewConc.UseCompatibleStateImageBehavior = false;
             this.LViewConc.View = System.Windows.Forms.View.Details;
@@ -378,7 +381,7 @@
             // BtnCmpSave
             // 
             this.BtnCmpSave.Enabled = false;
-            this.BtnCmpSave.Location = new System.Drawing.Point(730, 420);
+            this.BtnCmpSave.Location = new System.Drawing.Point(295, 679);
             this.BtnCmpSave.Name = "BtnCmpSave";
             this.BtnCmpSave.Size = new System.Drawing.Size(75, 23);
             this.BtnCmpSave.TabIndex = 13;
@@ -429,7 +432,7 @@
             // 
             this.label3.AutoSize = true;
             this.label3.ForeColor = System.Drawing.Color.Black;
-            this.label3.Location = new System.Drawing.Point(493, 441);
+            this.label3.Location = new System.Drawing.Point(37, 692);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(228, 13);
             this.label3.TabIndex = 14;
@@ -439,7 +442,7 @@
             // 
             this.lblWarnApply.AutoSize = true;
             this.lblWarnApply.ForeColor = System.Drawing.Color.Red;
-            this.lblWarnApply.Location = new System.Drawing.Point(140, 424);
+            this.lblWarnApply.Location = new System.Drawing.Point(698, 283);
             this.lblWarnApply.Name = "lblWarnApply";
             this.lblWarnApply.Size = new System.Drawing.Size(122, 13);
             this.lblWarnApply.TabIndex = 17;
@@ -453,9 +456,9 @@
             this.groupBox6.Controls.Add(this.cboxFL);
             this.groupBox6.Controls.Add(this.TBoxResults);
             this.groupBox6.Controls.Add(this.TBoxStats);
-            this.groupBox6.Location = new System.Drawing.Point(502, 240);
+            this.groupBox6.Location = new System.Drawing.Point(24, 434);
             this.groupBox6.Name = "groupBox6";
-            this.groupBox6.Size = new System.Drawing.Size(447, 175);
+            this.groupBox6.Size = new System.Drawing.Size(716, 227);
             this.groupBox6.TabIndex = 18;
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = "Values / Summery and Results";
@@ -490,7 +493,7 @@
             this.TBoxResults.Name = "TBoxResults";
             this.TBoxResults.ReadOnly = true;
             this.TBoxResults.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.TBoxResults.Size = new System.Drawing.Size(202, 104);
+            this.TBoxResults.Size = new System.Drawing.Size(263, 147);
             this.TBoxResults.TabIndex = 9;
             this.TBoxResults.WordWrap = false;
             // 
@@ -498,18 +501,33 @@
             // 
             this.lblWarnApps.AutoSize = true;
             this.lblWarnApps.ForeColor = System.Drawing.Color.Red;
-            this.lblWarnApps.Location = new System.Drawing.Point(140, 444);
+            this.lblWarnApps.Location = new System.Drawing.Point(662, 316);
             this.lblWarnApps.Name = "lblWarnApps";
             this.lblWarnApps.Size = new System.Drawing.Size(230, 13);
             this.lblWarnApps.TabIndex = 19;
             this.lblWarnApps.Text = "Cannot edit table if more than one app selected";
+            // 
+            // colDistinct
+            // 
+            this.colDistinct.Text = "Num Devices";
+            this.colDistinct.Width = 86;
+            // 
+            // tbTotalDev
+            // 
+            this.tbTotalDev.AcceptsReturn = true;
+            this.tbTotalDev.Location = new System.Drawing.Point(665, 357);
+            this.tbTotalDev.Multiline = true;
+            this.tbTotalDev.Name = "tbTotalDev";
+            this.tbTotalDev.Size = new System.Drawing.Size(100, 39);
+            this.tbTotalDev.TabIndex = 20;
             // 
             // CompareHistories
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
-            this.ClientSize = new System.Drawing.Size(961, 463);
+            this.ClientSize = new System.Drawing.Size(961, 714);
+            this.Controls.Add(this.tbTotalDev);
             this.Controls.Add(this.lblWarnApps);
             this.Controls.Add(this.groupBox6);
             this.Controls.Add(this.lblWarnApply);
@@ -585,5 +603,7 @@
         private System.Windows.Forms.Button btnSelAllApp;
         private System.Windows.Forms.Label lblWarnApps;
         private System.Windows.Forms.Label lbAdvFilter;
+        private System.Windows.Forms.ColumnHeader colDistinct;
+        private System.Windows.Forms.TextBox tbTotalDev;
     }
 }

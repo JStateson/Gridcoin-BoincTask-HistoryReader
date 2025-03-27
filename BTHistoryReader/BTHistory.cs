@@ -223,6 +223,7 @@ namespace BTHistoryReader
             KnownProjApps = new List<cKnownProjApps>();
             OneSplitLine = new cSplitHistoryValues();
             kpa = new cKnownProjApps();
+            /*
             kpa.AddName("Milkyway@Home",228.0);
             kpa.AddApp("Milkyway@home Separation", "opencl_ati_101",228.0);
             kpa.AddApp("Milkyway@home Separation", "opencl_nvidia_101",228.0);
@@ -396,7 +397,7 @@ namespace BTHistoryReader
             kpa.AddApp("Universe BHspin v2", "");
             KnownProjApps.Add(kpa);
 
-
+            */
             //lb_NumKnown.Text = "Known Projects: " + KnownProjApps.Count.ToString();
             LastKnownProject = KnownProjApps.Count;
         }
@@ -532,7 +533,8 @@ namespace BTHistoryReader
                 LinesWeRead = 0;                    // used by progress bar
                 PerformSelectCompare();
                 pbarLoading.Visible = false;
-                BTHistory.ActiveForm.Enabled = true;
+                if (BTHistory.ActiveForm != null)
+                    BTHistory.ActiveForm.Enabled = true;
                 pbarLoading.Value = 0;
                 btnScatSets.Enabled = false;
                 return false;
@@ -549,7 +551,7 @@ namespace BTHistoryReader
                     CurrentSystem = LinesHistory[1];
                     if (BTHistory.ActiveForm != null)    // can occur during debugging
                         BTHistory.ActiveForm.Text = CurrentSystem; ;   // this is name of the computer
-                    ProcessHistoryFile(); // provide statistics on this history file
+                    ProcessHistoryFile(0); // provide statistics on this history file
                     FillSelectBoxes();
                 }
                 else
@@ -719,7 +721,7 @@ namespace BTHistoryReader
 
         // get list of projects and their apps
         // save all information in the KnownProjApp table
-        public int ProcessHistoryFile()
+        public int ProcessHistoryFile(int nThisPC)
         {
             bool bAnyData = false, bTemp;
             int iLine = -4;  // if > 4 then 
@@ -772,7 +774,8 @@ namespace BTHistoryReader
                 strClass = OneSplitLine.PlanClass;
                 if (strClass != "") strClass = " [" + strClass + "]";
                 AppName = kpa.SymbolInsert(OneSplitLine.Application + strClass, 3 + iLine);  // first real data is in 5th line (0..4)
-                AppName.AddUse(OneSplitLine.use);   
+                //AppName.nEntriesThisComputer[nThisPC]++;
+                int iN = AppName.AddUse(OneSplitLine.use);   
                 iGrp = AppName.DataName.NameInsert(OneSplitLine.Name, OneSplitLine.Project);
                 iLocDevice = OneSplitLine.use.IndexOf("device "); //1234567  note that sometimes the device is missing, if so, then use 0 as
                     // possible there was only 1 device and no number was assigned
@@ -782,8 +785,10 @@ namespace BTHistoryReader
                     iLocDevice += 7;
                     jloc -= iLocDevice;
                     OneSplitLine.iDeviceUsed = Convert.ToInt32(OneSplitLine.use.Substring(iLocDevice, jloc));
+                    // AppName.nDevices = Math.Max(1, OneSplitLine.iDeviceUsed + 1); // same as iN
                 }
                 else OneSplitLine.iDeviceUsed = 0;  // device is not shown if only one gpu so use 0   
+                AppName.nEntriesThisComputer[nThisPC] = Math.Max(AppName.nEntriesThisComputer[nThisPC], OneSplitLine.iDeviceUsed + 1);
                 AppName.AddETinfo(OneSplitLine.dElapsedTimeCpu, iGrp, OneSplitLine.iDeviceUsed);
                 // the above iGrp needs to go into ThisProjectInfo which unfortunately does not exist here
                 // and I do not want to rewrite this code at this time.
@@ -811,6 +816,8 @@ namespace BTHistoryReader
             }
             else
                 tb_Info.Text += "Project has no data or all data is illegal\r\n";
+            
+            
             return 0;
         }
 

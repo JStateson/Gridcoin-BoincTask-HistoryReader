@@ -13,6 +13,8 @@ using System.Runtime.InteropServices;
 using System.Diagnostics;
 using Notepad;
 using System.IO;
+using System.Text.RegularExpressions;
+using System.Management.Instrumentation;
 
 
 
@@ -26,6 +28,7 @@ namespace BTHistoryReader
         public List<cKPAlocs> KPAlocs;
         public List<string> SystemsCompared;    // this and following 3 are paired
         public List<string> SystemsCompared_nConcurrent; // these pairing need to be better designed: go to the data not make a copy??
+        public List<string> SystemsUniqueDev;
         public List<bool> SystemsCompared_bWantStats;
         public List<int> SystemsComparedCount;
         private string strAverageAll = "Average All";
@@ -35,6 +38,7 @@ namespace BTHistoryReader
         {
             public string sAppName;
             public int iSystem;
+            public int nDev;    // number of unique devices d0, d1 would be 2 devices
             public double cpd;  // credits per day
             public List<double> dLelapsedTime = new List<double>();
             public void AddValue(double d)
@@ -64,11 +68,12 @@ namespace BTHistoryReader
         {
             public string sProjName;
             public List<cKPAapps> KPAapps = new List<cKPAapps>();
-            public cKPAapps AddApp(string sAppName, int iSystem, double cpd)
+            public cKPAapps AddApp(string sAppName, int iSystem, double cpd, int iDev)
             {
                 cKPAapps ckpaa = new cKPAapps();
                 ckpaa.sAppName = sAppName;
                 ckpaa.iSystem = iSystem;
+                ckpaa.nDev = iDev;
                 ckpaa.cpd = cpd; // credits per day normalize to 1 
                 KPAapps.Add(ckpaa);
                 return ckpaa;
@@ -143,11 +148,12 @@ namespace BTHistoryReader
             Systems = new List<string>();;
             SystemsCompared = new List<string>();
             SystemsCompared_nConcurrent = new List<string>();
+            SystemsUniqueDev = new List<string>();
             SystemsCompared_bWantStats = new List<bool>();
             SystemsComparedCount = new List<int>();
             int iSystem = -1;
             int NumberProjects = 0;
-
+            int nSystems = -1;// number of computers being compared
             btf = (BTHistory)refForm;
             LBoxApps.Items.Clear();
             LBoxProjects.Items.Clear();
@@ -165,7 +171,8 @@ namespace BTHistoryReader
                 Systems.Add(ThisSystem);
                 iSystem = Systems.Count - 1;    // index into name of system
                 btf.ClearPreviousHistory();
-                btf.ProcessHistoryFile();
+                nSystems++;
+                btf.ProcessHistoryFile(nSystems);
                 btf.IncrementPBAR();
                 foreach (cKnownProjApps kpa in btf.KnownProjApps)
                 {
@@ -185,8 +192,9 @@ namespace BTHistoryReader
                     {
                         int nEntries = AppName.dElapsedTime.Count;  // nEntries from AppName is not valid here
                         if (nEntries == 0) continue;
-                        NumberProjects++;
-                        cKPAapps ckpaa = ckpap.AddApp(AppName.Name, iSystem, AppName.CreditPerDay);
+                        NumberProjects++;  
+                        AppName.nDevices = AppName.nEntriesThisComputer[nSystems]; 
+                        cKPAapps ckpaa = ckpap.AddApp(AppName.Name, iSystem, AppName.CreditPerDay,AppName.nDevices);
                         btf.ThisProjectInfo = new List<cProjectInfo>(nEntries);
                         cProjectInfo cpi = new cProjectInfo();
                         cpi.iSystem = iSystem;
@@ -333,6 +341,7 @@ namespace BTHistoryReader
                 SystemsCompared.Clear();
                 SystemsCompared_nConcurrent.Clear();
                 SystemsComparedCount.Clear();
+                SystemsUniqueDev.Clear();
                 SystemsCompared_bWantStats.Clear();
             }
 
@@ -357,6 +366,7 @@ namespace BTHistoryReader
                                     SystemsCompared.Add(strLoc);
                                     SystemsCompared_nConcurrent.Add(ckpaa.nConcurrent.ToString());
                                     SystemsComparedCount.Add(ckpaa.dLelapsedTime.Count);
+                                    SystemsUniqueDev.Add(ckpaa.nDev.ToString());
                                     SystemsCompared_bWantStats.Add(ckpaa.bUseThisAppInStatsListBox);
                                 }
 
@@ -425,10 +435,11 @@ namespace BTHistoryReader
             CalcAllValues(LBoxProjects.Text, strAppSelected, true, strAverageAll);
             foreach (string s in SystemsCompared)
             {
-                strSysConc = new string[3];
+                strSysConc = new string[4];
                 strSysConc[0] = SystemsCompared_nConcurrent[i];
                 strSysConc[1] = s;
                 strSysConc[2] = SystemsComparedCount[i].ToString();
+                strSysConc[3] = SystemsUniqueDev[i].ToString();
                 itm = new ListViewItem(strSysConc);
                 itm.Checked = SystemsCompared_bWantStats[i];
                 LViewConc.Items.Add(itm);

@@ -649,6 +649,12 @@ namespace BTHistoryReader
         public cDataName DataName;
         public string strPlanClass;
         public string strName;
+        public List<int> nEntriesThisComputer = new List<int>();
+        public void nInit()
+        {
+            for (int i = 0; i < 16; i++)
+                nEntriesThisComputer.Add(0); // no more than 16 systems
+        }
         public bool bUseThisAppInStatsListBox;
         public bool bHasDevices;    // more than 1 gpu was listed
         public bool bHasGPU;
@@ -675,7 +681,7 @@ namespace BTHistoryReader
                                         // areas of the code.  if nUsesGPU < 0 then is not using a gpu else is device number
 
         public cGpuReassigned GpuReassignment;
-        public void AddUse(string strUse)
+        public int AddUse(string strUse)
         {
             string strTemp = strUse.ToLower();
             bool bUsesGPU = strTemp.Contains("gpu");
@@ -693,6 +699,7 @@ namespace BTHistoryReader
                 else nUsesGPU = 0;
             }
             else nUsesGPU = -1;
+            return 1 + nUsesGPU;
         }
         public void AddETinfo(double d, int n, int j)
         {
@@ -750,7 +757,7 @@ namespace BTHistoryReader
             double d;
             FirstValid = -1;
             LastValid = -1;
-            nDevices = 0;
+            //nDevices = 0;
             bNoResults = false;
             AvgRunTime = 0.0;
             StdRunTime = 0.0;
@@ -931,6 +938,7 @@ namespace BTHistoryReader
         {
             cAppName AppName = new cAppName();
             AppName.init(strIn, ProjName,true);
+            AppName.nInit();
             AppName.ptrKPA = this;
             KnownApps.Add(AppName);
             bIgnore = false;   
