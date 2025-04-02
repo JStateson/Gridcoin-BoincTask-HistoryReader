@@ -119,11 +119,14 @@
   </resheader>
   <data name="label5.Text" xml:space="preserve">
     <value>Paste your URL in below box and click FIND to get
-statistics.  Click EXTRACT to set project info from
-the url.  The URL must contain the phrase HOSTI
+statistics.  Click VERIFY to set project info from
+the URL.  The URL must contain the phrase HOST
 Alternately select a project and enter the HOST ID</value>
   </data>
   <metadata name="TaskTimer.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>15, 23</value>
+  </metadata>
+  <metadata name="toolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>123, 23</value>
   </metadata>
 </root>

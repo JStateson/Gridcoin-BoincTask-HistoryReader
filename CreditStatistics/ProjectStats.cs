@@ -15,6 +15,7 @@ using System.Runtime.CompilerServices;
 using static CreditStatistics.CreditStatistics;
 using System.Globalization;
 using System.Security.Policy;
+using System.Runtime.InteropServices;
 
 /*
  ---------- ALL_PROJECTS_LIST.XML
@@ -224,9 +225,18 @@ null
         public void Init()
         {
             int i, j, n = KnownProjects.Length;
+            List<string>UnsortedNames = new List<string>();
+
             for (j = 0; j < n; j += 6)
             {
-                i = j;
+                UnsortedNames.Add(KnownProjects[j].ToLower());
+            }
+            n = UnsortedNames.Count;
+            List<int> indices = Enumerable.Range(0, n).ToList();
+            indices.Sort((i1, i2) => UnsortedNames[i1].CompareTo(UnsortedNames[i2]));
+            for (j = 0; j < n; j++)
+            {
+                i = indices[j]*6;
                 ProjectList.Add(new cPSlist()
                 {
                     name = KnownProjects[i++].ToLower(),
@@ -255,6 +265,12 @@ null
             string s = p.sURL + p.sHid + sID + p.sValid;
             if (sPage == "") return s;
             return s + p.sPage + sPage;
+        }
+
+        public string ShortName(int i)
+        {
+            string[] s = ProjectList[i].name.Split(' ');
+            return s[0];
         }
 
         public string GetURL0(string name, string sID, ref bool HasValids)
@@ -430,8 +446,13 @@ null
         private int nTotalSamples;
         private int NumberConcurrent;
         public string ResultsBoxText;
-        public List<cCreditInfo> LCreditInfo =     new List<cCreditInfo>();
+        public List<cCreditInfo> LCreditInfo = new List<cCreditInfo>();
+        public List<cCreditInfo> UnsortedLCI = new List<cCreditInfo>();
+        public List<DateTime> UnsortedDT = new List<DateTime>();
         private string[] RawLines;
+        private string[] formats = { "d MMM yyyy | H:mm:ss UTC", "dd MMM yyyy | H:mm:ss UTC", "d MMM yyyy, H:mm:ss UTC", "dd MMM yyyy, H:mm:ss UTC", "dd MMM yyyy, h:mm:ss tt UTC" };
+        private string[] format2 = { "d MMM yyyy, H:mm:ss", "dd MMM yyyy, H:mm:ss" };
+
         public List<double> mCPU = new List<double>();
         public List<double> mELA = new List<double>();
         public void ConfigureTask(int jTask, string sHost, string sOffset, int iWanted, string sType)
@@ -480,7 +501,8 @@ null
 
         public int GetTableFromRaw()
         {
-            int iStart, iEnd;
+            int iStart, iEnd, i, j, k;
+            string t;
             NumberRecordsRead = 0;
             switch (TaskName)
             {
@@ -500,6 +522,19 @@ null
                 case "amicable":
                 case "rosetta":
                 case "milkyway":
+                case "numberfields":
+                case "cpdn climateprediction":
+                case "moowrap":
+                case "nfs escatter":
+                case "srbase":
+                case "yafu":
+                case "loda":
+                case "rakesearch":
+                case "sidock":
+                case "rnma":
+                case "radioactive":
+                case "odlk progger":
+                case "gpugrid":
                     string strH = "workunit.php?";
                     iStart = RawPage.IndexOf(strH);
                     if (iStart < 0)
@@ -518,6 +553,70 @@ null
                     if (iStart < 0 || iEnd < 0 || (iStart >= iEnd)) return -4;
                     RawTable = RawPage.Substring(iStart, iEnd - iStart);
                     return BuildStatsTable();
+                case "primegrid":
+                    iStart = RawPage.IndexOf("<tr class=row0>");
+                    if (iStart < 0)
+                    {
+                        ResultsBoxText = "error: no data or missing 'tr class=row0'\n"; // had to remove < and >
+                        return -4;
+                    }
+                    iEnd = RawPage.Substring(iStart).IndexOf("</table>");   // need skip over any earlier tables in the header
+                    if (iStart < 0 || iEnd < 0)
+                    {
+                        int ERR = 0;
+                    }
+                    iEnd += iStart;
+                    if (iStart < 0 || iEnd < 0 || (iStart >= iEnd)) return -4;
+                    RawTable = RawPage.Substring(iStart, iEnd - iStart);
+                    return BuildPrimeTable();
+               case "gerasim":
+                    iStart = RawPage.IndexOf("<table class=\"gridTable\"");
+                    iEnd = RawPage.IndexOf("</table>",iStart);
+                    RawTable = RawPage.Substring(iStart, iEnd - iStart);
+                    string[] OuterTable = RawTable.Split(new string[] { "\n", "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+                    bool bNext = false;
+                    i = 0;
+                    while(i < OuterTable.Length)
+                    {
+                        string s = OuterTable[i++];
+                        j = s.IndexOf("<span id=");
+                        if (j < 0) continue;
+                        k = s.IndexOf("</span>", j);
+                        if (j < 0) continue;
+                        j = s.LastIndexOf(">", k);
+                        t = s.Substring(j + 1, k - j - 1);
+                        CreditStatistics.cCreditInfo ci = new cCreditInfo();
+                        if (DateTime.TryParseExact(t, format2, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out DateTime dateTime1))
+                        {
+                            ci.tCompleted = dateTime1;
+                        }
+                        else
+                        {
+                            return 0;//LCreditInfo.Count;
+                        }
+                        s = OuterTable[i++];
+                        iStart = s.IndexOf("</td><td align=\"center\">cpu</td><td align=\"right\">");
+                        if (iStart < 0) return 0;
+                        iEnd = s.LastIndexOf(">", iStart);
+                        t = s.Substring(iEnd + 1, iStart - iEnd - 1);
+                        ci.ElapsedSecs = Convert.ToDouble(t);
+                        ci.CPUtimeSecs = ci.ElapsedSecs;
+                        j = s.LastIndexOf("</td>", s.Length - 1);
+                        if (j < 0) return 0;
+                        k = s.LastIndexOf(">", j);
+                        if (k < 0) return 0;
+                        t = s.Substring(k+1, j - k - 1);
+                        ci.Credits = Convert.ToDouble(t);
+                        ci.mELA = ci.Credits / ci.ElapsedSecs;
+                        mELA.Add(ci.mELA);
+                        if (ci.CPUtimeSecs == 0.0) ci.CPUtimeSecs = 0.01;
+                        ci.mCPU = ci.Credits / ci.CPUtimeSecs;
+                        mCPU.Add(ci.mCPU);
+                        ci.bValid = true;
+                        LCreditInfo.Add(ci);
+                        continue;
+                    }
+                    break;
                 default:
                     iStart = RawPage.IndexOf("<tr class=row0>");
                     if (iStart < 0)
@@ -538,6 +637,40 @@ null
             return 0;
         }
 
+        private int BuildPrimeTable()
+        {
+            string s;
+            string[] OuterTable = RawTable.Split(new string[] { "\n", "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+            foreach(string sLine in OuterTable)
+            {
+                CreditStatistics.cCreditInfo ci = new cCreditInfo();
+                RawLines = sLine.Split(new string[] { "<td>", "</td>" }, StringSplitOptions.RemoveEmptyEntries);
+                s = RawLines[4];
+                if (DateTime.TryParseExact(s, formats, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out DateTime dateTime1))
+                {
+                    ci.tCompleted = dateTime1;
+                }
+                else
+                {
+                    return LCreditInfo.Count;
+                }
+                int i = RawLines[6].LastIndexOf(">");
+                s = RawLines[6].Substring(i + 1);
+                ci.ElapsedSecs = Convert.ToDouble(s);
+                s = RawLines[7].Substring(i + 1);
+                ci.CPUtimeSecs = Convert.ToDouble(s);
+                s = RawLines[8].Substring(i + 1);
+                ci.Credits = Convert.ToDouble(s);
+                ci.mELA = ci.Credits / ci.ElapsedSecs;
+                mELA.Add(ci.mELA);
+                if (ci.CPUtimeSecs == 0.0) ci.CPUtimeSecs = 0.01;
+                ci.mCPU = ci.Credits / ci.CPUtimeSecs;
+                mCPU.Add(ci.mCPU);
+                ci.bValid = true;   // do not really know if it is valid yet
+                LCreditInfo.Add(ci);
+            }
+            return LCreditInfo.Count;
+        }
         private int BuildStatsTable()
         {
             int i;
@@ -571,13 +704,9 @@ null
         private DateTime GetValueT(int iLoc, int iOffset)
         {
             string lSide;
-
             if ((iLoc + iOffset) >= RawLines.Length)
                 return DateTime.MinValue;
-
-            string sTemp = RawLines[iLoc + iOffset];
-
-            string[] formats = { "d MMM yyyy, H:mm:ss UTC", "dd MMM yyyy, H:mm:ss UTC", "dd MMM yyyy, h:mm:ss tt UTC" };
+            string sTemp = RawLines[iLoc + iOffset];            
             int iRight = sTemp.IndexOf("<td>");
             if (iRight < 0)
             {
@@ -639,8 +768,7 @@ null
 
             ci.ElapsedSecs = GetValueD(iLocation, 0) / NumberConcurrent;
             ci.CPUtimeSecs = GetValueD(iLocation, 1);
-            ci.Credits = GetValueD(iLocation, 2);
-            
+            ci.Credits = GetValueD(iLocation, 2);            
             ci.mELA = ci.Credits / ci.ElapsedSecs;
             mELA.Add(ci.mELA);
             if (ci.CPUtimeSecs == 0.0) ci.CPUtimeSecs = 0.01;
@@ -651,40 +779,55 @@ null
             return true;
         }
 
-        int NumberToCollect = 20;
+        int NumberToCollect;
         private int BuildEinsteinStatsTable()
         {
-            int i;
-            int j;
-            int iIndex = nTotalSamples;
+            int i, j, k;
+            string sDataKey = "</td><td>Completed and validated</td><td>";
             double t;
             string[] RawLineValues;
-
+            string[] eDTformats = { "d MMM yyyy H:mm:ss UTC", "dd MMM yyyy H:mm:ss UTC", };
+            UnsortedLCI.Clear();
+            UnsortedDT.Clear();
             RawLines = RawTable.Split(new string[] { "\n", "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
-            NumberToCollect = Math.Min(NumberToCollect, RawLines.Length - 1);
-            if (RawLines.Count() < NumberToCollect)
-            {
-                ResultsBoxText = "Error - must have at least " + NumberToCollect.ToString() + " values on a page";
-                return -1;
-            }
+            NumberToCollect = RawLines.Length - 1;
+            NumberRecordsRead = 0;
+            if (NumberToCollect <= 0) return -1;
+
             for (i = 1; i < (1 + NumberToCollect); i++) // first data line starts as row 1, not 0
             {
-                j = RawLines[i].IndexOf("Completed and validated");
+                string s = RawLines[i];
+                j = s.IndexOf(sDataKey); // to the left is a date and the right is data
                 if (j > 0)
                 {
                     CreditStatistics.cCreditInfo ci = new cCreditInfo();
-                    j += 32;    // at first value: "2,224</td><td>369</td><td>3,465</td>"
-                    RawLineValues = RawLines[i].Substring(j, 60).Split(new string[] { "<td>", "</td>" }, StringSplitOptions.RemoveEmptyEntries);
+                    k = s.LastIndexOf("</td><td>", j);
+                    k += 9;
 
-                    t = Convert.ToDouble(RawLineValues[0]);
+                    RawLineValues = s.Substring(k).Split(new string[] { "<td>", "</td>" }, StringSplitOptions.RemoveEmptyEntries);
+
+                    string sDT = RawLineValues[0];
+                    if (DateTime.TryParseExact(sDT, eDTformats, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out DateTime dateTime1))
+                    {
+                        ci.tCompleted = dateTime1;
+                        UnsortedDT.Add(dateTime1);
+                    }
+                    else
+                    {
+                        ResultsBoxText = "Error - bad date time string";
+                        RunDTsort();
+                        return -1;
+                    }
+
+                    t = Convert.ToDouble(RawLineValues[2]);
                     t /= NumberConcurrent;
                     ci.ElapsedSecs = t;                    
                     
-                    t = Convert.ToDouble(RawLineValues[1]);
+                    t = Convert.ToDouble(RawLineValues[3]);
                     t /= NumberConcurrent;
                     ci.CPUtimeSecs = t;                    
 
-                    t = Convert.ToDouble(RawLineValues[2]);
+                    t = Convert.ToDouble(RawLineValues[4]);
                     t /= NumberConcurrent;
                     ci.Credits = t;
                     ci.mELA = ci.Credits / ci.ElapsedSecs;
@@ -693,17 +836,25 @@ null
                     ci.mCPU = ci.Credits / ci.CPUtimeSecs;
                     mCPU.Add(ci.mCPU);
                     ci.bValid = true;   // do not really know if it is valid yet
-                    LCreditInfo.Add(ci);
+                    UnsortedLCI.Add(ci);
+                    NumberRecordsRead++;
                 }
                 else
                 {
                     ResultsBoxText = "Error - could not find first value on the page";
+                    RunDTsort();
                     return -1;
                 }
-                iIndex++;
             }
-            nTotalSamples = iIndex;
+            RunDTsort();
             return 0;
+        }
+
+        private void RunDTsort()
+        {
+            List<int> indices = Enumerable.Range(0, UnsortedDT.Count).ToList();
+            indices.Sort((i1, i2) => UnsortedDT[i2].CompareTo(UnsortedDT[i1]));
+            LCreditInfo = indices.Select(i => UnsortedLCI[i]).ToList();
         }
 
     }

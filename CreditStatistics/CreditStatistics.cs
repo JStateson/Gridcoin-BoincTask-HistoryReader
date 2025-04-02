@@ -74,6 +74,10 @@ namespace CreditStatistics
 
         private static string[] FindHdr = { "All (", "Valid (", "Invalid (", "Error (" };
         private static string[] FindHdrA = { "All</a> (", "Valid</a> (", "Invalid</a> (", "Error</a> (" };
+        private static string[] FindHdrB = { "All</a> ", "Valid</b> ", "Invalid</font> ", "Error</a> " };
+        private static string[] FindBTrm = { "|", "|", "|", "<" };
+        private static string[] FindHdrC = { ">All ", ">Valid ", ">Invalid ", ">To late " };
+        private static string[] FindCTrm = { "</a>", "</a>", "</a>", "</a>" };
 
         public CreditStatistics()
         {
@@ -94,9 +98,9 @@ namespace CreditStatistics
             foreach (string s in sNames)
             {
                 RadioButton rb = new RadioButton();
-                rb.Text = s;
                 rb.Tag = i;
                 string t = ProjectStats.GetIDfromName(s);
+                rb.Text = ProjectStats.ShortName(i);
                 bHasID = t != "";
                 rb.AutoSize = true;
                 rb.ForeColor = bHasID ? System.Drawing.Color.Blue : System.Drawing.Color.Black;
@@ -104,7 +108,7 @@ namespace CreditStatistics
                 rb.CheckedChanged += new System.EventHandler(this.rbProject_CheckedChanged);
                 gbSamURL.Controls.Add(rb);
                 iRow++;
-                if (iRow > 10)
+                if (iRow > 9)
                 {
                     iRow = 0;
                     iCol++;
@@ -115,10 +119,13 @@ namespace CreditStatistics
 
         private void rbProject_CheckedChanged(object sender, EventArgs e)
         {
-            RadioButton rb = (RadioButton)sender;
-            SelectedProject = rb.Text;
+            RadioButton rb = (RadioButton)sender;            
             TagOfProject = (int)rb.Tag;
+            SelectedProject = ProjectStats.ProjectList[TagOfProject].name;
             tbPage.Text = "0";
+            tbHdrInfo.Clear();
+            tbInfo.Clear();
+
             if (ProjectStats.LocalHosts.Count > 0)
             {
                 tbHOSTID.Text = ProjectStats.GetIDfromName(SelectedProject);
@@ -147,7 +154,7 @@ namespace CreditStatistics
 
         private void btnViewData_Click(object sender, EventArgs e)
         {
-            Process.Start(ProjUrl.Text);
+            Process.Start(ProjUrl.Text.ToString());
         }
 
 
@@ -172,7 +179,7 @@ namespace CreditStatistics
             }
             if (cbfilterSTD.Checked)
             {
-                (cNAS.data, cNAS.outlierIndexes) = RemoveOutliersWithIndexes(ref mCPU, 1.0);
+                (cNAS.data, cNAS.outlierIndexes) = RemoveOutliersWithIndexes(ref mCPU, 2.0);
                 for (int k = 0; k < cNAS.outlierIndexes.Count; k++)
                 {
                     CreditInfo[k].bValid = false;
@@ -187,24 +194,34 @@ namespace CreditStatistics
         private void GetResults()
         {
             cCreditInfo SumC = new cCreditInfo();
+            double dH = 0;  // hours
+            long Sd = 0;
+            long Ed = 0;  
             SumC.Init();
             tbInfo.Clear();
             ApplyFilter();
-            string sOut = "Num" + Rp("     Date Completed", 22) + "  Credit   RunTime   RunTime   CPUtime   CPUtime  Valid" + Environment.NewLine;
-            sOut += "   " + Rp(" ", 22) + "  Points      Secs   Credits      Secs   Credits";
+            string sOut = "Num" + Rp("     Date Completed", 22) + "    Credit     RunTime     RunTime     CPUtime     CPUtime  Valid" + Environment.NewLine;
+            sOut += "   " + Rp(" ", 22) + "    Points        Secs     Credits        Secs     Credits";
             lbHdr.Text = sOut;
             sOut = "";
             for (int i = 0; i < CreditInfo.Count; i++)
             {
                 cCreditInfo ci = CreditInfo[i];
                 string dtS = ci.tCompleted.ToString("yyyy-MM-dd HH:mm:ss");
+                if (i == 0) Ed = (long)ci.tCompleted.Ticks;
+                if (i == (CreditInfo.Count - 1))
+                {
+                    Sd = (long)ci.tCompleted.Ticks;
+                    dH = (double) ((double)(Ed - Sd) / TimeSpan.TicksPerHour);
+                }
+                    
                 sOut += Lp((i + 1).ToString(), 2) + " "
                     + Rp(dtS, 22)
-                    + Lp(ci.Credits.ToString("F2"), 8)
-                    + Lp(ci.ElapsedSecs.ToString("F2"), 10)
-                    + Lp(ci.mELA.ToString("F4"), 10)
-                    + Lp(ci.CPUtimeSecs.ToString("F2"), 10)
-                    + Lp(ci.mCPU.ToString("F4"), 10)
+                    + Lp(ci.Credits.ToString("F2"), 10)
+                    + Lp(ci.ElapsedSecs.ToString("F2"), 12)
+                    + Lp(ci.mELA.ToString("F4"), 12)
+                    + Lp(ci.CPUtimeSecs.ToString("F2"), 12)
+                    + Lp(ci.mCPU.ToString("F4"), 12)
                     + (ci.bValid ? "" : "   X")
                     + "\r\n";
 
@@ -228,18 +245,18 @@ namespace CreditStatistics
             }
             sOut += Environment.NewLine;
             sOut += Lp(SumC.nCnt.ToString(), 2)
-                + Lp(" ", 22) + " "
-                + Lp(SumC.Credits.ToString("F2"), 8)
-                + Lp(SumC.ElapsedSecs.ToString("F2"), 10)
-                + Lp(SumC.mELA.ToString("F4"), 10)
-                + Lp(SumC.CPUtimeSecs.ToString("F2"), 10)
-                + Lp(SumC.mCPU.ToString("F4"), 10)
+                + Rp("   Hours:" + dH.ToString("F2"), 22) + " "
+                + Lp(SumC.Credits.ToString("F2"), 10)
+                + Lp(SumC.ElapsedSecs.ToString("F2"), 12)
+                + Lp(SumC.mELA.ToString("F4"), 12)
+                + Lp(SumC.CPUtimeSecs.ToString("F2"), 12)
+                + Lp(SumC.mCPU.ToString("F4"), 12)
                 + "\r\n";
-            sOut += Lp(" ",25) + Lp("Total", 8)
-                + Lp("Avg", 10)
-                + Lp("Avg", 10)
-                + Lp("Avg", 10)
-                + Lp("Avg", 10);
+            sOut += Lp(" ",25) + Lp("Total", 10)
+                + Lp("Avg", 12)
+                + Lp("Avg", 12)
+                + Lp("Avg", 12)
+                + Lp("Avg", 12);
             tbInfo.Text = sOut;
         }
 
@@ -251,13 +268,14 @@ namespace CreditStatistics
 
         private void btnStart_Click(object sender, EventArgs e)
         {
+            /*
             ProjectStats.ConfigureTask(TagOfProject,tbHOSTID.Text.ToString(), tbPage.Text.ToString(),NumberRecsToRead,"BODY");
             if(ProjectStats.RawPage != "")
             {
 
             }
             TaskStart();
-           
+           */
         }
 
         string AsyncContent = "";   
@@ -268,6 +286,8 @@ namespace CreditStatistics
             {
                 using (HttpClient client = new HttpClient())
                 {
+                    //client.DefaultRequestHeaders.Add("Referer", ProjectStats.TaskUrl);
+                    //client.DefaultRequestHeaders.Add("Accept-Language", "en-US,en;q=0.9");
                     client.DefaultRequestHeaders.Add("User-Agent",
                         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36");
 
@@ -297,6 +317,14 @@ namespace CreditStatistics
             int NumValid = 0;
             for (int k = 0; k < FindHdr.Length; k++)
             {
+                string sDFT = ")";  // default terminator
+
+                string sB = FindHdrB[k];
+                string tB = FindBTrm[k];
+                string sC = FindHdrC[k];
+                string tC = FindCTrm[k];
+
+
                 string sA = FindHdrA[k];
                 string s = FindHdr[k];
                 int i = RawPage.IndexOf(s);
@@ -306,12 +334,25 @@ namespace CreditStatistics
                     i = RawPage.IndexOf(sA);
                     n = sA.Length;
                 }
+                if (i < 0)
+                {
+                    i = RawPage.IndexOf(sB);
+                    n = sB.Length;
+                    sDFT = tB;
+                }
+                if (i < 0)
+                {
+                    i = RawPage.IndexOf(sC);
+                    n = sC.Length;
+                    sDFT = tC;
+                }
                 if (i < 0) return 0;
 
-                int j = RawPage.IndexOf(")", i + n);
+                int j = RawPage.IndexOf(sDFT, i + n);
                 if (j < 0)  return 0;
 
-                string t = RawPage.Substring(i + n, j - i - n);
+                string t = RawPage.Substring(i + n, j - i - n).Trim();
+                if (t == "") t = "0";
                 if (k == 1) NumValid = Convert.ToInt32(t);
                 tbHdrInfo.Text += FindHdr[k] + t + ")\r\n";
             }
@@ -330,75 +371,27 @@ namespace CreditStatistics
             CreditInfo.Clear();
             TaskStart();
         }
-
-        private string fBR(string s)
-        {
-            int i = s.IndexOf('>');
-            if (i < 0) return "";
-            return s.Substring(i + 1);  
-        }
-
-        private int ProcessPage_9_10_11()
-        {
-            int RecordCount = -1;
-            RawPage = ProjectStats.RawPage;
-            int i = RawPage.IndexOf("Application</th></tr>");
-            if (i < 0)
-            {
-                tbInfo.Text = "unable to read page\r\n";
-                return 0;
-            }
-            int j = RawPage.IndexOf("</table>");
-            RawTable = RawPage.Substring(i, (j - i)).Split(new string[] { "<tr>", "</tr>" }, StringSplitOptions.RemoveEmptyEntries);
-            j = 2;
-            while (true)
-            {
-                if (j >= RawTable.Length) return RecordCount;
-                string[] InsideTbl = RawTable[j].Split(new string[] { "<td>", "</td>" }, StringSplitOptions.RemoveEmptyEntries);
-                RecordCount++;
-                cCreditInfo ci = new cCreditInfo();
-                ci.bValid = true;
-                if (DateTime.TryParseExact(InsideTbl[4], formats, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out DateTime dateTime1))
-                {
-                    ci.tCompleted = dateTime1;
-                }
-                else
-                {
-                    return RecordCount;
-                }
-
-                ci.ElapsedSecs = Convert.ToDouble(fBR(InsideTbl[9]));
-                ci.CPUtimeSecs = Convert.ToDouble(fBR(InsideTbl[10]));
-                ci.Credits = Convert.ToDouble(fBR(InsideTbl[11]));
-                if (ci.ElapsedSecs == 0.0) ci.ElapsedSecs = 0.01;
-                ci.mELA = ci.Credits / ci.ElapsedSecs;
-                mELA.Add(ci.mELA);
-                if (ci.CPUtimeSecs == 0.0) ci.CPUtimeSecs = 0.01;
-                ci.mCPU = ci.Credits / ci.CPUtimeSecs;
-                mCPU.Add(ci.mCPU);
-                ci.bValid = true;   // do not really know if it is valid yet
-                CreditInfo.Add(ci);
-                j += 2;
-            }
-        }
-
+   
         private int ProcessBody()
         {
             int n = 0;
+            int nErr = 0;
             switch(ProjectStats.sCountValids)
             {
                 case " Valid () .":
                 case ">Valid ()</span>.":
-                    int nErr = ProjectStats.GetTableFromRaw();
+                case "<b>Valid</b> 0 |.":
+                case ">Valid 0 </a>.":
+                    nErr = ProjectStats.GetTableFromRaw();
+                    CreditInfo = ProjectStats.LCreditInfo;
                     n = ProjectStats.NumberRecordsRead;
-                    //ProcessPage_9_10_11();
                     GetResults();
                     return n;
-                case ">Valid 0 </a>.":
-                    break;
-                case "<b>Valid</b> 0 |.":
+                case ">Valid 0 </a>cc.":
                     break;
                 case "null":
+                    nErr = ProjectStats.GetTableFromRaw();
+                    GetResults();
                     break;
             }
             return n;
@@ -440,24 +433,19 @@ namespace CreditStatistics
         {
             int i = cnt - strIn.Length;
             if (i < 0) return strIn.Substring(0, cnt);
-            return "                              ".Substring(0, i) + strIn;
+            return "                                               ".Substring(0, i) + strIn;
         }
+   
 
-        private bool ParseUrl(string s)
+        private void AllowGS(bool b)
         {
-            if (s == "") return false;
-            if (s.Contains("hostid") && s.Contains("results.php")) return true;
-            if(s.Contains("/host/"))
-            {
-                int i = s.IndexOf("/host/");
-                string t = s.Substring(0, i);
-            }
-            return false;
-        }   
-
+            btnClear.Enabled = b;
+            btnStart.Enabled = b;
+        }
         private void btnFind_Click(object sender, EventArgs e)
         {
-            gbGetStats.Enabled = false;
+            if (ProjUrl.Text == "") return; //jys need to parse for errors
+            AllowGS(false);
             tbHdrInfo.Clear();
             bool bValid = RunExtract();
             if(bValid)
@@ -494,7 +482,7 @@ namespace CreditStatistics
 
         private void ProjUrl_TextChanged(object sender, EventArgs e)
         {
-            gbGetStats.Enabled = false;
+            AllowGS(false);
         }
 
         bool IsInteger(string input)
@@ -505,6 +493,9 @@ namespace CreditStatistics
         private void ApplyName()
         {
             string sID = tbHOSTID.Text.Trim();
+
+            //int i = ProjectStats.GetNameIndex();
+
             ProjUrl.Text = "";
             if (sID == "") return;
             if(SelectedProject == "" || sID == "12345")
@@ -552,6 +543,7 @@ namespace CreditStatistics
             int i, j;
             string s = ProjUrl.Text.ToLower();
             int pLoc = ProjectStats.GetNameIndex(s);
+            SelectedProject = ProjectStats.ProjectList[pLoc].name;
             if (pLoc < 0)
             {
                 MessageBox.Show("Project not found in url");
@@ -600,6 +592,7 @@ namespace CreditStatistics
         private void btnExtract_Click(object sender, EventArgs e)
         {
             RunExtract();
+            ApplyName();
         }
 
         private int FirstNonInteger(string s, int iOffset)
@@ -628,9 +621,12 @@ namespace CreditStatistics
                 switch(ProjectStats.sTaskType)
                 {
                     case "HDR":
-                        ProjectStats.NumValid = ProcessHDR();
-                        if (ProjectStats.NumValid == 0) return;
-                        gbGetStats.Enabled = !ProjectStats.TaskError;
+                        if(ProjectStats.sCountValids != "null")
+                        {
+                            ProjectStats.NumValid = ProcessHDR();
+                            if (ProjectStats.NumValid == 0) return;
+                        }
+                        AllowGS(!ProjectStats.TaskError);
                         RecordsPerPage = ProcessBody();
                         break;
                     case "BODY":
@@ -648,6 +644,63 @@ namespace CreditStatistics
         private void btnCancel1_Click(object sender, EventArgs e)
         {
             ProjectStats.TaskDone = true;
+        }
+
+        private void lbSelectDemo_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            string sOut = "";
+            int col = 0;
+            int w = tbSelected.Width / 10;
+            string lOut = "";
+            foreach(var item in lbSelectDemo.SelectedItems)
+            {
+                string s = item.ToString().ToLower();
+                int i = ProjectStats.GetNameIndex(s);
+                s = ProjectStats.ShortName(i);
+                if (s.Length + lOut.Length > w)
+                {
+                    sOut += lOut + Environment.NewLine;
+                    lOut = s;
+                }
+                else lOut += " " + s;
+            }
+            sOut += lOut;
+            tbSelected.Text = sOut;
+        }
+
+        private void btnCleSel_Click(object sender, EventArgs e)
+        {
+            lbSelectDemo.ClearSelected();
+        }
+
+        private void btnSetSel_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i < lbSelectDemo.Items.Count; i++)
+            {
+                lbSelectDemo.SetSelected(i, true);
+            }
+        }
+
+        private void btnClearURL_Click(object sender, EventArgs e)
+        {
+            ProjUrl.Clear();
+        }
+
+        private void btnPaste_Click(object sender, EventArgs e)
+        {
+            ProjUrl.Text = Clipboard.GetText().Trim();
+            RunExtract();
+            ApplyName();
+        }
+
+        private void lbSelectDemo_MouseClick(object sender, MouseEventArgs e)
+        {
+            int index = lbSelectDemo.IndexFromPoint(e.Location);
+            if (index != ListBox.NoMatches)
+            {
+                string s = lbSelectDemo.Items[index].ToString();
+                Clipboard.SetText(s);
+            }
         }
     }
 }

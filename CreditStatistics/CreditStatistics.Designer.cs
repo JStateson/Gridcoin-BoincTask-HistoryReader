@@ -45,13 +45,11 @@
             this.btnApplyName = new System.Windows.Forms.Button();
             this.tbHOSTID = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
             this.tbHdrInfo = new System.Windows.Forms.TextBox();
             this.btnFind = new System.Windows.Forms.Button();
             this.label5 = new System.Windows.Forms.Label();
             this.tcProj = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.btnCancel1 = new System.Windows.Forms.Button();
             this.tbPage = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.btnExtract = new System.Windows.Forms.Button();
@@ -61,23 +59,35 @@
             this.btnReadBoinc = new System.Windows.Forms.Button();
             this.tbBoincLoc = new System.Windows.Forms.TextBox();
             this.TaskTimer = new System.Windows.Forms.Timer(this.components);
+            this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.lbSelectDemo = new System.Windows.Forms.ListBox();
+            this.tbSelected = new System.Windows.Forms.TextBox();
+            this.button1 = new System.Windows.Forms.Button();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.btnCleSel = new System.Windows.Forms.Button();
+            this.btnSetSel = new System.Windows.Forms.Button();
+            this.btnClearURL = new System.Windows.Forms.Button();
+            this.btnPaste = new System.Windows.Forms.Button();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.gbGetStats.SuspendLayout();
             this.gbSamURL.SuspendLayout();
             this.tcProj.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.groupBox1.SuspendLayout();
+            this.tabPage3.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnViewData
             // 
             this.btnViewData.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnViewData.ForeColor = System.Drawing.Color.Blue;
-            this.btnViewData.Location = new System.Drawing.Point(386, 16);
+            this.btnViewData.Location = new System.Drawing.Point(431, 33);
             this.btnViewData.Name = "btnViewData";
-            this.btnViewData.Size = new System.Drawing.Size(89, 23);
+            this.btnViewData.Size = new System.Drawing.Size(133, 47);
             this.btnViewData.TabIndex = 2;
-            this.btnViewData.Text = "View Page";
+            this.btnViewData.Text = "Click to view\r\nthe below page";
             this.btnViewData.UseVisualStyleBackColor = true;
             this.btnViewData.Click += new System.EventHandler(this.btnViewData_Click);
             // 
@@ -100,7 +110,7 @@
             this.tbInfo.Multiline = true;
             this.tbInfo.Name = "tbInfo";
             this.tbInfo.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.tbInfo.Size = new System.Drawing.Size(648, 480);
+            this.tbInfo.Size = new System.Drawing.Size(692, 480);
             this.tbInfo.TabIndex = 4;
             // 
             // lbVersion
@@ -122,10 +132,9 @@
             this.gbGetStats.Controls.Add(this.tbInfo);
             this.gbGetStats.Controls.Add(this.lbVersion);
             this.gbGetStats.Controls.Add(this.btnStart);
-            this.gbGetStats.Enabled = false;
-            this.gbGetStats.Location = new System.Drawing.Point(541, 51);
+            this.gbGetStats.Location = new System.Drawing.Point(634, 54);
             this.gbGetStats.Name = "gbGetStats";
-            this.gbGetStats.Size = new System.Drawing.Size(688, 657);
+            this.gbGetStats.Size = new System.Drawing.Size(731, 657);
             this.gbGetStats.TabIndex = 10;
             this.gbGetStats.TabStop = false;
             this.gbGetStats.Text = "WU / Credit statistics";
@@ -181,19 +190,19 @@
             this.cbfilterSTD.ForeColor = System.Drawing.Color.Red;
             this.cbfilterSTD.Location = new System.Drawing.Point(545, 76);
             this.cbfilterSTD.Name = "cbfilterSTD";
-            this.cbfilterSTD.Size = new System.Drawing.Size(100, 17);
+            this.cbfilterSTD.Size = new System.Drawing.Size(93, 17);
             this.cbfilterSTD.TabIndex = 10;
-            this.cbfilterSTD.Text = "Filter out 1 STD";
+            this.cbfilterSTD.Text = "Filter out 2 SD";
             this.cbfilterSTD.UseVisualStyleBackColor = true;
             this.cbfilterSTD.CheckedChanged += new System.EventHandler(this.cbfilterSTD_CheckedChanged);
             // 
             // ProjUrl
             // 
-            this.ProjUrl.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ProjUrl.Location = new System.Drawing.Point(18, 106);
+            this.ProjUrl.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ProjUrl.Location = new System.Drawing.Point(10, 103);
             this.ProjUrl.Multiline = true;
             this.ProjUrl.Name = "ProjUrl";
-            this.ProjUrl.Size = new System.Drawing.Size(433, 50);
+            this.ProjUrl.Size = new System.Drawing.Size(554, 47);
             this.ProjUrl.TabIndex = 0;
             this.ProjUrl.Text = "https://milkyway.cs.rpi.edu/milkyway/results.php?hostid=1046337&offset=0&show_nam" +
     "es=0&state=4&appid=";
@@ -215,7 +224,7 @@
             // 
             this.btnApplyName.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnApplyName.ForeColor = System.Drawing.SystemColors.HotTrack;
-            this.btnApplyName.Location = new System.Drawing.Point(285, 33);
+            this.btnApplyName.Location = new System.Drawing.Point(313, 33);
             this.btnApplyName.Name = "btnApplyName";
             this.btnApplyName.Size = new System.Drawing.Size(75, 23);
             this.btnApplyName.TabIndex = 9;
@@ -226,7 +235,7 @@
             // tbHOSTID
             // 
             this.tbHOSTID.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbHOSTID.Location = new System.Drawing.Point(173, 33);
+            this.tbHOSTID.Location = new System.Drawing.Point(223, 34);
             this.tbHOSTID.Name = "tbHOSTID";
             this.tbHOSTID.Size = new System.Drawing.Size(84, 22);
             this.tbHOSTID.TabIndex = 8;
@@ -239,36 +248,24 @@
             this.label2.Location = new System.Drawing.Point(16, 29);
             this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(131, 26);
+            this.label2.Size = new System.Drawing.Size(184, 32);
             this.label2.TabIndex = 7;
             this.label2.Text = "Enter HOST ID and select\r\nproject then click apply";
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.BackColor = System.Drawing.SystemColors.Info;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(119, 177);
-            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(150, 16);
-            this.label1.TabIndex = 9;
-            this.label1.Text = "Workunit category count";
             // 
             // tbHdrInfo
             // 
             this.tbHdrInfo.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbHdrInfo.Location = new System.Drawing.Point(276, 174);
+            this.tbHdrInfo.Location = new System.Drawing.Point(336, 200);
             this.tbHdrInfo.Multiline = true;
             this.tbHdrInfo.Name = "tbHdrInfo";
-            this.tbHdrInfo.Size = new System.Drawing.Size(175, 111);
+            this.tbHdrInfo.Size = new System.Drawing.Size(135, 82);
             this.tbHdrInfo.TabIndex = 8;
             // 
             // btnFind
             // 
             this.btnFind.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnFind.ForeColor = System.Drawing.Color.Blue;
-            this.btnFind.Location = new System.Drawing.Point(281, 16);
+            this.btnFind.Location = new System.Drawing.Point(485, 236);
             this.btnFind.Name = "btnFind";
             this.btnFind.Size = new System.Drawing.Size(65, 23);
             this.btnFind.TabIndex = 7;
@@ -280,10 +277,11 @@
             // 
             this.label5.AutoSize = true;
             this.label5.BackColor = System.Drawing.SystemColors.Info;
+            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label5.Location = new System.Drawing.Point(7, 16);
             this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(248, 52);
+            this.label5.Size = new System.Drawing.Size(297, 52);
             this.label5.TabIndex = 6;
             this.label5.Text = resources.GetString("label5.Text");
             // 
@@ -291,50 +289,41 @@
             // 
             this.tcProj.Controls.Add(this.tabPage1);
             this.tcProj.Controls.Add(this.tabPage2);
+            this.tcProj.Controls.Add(this.tabPage3);
+            this.tcProj.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tcProj.Location = new System.Drawing.Point(12, 29);
             this.tcProj.Name = "tcProj";
             this.tcProj.SelectedIndex = 0;
-            this.tcProj.Size = new System.Drawing.Size(508, 689);
+            this.tcProj.Size = new System.Drawing.Size(592, 689);
             this.tcProj.TabIndex = 13;
             // 
             // tabPage1
             // 
-            this.tabPage1.Controls.Add(this.btnCancel1);
+            this.tabPage1.Controls.Add(this.btnPaste);
+            this.tabPage1.Controls.Add(this.btnClearURL);
+            this.tabPage1.Controls.Add(this.label1);
             this.tabPage1.Controls.Add(this.tbPage);
             this.tabPage1.Controls.Add(this.label3);
             this.tabPage1.Controls.Add(this.btnExtract);
             this.tabPage1.Controls.Add(this.gbSamURL);
-            this.tabPage1.Controls.Add(this.label1);
             this.tabPage1.Controls.Add(this.label5);
             this.tabPage1.Controls.Add(this.tbHdrInfo);
             this.tabPage1.Controls.Add(this.ProjUrl);
             this.tabPage1.Controls.Add(this.btnFind);
             this.tabPage1.Controls.Add(this.btnViewData);
-            this.tabPage1.Location = new System.Drawing.Point(4, 22);
+            this.tabPage1.Location = new System.Drawing.Point(4, 25);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(500, 663);
+            this.tabPage1.Size = new System.Drawing.Size(584, 660);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Projects";
             this.tabPage1.UseVisualStyleBackColor = true;
-            // 
-            // btnCancel1
-            // 
-            this.btnCancel1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnCancel1.ForeColor = System.Drawing.Color.Blue;
-            this.btnCancel1.Location = new System.Drawing.Point(400, 68);
-            this.btnCancel1.Name = "btnCancel1";
-            this.btnCancel1.Size = new System.Drawing.Size(75, 23);
-            this.btnCancel1.TabIndex = 15;
-            this.btnCancel1.Text = "Cancel";
-            this.btnCancel1.UseVisualStyleBackColor = true;
-            this.btnCancel1.Click += new System.EventHandler(this.btnCancel1_Click);
             // 
             // tbPage
             // 
             this.tbPage.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tbPage.ForeColor = System.Drawing.Color.Blue;
-            this.tbPage.Location = new System.Drawing.Point(176, 239);
+            this.tbPage.Location = new System.Drawing.Point(18, 269);
             this.tbPage.Name = "tbPage";
             this.tbPage.Size = new System.Drawing.Size(79, 22);
             this.tbPage.TabIndex = 13;
@@ -355,11 +344,11 @@
             // 
             this.btnExtract.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnExtract.ForeColor = System.Drawing.Color.Blue;
-            this.btnExtract.Location = new System.Drawing.Point(276, 68);
+            this.btnExtract.Location = new System.Drawing.Point(18, 157);
             this.btnExtract.Name = "btnExtract";
-            this.btnExtract.Size = new System.Drawing.Size(94, 23);
+            this.btnExtract.Size = new System.Drawing.Size(126, 45);
             this.btnExtract.TabIndex = 11;
-            this.btnExtract.Text = "EXTRACT";
+            this.btnExtract.Text = "Click to verify\r\nthe above URL";
             this.btnExtract.UseVisualStyleBackColor = true;
             this.btnExtract.Click += new System.EventHandler(this.btnExtract_Click);
             // 
@@ -413,7 +402,7 @@
             // 
             this.tbBoincLoc.Location = new System.Drawing.Point(21, 31);
             this.tbBoincLoc.Name = "tbBoincLoc";
-            this.tbBoincLoc.Size = new System.Drawing.Size(386, 20);
+            this.tbBoincLoc.Size = new System.Drawing.Size(386, 22);
             this.tbBoincLoc.TabIndex = 0;
             this.tbBoincLoc.Text = "c:\\programdata\\boinc";
             // 
@@ -422,11 +411,148 @@
             this.TaskTimer.Interval = 1000;
             this.TaskTimer.Tick += new System.EventHandler(this.TaskTimer_Tick);
             // 
+            // tabPage3
+            // 
+            this.tabPage3.Controls.Add(this.btnSetSel);
+            this.tabPage3.Controls.Add(this.btnCleSel);
+            this.tabPage3.Controls.Add(this.label4);
+            this.tabPage3.Controls.Add(this.button1);
+            this.tabPage3.Controls.Add(this.tbSelected);
+            this.tabPage3.Controls.Add(this.lbSelectDemo);
+            this.tabPage3.Location = new System.Drawing.Point(4, 25);
+            this.tabPage3.Name = "tabPage3";
+            this.tabPage3.Size = new System.Drawing.Size(584, 660);
+            this.tabPage3.TabIndex = 2;
+            this.tabPage3.Text = "Top PCs";
+            this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // lbSelectDemo
+            // 
+            this.lbSelectDemo.FormattingEnabled = true;
+            this.lbSelectDemo.ItemHeight = 16;
+            this.lbSelectDemo.Items.AddRange(new object[] {
+            "https://numberfields.asu.edu/NumberFields/results.php?hostid=2883430&state=4&offs" +
+                "et=0",
+            "https://main.cpdn.org/results.php?hostid=1556725&state=4&offset=0",
+            "https://lhcathome.cern.ch/lhcathome/results.php?hostid=10835483&offset=0&state=4",
+            "https://sech.me/boinc/Amicable/results.php?hostid=220390&state=4&offset=0",
+            "https://asteroidsathome.net/boinc/results.php?hostid=726869&state=4&offset=0",
+            "https://einsteinathome.org/host/12850601/tasks/4/0",
+            "https://milkyway.cs.rpi.edu/milkyway/results.php?hostid=899300&offset=0&state=4",
+            "https://moowrap.net/results.php?hostid=1324423&state=4&offset=0",
+            "https://escatter11.fullerton.edu/nfs/results.php?hostid=7237359&state=4&offset=0",
+            "https://srbase.my-firewall.org/sr5/results.php?hostid=226750&state=4&offset=0",
+            "https://yafu.myfirewall.org/yafu/results.php?hostid=60890&state=4&offset=0",
+            "https://boinc.loda-lang.org/loda/results.php?hostid=125&state=4&offset=0",
+            "https://rake.boincfast.ru/rakesearch/results.php?hostid=21600&state=4&offset=0",
+            "http://radioactiveathome.org/boinc/results.php?hostid=45736&state=3&offset=0",
+            "https://www.sidock.si/sidock/results.php?hostid=51476&offset=0&show_names=0&state" +
+                "=4&appid=",
+            "https://rnma.xyz/boinc/results.php?hostid=23250&state=4&offset=0",
+            "http://radioactiveathome.org/boinc/results.php?hostid=45736&offset=0&state=3",
+            "https://boinc.progger.info/odlk/results.php?hostid=29350&state=4&offset=0",
+            "https://www.primegrid.com/results.php?hostid=905516&offset=0&state=4",
+            "https://gerasim.boinc.ru/users/viewHostResults.aspx?hostid=70676&opt=2"});
+            this.lbSelectDemo.Location = new System.Drawing.Point(15, 192);
+            this.lbSelectDemo.Name = "lbSelectDemo";
+            this.lbSelectDemo.SelectionMode = System.Windows.Forms.SelectionMode.MultiSimple;
+            this.lbSelectDemo.Size = new System.Drawing.Size(536, 452);
+            this.lbSelectDemo.TabIndex = 0;
+            this.lbSelectDemo.MouseClick += new System.Windows.Forms.MouseEventHandler(this.lbSelectDemo_MouseClick);
+            this.lbSelectDemo.SelectedIndexChanged += new System.EventHandler(this.lbSelectDemo_SelectedIndexChanged);
+            // 
+            // tbSelected
+            // 
+            this.tbSelected.ForeColor = System.Drawing.Color.Blue;
+            this.tbSelected.Location = new System.Drawing.Point(201, 16);
+            this.tbSelected.Multiline = true;
+            this.tbSelected.Name = "tbSelected";
+            this.tbSelected.Size = new System.Drawing.Size(337, 131);
+            this.tbSelected.TabIndex = 1;
+            // 
+            // button1
+            // 
+            this.button1.ForeColor = System.Drawing.Color.Blue;
+            this.button1.Location = new System.Drawing.Point(15, 16);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 2;
+            this.button1.Text = "Apply";
+            this.button1.UseVisualStyleBackColor = true;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.ForeColor = System.Drawing.Color.Coral;
+            this.label4.Location = new System.Drawing.Point(12, 60);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(126, 32);
+            this.label4.TabIndex = 3;
+            this.label4.Text = "Not Programmed\r\n denis, yoyo, wcg";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.BackColor = System.Drawing.SystemColors.Info;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(230, 225);
+            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(105, 48);
+            this.label1.TabIndex = 16;
+            this.label1.Text = "Amount of data\r\nif project has a\r\nheader or empty";
+            // 
+            // btnCleSel
+            // 
+            this.btnCleSel.ForeColor = System.Drawing.Color.Blue;
+            this.btnCleSel.Location = new System.Drawing.Point(201, 163);
+            this.btnCleSel.Name = "btnCleSel";
+            this.btnCleSel.Size = new System.Drawing.Size(75, 23);
+            this.btnCleSel.TabIndex = 4;
+            this.btnCleSel.Text = "Clear";
+            this.btnCleSel.UseVisualStyleBackColor = true;
+            this.btnCleSel.Click += new System.EventHandler(this.btnCleSel_Click);
+            // 
+            // btnSetSel
+            // 
+            this.btnSetSel.ForeColor = System.Drawing.Color.Blue;
+            this.btnSetSel.Location = new System.Drawing.Point(297, 163);
+            this.btnSetSel.Name = "btnSetSel";
+            this.btnSetSel.Size = new System.Drawing.Size(87, 23);
+            this.btnSetSel.TabIndex = 5;
+            this.btnSetSel.Text = "Select All";
+            this.btnSetSel.UseVisualStyleBackColor = true;
+            this.btnSetSel.Click += new System.EventHandler(this.btnSetSel_Click);
+            // 
+            // btnClearURL
+            // 
+            this.btnClearURL.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnClearURL.ForeColor = System.Drawing.Color.Blue;
+            this.btnClearURL.Location = new System.Drawing.Point(170, 156);
+            this.btnClearURL.Name = "btnClearURL";
+            this.btnClearURL.Size = new System.Drawing.Size(70, 20);
+            this.btnClearURL.TabIndex = 17;
+            this.btnClearURL.Text = "CLEAR";
+            this.btnClearURL.UseVisualStyleBackColor = true;
+            this.btnClearURL.Click += new System.EventHandler(this.btnClearURL_Click);
+            // 
+            // btnPaste
+            // 
+            this.btnPaste.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnPaste.ForeColor = System.Drawing.Color.Blue;
+            this.btnPaste.Location = new System.Drawing.Point(260, 156);
+            this.btnPaste.Name = "btnPaste";
+            this.btnPaste.Size = new System.Drawing.Size(70, 20);
+            this.btnPaste.TabIndex = 18;
+            this.btnPaste.Text = "Paste";
+            this.btnPaste.UseVisualStyleBackColor = true;
+            this.btnPaste.Click += new System.EventHandler(this.btnPaste_Click);
+            // 
             // CreditStatistics
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1255, 744);
+            this.ClientSize = new System.Drawing.Size(1377, 744);
             this.Controls.Add(this.tcProj);
             this.Controls.Add(this.gbGetStats);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -445,6 +571,8 @@
             this.tabPage2.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            this.tabPage3.ResumeLayout(false);
+            this.tabPage3.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -456,7 +584,6 @@
         private System.Windows.Forms.Label lbVersion;
         private System.Windows.Forms.GroupBox gbGetStats;
         private System.Windows.Forms.TextBox ProjUrl;
-        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox tbHdrInfo;
         private System.Windows.Forms.Button btnFind;
         private System.Windows.Forms.Label label5;
@@ -480,7 +607,17 @@
         private System.Windows.Forms.ProgressBar pbTask;
         private System.Windows.Forms.Timer TaskTimer;
         private System.Windows.Forms.Button btCancel;
-        private System.Windows.Forms.Button btnCancel1;
+        private System.Windows.Forms.TabPage tabPage3;
+        private System.Windows.Forms.ListBox lbSelectDemo;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.TextBox tbSelected;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button btnSetSel;
+        private System.Windows.Forms.Button btnCleSel;
+        private System.Windows.Forms.Button btnClearURL;
+        private System.Windows.Forms.Button btnPaste;
+        private System.Windows.Forms.ToolTip toolTip1;
     }
 }
 
