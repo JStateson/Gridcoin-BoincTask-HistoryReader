@@ -40,6 +40,11 @@ namespace BTHistoryReader
             public int iSystem;
             public int nDev;    // number of unique devices d0, d1 would be 2 devices
             public double cpd;  // credits per day
+            public List<int> nDevL = new List<int>();
+            public void AddnDev(int d)
+            {
+                nDevL.Add(d);
+            }
             public List<double> dLelapsedTime = new List<double>();
             public void AddValue(double d)
             {
@@ -203,7 +208,10 @@ namespace BTHistoryReader
                         foreach (double d in AppName.dElapsedTime)
                         {
                             if (AppName.bIsValid[iLoc])
+                            {
                                 ckpaa.AddValue(d / 60.0);
+                                ckpaa.AddnDev(AppName.DeviceID[iLoc]);
+                            }
                             iLoc++;
                         }
                         btf.ThisProjectInfo.Add(cpi); // not sure of the purpose of this 2-8-2020 is cpi used??
@@ -631,6 +639,7 @@ namespace BTHistoryReader
                                     continue;
                                 if (ckpaa.dLelapsedTime.Count == 0)                         // must have data
                                     continue;
+                                int iLoc = 0;
                                 foreach (double d in ckpaa.dLelapsedTime)
                                 {
                                     if (d == 0.0)
@@ -639,6 +648,8 @@ namespace BTHistoryReader
                                     }
                                     sa.dValues.Add(d/ckpaa.nConcurrent);
                                     sa.bIsValid.Add(true);
+                                    sa.iGpuDevice.Add(ckpaa.nDevL[iLoc]);
+                                    iLoc++;
                                 }
                             }
                         }
@@ -664,6 +675,7 @@ namespace BTHistoryReader
                             {
                                 if (ckpaa.dLelapsedTime.Count == 0)
                                     continue;
+                                int iLoc = 0;
                                 foreach(double d in ckpaa.dLelapsedTime)
                                 {
                                     if (d == 0.0)
@@ -672,7 +684,9 @@ namespace BTHistoryReader
                                     }
                                     sa.dValues.Add(d/ckpaa.nConcurrent);
                                     sa.iSystem.Add(ckpaa.iSystem);
+                                    sa.iGpuDevice.Add(ckpaa.nDevL[iLoc]);
                                     sa.bIsValid.Add(true);
+                                    iLoc++;
                                 }
                                 sa.iTheseSystem.Add(ckpaa.iSystem);
                                 sa.TheseSystems.Add(ckpal.strSystem);
@@ -748,6 +762,7 @@ namespace BTHistoryReader
 
                     sa.strProjName = LBoxProjects.Text;
                     sa.dValues = new List<double>();
+                    sa.iGpuDevice = new List<int>();
                     sa.ShowType = eShowType.DoingSystems;
                     sa.nConcurrent = Convert.ToInt32(itm.SubItems[0].Text);
                     sa.bIsValid = new List<bool>();

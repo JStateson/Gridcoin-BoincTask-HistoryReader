@@ -19,6 +19,8 @@ namespace BTHistoryReader
         static Random rnd;
         private string SeriesName = "";
         private double dBig = -1;
+        private List<int> WUsPerSelection = new List<int>();
+        int nWUtotal = 0;
         double dSmall = 1e6;
         private string strSeries = "X-Axis: Elapsed Time in ";
         // note to myself, elspased time is always in minutes
@@ -33,7 +35,22 @@ namespace BTHistoryReader
         bool bSeeError;
         double dScaledOffset = 0.0;     // change offset to minutes or hours as necessary.  default is seconds
         double dOrigOffset = 0.0;
+        
+        
+        private MarkerStyle[] MarkerStyles = new MarkerStyle[] { MarkerStyle.None , MarkerStyle.Circle, MarkerStyle.Cross, MarkerStyle.Diamond, MarkerStyle.Square, MarkerStyle.Triangle, MarkerStyle.Star10, MarkerStyle.Star4, MarkerStyle.Star5, MarkerStyle.Star6};
 
+        private MarkerStyle GetMS(int n)
+        {
+            int i = (n % (MarkerStyles.Length + 1));
+            return MarkerStyles[i];
+            /*
+            if (n >= MarkerStyles.Length)
+            {
+                return MarkerStyle.None;
+            }
+            return MarkerStyles[n];
+            */
+        }
         private class cSaveOutlier
         {
             public string seriesname;
@@ -106,7 +123,7 @@ namespace BTHistoryReader
             lviewSubSeries.Visible = bShowDatasests | bScatteringApps | bScatteringGPUs;
             btnInvSel.Visible = bShowDatasests && bSeeError; // does not work with any other scatter plots!!! 6-24-2019!!!
             // 2-3-2020 may want to look at this later
-            lblSysHideUnhide.Visible = lviewSubSeries.Visible;
+            //lblSysHideUnhide.Visible = lviewSubSeries.Visible;
             ThisSeriesData = refSD;
             ShowScatter();
             GetLegendInfo.Enabled=true;
@@ -321,11 +338,12 @@ namespace BTHistoryReader
         // only called once so cannnot use cbUseOffset tool
         private void ShowScatter()
         {
-            double d=0;
+            double d = 0.0, e = 0.0;
             int j = 0;
-            int iSD=0;
+            nWUtotal = 0;
+            tbWUcnt.Text = "";
             //double dOffset = cbUseOffset.Checked ? dScaledOffset : 0.0 ; not useful here
-
+            WUsPerSelection.Clear();
             CurrentNumberSeriesDisplayable = ThisSeriesData.Count;
             SetScale();
             //bScatteringApps = ThisSeriesData[0].bIsShowingApp;
@@ -339,27 +357,35 @@ namespace BTHistoryReader
             foreach (cSeriesData sd in ThisSeriesData)
             {
                 int n = sd.dValues.Count;
+                WUsPerSelection.Add(n);
+                nWUtotal += n;
                 List<double> yAxis = new List<double>();
                 List<double> xAxis = new List<double>();
                 for (int i = 0; i < n; i++)
                 {
-                    //if (!sd.bIsValid[i]) continue;    // hmm.  not known at this time and this routine runs once
                     d = Convert.ToDouble(i) / n;
                     yAxis.Add(d);
-                    d = sd.dValues[i];
-                    xAxis.Add(d * fScaleMultiplier); // + (dOffset * iSD));    // offset is already scaled by fScaleMultiplier
+                    e = fScaleMultiplier * sd.dValues[i];
+                    xAxis.Add(e);
+                    //DataPoint pt = new DataPoint(e, d);
                 }
                 string seriesname = bScatteringGPUs ? sd.strSeriesName : sd.GetNameToShow(sd.ShowType);
-                //seriesname += strFmtOffset(sd.dAvgs); not usefull here as do not want the name of the series to change when average changes
+                //seriesname += " WUs:" + n.ToString(); // cannot rename a series!
+                tbWUcnt.Text += seriesname + " WUs:" + n.ToString() + Environment.NewLine;
                 SeriesName = seriesname;
                 ChartScatter.Series.Add(seriesname);
                 ChartScatter.Series[seriesname].EmptyPointStyle.Color = Color.Transparent;
                 // seems not needed but left in to remind of what I tried
                 ChartScatter.Series[seriesname].ChartType = SeriesChartType.Point;
                 ChartScatter.Series[seriesname].Points.DataBindXY(xAxis.ToArray(), yAxis.ToArray());
+                ChartScatter.Series[seriesname].MarkerStyle = GetMS(j);
                 n = 0;
                 foreach(DataPoint p in ChartScatter.Series[seriesname].Points)
                 {
+                    if(n == 0)
+                    {
+                        int jj = 0;
+                    }
                     p.Tag = bScatteringGPUs ? j :0 ; // was null ?sd.iGpuDevice[n];  
                     n++;
                 }
@@ -371,7 +397,7 @@ namespace BTHistoryReader
             ChartScatter.ChartAreas["ChartArea1"].AxisX.Maximum = GetBestScaleingUpper(dBig);
             ChartScatter.ChartAreas["ChartArea1"].AxisX.Minimum = GetBestScaleingBottom(dSmall);
             ChartScatter.ChartAreas["ChartArea1"].AxisX.LabelStyle.Format = "#.#";
-
+            LBtLwuS.Text = "Work units in above scatter plot:" + nWUtotal.ToString();
         }
 
         private void AddOffset()
@@ -537,11 +563,17 @@ namespace BTHistoryReader
             if (j == 0 )
             {
                 CurrentSeriesDisplayed = -1;
+                lbGPUvis.Visible = false;
                 for (int i = 0; i < n; i++)
                 {
+                    ChartScatter.Series[i].MarkerStyle = GetMS(i);
+                    foreach (DataPoint dp in ChartScatter.Series[i].Points)
+                    {
+                        dp.MarkerStyle = GetMS(i);
+                    }
                     ChartScatter.Series[i].Enabled = true;
                 }
-                gboxOutlier.Visible = true;// & bShowSystemData;
+                gboxOutlier.Visible = true;
             }
             else 
             {
@@ -551,6 +583,14 @@ namespace BTHistoryReader
                     if (i == j)
                     {
                         CurrentSeriesDisplayed = i; // showing only this series of "ThisSeriesData[]"
+                        lbGPUvis.Visible = true;
+                        int iPnt = 0;
+                        foreach (DataPoint dp in ChartScatter.Series[i].Points)
+                        {
+                            int iGPU = ThisSeriesData[j].iGpuDevice[iPnt];
+                            dp.MarkerStyle = GetMS(iGPU); ;
+                            iPnt++;
+                        }
                         ChartScatter.Series[i].Enabled = true;
                     }
                     else
@@ -587,8 +627,13 @@ namespace BTHistoryReader
             {
                 RestoreDefaultColors();
                 lviewSubSeries.Items.Clear();
+                if(i == 0)
+                    LBtLwuS.Text = "Work units in above scatter plot:" + nWUtotal.ToString();
+                else
+                    LBtLwuS.Text = "Work units in above scatter plot:" + WUsPerSelection[i - 1].ToString();
                 return; // not showing individual series nor scattering apps
             }
+            LBtLwuS.Text = "Work units in above scatter plot:" + WUsPerSelection[i-1] .ToString();
             ShowSystemNames(i-1);       // in addition to names, points are shown
         }
 

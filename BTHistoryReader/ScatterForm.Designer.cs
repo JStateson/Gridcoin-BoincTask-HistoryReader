@@ -30,9 +30,9 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ScatterForm));
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend3 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend4 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             this.lbScatUsage = new System.Windows.Forms.Label();
             this.GetLegendInfo = new System.Windows.Forms.Timer(this.components);
             this.labelShowSeries = new System.Windows.Forms.Label();
@@ -48,11 +48,13 @@
             this.gboxOutlier = new System.Windows.Forms.GroupBox();
             this.nudHideXoutliers = new System.Windows.Forms.NumericUpDown();
             this.label3 = new System.Windows.Forms.Label();
-            this.lblSysHideUnhide = new System.Windows.Forms.Label();
             this.lblShowApp = new System.Windows.Forms.Label();
             this.btnInvSel = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.lbAdvFilter = new System.Windows.Forms.Label();
+            this.tbWUcnt = new System.Windows.Forms.TextBox();
+            this.LBtLwuS = new System.Windows.Forms.Label();
+            this.lbGPUvis = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.nudShowOnly)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ChartScatter)).BeginInit();
             this.groupBox1.SuspendLayout();
@@ -64,7 +66,7 @@
             // 
             this.lbScatUsage.AutoSize = true;
             this.lbScatUsage.BackColor = System.Drawing.SystemColors.Info;
-            this.lbScatUsage.Location = new System.Drawing.Point(653, 361);
+            this.lbScatUsage.Location = new System.Drawing.Point(655, 506);
             this.lbScatUsage.Name = "lbScatUsage";
             this.lbScatUsage.Size = new System.Drawing.Size(291, 52);
             this.lbScatUsage.TabIndex = 1;
@@ -115,7 +117,7 @@
             // cboxUseLog
             // 
             this.cboxUseLog.AutoSize = true;
-            this.cboxUseLog.Location = new System.Drawing.Point(104, 26);
+            this.cboxUseLog.Location = new System.Drawing.Point(106, 22);
             this.cboxUseLog.Name = "cboxUseLog";
             this.cboxUseLog.Size = new System.Drawing.Size(108, 17);
             this.cboxUseLog.TabIndex = 8;
@@ -125,16 +127,16 @@
             // 
             // ChartScatter
             // 
-            chartArea1.Name = "ChartArea1";
-            this.ChartScatter.ChartAreas.Add(chartArea1);
-            legend1.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Left;
-            legend1.IsDockedInsideChartArea = false;
-            legend1.Name = "Legend1";
-            legend2.DockedToChartArea = "ChartArea1";
-            legend2.Name = "SysLeg";
-            this.ChartScatter.Legends.Add(legend1);
-            this.ChartScatter.Legends.Add(legend2);
-            this.ChartScatter.Location = new System.Drawing.Point(21, 22);
+            chartArea2.Name = "ChartArea1";
+            this.ChartScatter.ChartAreas.Add(chartArea2);
+            legend3.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Left;
+            legend3.IsDockedInsideChartArea = false;
+            legend3.Name = "Legend1";
+            legend4.DockedToChartArea = "ChartArea1";
+            legend4.Name = "SysLeg";
+            this.ChartScatter.Legends.Add(legend3);
+            this.ChartScatter.Legends.Add(legend4);
+            this.ChartScatter.Location = new System.Drawing.Point(21, 35);
             this.ChartScatter.Name = "ChartScatter";
             this.ChartScatter.Size = new System.Drawing.Size(923, 320);
             this.ChartScatter.TabIndex = 0;
@@ -146,9 +148,9 @@
             this.groupBox1.Controls.Add(this.lbOffsetValue);
             this.groupBox1.Controls.Add(this.cbUseOffset);
             this.groupBox1.Controls.Add(this.cboxUseLog);
-            this.groupBox1.Location = new System.Drawing.Point(12, 423);
+            this.groupBox1.Location = new System.Drawing.Point(12, 451);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(294, 115);
+            this.groupBox1.Size = new System.Drawing.Size(258, 87);
             this.groupBox1.TabIndex = 9;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "X-Axis scaling";
@@ -157,7 +159,7 @@
             // 
             this.lbOffsetValue.AutoSize = true;
             this.lbOffsetValue.BackColor = System.Drawing.SystemColors.Info;
-            this.lbOffsetValue.Location = new System.Drawing.Point(36, 88);
+            this.lbOffsetValue.Location = new System.Drawing.Point(24, 66);
             this.lbOffsetValue.Name = "lbOffsetValue";
             this.lbOffsetValue.Size = new System.Drawing.Size(65, 13);
             this.lbOffsetValue.TabIndex = 10;
@@ -167,7 +169,7 @@
             // 
             this.cbUseOffset.AutoSize = true;
             this.cbUseOffset.Enabled = false;
-            this.cbUseOffset.Location = new System.Drawing.Point(105, 62);
+            this.cbUseOffset.Location = new System.Drawing.Point(107, 45);
             this.cbUseOffset.Name = "cbUseOffset";
             this.cbUseOffset.Size = new System.Drawing.Size(107, 17);
             this.cbUseOffset.TabIndex = 9;
@@ -201,7 +203,7 @@
             // 
             this.gboxOutlier.Controls.Add(this.nudHideXoutliers);
             this.gboxOutlier.Controls.Add(this.label3);
-            this.gboxOutlier.Location = new System.Drawing.Point(618, 425);
+            this.gboxOutlier.Location = new System.Drawing.Point(296, 485);
             this.gboxOutlier.Name = "gboxOutlier";
             this.gboxOutlier.Size = new System.Drawing.Size(326, 73);
             this.gboxOutlier.TabIndex = 12;
@@ -232,15 +234,6 @@
             this.label3.Text = "Occasionally a GPU runs at lowest speed\r\nand a  task that normally takes minutes\r" +
     "\nstretches into days. These are outliers: and\r\nmay cause all other data to be ob" +
     "scured.";
-            // 
-            // lblSysHideUnhide
-            // 
-            this.lblSysHideUnhide.AutoSize = true;
-            this.lblSysHideUnhide.Location = new System.Drawing.Point(419, 485);
-            this.lblSysHideUnhide.Name = "lblSysHideUnhide";
-            this.lblSysHideUnhide.Size = new System.Drawing.Size(142, 13);
-            this.lblSysHideUnhide.TabIndex = 13;
-            this.lblSysHideUnhide.Text = "select system to hide/unhide";
             // 
             // lblShowApp
             // 
@@ -273,15 +266,47 @@
             this.lbAdvFilter.TabIndex = 16;
             this.lbAdvFilter.Text = "Reserve for filter info, if any";
             // 
+            // tbWUcnt
+            // 
+            this.tbWUcnt.Location = new System.Drawing.Point(642, 397);
+            this.tbWUcnt.Multiline = true;
+            this.tbWUcnt.Name = "tbWUcnt";
+            this.tbWUcnt.Size = new System.Drawing.Size(302, 86);
+            this.tbWUcnt.TabIndex = 17;
+            // 
+            // LBtLwuS
+            // 
+            this.LBtLwuS.AutoSize = true;
+            this.LBtLwuS.BackColor = System.Drawing.SystemColors.Info;
+            this.LBtLwuS.Location = new System.Drawing.Point(679, 372);
+            this.LBtLwuS.Name = "LBtLwuS";
+            this.LBtLwuS.Size = new System.Drawing.Size(157, 13);
+            this.LBtLwuS.TabIndex = 18;
+            this.LBtLwuS.Text = "Work units in above scatter plot";
+            // 
+            // lbGPUvis
+            // 
+            this.lbGPUvis.AutoSize = true;
+            this.lbGPUvis.BackColor = System.Drawing.SystemColors.Info;
+            this.lbGPUvis.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbGPUvis.Location = new System.Drawing.Point(154, 423);
+            this.lbGPUvis.Name = "lbGPUvis";
+            this.lbGPUvis.Size = new System.Drawing.Size(167, 16);
+            this.lbGPUvis.TabIndex = 19;
+            this.lbGPUvis.Text = "GPUs shown as marker";
+            this.lbGPUvis.Visible = false;
+            // 
             // ScatterForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(958, 591);
+            this.Controls.Add(this.lbGPUvis);
+            this.Controls.Add(this.LBtLwuS);
+            this.Controls.Add(this.tbWUcnt);
             this.Controls.Add(this.lbAdvFilter);
             this.Controls.Add(this.btnInvSel);
             this.Controls.Add(this.lblShowApp);
-            this.Controls.Add(this.lblSysHideUnhide);
             this.Controls.Add(this.gboxOutlier);
             this.Controls.Add(this.lviewSubSeries);
             this.Controls.Add(this.groupBox1);
@@ -320,12 +345,14 @@
         private System.Windows.Forms.GroupBox gboxOutlier;
         private System.Windows.Forms.NumericUpDown nudHideXoutliers;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label lblSysHideUnhide;
         private System.Windows.Forms.Label lblShowApp;
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.Button btnInvSel;
         private System.Windows.Forms.Label lbAdvFilter;
         private System.Windows.Forms.CheckBox cbUseOffset;
         private System.Windows.Forms.Label lbOffsetValue;
+        private System.Windows.Forms.TextBox tbWUcnt;
+        private System.Windows.Forms.Label LBtLwuS;
+        private System.Windows.Forms.Label lbGPUvis;
     }
 }

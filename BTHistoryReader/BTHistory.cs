@@ -581,7 +581,7 @@ namespace BTHistoryReader
             for (int i = 0; i < AppName.GpuReassignment.NumGPUs;  i++)
             {
                 string sName = AppName.GpuReassignment.idGPUused(i).ToString();
-                tb_Results.Text += "GPU-" + (i+1).ToString() + " " + sName + "\r\n";
+                tb_Results.Text += "GPU-" + (i).ToString() + " " + sName + "\r\n";
             }
             if(AppName.GpuReassignment.NumberGPUsUnknown > 0)
             {
@@ -1612,7 +1612,7 @@ namespace BTHistoryReader
                 {
                     sN = nRemoved.ToString() + " were removed";
                 }
-                tbTemp += "GPU" + (i + 1).ToString() + ": " + sN;
+                tbTemp += "GPU" + (i).ToString() + ": " + sN;
                 GpuFilters[i].sStats = sN;
                 if (i < nDevices - 1) tbTemp += "\r\n";
             }
@@ -1621,7 +1621,7 @@ namespace BTHistoryReader
                 dgvOF.Invalidate();
                 dgvOF.Refresh();
             }
-            int iDev = 1;
+            int iDev = 0;
             foreach(cOutFilter cnas in lNAS)
             {
                 strResults+= (CurrentApp.bHasGPU ? "GPU" : "CPU") + iDev.ToString() + " WUs:";
@@ -2492,6 +2492,7 @@ namespace BTHistoryReader
                     sa.strAppName = cb_AppNames.Text;       // usually more than one app this must be first in listview
                     sa.strProjName = CurrentProject;    //only doing one project use this for title info
                     sa.dValues = new List<double>();
+                    sa.iGpuDevice = new List<int>();    
                     sa.ShowType = eShowType.DoingGPUs;
                     sa.bIsValid = new List<bool>();
                     sa.dAvgs = 0.0;
