@@ -16,6 +16,7 @@ using static CreditStatistics.CreditStatistics;
 using System.Globalization;
 using System.Security.Policy;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography;
 
 /*
  ---------- ALL_PROJECTS_LIST.XML
@@ -249,6 +250,12 @@ null
             }
         }
 
+        public void AddDemo(string sUrl)
+        {
+            int pLoc = GetNameIndex(sUrl);
+            string SelectedProject = ProjectList[pLoc].name;
+            string sLoc = ProjectList[pLoc].sPage;
+        }
         public List<string> GetNames()
         {
             List<string> names = new List<string>();
@@ -263,7 +270,9 @@ null
         {
             cPSlist p = ProjectList[iTask];
             string s = p.sURL + p.sHid + sID + p.sValid;
-            if (sPage == "") return s;
+            BaseUrl = s;
+            CannotIncrement = (sPage == "");
+            if (CannotIncrement) return s;
             return s + p.sPage + sPage;
         }
 
@@ -429,13 +438,16 @@ null
         public bool TaskDone;
         public bool StopTask;
         public bool TaskError;
-        private int TaskProgress;    // progress or busy
+        private string PageCommand; // ?offset= etc or empty
         public string RawPage;
         public string RawTable;
         private string TaskName;       // project name
-        public string TaskUrl;      // base url, all except offset
+        public string TaskUrl;      // base url plus the offset
+        public string BaseUrl;      // just the url no offset
+        public bool CannotIncrement;
         private int TaskOffset;   // could be page 0,1,etc or 20,40, etc
         private string sTaskOffset;   // could be page 0,1,etc or 20,40, etc
+        private int nTaskOffset;        
         private string sTaskHost;
         private int TaskIncrement;// 1 or 20
         private bool HasOffset;  // if false , then no offset
@@ -455,21 +467,31 @@ null
 
         public List<double> mCPU = new List<double>();
         public List<double> mELA = new List<double>();
-        public void ConfigureTask(int jTask, string sHost, string sOffset, int iWanted, string sType)
+
+        public bool IncrementReader()
+        {
+            if (CannotIncrement) return false;
+            nTaskOffset += TaskIncrement;
+            sTaskOffset = nTaskOffset.ToString();
+            TaskUrl = BaseUrl + PageCommand + sTaskOffset;
+            return true;
+        }
+        public void ConfigureTask(int jTask, string sHost, string sOffset, string sType)
         {
             if (jTask < 0) return;
+            UnsortedLCI.Clear();
+            UnsortedDT.Clear();
+            PageCommand = "";
             iTask = jTask;
             NumValid = 0;
             sTaskType = sType;
             sTaskHost = sHost;
-            TasksWanted = iWanted;
-            TaskProgress = 0;
             StopTask = false;
             TaskBusy = false;
             TaskDone = false;
             cPSlist p = ProjectList[jTask];
             TaskName = p.name;
-            TaskUrl = GetBaseURL(jTask, sHost, sOffset);
+            TaskUrl = GetBaseURL(jTask, sHost, sOffset);            
             sTaskOffset = sOffset;
             TaskOffset = 0;
             TaskIncrement = 0;
@@ -481,10 +503,11 @@ null
             ResultsBoxText = "";
             if (sTaskOffset.Length > 0)
             {
-                TaskOffset = Convert.ToInt32(sTaskOffset);
+                nTaskOffset = Convert.ToInt32(sTaskOffset);
                 if (p.sPage.Contains("page")) TaskIncrement = 1;
-                else if (p.sPage.Contains("offset")) TaskIncrement = 20;
+                else if (p.sPage.Contains("offset")) TaskIncrement = 20;                
                 else HasOffset = false;
+                PageCommand = p.sPage;
             }
         }
         private bool URLincrementOffset()
@@ -592,7 +615,7 @@ null
                         }
                         else
                         {
-                            return 0;//LCreditInfo.Count;
+                            return 0;
                         }
                         s = OuterTable[i++];
                         iStart = s.IndexOf("</td><td align=\"center\">cpu</td><td align=\"right\">");
@@ -652,7 +675,7 @@ null
                 }
                 else
                 {
-                    return LCreditInfo.Count;
+                    return 0;
                 }
                 int i = RawLines[6].LastIndexOf(">");
                 s = RawLines[6].Substring(i + 1);
@@ -669,7 +692,7 @@ null
                 ci.bValid = true;   // do not really know if it is valid yet
                 LCreditInfo.Add(ci);
             }
-            return LCreditInfo.Count;
+            return 0;
         }
         private int BuildStatsTable()
         {
@@ -786,9 +809,7 @@ null
             string sDataKey = "</td><td>Completed and validated</td><td>";
             double t;
             string[] RawLineValues;
-            string[] eDTformats = { "d MMM yyyy H:mm:ss UTC", "dd MMM yyyy H:mm:ss UTC", };
-            UnsortedLCI.Clear();
-            UnsortedDT.Clear();
+            string[] eDTformats = { "d MMM yyyy H:mm:ss UTC", "dd MMM yyyy H:mm:ss UTC", };           
             RawLines = RawTable.Split(new string[] { "\n", "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
             NumberToCollect = RawLines.Length - 1;
             NumberRecordsRead = 0;

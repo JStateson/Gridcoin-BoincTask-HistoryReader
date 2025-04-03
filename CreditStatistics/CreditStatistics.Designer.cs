@@ -50,6 +50,9 @@
             this.label5 = new System.Windows.Forms.Label();
             this.tcProj = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.btnPaste = new System.Windows.Forms.Button();
+            this.btnClearURL = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
             this.tbPage = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.btnExtract = new System.Windows.Forms.Button();
@@ -58,17 +61,14 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.btnReadBoinc = new System.Windows.Forms.Button();
             this.tbBoincLoc = new System.Windows.Forms.TextBox();
-            this.TaskTimer = new System.Windows.Forms.Timer(this.components);
             this.tabPage3 = new System.Windows.Forms.TabPage();
-            this.lbSelectDemo = new System.Windows.Forms.ListBox();
-            this.tbSelected = new System.Windows.Forms.TextBox();
-            this.button1 = new System.Windows.Forms.Button();
-            this.label4 = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
-            this.btnCleSel = new System.Windows.Forms.Button();
             this.btnSetSel = new System.Windows.Forms.Button();
-            this.btnClearURL = new System.Windows.Forms.Button();
-            this.btnPaste = new System.Windows.Forms.Button();
+            this.btnCleSel = new System.Windows.Forms.Button();
+            this.label4 = new System.Windows.Forms.Label();
+            this.btApplyDemo = new System.Windows.Forms.Button();
+            this.tbSelected = new System.Windows.Forms.TextBox();
+            this.lbSelectDemo = new System.Windows.Forms.ListBox();
+            this.TaskTimer = new System.Windows.Forms.Timer(this.components);
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.gbGetStats.SuspendLayout();
             this.gbSamURL.SuspendLayout();
@@ -319,6 +319,42 @@
             this.tabPage1.Text = "Projects";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
+            // btnPaste
+            // 
+            this.btnPaste.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnPaste.ForeColor = System.Drawing.Color.Blue;
+            this.btnPaste.Location = new System.Drawing.Point(260, 156);
+            this.btnPaste.Name = "btnPaste";
+            this.btnPaste.Size = new System.Drawing.Size(70, 20);
+            this.btnPaste.TabIndex = 18;
+            this.btnPaste.Text = "Paste";
+            this.btnPaste.UseVisualStyleBackColor = true;
+            this.btnPaste.Click += new System.EventHandler(this.btnPaste_Click);
+            // 
+            // btnClearURL
+            // 
+            this.btnClearURL.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnClearURL.ForeColor = System.Drawing.Color.Blue;
+            this.btnClearURL.Location = new System.Drawing.Point(170, 156);
+            this.btnClearURL.Name = "btnClearURL";
+            this.btnClearURL.Size = new System.Drawing.Size(70, 20);
+            this.btnClearURL.TabIndex = 17;
+            this.btnClearURL.Text = "CLEAR";
+            this.btnClearURL.UseVisualStyleBackColor = true;
+            this.btnClearURL.Click += new System.EventHandler(this.btnClearURL_Click);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.BackColor = System.Drawing.SystemColors.Info;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(230, 225);
+            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(105, 48);
+            this.label1.TabIndex = 16;
+            this.label1.Text = "Amount of data\r\nif project has a\r\nheader or empty";
+            // 
             // tbPage
             // 
             this.tbPage.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -356,10 +392,10 @@
             // 
             this.tabPage2.Controls.Add(this.tbProjHostList);
             this.tabPage2.Controls.Add(this.groupBox1);
-            this.tabPage2.Location = new System.Drawing.Point(4, 22);
+            this.tabPage2.Location = new System.Drawing.Point(4, 25);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(500, 663);
+            this.tabPage2.Size = new System.Drawing.Size(584, 660);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Host IDs";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -406,17 +442,12 @@
             this.tbBoincLoc.TabIndex = 0;
             this.tbBoincLoc.Text = "c:\\programdata\\boinc";
             // 
-            // TaskTimer
-            // 
-            this.TaskTimer.Interval = 1000;
-            this.TaskTimer.Tick += new System.EventHandler(this.TaskTimer_Tick);
-            // 
             // tabPage3
             // 
             this.tabPage3.Controls.Add(this.btnSetSel);
             this.tabPage3.Controls.Add(this.btnCleSel);
             this.tabPage3.Controls.Add(this.label4);
-            this.tabPage3.Controls.Add(this.button1);
+            this.tabPage3.Controls.Add(this.btApplyDemo);
             this.tabPage3.Controls.Add(this.tbSelected);
             this.tabPage3.Controls.Add(this.lbSelectDemo);
             this.tabPage3.Location = new System.Drawing.Point(4, 25);
@@ -425,6 +456,61 @@
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "Top PCs";
             this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // btnSetSel
+            // 
+            this.btnSetSel.Enabled = false;
+            this.btnSetSel.ForeColor = System.Drawing.Color.Blue;
+            this.btnSetSel.Location = new System.Drawing.Point(297, 163);
+            this.btnSetSel.Name = "btnSetSel";
+            this.btnSetSel.Size = new System.Drawing.Size(87, 23);
+            this.btnSetSel.TabIndex = 5;
+            this.btnSetSel.Text = "Select All";
+            this.btnSetSel.UseVisualStyleBackColor = true;
+            this.btnSetSel.Click += new System.EventHandler(this.btnSetSel_Click);
+            // 
+            // btnCleSel
+            // 
+            this.btnCleSel.Enabled = false;
+            this.btnCleSel.ForeColor = System.Drawing.Color.Blue;
+            this.btnCleSel.Location = new System.Drawing.Point(201, 163);
+            this.btnCleSel.Name = "btnCleSel";
+            this.btnCleSel.Size = new System.Drawing.Size(75, 23);
+            this.btnCleSel.TabIndex = 4;
+            this.btnCleSel.Text = "Clear";
+            this.btnCleSel.UseVisualStyleBackColor = true;
+            this.btnCleSel.Click += new System.EventHandler(this.btnCleSel_Click);
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.ForeColor = System.Drawing.Color.Coral;
+            this.label4.Location = new System.Drawing.Point(12, 60);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(141, 64);
+            this.label4.TabIndex = 3;
+            this.label4.Text = "Not Programmed\r\n denis, yoyo, wcg\r\nIf you select a url it\r\ngoes into clipboard";
+            // 
+            // btApplyDemo
+            // 
+            this.btApplyDemo.Enabled = false;
+            this.btApplyDemo.ForeColor = System.Drawing.Color.Blue;
+            this.btApplyDemo.Location = new System.Drawing.Point(15, 16);
+            this.btApplyDemo.Name = "btApplyDemo";
+            this.btApplyDemo.Size = new System.Drawing.Size(75, 23);
+            this.btApplyDemo.TabIndex = 2;
+            this.btApplyDemo.Text = "Apply";
+            this.btApplyDemo.UseVisualStyleBackColor = true;
+            this.btApplyDemo.Click += new System.EventHandler(this.btApplyDemo_Click);
+            // 
+            // tbSelected
+            // 
+            this.tbSelected.ForeColor = System.Drawing.Color.Blue;
+            this.tbSelected.Location = new System.Drawing.Point(201, 16);
+            this.tbSelected.Multiline = true;
+            this.tbSelected.Name = "tbSelected";
+            this.tbSelected.Size = new System.Drawing.Size(337, 131);
+            this.tbSelected.TabIndex = 1;
             // 
             // lbSelectDemo
             // 
@@ -455,98 +541,14 @@
             "https://gerasim.boinc.ru/users/viewHostResults.aspx?hostid=70676&opt=2"});
             this.lbSelectDemo.Location = new System.Drawing.Point(15, 192);
             this.lbSelectDemo.Name = "lbSelectDemo";
-            this.lbSelectDemo.SelectionMode = System.Windows.Forms.SelectionMode.MultiSimple;
             this.lbSelectDemo.Size = new System.Drawing.Size(536, 452);
             this.lbSelectDemo.TabIndex = 0;
-            this.lbSelectDemo.MouseClick += new System.Windows.Forms.MouseEventHandler(this.lbSelectDemo_MouseClick);
             this.lbSelectDemo.SelectedIndexChanged += new System.EventHandler(this.lbSelectDemo_SelectedIndexChanged);
             // 
-            // tbSelected
+            // TaskTimer
             // 
-            this.tbSelected.ForeColor = System.Drawing.Color.Blue;
-            this.tbSelected.Location = new System.Drawing.Point(201, 16);
-            this.tbSelected.Multiline = true;
-            this.tbSelected.Name = "tbSelected";
-            this.tbSelected.Size = new System.Drawing.Size(337, 131);
-            this.tbSelected.TabIndex = 1;
-            // 
-            // button1
-            // 
-            this.button1.ForeColor = System.Drawing.Color.Blue;
-            this.button1.Location = new System.Drawing.Point(15, 16);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 2;
-            this.button1.Text = "Apply";
-            this.button1.UseVisualStyleBackColor = true;
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.ForeColor = System.Drawing.Color.Coral;
-            this.label4.Location = new System.Drawing.Point(12, 60);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(126, 32);
-            this.label4.TabIndex = 3;
-            this.label4.Text = "Not Programmed\r\n denis, yoyo, wcg";
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.BackColor = System.Drawing.SystemColors.Info;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(230, 225);
-            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(105, 48);
-            this.label1.TabIndex = 16;
-            this.label1.Text = "Amount of data\r\nif project has a\r\nheader or empty";
-            // 
-            // btnCleSel
-            // 
-            this.btnCleSel.ForeColor = System.Drawing.Color.Blue;
-            this.btnCleSel.Location = new System.Drawing.Point(201, 163);
-            this.btnCleSel.Name = "btnCleSel";
-            this.btnCleSel.Size = new System.Drawing.Size(75, 23);
-            this.btnCleSel.TabIndex = 4;
-            this.btnCleSel.Text = "Clear";
-            this.btnCleSel.UseVisualStyleBackColor = true;
-            this.btnCleSel.Click += new System.EventHandler(this.btnCleSel_Click);
-            // 
-            // btnSetSel
-            // 
-            this.btnSetSel.ForeColor = System.Drawing.Color.Blue;
-            this.btnSetSel.Location = new System.Drawing.Point(297, 163);
-            this.btnSetSel.Name = "btnSetSel";
-            this.btnSetSel.Size = new System.Drawing.Size(87, 23);
-            this.btnSetSel.TabIndex = 5;
-            this.btnSetSel.Text = "Select All";
-            this.btnSetSel.UseVisualStyleBackColor = true;
-            this.btnSetSel.Click += new System.EventHandler(this.btnSetSel_Click);
-            // 
-            // btnClearURL
-            // 
-            this.btnClearURL.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnClearURL.ForeColor = System.Drawing.Color.Blue;
-            this.btnClearURL.Location = new System.Drawing.Point(170, 156);
-            this.btnClearURL.Name = "btnClearURL";
-            this.btnClearURL.Size = new System.Drawing.Size(70, 20);
-            this.btnClearURL.TabIndex = 17;
-            this.btnClearURL.Text = "CLEAR";
-            this.btnClearURL.UseVisualStyleBackColor = true;
-            this.btnClearURL.Click += new System.EventHandler(this.btnClearURL_Click);
-            // 
-            // btnPaste
-            // 
-            this.btnPaste.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnPaste.ForeColor = System.Drawing.Color.Blue;
-            this.btnPaste.Location = new System.Drawing.Point(260, 156);
-            this.btnPaste.Name = "btnPaste";
-            this.btnPaste.Size = new System.Drawing.Size(70, 20);
-            this.btnPaste.TabIndex = 18;
-            this.btnPaste.Text = "Paste";
-            this.btnPaste.UseVisualStyleBackColor = true;
-            this.btnPaste.Click += new System.EventHandler(this.btnPaste_Click);
+            this.TaskTimer.Interval = 1000;
+            this.TaskTimer.Tick += new System.EventHandler(this.TaskTimer_Tick);
             // 
             // CreditStatistics
             // 
@@ -609,7 +611,7 @@
         private System.Windows.Forms.Button btCancel;
         private System.Windows.Forms.TabPage tabPage3;
         private System.Windows.Forms.ListBox lbSelectDemo;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button btApplyDemo;
         private System.Windows.Forms.TextBox tbSelected;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label1;
