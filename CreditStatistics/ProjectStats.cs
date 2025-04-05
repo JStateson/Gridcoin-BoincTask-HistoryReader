@@ -17,6 +17,7 @@ using System.Globalization;
 using System.Security.Policy;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
+using System.Net;
 
 /*
  ---------- ALL_PROJECTS_LIST.XML
@@ -41,6 +42,18 @@ namespace CreditStatistics
         public string sValid;
         public string sPage;
         public string sCountValids;
+        public List<string> Hosts = new List<string>();
+        public List<string> HostNames = new List<string>();
+        public void AddHosts(string sHostIDs)
+        {
+            if (sHostIDs == "") return;
+            string[] s = sHostIDs.Split(new char[] { ' ', ',', ';' }, StringSplitOptions.RemoveEmptyEntries);
+            foreach (string s1 in s)
+            {
+                if (s1 == "") continue;
+                Hosts.Add(s1);
+            }
+        }
     }
     public class cProjectStats
     {
@@ -276,6 +289,18 @@ null
             return s + p.sPage + sPage;
         }
 
+        public bool GetBaseInfo(int ProjectID, ref string sURL, ref string sHid, ref string sValid, ref string sPage, ref string sCountValids)
+        {
+            if (ProjectID < 0 || ProjectID >= ProjectList.Count) return false;
+            cPSlist p = ProjectList[ProjectID];
+            sURL = p.sURL;
+            sHid = p.sHid;
+            sValid = p.sValid;
+            sPage = p.sPage;
+            sCountValids = p.sCountValids;
+            return true;
+        }
+
         public string ShortName(int i)
         {
             string[] s = ProjectList[i].name.Split(' ');
@@ -339,6 +364,7 @@ null
 
         public class cLHe
         {
+            public string ComputerID;
             public string name;
             public string HostID;
         }
@@ -363,10 +389,11 @@ null
         public int GetNameIndex(string s)
         {
             int i = 0;
+            string[] sTemp;
             foreach (cPSlist c in ProjectList)
             {
-                string[] st = c.name.Split(' ');
-                foreach (string s1 in st)
+                sTemp = c.name.Split(' ');
+                foreach (string s1 in sTemp)
                 {
                     if (s.Contains(s1))
                     {
@@ -410,6 +437,7 @@ null
                             }
                         }
                         if (bFound) continue;
+                        cLHe.ComputerID = Dns.GetHostName();
                         cLHe.name = sName;
                         cLHe.HostID = sID;
                         LocalHosts.Add(cLHe);

@@ -1,15 +1,18 @@
-﻿using CreditStatistics.Properties;
-using System;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Runtime.InteropServices;
 using System.Runtime.Remoting.Messaging;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml;
 using static CreditStatistics.cProjectStats;
 
 namespace CreditStatistics
@@ -71,6 +74,7 @@ namespace CreditStatistics
         public bool CanPageValids = true;
         private int TagOfProject = -1;
         private int RecordsPerPage = 0;
+        private int MaxShortSize = 8;  // will be pixel with times character count
 
         private static string[] FindHdr = { "All (", "Valid (", "Invalid (", "Error (" };
         private static string[] FindHdrA = { "All</a> (", "Valid</a> (", "Invalid</a> (", "Error</a> (" };
@@ -79,12 +83,23 @@ namespace CreditStatistics
         private static string[] FindHdrC = { ">All ", ">Valid ", ">Invalid ", ">To late " };
         private static string[] FindCTrm = { "</a>", "</a>", "</a>", "</a>" };
 
+        private List<string>defaultNameHost = new List<string>();
         public CreditStatistics()
         {
             InitializeComponent(); 
             ProjUrl.Text = Properties.Settings.Default.InitialUrl;
             lbVersion.Text = "Build Date:" + GetSimpleDate(Properties.Resources.BuildDate);
             FormProjectRB();
+            //dgv.Columns[0].FillWeight = (MaxShortSize+4)*2 ; // pix width?
+            foreach (DataGridViewColumn column in dgv.Columns)
+            {
+                column.SortMode = DataGridViewColumnSortMode.NotSortable;
+            }
+#if DEBUG
+            btnCreateIDs.Enabled = true;
+#else
+            btnCreateIDs.Enabled = false;
+#endif
         }
 
         private void FormProjectRB()
@@ -92,15 +107,19 @@ namespace CreditStatistics
             ProjectStats.Init();
             RunGetBoinc();
             sNames = ProjectStats.GetNames();
+            defaultNameHost.Clear();
             int iRow = 0, iCol = 0;
             bool bHasID = false;
             int i = 0;
             foreach (string s in sNames)
             {
                 RadioButton rb = new RadioButton();
-                rb.Tag = i;
+                rb.Tag = i;                
                 string t = ProjectStats.GetIDfromName(s);
                 rb.Text = ProjectStats.ShortName(i);
+                cbSelProj.Items.Add(rb.Text);
+                MaxShortSize = Math.Max(MaxShortSize, rb.Text.Length);  
+                defaultNameHost.Add(rb.Text + ": " + t);
                 bHasID = t != "";
                 rb.AutoSize = true;
                 rb.ForeColor = bHasID ? System.Drawing.Color.Blue : System.Drawing.Color.Black;
@@ -115,6 +134,7 @@ namespace CreditStatistics
                 }
                 i++;
             }
+            cbSelProj.SelectedIndex = 0; // select first item
         }
 
         private void rbProject_CheckedChanged(object sender, EventArgs e)
@@ -369,6 +389,23 @@ namespace CreditStatistics
             CreditInfo.Clear();
             TaskStart();
         }
+
+        private void LoadTask(string TaskType, string sUrl)
+        {
+            ProjectStats.sTaskType = TaskType;
+            ProjectStats.TaskUrl = sUrl;
+            ProjectStats.StopTask = false;
+            ProjectStats.TaskBusy = false;
+            ProjectStats.TaskDone = false;
+            switch (TaskType)
+            {
+                case "FetchHostIDs":
+                    AllowGS(false);
+                    tbHdrInfo.Clear();
+                    break;
+            }
+            TaskStart();
+        }
    
         private int ProcessBody()
         {
@@ -441,12 +478,18 @@ namespace CreditStatistics
         }
         private void btnFind_Click(object sender, EventArgs e)
         {
-            if (ProjUrl.Text == "") return; //jys need to parse for errors
-            AllowGS(false);
-            tbHdrInfo.Clear();
-            bool bValid = RunExtract();
-            if(bValid)
+            string sOut = "";
+            string sHost = "";
+            int ProjectID = -1;
+            if (ParseUrl(ProjUrl.Text, ref sOut, ref ProjectID, ref sHost, ref SelectedProject))
+            {
+                ProjUrl.Text = sOut;
+                tbHOSTID.Text = sHost;
+                SetRB(ProjectID);
+                AllowGS(false);
+                tbHdrInfo.Clear();
                 TaskLoadHeader();
+            }   
         }
 
         private (List<double>, List<int>) RemoveOutliersWithIndexes(ref List<double> data, double threshold = 2)
@@ -491,8 +534,6 @@ namespace CreditStatistics
         {
             string sID = tbHOSTID.Text.Trim();
 
-            //int i = ProjectStats.GetNameIndex();
-
             ProjUrl.Text = "";
             if (sID == "") return;
             if(SelectedProject == "" || sID == "12345")
@@ -534,62 +575,85 @@ namespace CreditStatistics
             RunGetBoinc();
         }
 
-        private bool RunExtract()
+        // check url for errors and reform url to simplify
+        public bool ParseUrl(string s, ref string sOut, ref int ProjectID,
+            ref string sHost, ref string sSelectedProject)
         {
+            string sPageOffset = "";    // page: 0,1,2 or offset: 0,20,40 etc value + increment of 20
+                                        // includes the directive (?offset=) or (page)
+
+            string tURL = "";
+            string tHid = "";
+            string tValid = "";
+            string tPage = "";
+            string tCountValids = "";
 
             int i, j;
-            string s = ProjUrl.Text.ToLower();
-            int pLoc = ProjectStats.GetNameIndex(s);            
-            if (pLoc < 0)
+
+            s = s.Trim();
+            if (s == "") return false;
+            string sUrl = s.ToLower();
+
+            i = sUrl.IndexOf("http");
+            if (i < 0)
+            {
+                MessageBox.Show("badly formed url: missing http");
+                return false;
+            }
+            sUrl = sUrl.Substring(i);
+
+            ProjectID = ProjectStats.GetNameIndex(sUrl);
+            if(ProjectID < 0)
             {
                 MessageBox.Show("Project not found in url");
                 return false;
             }
-            SelectedProject = ProjectStats.ProjectList[pLoc].name;
-            SetRB(pLoc);
-            string sLoc = ProjectStats.ProjectList[pLoc].sPage;
-            
-            if (sLoc != "null")
-            {
-                i = s.IndexOf(sLoc);
-                if (i < 0)
-                {
-                    ProjUrl.Text += sLoc + "0";
-                    i = s.IndexOf(sLoc);
-                }
-                j = FirstNonInteger(s, i + sLoc.Length);
-                string sPage = s.Substring(i + sLoc.Length, j - i - sLoc.Length);
-                tbPage.Text = sPage;
-            }
-            else tbPage.Text = "";
 
-            string sHIDlookup = ProjectStats.ProjectList[pLoc].sHid;
-            i = s.IndexOf(sHIDlookup);
+            ProjectStats.GetBaseInfo(ProjectID, ref tURL, ref tHid, ref tValid, ref tPage, ref tCountValids);
+
+            //need to get the value assigned to tHid and to tPage
+            i = sUrl.IndexOf(tHid);
             if (i < 0)
             {
-                MessageBox.Show(sHIDlookup + " not found in url");
+                MessageBox.Show(tHid + " not found in url");
                 return false;
             }
-            j = FirstNonInteger(s, i + sHIDlookup.Length);
-            string sHID = s.Substring(i + sHIDlookup.Length, j - i - sHIDlookup.Length);
-            tbHOSTID.Text = sHID;
 
-            string sWantValid = ProjectStats.ProjectList[pLoc].sValid;
-            if (sWantValid != null)
+            j = FirstNonInteger(sUrl, i + tHid.Length);
+            sHost = s.Substring(i + tHid.Length, j - i - tHid.Length);
+
+            //need to get the page offset indexing into the table if it exists
+            if (tPage != "null")
             {
-                i = s.IndexOf(sWantValid);
+                i = sUrl.IndexOf(tPage);
                 if (i < 0)
                 {
-                    s += sWantValid;
-                    ProjUrl.Text = s;
+                    sPageOffset = tPage + "0";
+                }
+                else
+                {
+                    j = FirstNonInteger(s, i + tPage.Length);
+                    string sPage = s.Substring(i + tPage.Length, j - i - tPage.Length);
+                    sPageOffset = tPage + sPage;
                 }
             }
+            else sPageOffset = "";
+            sOut = tURL + tHid + sHost + tValid + sPageOffset;
+            sSelectedProject = ProjectStats.ProjectList[ProjectID].name;
             return true;
         }
+
         private void btnExtract_Click(object sender, EventArgs e)
         {
-            RunExtract();
-            ApplyName();
+            string sOut = "";
+            string sHost = "";
+            int ProjectID = -1;
+            if (ParseUrl(ProjUrl.Text, ref sOut, ref ProjectID, ref sHost, ref SelectedProject))
+            {
+                ProjUrl.Text = sOut;
+                tbHOSTID.Text = sHost;
+                SetRB(ProjectID);
+            }
         }
 
         private int FirstNonInteger(string s, int iOffset)
@@ -642,19 +706,6 @@ namespace CreditStatistics
             tbSelected.Text = sOut;
         }
 
-        private void btnCleSel_Click(object sender, EventArgs e)
-        {
-            lbSelectDemo.ClearSelected();
-        }
-
-        private void btnSetSel_Click(object sender, EventArgs e)
-        {
-            for (int i = 0; i < lbSelectDemo.Items.Count; i++)
-            {
-                lbSelectDemo.SetSelected(i, true);
-            }
-        }
-
         private void btnClearURL_Click(object sender, EventArgs e)
         {
             ProjUrl.Clear();
@@ -662,9 +713,17 @@ namespace CreditStatistics
 
         private void btnPaste_Click(object sender, EventArgs e)
         {
+            string sOut = "";
+            int ProjectID = -1;
+            string sHost = "";
+            string sName = "";
             ProjUrl.Text = Clipboard.GetText().Trim();
-            RunExtract();
-            ApplyName();
+            if (ParseUrl(Clipboard.GetText().Trim(), ref sOut, ref ProjectID, ref sHost, ref sName))
+            {
+                ProjUrl.Text = sOut;
+                tbHOSTID.Text = sHost;
+                SetRB(ProjectID);
+            }
         }
 
 
@@ -690,17 +749,312 @@ namespace CreditStatistics
                     case "BODY":
                         RecordsPerPage = ProcessBody();
                         break;
+                    case "FetchHostIDs":                        
+                        break;
                 }
             }
         }
 
-        private void btApplyDemo_Click(object sender, EventArgs e)
+        /*
+         * projectname: i1, id2 id3 id4; id5, id6  etc delim:,; or space
+         */
+
+
+        private void btnSaveAS_Click(object sender, EventArgs e)
         {
-            foreach(var item in lbSelectDemo.Items)
+            using (SaveFileDialog saveFileDialog = new SaveFileDialog())
             {
-                string sUrl = item.ToString();
-                ProjectStats.AddDemo(sUrl);
+                saveFileDialog.Filter = "Text Files (*.txt)|*.txt|All Files (*.*)|*.*";
+                saveFileDialog.Title = "Save List As";
+
+                if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    try
+                    {
+                        using (StreamWriter writer = new StreamWriter(saveFileDialog.FileName))
+                        {
+                            foreach (var item in lbSelectDemo.Items)
+                            {
+                                writer.WriteLine(item.ToString());
+                            }
+                        }
+
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Error saving list: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
             }
+        }
+
+        private void ReadStringsIntoList(ref List<string> sList)
+        {
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                openFileDialog.Filter = "Text Files (*.txt)|*.txt|All Files (*.*)|*.*";
+                openFileDialog.Title = "Open Text File";
+
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    try
+                    {
+                        string[] lines = File.ReadAllLines(openFileDialog.FileName);
+                        sList.Clear(); // Clear current items
+                        sList.AddRange(lines); // Add all lines
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Error reading file: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
+        }
+
+        private void btnLoadFrom_Click(object sender, EventArgs e)
+        {
+            List<string> MyList = new List<string>();
+            ReadStringsIntoList(ref MyList);
+            lbSelectDemo.Items.Clear();
+            foreach (string s in MyList)
+            {
+                string sOut = "";
+                string sHost = "";
+                int ProjectID = -1;
+                string sName = "";
+                if (ParseUrl(s.Trim(), ref sOut, ref ProjectID, ref sHost, ref sName))
+                    lbSelectDemo.Items.Add(sOut);
+                else break;
+            }   
+        }
+
+        private int ReadHostsSets()
+        {
+            List<string> MyList = new List<string>();
+            ReadStringsIntoList(ref MyList);
+            if (MyList.Count == 0) return 0;
+            int i, n = 0;
+            foreach (string s in MyList)
+            {
+                i = s.IndexOf(":");
+                if (i < 0)
+                {
+                    MessageBox.Show("Expected format of project name: id1 id2 .. not found!");
+                    continue;
+                }
+                string sName = s.Substring(0, i).Trim();
+                if (i >= s.Length) continue;
+
+                string sRem = s.Substring(i + 1).Trim();
+                int iLoc = ProjectStats.GetNameIndex(sName);
+                if (iLoc < 0)
+                {
+                    MessageBox.Show("Unknown project found: ",sName);
+                    return n;
+                }
+                ProjectStats.ProjectList[iLoc].Hosts.Clear();
+                ProjectStats.ProjectList[iLoc].HostNames.Clear();
+
+                string[] sPairHosts = sRem.Split(new char[] {','}, StringSplitOptions.RemoveEmptyEntries);
+                for(i = 0; i < sPairHosts.Length; i++)
+                {
+                    string[] sPair = sPairHosts[i].Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                    if (sPair.Length != 2)
+                    {
+                        MessageBox.Show("Expected format of (hostname hostid)");
+                        return n;
+                    }
+                    ProjectStats.ProjectList[iLoc].HostNames.Add(sPair[0].Trim());
+                    ProjectStats.ProjectList[iLoc].Hosts.Add(sPair[1].Trim());
+                }
+                n++;
+            }
+            return n;
+        }
+
+        private void ReadAllList()
+        {            
+            string sOut = "";
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                openFileDialog.Filter = "Text Files (*.txt)|*.txt|All Files (*.*)|*.*";
+                openFileDialog.Title = "Open Text File";
+
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    try
+                    {
+                        using (StreamReader reader = new StreamReader(openFileDialog.FileName))
+                        {
+                            string line;
+                            while ((line = reader.ReadLine()) != null)
+                            {
+                                if(line.Contains("</domain_name>"))
+                                {
+                                    line = line.Replace("<domain_name>", Environment.NewLine);
+                                    line = line.Replace("</domain_name>", ",");
+                                    sOut += line;
+                                }
+                                if(line.Contains("</master_url>"))
+                                {
+                                    line = line.Replace("<master_url>", "");
+                                    line = line.Replace("</master_url>", "; ");
+                                    sOut += line;
+                                }
+                                if(line.Contains("</hostid>"))
+                                {
+                                    line = line.Replace("<hostid>", " ");
+                                    line = line.Replace("</hostid>", " ");
+                                    sOut += line;
+                                }
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Error reading file: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
+
+            string[] lines = sOut.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+            for(int i = 0; i < ProjectStats.ProjectList.Count(); i++)
+            {
+                ProjectStats.ProjectList[i].Hosts.Clear();
+                ProjectStats.ProjectList[i].HostNames.Clear();
+            }
+
+            foreach (string line in lines)
+            {
+                string[] parts = line.Split(new[] { ',', ';', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                if (parts.Length >= 2)
+                {
+                    string computerid = parts[0].Trim();
+                    for (int i = 1; i < parts.Length-1; i += 2)
+                    {
+                        string projectName = parts[i].Trim().ToLower();
+                        string hostIDs = parts[i + 1].Trim();
+                        int iLoc = ProjectStats.GetNameIndex(projectName);
+                        if (iLoc < 0)
+                        {
+                            MessageBox.Show("Project name not found: " + projectName);
+                            continue;
+                        }
+                        ProjectStats.ProjectList[iLoc].Hosts.Add(hostIDs);
+                        ProjectStats.ProjectList[iLoc].HostNames.Add(computerid);
+                    }                    
+                }
+            }   
+        }
+
+        private void btFetchID_Click(object sender, EventArgs e)
+        {
+            int n = ReadHostsSets();
+            int i = 0;
+            foreach(cPSlist cp in ProjectStats.ProjectList)
+            {
+                if (cp.Hosts.Count > 0)
+                {
+                    dgv.Rows.Add();
+                    dgv.Rows[i].Cells[0].Value = cp.name;
+                    dgv.Rows[i].Cells[1].Value = string.Join(" ", cp.Hosts);
+                    i++;
+                }
+            }   
+        }
+        private void btnSaveIDs_Click(object sender, EventArgs e)
+        {
+            using (SaveFileDialog saveFileDialog = new SaveFileDialog())
+            {
+                saveFileDialog.Filter = "Text Files (*.txt)|*.txt|All Files (*.*)|*.*";
+                saveFileDialog.Title = "Save List As";
+                int iLoc = cbSelProj.SelectedIndex;
+                cPSlist cPS = ProjectStats.ProjectList[iLoc];
+
+                if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    cPS.Hosts.Clear();
+                    cPS.HostNames.Clear();
+                    for (int i = 0; i < dgv.Rows.Count; i++)
+                    {
+                        if (dgv.Rows[i].Cells[0].Value == null) continue;
+                        if (dgv.Rows[i].Cells[1].Value == null) continue;
+                        cPS.Hosts.Add(dgv.Rows[i].Cells[1].Value.ToString());
+                        cPS.HostNames.Add(dgv.Rows[i].Cells[0].Value.ToString());
+                    }
+                    try
+                    {
+                        using (StreamWriter writer = new StreamWriter(saveFileDialog.FileName))
+                        {
+                            string sOut;
+                            foreach(cPSlist cP in ProjectStats.ProjectList)
+                            {
+                                sOut = cP.name + ": ";
+                                for(int i = 0; i < cP.Hosts.Count; i++)
+                                {
+                                    sOut += cP.HostNames[i] + " " + cP.Hosts[i] + ",";
+                                }
+                                sOut = sOut.TrimEnd(',');
+                                writer.WriteLine(sOut);
+                            }   
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Error saving list: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
+        }
+
+        private void btnSaveDefIDs_Click(object sender, EventArgs e)
+        {
+            using (SaveFileDialog saveFileDialog = new SaveFileDialog())
+            {
+                saveFileDialog.Filter = "Text Files (*.txt)|*.txt|All Files (*.*)|*.*";
+                saveFileDialog.Title = "Save List As";
+
+                if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    try
+                    {
+                        using (StreamWriter writer = new StreamWriter(saveFileDialog.FileName))
+                        {
+                            foreach (string sOut in defaultNameHost)
+                            {
+                                writer.WriteLine(sOut);
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Error saving list: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
+        }
+
+        private void FillInDGV( int iLoc)
+        {
+            dgv.Rows.Clear();
+            cPSlist cp = ProjectStats.ProjectList[iLoc];
+            for(int i = 0; i < cp.Hosts.Count; i++)
+            {
+                dgv.Rows.Add();
+                dgv.Rows[i].Cells[0].Value = cp.HostNames[i].ToString();
+                dgv.Rows[i].Cells[1].Value = cp.Hosts[i].ToString();
+            }            
+        }
+
+        private void btnCreateIDs_Click(object sender, EventArgs e)
+        {
+            ReadAllList();
+            FillInDGV(0);
+        }
+
+        private void cbSelProj_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            FillInDGV(cbSelProj.SelectedIndex);
         }
     }
 }

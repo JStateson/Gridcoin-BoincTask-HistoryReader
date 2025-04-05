@@ -50,6 +50,7 @@
             this.label5 = new System.Windows.Forms.Label();
             this.tcProj = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.btnSaveDefIDs = new System.Windows.Forms.Button();
             this.btnPaste = new System.Windows.Forms.Button();
             this.btnClearURL = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
@@ -61,13 +62,21 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.btnReadBoinc = new System.Windows.Forms.Button();
             this.tbBoincLoc = new System.Windows.Forms.TextBox();
-            this.tabPage3 = new System.Windows.Forms.TabPage();
-            this.btnSetSel = new System.Windows.Forms.Button();
-            this.btnCleSel = new System.Windows.Forms.Button();
+            this.tabpage = new System.Windows.Forms.TabPage();
+            this.btnSaveAS = new System.Windows.Forms.Button();
+            this.btnLoadFrom = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
-            this.btApplyDemo = new System.Windows.Forms.Button();
             this.tbSelected = new System.Windows.Forms.TextBox();
             this.lbSelectDemo = new System.Windows.Forms.ListBox();
+            this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.cbSelProj = new System.Windows.Forms.ComboBox();
+            this.label6 = new System.Windows.Forms.Label();
+            this.btnCreateIDs = new System.Windows.Forms.Button();
+            this.dgv = new System.Windows.Forms.DataGridView();
+            this.Project = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.HostID = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.btnSaveIDs = new System.Windows.Forms.Button();
+            this.btFetchID = new System.Windows.Forms.Button();
             this.TaskTimer = new System.Windows.Forms.Timer(this.components);
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.gbGetStats.SuspendLayout();
@@ -76,7 +85,9 @@
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.groupBox1.SuspendLayout();
-            this.tabPage3.SuspendLayout();
+            this.tabpage.SuspendLayout();
+            this.tabPage4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgv)).BeginInit();
             this.SuspendLayout();
             // 
             // btnViewData
@@ -289,7 +300,8 @@
             // 
             this.tcProj.Controls.Add(this.tabPage1);
             this.tcProj.Controls.Add(this.tabPage2);
-            this.tcProj.Controls.Add(this.tabPage3);
+            this.tcProj.Controls.Add(this.tabpage);
+            this.tcProj.Controls.Add(this.tabPage4);
             this.tcProj.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tcProj.Location = new System.Drawing.Point(12, 29);
             this.tcProj.Name = "tcProj";
@@ -299,6 +311,7 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.btnSaveDefIDs);
             this.tabPage1.Controls.Add(this.btnPaste);
             this.tabPage1.Controls.Add(this.btnClearURL);
             this.tabPage1.Controls.Add(this.label1);
@@ -318,6 +331,17 @@
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Projects";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // btnSaveDefIDs
+            // 
+            this.btnSaveDefIDs.ForeColor = System.Drawing.Color.Blue;
+            this.btnSaveDefIDs.Location = new System.Drawing.Point(457, 466);
+            this.btnSaveDefIDs.Name = "btnSaveDefIDs";
+            this.btnSaveDefIDs.Size = new System.Drawing.Size(94, 23);
+            this.btnSaveDefIDs.TabIndex = 19;
+            this.btnSaveDefIDs.Text = "Save IDs";
+            this.btnSaveDefIDs.UseVisualStyleBackColor = true;
+            this.btnSaveDefIDs.Click += new System.EventHandler(this.btnSaveDefIDs_Click);
             // 
             // btnPaste
             // 
@@ -442,66 +466,53 @@
             this.tbBoincLoc.TabIndex = 0;
             this.tbBoincLoc.Text = "c:\\programdata\\boinc";
             // 
-            // tabPage3
+            // tabpage
             // 
-            this.tabPage3.Controls.Add(this.btnSetSel);
-            this.tabPage3.Controls.Add(this.btnCleSel);
-            this.tabPage3.Controls.Add(this.label4);
-            this.tabPage3.Controls.Add(this.btApplyDemo);
-            this.tabPage3.Controls.Add(this.tbSelected);
-            this.tabPage3.Controls.Add(this.lbSelectDemo);
-            this.tabPage3.Location = new System.Drawing.Point(4, 25);
-            this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Size = new System.Drawing.Size(584, 660);
-            this.tabPage3.TabIndex = 2;
-            this.tabPage3.Text = "Top PCs";
-            this.tabPage3.UseVisualStyleBackColor = true;
+            this.tabpage.Controls.Add(this.btnSaveAS);
+            this.tabpage.Controls.Add(this.btnLoadFrom);
+            this.tabpage.Controls.Add(this.label4);
+            this.tabpage.Controls.Add(this.tbSelected);
+            this.tabpage.Controls.Add(this.lbSelectDemo);
+            this.tabpage.Location = new System.Drawing.Point(4, 25);
+            this.tabpage.Name = "tabpage";
+            this.tabpage.Size = new System.Drawing.Size(584, 660);
+            this.tabpage.TabIndex = 2;
+            this.tabpage.Text = "Top PCs";
+            this.tabpage.UseVisualStyleBackColor = true;
             // 
-            // btnSetSel
+            // btnSaveAS
             // 
-            this.btnSetSel.Enabled = false;
-            this.btnSetSel.ForeColor = System.Drawing.Color.Blue;
-            this.btnSetSel.Location = new System.Drawing.Point(297, 163);
-            this.btnSetSel.Name = "btnSetSel";
-            this.btnSetSel.Size = new System.Drawing.Size(87, 23);
-            this.btnSetSel.TabIndex = 5;
-            this.btnSetSel.Text = "Select All";
-            this.btnSetSel.UseVisualStyleBackColor = true;
-            this.btnSetSel.Click += new System.EventHandler(this.btnSetSel_Click);
+            this.btnSaveAS.Enabled = false;
+            this.btnSaveAS.ForeColor = System.Drawing.Color.Blue;
+            this.btnSaveAS.Location = new System.Drawing.Point(24, 97);
+            this.btnSaveAS.Name = "btnSaveAS";
+            this.btnSaveAS.Size = new System.Drawing.Size(87, 23);
+            this.btnSaveAS.TabIndex = 5;
+            this.btnSaveAS.Text = "Save as";
+            this.btnSaveAS.UseVisualStyleBackColor = true;
+            this.btnSaveAS.Click += new System.EventHandler(this.btnSaveAS_Click);
             // 
-            // btnCleSel
+            // btnLoadFrom
             // 
-            this.btnCleSel.Enabled = false;
-            this.btnCleSel.ForeColor = System.Drawing.Color.Blue;
-            this.btnCleSel.Location = new System.Drawing.Point(201, 163);
-            this.btnCleSel.Name = "btnCleSel";
-            this.btnCleSel.Size = new System.Drawing.Size(75, 23);
-            this.btnCleSel.TabIndex = 4;
-            this.btnCleSel.Text = "Clear";
-            this.btnCleSel.UseVisualStyleBackColor = true;
-            this.btnCleSel.Click += new System.EventHandler(this.btnCleSel_Click);
+            this.btnLoadFrom.Enabled = false;
+            this.btnLoadFrom.ForeColor = System.Drawing.Color.Blue;
+            this.btnLoadFrom.Location = new System.Drawing.Point(24, 138);
+            this.btnLoadFrom.Name = "btnLoadFrom";
+            this.btnLoadFrom.Size = new System.Drawing.Size(87, 23);
+            this.btnLoadFrom.TabIndex = 4;
+            this.btnLoadFrom.Text = "Load from";
+            this.btnLoadFrom.UseVisualStyleBackColor = true;
+            this.btnLoadFrom.Click += new System.EventHandler(this.btnLoadFrom_Click);
             // 
             // label4
             // 
             this.label4.AutoSize = true;
             this.label4.ForeColor = System.Drawing.Color.Coral;
-            this.label4.Location = new System.Drawing.Point(12, 60);
+            this.label4.Location = new System.Drawing.Point(21, 16);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(141, 64);
             this.label4.TabIndex = 3;
             this.label4.Text = "Not Programmed\r\n denis, yoyo, wcg\r\nIf you select a url it\r\ngoes into clipboard";
-            // 
-            // btApplyDemo
-            // 
-            this.btApplyDemo.Enabled = false;
-            this.btApplyDemo.ForeColor = System.Drawing.Color.Blue;
-            this.btApplyDemo.Location = new System.Drawing.Point(15, 16);
-            this.btApplyDemo.Name = "btApplyDemo";
-            this.btApplyDemo.Size = new System.Drawing.Size(75, 23);
-            this.btApplyDemo.TabIndex = 2;
-            this.btApplyDemo.Text = "Apply";
-            this.btApplyDemo.UseVisualStyleBackColor = true;
-            this.btApplyDemo.Click += new System.EventHandler(this.btApplyDemo_Click);
             // 
             // tbSelected
             // 
@@ -545,6 +556,104 @@
             this.lbSelectDemo.TabIndex = 0;
             this.lbSelectDemo.SelectedIndexChanged += new System.EventHandler(this.lbSelectDemo_SelectedIndexChanged);
             // 
+            // tabPage4
+            // 
+            this.tabPage4.Controls.Add(this.cbSelProj);
+            this.tabPage4.Controls.Add(this.label6);
+            this.tabPage4.Controls.Add(this.btnCreateIDs);
+            this.tabPage4.Controls.Add(this.dgv);
+            this.tabPage4.Controls.Add(this.btnSaveIDs);
+            this.tabPage4.Controls.Add(this.btFetchID);
+            this.tabPage4.Location = new System.Drawing.Point(4, 25);
+            this.tabPage4.Name = "tabPage4";
+            this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage4.Size = new System.Drawing.Size(584, 660);
+            this.tabPage4.TabIndex = 3;
+            this.tabPage4.Text = "Host List";
+            this.tabPage4.UseVisualStyleBackColor = true;
+            // 
+            // cbSelProj
+            // 
+            this.cbSelProj.FormattingEnabled = true;
+            this.cbSelProj.Location = new System.Drawing.Point(171, 54);
+            this.cbSelProj.Name = "cbSelProj";
+            this.cbSelProj.Size = new System.Drawing.Size(121, 24);
+            this.cbSelProj.TabIndex = 8;
+            this.cbSelProj.SelectedIndexChanged += new System.EventHandler(this.cbSelProj_SelectedIndexChanged);
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.BackColor = System.Drawing.SystemColors.Info;
+            this.label6.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label6.Location = new System.Drawing.Point(177, 22);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(105, 14);
+            this.label6.TabIndex = 12;
+            this.label6.Text = "Select Project";
+            // 
+            // btnCreateIDs
+            // 
+            this.btnCreateIDs.ForeColor = System.Drawing.Color.Blue;
+            this.btnCreateIDs.Location = new System.Drawing.Point(6, 22);
+            this.btnCreateIDs.Name = "btnCreateIDs";
+            this.btnCreateIDs.Size = new System.Drawing.Size(94, 23);
+            this.btnCreateIDs.TabIndex = 7;
+            this.btnCreateIDs.Text = "Create IDs";
+            this.btnCreateIDs.UseVisualStyleBackColor = true;
+            this.btnCreateIDs.Click += new System.EventHandler(this.btnCreateIDs_Click);
+            // 
+            // dgv
+            // 
+            this.dgv.AllowUserToResizeColumns = false;
+            this.dgv.AllowUserToResizeRows = false;
+            this.dgv.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dgv.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgv.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.Project,
+            this.HostID});
+            this.dgv.Location = new System.Drawing.Point(324, 22);
+            this.dgv.MultiSelect = false;
+            this.dgv.Name = "dgv";
+            this.dgv.RowHeadersVisible = false;
+            this.dgv.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.dgv.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
+            this.dgv.Size = new System.Drawing.Size(227, 610);
+            this.dgv.TabIndex = 6;
+            this.toolTip1.SetToolTip(this.dgv, "Press F2 to edit");
+            // 
+            // Project
+            // 
+            this.Project.HeaderText = "Host Name";
+            this.Project.Name = "Project";
+            // 
+            // HostID
+            // 
+            this.HostID.HeaderText = "Host IDs";
+            this.HostID.Name = "HostID";
+            // 
+            // btnSaveIDs
+            // 
+            this.btnSaveIDs.ForeColor = System.Drawing.Color.Blue;
+            this.btnSaveIDs.Location = new System.Drawing.Point(6, 116);
+            this.btnSaveIDs.Name = "btnSaveIDs";
+            this.btnSaveIDs.Size = new System.Drawing.Size(94, 23);
+            this.btnSaveIDs.TabIndex = 5;
+            this.btnSaveIDs.Text = "Save IDs";
+            this.btnSaveIDs.UseVisualStyleBackColor = true;
+            this.btnSaveIDs.Click += new System.EventHandler(this.btnSaveIDs_Click);
+            // 
+            // btFetchID
+            // 
+            this.btFetchID.ForeColor = System.Drawing.Color.Blue;
+            this.btFetchID.Location = new System.Drawing.Point(6, 76);
+            this.btFetchID.Name = "btFetchID";
+            this.btFetchID.Size = new System.Drawing.Size(94, 23);
+            this.btFetchID.TabIndex = 4;
+            this.btFetchID.Text = "Fetch IDs";
+            this.btFetchID.UseVisualStyleBackColor = true;
+            this.btFetchID.Click += new System.EventHandler(this.btFetchID_Click);
+            // 
             // TaskTimer
             // 
             this.TaskTimer.Interval = 1000;
@@ -573,8 +682,11 @@
             this.tabPage2.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
-            this.tabPage3.ResumeLayout(false);
-            this.tabPage3.PerformLayout();
+            this.tabpage.ResumeLayout(false);
+            this.tabpage.PerformLayout();
+            this.tabPage4.ResumeLayout(false);
+            this.tabPage4.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgv)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -609,17 +721,26 @@
         private System.Windows.Forms.ProgressBar pbTask;
         private System.Windows.Forms.Timer TaskTimer;
         private System.Windows.Forms.Button btCancel;
-        private System.Windows.Forms.TabPage tabPage3;
+        private System.Windows.Forms.TabPage tabpage;
         private System.Windows.Forms.ListBox lbSelectDemo;
-        private System.Windows.Forms.Button btApplyDemo;
         private System.Windows.Forms.TextBox tbSelected;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Button btnSetSel;
-        private System.Windows.Forms.Button btnCleSel;
+        private System.Windows.Forms.Button btnSaveAS;
+        private System.Windows.Forms.Button btnLoadFrom;
         private System.Windows.Forms.Button btnClearURL;
         private System.Windows.Forms.Button btnPaste;
         private System.Windows.Forms.ToolTip toolTip1;
+        private System.Windows.Forms.TabPage tabPage4;
+        private System.Windows.Forms.Button btFetchID;
+        private System.Windows.Forms.Button btnSaveIDs;
+        private System.Windows.Forms.Button btnSaveDefIDs;
+        private System.Windows.Forms.DataGridView dgv;
+        private System.Windows.Forms.Button btnCreateIDs;
+        private System.Windows.Forms.ComboBox cbSelProj;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Project;
+        private System.Windows.Forms.DataGridViewTextBoxColumn HostID;
+        private System.Windows.Forms.Label label6;
     }
 }
 
