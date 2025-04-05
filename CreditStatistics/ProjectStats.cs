@@ -18,6 +18,7 @@ using System.Security.Policy;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Net;
+using System.Xml.Linq;
 
 /*
  ---------- ALL_PROJECTS_LIST.XML
@@ -236,6 +237,24 @@ null
 "
         .Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
 
+        public void SelectComputer(string sPC)
+        {
+            LocalHosts.Clear();
+            foreach (cPSlist p in ProjectList)
+            {
+                int i = p.HostNames.IndexOf(sPC);
+                if (i >= 0)
+                {
+                    cLHe cLHe = new cLHe();
+                    cLHe.ComputerID = sPC;
+                    cLHe.name = p.name;
+                    cLHe.HostID = p.Hosts[i];
+                    LocalHosts.Add(cLHe);
+                }
+            }
+
+        }
+        
         public void Init()
         {
             int i, j, n = KnownProjects.Length;
@@ -404,10 +423,10 @@ null
             }
             return -1;
         }
-        public void GetHosts(string sBoincLoc)
+        public string GetHosts(string sBoincLoc)
         {
             LocalHosts.Clear();
-
+            string CurrentHostName = Dns.GetHostName();
             string[] LookFiles = { "SCHED_REP*", "SCHED_REQ*" };
             if (Directory.Exists(sBoincLoc))
             {
@@ -437,7 +456,7 @@ null
                             }
                         }
                         if (bFound) continue;
-                        cLHe.ComputerID = Dns.GetHostName();
+                        cLHe.ComputerID = CurrentHostName;                        
                         cLHe.name = sName;
                         cLHe.HostID = sID;
                         LocalHosts.Add(cLHe);
@@ -445,7 +464,7 @@ null
                 }
 
             }
-
+            return CurrentHostName;
         }
 
         public string GetIDfromName(string name)

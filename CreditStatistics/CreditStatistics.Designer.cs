@@ -50,6 +50,7 @@
             this.label5 = new System.Windows.Forms.Label();
             this.tcProj = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.btnLoadDefIDs = new System.Windows.Forms.Button();
             this.btnSaveDefIDs = new System.Windows.Forms.Button();
             this.btnPaste = new System.Windows.Forms.Button();
             this.btnClearURL = new System.Windows.Forms.Button();
@@ -79,6 +80,9 @@
             this.btFetchID = new System.Windows.Forms.Button();
             this.TaskTimer = new System.Windows.Forms.Timer(this.components);
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.cbComputerList = new System.Windows.Forms.ComboBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.btnApplyNewPC = new System.Windows.Forms.Button();
             this.gbGetStats.SuspendLayout();
             this.gbSamURL.SuspendLayout();
             this.tcProj.SuspendLayout();
@@ -111,6 +115,7 @@
             this.btnStart.Size = new System.Drawing.Size(75, 23);
             this.btnStart.TabIndex = 3;
             this.btnStart.Text = "Next";
+            this.toolTip1.SetToolTip(this.btnStart, "Click to read the\r\nnext page of data");
             this.btnStart.UseVisualStyleBackColor = true;
             this.btnStart.Click += new System.EventHandler(this.btnStart_Click);
             // 
@@ -281,6 +286,7 @@
             this.btnFind.Size = new System.Drawing.Size(65, 23);
             this.btnFind.TabIndex = 7;
             this.btnFind.Text = "FIND";
+            this.toolTip1.SetToolTip(this.btnFind, "Seelct this to read the\r\nflirst page of data");
             this.btnFind.UseVisualStyleBackColor = true;
             this.btnFind.Click += new System.EventHandler(this.btnFind_Click);
             // 
@@ -311,6 +317,7 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.btnLoadDefIDs);
             this.tabPage1.Controls.Add(this.btnSaveDefIDs);
             this.tabPage1.Controls.Add(this.btnPaste);
             this.tabPage1.Controls.Add(this.btnClearURL);
@@ -331,6 +338,18 @@
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Projects";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // btnLoadDefIDs
+            // 
+            this.btnLoadDefIDs.ForeColor = System.Drawing.Color.Blue;
+            this.btnLoadDefIDs.Location = new System.Drawing.Point(456, 510);
+            this.btnLoadDefIDs.Name = "btnLoadDefIDs";
+            this.btnLoadDefIDs.Size = new System.Drawing.Size(94, 23);
+            this.btnLoadDefIDs.TabIndex = 20;
+            this.btnLoadDefIDs.Text = "Load IDs";
+            this.toolTip1.SetToolTip(this.btnLoadDefIDs, "if you first save the IDs\r\nyou can then edit and\r\nadd items using notepad");
+            this.btnLoadDefIDs.UseVisualStyleBackColor = true;
+            this.btnLoadDefIDs.Click += new System.EventHandler(this.btnLoadDefIDs_Click);
             // 
             // btnSaveDefIDs
             // 
@@ -558,6 +577,9 @@
             // 
             // tabPage4
             // 
+            this.tabPage4.Controls.Add(this.btnApplyNewPC);
+            this.tabPage4.Controls.Add(this.cbComputerList);
+            this.tabPage4.Controls.Add(this.label7);
             this.tabPage4.Controls.Add(this.cbSelProj);
             this.tabPage4.Controls.Add(this.label6);
             this.tabPage4.Controls.Add(this.btnCreateIDs);
@@ -575,9 +597,9 @@
             // cbSelProj
             // 
             this.cbSelProj.FormattingEnabled = true;
-            this.cbSelProj.Location = new System.Drawing.Point(171, 54);
+            this.cbSelProj.Location = new System.Drawing.Point(125, 44);
             this.cbSelProj.Name = "cbSelProj";
-            this.cbSelProj.Size = new System.Drawing.Size(121, 24);
+            this.cbSelProj.Size = new System.Drawing.Size(130, 24);
             this.cbSelProj.TabIndex = 8;
             this.cbSelProj.SelectedIndexChanged += new System.EventHandler(this.cbSelProj_SelectedIndexChanged);
             // 
@@ -586,7 +608,7 @@
             this.label6.AutoSize = true;
             this.label6.BackColor = System.Drawing.SystemColors.Info;
             this.label6.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.Location = new System.Drawing.Point(177, 22);
+            this.label6.Location = new System.Drawing.Point(122, 27);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(105, 14);
             this.label6.TabIndex = 12;
@@ -612,13 +634,10 @@
             this.dgv.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Project,
             this.HostID});
-            this.dgv.Location = new System.Drawing.Point(324, 22);
-            this.dgv.MultiSelect = false;
+            this.dgv.Location = new System.Drawing.Point(276, 33);
             this.dgv.Name = "dgv";
-            this.dgv.RowHeadersVisible = false;
             this.dgv.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.dgv.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
-            this.dgv.Size = new System.Drawing.Size(227, 610);
+            this.dgv.Size = new System.Drawing.Size(285, 610);
             this.dgv.TabIndex = 6;
             this.toolTip1.SetToolTip(this.dgv, "Press F2 to edit");
             // 
@@ -651,6 +670,7 @@
             this.btFetchID.Size = new System.Drawing.Size(94, 23);
             this.btFetchID.TabIndex = 4;
             this.btFetchID.Text = "Fetch IDs";
+            this.toolTip1.SetToolTip(this.btFetchID, "use this to read your list\r\nof computers and projects\r\nor use the demo list");
             this.btFetchID.UseVisualStyleBackColor = true;
             this.btFetchID.Click += new System.EventHandler(this.btFetchID_Click);
             // 
@@ -658,6 +678,38 @@
             // 
             this.TaskTimer.Interval = 1000;
             this.TaskTimer.Tick += new System.EventHandler(this.TaskTimer_Tick);
+            // 
+            // cbComputerList
+            // 
+            this.cbComputerList.FormattingEnabled = true;
+            this.cbComputerList.Location = new System.Drawing.Point(125, 116);
+            this.cbComputerList.Name = "cbComputerList";
+            this.cbComputerList.Size = new System.Drawing.Size(130, 24);
+            this.cbComputerList.TabIndex = 13;
+            this.toolTip1.SetToolTip(this.cbComputerList, "This PC will be loaded\r\ninto your Projects tab");
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.BackColor = System.Drawing.SystemColors.Info;
+            this.label7.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label7.Location = new System.Drawing.Point(122, 99);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(133, 14);
+            this.label7.TabIndex = 14;
+            this.label7.Text = "Select Computer ID";
+            // 
+            // btnApplyNewPC
+            // 
+            this.btnApplyNewPC.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnApplyNewPC.ForeColor = System.Drawing.Color.Blue;
+            this.btnApplyNewPC.Location = new System.Drawing.Point(180, 146);
+            this.btnApplyNewPC.Name = "btnApplyNewPC";
+            this.btnApplyNewPC.Size = new System.Drawing.Size(75, 23);
+            this.btnApplyNewPC.TabIndex = 15;
+            this.btnApplyNewPC.Text = "Apply";
+            this.btnApplyNewPC.UseVisualStyleBackColor = true;
+            this.btnApplyNewPC.Click += new System.EventHandler(this.btnApplyNewPC_Click);
             // 
             // CreditStatistics
             // 
@@ -741,6 +793,10 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Project;
         private System.Windows.Forms.DataGridViewTextBoxColumn HostID;
         private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Button btnLoadDefIDs;
+        private System.Windows.Forms.ComboBox cbComputerList;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Button btnApplyNewPC;
     }
 }
 

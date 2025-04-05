@@ -97,8 +97,10 @@ namespace CreditStatistics
             }
 #if DEBUG
             btnCreateIDs.Enabled = true;
+            btnSaveDefIDs.Enabled = true;
 #else
             btnCreateIDs.Enabled = false;
+            btnSaveDefIDs.Enabled = false;
 #endif
         }
 
@@ -134,7 +136,23 @@ namespace CreditStatistics
                 }
                 i++;
             }
-            cbSelProj.SelectedIndex = 0; // select first item
+            //cbSelProj.SelectedIndex = 0; // select first item
+        }
+
+        private void UpdateRB()
+        {
+            foreach(Control c in gbSamURL.Controls)
+            {
+                if (c is RadioButton)
+                {
+                    RadioButton rb = (RadioButton)c;
+                    int i = (int)rb.Tag;
+                    string s = ProjectStats.ProjectList[i].name;
+                    string t = ProjectStats.GetIDfromName(s);
+                    bool bHasID = t != "";
+                    rb.ForeColor = bHasID ? System.Drawing.Color.Blue : System.Drawing.Color.Black;
+                }
+            }
         }
 
         private void rbProject_CheckedChanged(object sender, EventArgs e)
@@ -274,7 +292,7 @@ namespace CreditStatistics
                 + Lp(SumC.CPUtimeSecs.ToString("F2"), 12)
                 + Lp(SumC.mCPU.ToString("F4"), 12)
                 + "\r\n";
-            sOut += Lp(" ",25) + Lp("Total", 10)
+            sOut += Lp(MyComputerID,25) + Lp("Total", 10) // put hostname here
                 + Lp("Avg", 12)
                 + Lp("Avg", 12)
                 + Lp("Avg", 12)
@@ -557,7 +575,7 @@ namespace CreditStatistics
 
         private void RunGetBoinc()
         {
-            ProjectStats.GetHosts(tbBoincLoc.Text);
+            MyComputerID = ProjectStats.GetHosts(tbBoincLoc.Text);
             tbProjHostList.Text = "";            
             string s = "";
             if (ProjectStats.LocalHosts.Count > 0)
@@ -834,6 +852,7 @@ namespace CreditStatistics
             ReadStringsIntoList(ref MyList);
             if (MyList.Count == 0) return 0;
             int i, n = 0;
+            cbComputerList.Items.Clear();
             foreach (string s in MyList)
             {
                 i = s.IndexOf(":");
@@ -864,10 +883,13 @@ namespace CreditStatistics
                         MessageBox.Show("Expected format of (hostname hostid)");
                         return n;
                     }
-                    ProjectStats.ProjectList[iLoc].HostNames.Add(sPair[0].Trim());
+                    string sPC = sPair[0].Trim();
+                    if (!cbComputerList.Items.Contains(sPC))
+                        cbComputerList.Items.Add(sPC);
+                    ProjectStats.ProjectList[iLoc].HostNames.Add(sPC);
                     ProjectStats.ProjectList[iLoc].Hosts.Add(sPair[1].Trim());
+                    n++;
                 }
-                n++;
             }
             return n;
         }
@@ -950,7 +972,10 @@ namespace CreditStatistics
         private void btFetchID_Click(object sender, EventArgs e)
         {
             int n = ReadHostsSets();
-            if (n > 0) FillInDGV(0);
+            if (n > 0)
+            {
+                FillInDGV(0);
+            }
             else
             {
                 MessageBox.Show("No valid project found");
@@ -1003,6 +1028,11 @@ namespace CreditStatistics
             }
         }
 
+
+        private void btnLoadDefIDs_Click(object sender, EventArgs e)
+        {
+
+        }
         private void btnSaveDefIDs_Click(object sender, EventArgs e)
         {
             using (SaveFileDialog saveFileDialog = new SaveFileDialog())
@@ -1034,12 +1064,17 @@ namespace CreditStatistics
         {
             dgv.Rows.Clear();
             cPSlist cp = ProjectStats.ProjectList[iLoc];
-            for(int i = 0; i < cp.Hosts.Count; i++)
+
+            for (int i = 0; i < cp.Hosts.Count; i++)
             {
                 dgv.Rows.Add();
-                dgv.Rows[i].Cells[0].Value = cp.HostNames[i].ToString();
-                dgv.Rows[i].Cells[1].Value = cp.Hosts[i].ToString();
-            }            
+                string s = cp.HostNames[i].ToString();
+                string t = cp.Hosts[i].ToString();
+                dgv.Rows[i].Cells[0].Value = s;
+                dgv.Rows[i].Cells[1].Value = t;
+            }
+            if (cbComputerList.Items.Count == 0) return;
+            cbComputerList.SelectedIndex = 0;            
         }
 
         private void btnCreateIDs_Click(object sender, EventArgs e)
@@ -1051,6 +1086,40 @@ namespace CreditStatistics
         private void cbSelProj_SelectedIndexChanged(object sender, EventArgs e)
         {
             FillInDGV(cbSelProj.SelectedIndex);
+        }
+
+        private void btnApplyNewPC_Click(object sender, EventArgs e)
+        {
+            string sPC = cbComputerList.SelectedItem.ToString();
+            ProjectStats.LocalHosts.Clear();
+            foreach (cPSlist cP in ProjectStats.ProjectList)
+            {
+                int i = cP.HostNames.IndexOf(sPC);
+                if (i >= 0)
+                {
+                    cLHe c = new cLHe();
+                    c.HostID = cP.Hosts[i];
+                    c.name = cP.name;
+                    c.ComputerID = sPC;
+                    ProjectStats.LocalHosts.Add(c);
+                }
+            }
+            if (ProjectStats.LocalHosts.Count > 0)
+            {
+                tbProjHostList.Clear();
+                foreach (cLHe c in ProjectStats.LocalHosts)
+                {
+                    tbProjHostList.AppendText(c.name + " " + c.HostID + Environment.NewLine);
+                }
+                MyComputerID = sPC;
+                UpdateRB();
+                ProjUrl.Clear();
+                tabPage1.Show();
+            }
+            else
+            {
+                MessageBox.Show("No valid project found");
+            }
         }
     }
 }
