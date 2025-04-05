@@ -950,17 +950,13 @@ namespace CreditStatistics
         private void btFetchID_Click(object sender, EventArgs e)
         {
             int n = ReadHostsSets();
-            int i = 0;
-            foreach(cPSlist cp in ProjectStats.ProjectList)
+            if (n > 0) FillInDGV(0);
+            else
             {
-                if (cp.Hosts.Count > 0)
-                {
-                    dgv.Rows.Add();
-                    dgv.Rows[i].Cells[0].Value = cp.name;
-                    dgv.Rows[i].Cells[1].Value = string.Join(" ", cp.Hosts);
-                    i++;
-                }
+                MessageBox.Show("No valid project found");
+                return;
             }   
+
         }
         private void btnSaveIDs_Click(object sender, EventArgs e)
         {
