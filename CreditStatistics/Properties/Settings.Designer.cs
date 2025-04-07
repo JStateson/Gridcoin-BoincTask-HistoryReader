@@ -25,18 +25,6 @@ namespace CreditStatistics.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("40")]
-        public int MaxRecords {
-            get {
-                return ((int)(this["MaxRecords"]));
-            }
-            set {
-                this["MaxRecords"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("https://milkyway.cs.rpi.edu/milkyway/results.php?hostid=959559&offset=0&show_name" +
             "s=0&state=4&appid=")]
         public string InitialUrl {
@@ -50,97 +38,12 @@ namespace CreditStatistics.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool bShowWIN {
+        public string[] HostList {
             get {
-                return ((bool)(this["bShowWIN"]));
+                return ((string[])(this["HostList"]));
             }
             set {
-                this["bShowWIN"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool bShowAPP {
-            get {
-                return ((bool)(this["bShowAPP"]));
-            }
-            set {
-                this["bShowAPP"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool bShowLIN {
-            get {
-                return ((bool)(this["bShowLIN"]));
-            }
-            set {
-                this["bShowLIN"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool bShowAND {
-            get {
-                return ((bool)(this["bShowAND"]));
-            }
-            set {
-                this["bShowAND"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool bShowATI {
-            get {
-                return ((bool)(this["bShowATI"]));
-            }
-            set {
-                this["bShowATI"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool bShowNVI {
-            get {
-                return ((bool)(this["bShowNVI"]));
-            }
-            set {
-                this["bShowNVI"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool bShowINT {
-            get {
-                return ((bool)(this["bShowINT"]));
-            }
-            set {
-                this["bShowINT"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool bShowCPU {
-            get {
-                return ((bool)(this["bShowCPU"]));
-            }
-            set {
-                this["bShowCPU"] = value;
+                this["HostList"] = value;
             }
         }
     }

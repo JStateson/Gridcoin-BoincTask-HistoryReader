@@ -29,7 +29,6 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CreditStatistics));
             this.btnViewData = new System.Windows.Forms.Button();
             this.btnStart = new System.Windows.Forms.Button();
             this.tbInfo = new System.Windows.Forms.TextBox();
@@ -46,10 +45,13 @@
             this.tbHOSTID = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.tbHdrInfo = new System.Windows.Forms.TextBox();
-            this.btnFind = new System.Windows.Forms.Button();
+            this.btnRunHdr = new System.Windows.Forms.Button();
             this.label5 = new System.Windows.Forms.Label();
             this.tcProj = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.cbStudy = new System.Windows.Forms.ComboBox();
+            this.label9 = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
             this.btnLoadDefIDs = new System.Windows.Forms.Button();
             this.btnSaveDefIDs = new System.Windows.Forms.Button();
             this.btnPaste = new System.Windows.Forms.Button();
@@ -69,20 +71,40 @@
             this.label4 = new System.Windows.Forms.Label();
             this.tbSelected = new System.Windows.Forms.TextBox();
             this.lbSelectDemo = new System.Windows.Forms.ListBox();
-            this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.TabHost = new System.Windows.Forms.TabPage();
+            this.btnClearAll = new System.Windows.Forms.Button();
+            this.btnSetAll = new System.Windows.Forms.Button();
+            this.gbAllowSeq = new System.Windows.Forms.GroupBox();
+            this.btnRunCmp = new System.Windows.Forms.Button();
             this.cbSelProj = new System.Windows.Forms.ComboBox();
             this.label6 = new System.Windows.Forms.Label();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.cbComputerList = new System.Windows.Forms.ComboBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.btnApplyNewPC = new System.Windows.Forms.Button();
             this.btnCreateIDs = new System.Windows.Forms.Button();
             this.dgv = new System.Windows.Forms.DataGridView();
             this.Project = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.HostID = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.btnSaveIDs = new System.Windows.Forms.Button();
             this.btFetchID = new System.Windows.Forms.Button();
+            this.lbViewRaw = new System.Windows.Forms.TabPage();
+            this.btnApplyAPxx = new System.Windows.Forms.Button();
+            this.gbXX = new System.Windows.Forms.GroupBox();
+            this.tbXX = new System.Windows.Forms.TextBox();
+            this.lbXX = new System.Windows.Forms.Label();
+            this.label13 = new System.Windows.Forms.Label();
+            this.lbViewRawH = new System.Windows.Forms.ListBox();
+            this.label12 = new System.Windows.Forms.Label();
+            this.lbNameHost = new System.Windows.Forms.Label();
+            this.nudPages = new System.Windows.Forms.NumericUpDown();
+            this.label11 = new System.Windows.Forms.Label();
+            this.lbURLtoSequence = new System.Windows.Forms.ListBox();
+            this.btnRunSeq = new System.Windows.Forms.Button();
+            this.btnViewUrl = new System.Windows.Forms.Button();
+            this.label10 = new System.Windows.Forms.Label();
             this.TaskTimer = new System.Windows.Forms.Timer(this.components);
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.cbComputerList = new System.Windows.Forms.ComboBox();
-            this.label7 = new System.Windows.Forms.Label();
-            this.btnApplyNewPC = new System.Windows.Forms.Button();
             this.gbGetStats.SuspendLayout();
             this.gbSamURL.SuspendLayout();
             this.tcProj.SuspendLayout();
@@ -90,8 +112,13 @@
             this.tabPage2.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.tabpage.SuspendLayout();
-            this.tabPage4.SuspendLayout();
+            this.TabHost.SuspendLayout();
+            this.gbAllowSeq.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgv)).BeginInit();
+            this.lbViewRaw.SuspendLayout();
+            this.gbXX.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudPages)).BeginInit();
             this.SuspendLayout();
             // 
             // btnViewData
@@ -122,7 +149,8 @@
             // tbInfo
             // 
             this.tbInfo.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbInfo.Location = new System.Drawing.Point(10, 138);
+            this.tbInfo.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.tbInfo.Location = new System.Drawing.Point(0, 152);
             this.tbInfo.Multiline = true;
             this.tbInfo.Name = "tbInfo";
             this.tbInfo.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
@@ -140,12 +168,12 @@
             // 
             // gbGetStats
             // 
+            this.gbGetStats.Controls.Add(this.tbInfo);
             this.gbGetStats.Controls.Add(this.btCancel);
             this.gbGetStats.Controls.Add(this.pbTask);
             this.gbGetStats.Controls.Add(this.btnClear);
             this.gbGetStats.Controls.Add(this.lbHdr);
             this.gbGetStats.Controls.Add(this.cbfilterSTD);
-            this.gbGetStats.Controls.Add(this.tbInfo);
             this.gbGetStats.Controls.Add(this.lbVersion);
             this.gbGetStats.Controls.Add(this.btnStart);
             this.gbGetStats.Location = new System.Drawing.Point(634, 54);
@@ -271,24 +299,24 @@
             // tbHdrInfo
             // 
             this.tbHdrInfo.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbHdrInfo.Location = new System.Drawing.Point(336, 200);
+            this.tbHdrInfo.Location = new System.Drawing.Point(429, 159);
             this.tbHdrInfo.Multiline = true;
             this.tbHdrInfo.Name = "tbHdrInfo";
             this.tbHdrInfo.Size = new System.Drawing.Size(135, 82);
             this.tbHdrInfo.TabIndex = 8;
             // 
-            // btnFind
+            // btnRunHdr
             // 
-            this.btnFind.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnFind.ForeColor = System.Drawing.Color.Blue;
-            this.btnFind.Location = new System.Drawing.Point(485, 236);
-            this.btnFind.Name = "btnFind";
-            this.btnFind.Size = new System.Drawing.Size(65, 23);
-            this.btnFind.TabIndex = 7;
-            this.btnFind.Text = "FIND";
-            this.toolTip1.SetToolTip(this.btnFind, "Seelct this to read the\r\nflirst page of data");
-            this.btnFind.UseVisualStyleBackColor = true;
-            this.btnFind.Click += new System.EventHandler(this.btnFind_Click);
+            this.btnRunHdr.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnRunHdr.ForeColor = System.Drawing.Color.Blue;
+            this.btnRunHdr.Location = new System.Drawing.Point(457, 251);
+            this.btnRunHdr.Name = "btnRunHdr";
+            this.btnRunHdr.Size = new System.Drawing.Size(84, 39);
+            this.btnRunHdr.TabIndex = 7;
+            this.btnRunHdr.Text = "RUN";
+            this.toolTip1.SetToolTip(this.btnRunHdr, "Seelct this to read the\r\nflirst page of data");
+            this.btnRunHdr.UseVisualStyleBackColor = true;
+            this.btnRunHdr.Click += new System.EventHandler(this.btnRunHdr_Click);
             // 
             // label5
             // 
@@ -298,16 +326,19 @@
             this.label5.Location = new System.Drawing.Point(7, 16);
             this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(297, 52);
+            this.label5.Size = new System.Drawing.Size(295, 52);
             this.label5.TabIndex = 6;
-            this.label5.Text = resources.GetString("label5.Text");
+            this.label5.Text = "Paste your URL in below box and click RUN to get\r\nstatistics.  Click VERIFY to se" +
+    "t project info from\r\nthe URL.  The URL must contain the phrase HOST\r\nAlternately" +
+    " select a project and enter the HOST ID";
             // 
             // tcProj
             // 
             this.tcProj.Controls.Add(this.tabPage1);
             this.tcProj.Controls.Add(this.tabPage2);
             this.tcProj.Controls.Add(this.tabpage);
-            this.tcProj.Controls.Add(this.tabPage4);
+            this.tcProj.Controls.Add(this.TabHost);
+            this.tcProj.Controls.Add(this.lbViewRaw);
             this.tcProj.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tcProj.Location = new System.Drawing.Point(12, 29);
             this.tcProj.Name = "tcProj";
@@ -317,6 +348,9 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.cbStudy);
+            this.tabPage1.Controls.Add(this.label9);
+            this.tabPage1.Controls.Add(this.label8);
             this.tabPage1.Controls.Add(this.btnLoadDefIDs);
             this.tabPage1.Controls.Add(this.btnSaveDefIDs);
             this.tabPage1.Controls.Add(this.btnPaste);
@@ -329,7 +363,7 @@
             this.tabPage1.Controls.Add(this.label5);
             this.tabPage1.Controls.Add(this.tbHdrInfo);
             this.tabPage1.Controls.Add(this.ProjUrl);
-            this.tabPage1.Controls.Add(this.btnFind);
+            this.tabPage1.Controls.Add(this.btnRunHdr);
             this.tabPage1.Controls.Add(this.btnViewData);
             this.tabPage1.Location = new System.Drawing.Point(4, 25);
             this.tabPage1.Name = "tabPage1";
@@ -338,6 +372,36 @@
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Projects";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // cbStudy
+            // 
+            this.cbStudy.FormattingEnabled = true;
+            this.cbStudy.Location = new System.Drawing.Point(111, 251);
+            this.cbStudy.Name = "cbStudy";
+            this.cbStudy.Size = new System.Drawing.Size(300, 24);
+            this.cbStudy.TabIndex = 24;
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.BackColor = System.Drawing.SystemColors.Info;
+            this.label9.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label9.Location = new System.Drawing.Point(141, 277);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(189, 14);
+            this.label9.TabIndex = 23;
+            this.label9.Text = "Study or type of Work Unit";
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.BackColor = System.Drawing.SystemColors.Info;
+            this.label8.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label8.Location = new System.Drawing.Point(31, 276);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(35, 14);
+            this.label8.TabIndex = 22;
+            this.label8.Text = "PAGE";
             // 
             // btnLoadDefIDs
             // 
@@ -366,7 +430,7 @@
             // 
             this.btnPaste.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnPaste.ForeColor = System.Drawing.Color.Blue;
-            this.btnPaste.Location = new System.Drawing.Point(260, 156);
+            this.btnPaste.Location = new System.Drawing.Point(234, 156);
             this.btnPaste.Name = "btnPaste";
             this.btnPaste.Size = new System.Drawing.Size(70, 20);
             this.btnPaste.TabIndex = 18;
@@ -378,7 +442,7 @@
             // 
             this.btnClearURL.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnClearURL.ForeColor = System.Drawing.Color.Blue;
-            this.btnClearURL.Location = new System.Drawing.Point(170, 156);
+            this.btnClearURL.Location = new System.Drawing.Point(153, 156);
             this.btnClearURL.Name = "btnClearURL";
             this.btnClearURL.Size = new System.Drawing.Size(70, 20);
             this.btnClearURL.TabIndex = 17;
@@ -391,7 +455,7 @@
             this.label1.AutoSize = true;
             this.label1.BackColor = System.Drawing.SystemColors.Info;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(230, 225);
+            this.label1.Location = new System.Drawing.Point(317, 179);
             this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(105, 48);
@@ -402,9 +466,9 @@
             // 
             this.tbPage.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tbPage.ForeColor = System.Drawing.Color.Blue;
-            this.tbPage.Location = new System.Drawing.Point(18, 269);
+            this.tbPage.Location = new System.Drawing.Point(18, 251);
             this.tbPage.Name = "tbPage";
-            this.tbPage.Size = new System.Drawing.Size(79, 22);
+            this.tbPage.Size = new System.Drawing.Size(62, 22);
             this.tbPage.TabIndex = 13;
             // 
             // label3
@@ -412,12 +476,12 @@
             this.label3.AutoSize = true;
             this.label3.BackColor = System.Drawing.SystemColors.Info;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(20, 239);
+            this.label3.Location = new System.Drawing.Point(20, 225);
             this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(149, 16);
+            this.label3.Size = new System.Drawing.Size(260, 16);
             this.label3.TabIndex = 12;
-            this.label3.Text = "Selected Offset or Page";
+            this.label3.Text = "Selected Offset or Page and the study type";
             // 
             // btnExtract
             // 
@@ -575,29 +639,80 @@
             this.lbSelectDemo.TabIndex = 0;
             this.lbSelectDemo.SelectedIndexChanged += new System.EventHandler(this.lbSelectDemo_SelectedIndexChanged);
             // 
-            // tabPage4
+            // TabHost
             // 
-            this.tabPage4.Controls.Add(this.btnApplyNewPC);
-            this.tabPage4.Controls.Add(this.cbComputerList);
-            this.tabPage4.Controls.Add(this.label7);
-            this.tabPage4.Controls.Add(this.cbSelProj);
-            this.tabPage4.Controls.Add(this.label6);
-            this.tabPage4.Controls.Add(this.btnCreateIDs);
-            this.tabPage4.Controls.Add(this.dgv);
-            this.tabPage4.Controls.Add(this.btnSaveIDs);
-            this.tabPage4.Controls.Add(this.btFetchID);
-            this.tabPage4.Location = new System.Drawing.Point(4, 25);
-            this.tabPage4.Name = "tabPage4";
-            this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage4.Size = new System.Drawing.Size(584, 660);
-            this.tabPage4.TabIndex = 3;
-            this.tabPage4.Text = "Host List";
-            this.tabPage4.UseVisualStyleBackColor = true;
+            this.TabHost.Controls.Add(this.gbAllowSeq);
+            this.TabHost.Controls.Add(this.groupBox2);
+            this.TabHost.Controls.Add(this.btnCreateIDs);
+            this.TabHost.Controls.Add(this.dgv);
+            this.TabHost.Controls.Add(this.btnSaveIDs);
+            this.TabHost.Controls.Add(this.btFetchID);
+            this.TabHost.Location = new System.Drawing.Point(4, 25);
+            this.TabHost.Name = "TabHost";
+            this.TabHost.Padding = new System.Windows.Forms.Padding(3);
+            this.TabHost.Size = new System.Drawing.Size(584, 660);
+            this.TabHost.TabIndex = 3;
+            this.TabHost.Text = "Host List";
+            this.TabHost.UseVisualStyleBackColor = true;
+            // 
+            // btnClearAll
+            // 
+            this.btnClearAll.Enabled = false;
+            this.btnClearAll.ForeColor = System.Drawing.Color.Blue;
+            this.btnClearAll.Location = new System.Drawing.Point(152, 146);
+            this.btnClearAll.Name = "btnClearAll";
+            this.btnClearAll.Size = new System.Drawing.Size(77, 23);
+            this.btnClearAll.TabIndex = 19;
+            this.btnClearAll.Text = "Clear all";
+            this.btnClearAll.UseVisualStyleBackColor = true;
+            this.btnClearAll.Click += new System.EventHandler(this.btnClearAll_Click);
+            // 
+            // btnSetAll
+            // 
+            this.btnSetAll.Enabled = false;
+            this.btnSetAll.ForeColor = System.Drawing.Color.Blue;
+            this.btnSetAll.Location = new System.Drawing.Point(152, 117);
+            this.btnSetAll.Name = "btnSetAll";
+            this.btnSetAll.Size = new System.Drawing.Size(77, 23);
+            this.btnSetAll.TabIndex = 18;
+            this.btnSetAll.Text = "Set all";
+            this.toolTip1.SetToolTip(this.btnSetAll, "use this to read your list\r\nof computers and projects\r\nor use the demo list");
+            this.btnSetAll.UseVisualStyleBackColor = true;
+            this.btnSetAll.Click += new System.EventHandler(this.btnSetAll_Click);
+            // 
+            // gbAllowSeq
+            // 
+            this.gbAllowSeq.Controls.Add(this.btnClearAll);
+            this.gbAllowSeq.Controls.Add(this.btnRunCmp);
+            this.gbAllowSeq.Controls.Add(this.btnSetAll);
+            this.gbAllowSeq.Controls.Add(this.cbSelProj);
+            this.gbAllowSeq.Controls.Add(this.label6);
+            this.gbAllowSeq.Enabled = false;
+            this.gbAllowSeq.Location = new System.Drawing.Point(15, 106);
+            this.gbAllowSeq.Name = "gbAllowSeq";
+            this.gbAllowSeq.Size = new System.Drawing.Size(253, 216);
+            this.gbAllowSeq.TabIndex = 17;
+            this.gbAllowSeq.TabStop = false;
+            this.gbAllowSeq.Text = "Select PCs\\r\\n to compare";
+            // 
+            // btnRunCmp
+            // 
+            this.btnRunCmp.ForeColor = System.Drawing.Color.Blue;
+            this.btnRunCmp.Location = new System.Drawing.Point(9, 118);
+            this.btnRunCmp.Name = "btnRunCmp";
+            this.btnRunCmp.Size = new System.Drawing.Size(120, 51);
+            this.btnRunCmp.TabIndex = 13;
+            this.btnRunCmp.Text = "Click to Setup Compare";
+            this.btnRunCmp.UseVisualStyleBackColor = true;
+            this.btnRunCmp.Click += new System.EventHandler(this.btnRunCmp_Click);
             // 
             // cbSelProj
             // 
             this.cbSelProj.FormattingEnabled = true;
-            this.cbSelProj.Location = new System.Drawing.Point(125, 44);
+            this.cbSelProj.IntegralHeight = false;
+            this.cbSelProj.ItemHeight = 16;
+            this.cbSelProj.Location = new System.Drawing.Point(9, 21);
+            this.cbSelProj.MaxDropDownItems = 10;
             this.cbSelProj.Name = "cbSelProj";
             this.cbSelProj.Size = new System.Drawing.Size(130, 24);
             this.cbSelProj.TabIndex = 8;
@@ -608,11 +723,56 @@
             this.label6.AutoSize = true;
             this.label6.BackColor = System.Drawing.SystemColors.Info;
             this.label6.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.Location = new System.Drawing.Point(122, 27);
+            this.label6.Location = new System.Drawing.Point(149, 26);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(105, 14);
+            this.label6.Size = new System.Drawing.Size(84, 42);
             this.label6.TabIndex = 12;
-            this.label6.Text = "Select Project";
+            this.label6.Text = "<= Select\r\n   Project\r\n to compare";
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.cbComputerList);
+            this.groupBox2.Controls.Add(this.label7);
+            this.groupBox2.Controls.Add(this.btnApplyNewPC);
+            this.groupBox2.Location = new System.Drawing.Point(15, 354);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(233, 200);
+            this.groupBox2.TabIndex = 16;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Change Default PC";
+            // 
+            // cbComputerList
+            // 
+            this.cbComputerList.FormattingEnabled = true;
+            this.cbComputerList.Location = new System.Drawing.Point(61, 68);
+            this.cbComputerList.Name = "cbComputerList";
+            this.cbComputerList.Size = new System.Drawing.Size(130, 24);
+            this.cbComputerList.TabIndex = 13;
+            this.toolTip1.SetToolTip(this.cbComputerList, "This PC will be loaded\r\ninto your Projects tab");
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.BackColor = System.Drawing.SystemColors.Info;
+            this.label7.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label7.Location = new System.Drawing.Point(6, 130);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(210, 56);
+            this.label7.TabIndex = 14;
+            this.label7.Text = "Select A different computer\r\nto obtain statistics from..\r\nAfter clicking Apply yo" +
+    "u will\r\nreturn to the main page.";
+            // 
+            // btnApplyNewPC
+            // 
+            this.btnApplyNewPC.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnApplyNewPC.ForeColor = System.Drawing.Color.Blue;
+            this.btnApplyNewPC.Location = new System.Drawing.Point(61, 39);
+            this.btnApplyNewPC.Name = "btnApplyNewPC";
+            this.btnApplyNewPC.Size = new System.Drawing.Size(75, 23);
+            this.btnApplyNewPC.TabIndex = 15;
+            this.btnApplyNewPC.Text = "Apply";
+            this.btnApplyNewPC.UseVisualStyleBackColor = true;
+            this.btnApplyNewPC.Click += new System.EventHandler(this.btnApplyNewPC_Click);
             // 
             // btnCreateIDs
             // 
@@ -634,10 +794,10 @@
             this.dgv.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Project,
             this.HostID});
-            this.dgv.Location = new System.Drawing.Point(276, 33);
+            this.dgv.Location = new System.Drawing.Point(276, 22);
             this.dgv.Name = "dgv";
             this.dgv.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.dgv.Size = new System.Drawing.Size(285, 610);
+            this.dgv.Size = new System.Drawing.Size(288, 610);
             this.dgv.TabIndex = 6;
             this.toolTip1.SetToolTip(this.dgv, "Press F2 to edit");
             // 
@@ -653,8 +813,9 @@
             // 
             // btnSaveIDs
             // 
+            this.btnSaveIDs.Enabled = false;
             this.btnSaveIDs.ForeColor = System.Drawing.Color.Blue;
-            this.btnSaveIDs.Location = new System.Drawing.Point(6, 116);
+            this.btnSaveIDs.Location = new System.Drawing.Point(137, 60);
             this.btnSaveIDs.Name = "btnSaveIDs";
             this.btnSaveIDs.Size = new System.Drawing.Size(94, 23);
             this.btnSaveIDs.TabIndex = 5;
@@ -665,7 +826,7 @@
             // btFetchID
             // 
             this.btFetchID.ForeColor = System.Drawing.Color.Blue;
-            this.btFetchID.Location = new System.Drawing.Point(6, 76);
+            this.btFetchID.Location = new System.Drawing.Point(137, 22);
             this.btFetchID.Name = "btFetchID";
             this.btFetchID.Size = new System.Drawing.Size(94, 23);
             this.btFetchID.TabIndex = 4;
@@ -674,42 +835,194 @@
             this.btFetchID.UseVisualStyleBackColor = true;
             this.btFetchID.Click += new System.EventHandler(this.btFetchID_Click);
             // 
+            // lbViewRaw
+            // 
+            this.lbViewRaw.Controls.Add(this.btnApplyAPxx);
+            this.lbViewRaw.Controls.Add(this.gbXX);
+            this.lbViewRaw.Controls.Add(this.lbViewRawH);
+            this.lbViewRaw.Controls.Add(this.label12);
+            this.lbViewRaw.Controls.Add(this.lbNameHost);
+            this.lbViewRaw.Controls.Add(this.nudPages);
+            this.lbViewRaw.Controls.Add(this.label11);
+            this.lbViewRaw.Controls.Add(this.lbURLtoSequence);
+            this.lbViewRaw.Controls.Add(this.btnRunSeq);
+            this.lbViewRaw.Controls.Add(this.btnViewUrl);
+            this.lbViewRaw.Controls.Add(this.label10);
+            this.lbViewRaw.Location = new System.Drawing.Point(4, 25);
+            this.lbViewRaw.Name = "lbViewRaw";
+            this.lbViewRaw.Padding = new System.Windows.Forms.Padding(3);
+            this.lbViewRaw.Size = new System.Drawing.Size(584, 660);
+            this.lbViewRaw.TabIndex = 4;
+            this.lbViewRaw.Text = "Sequencer";
+            this.lbViewRaw.UseVisualStyleBackColor = true;
+            // 
+            // btnApplyAPxx
+            // 
+            this.btnApplyAPxx.ForeColor = System.Drawing.Color.Blue;
+            this.btnApplyAPxx.Location = new System.Drawing.Point(198, 423);
+            this.btnApplyAPxx.Name = "btnApplyAPxx";
+            this.btnApplyAPxx.Size = new System.Drawing.Size(90, 32);
+            this.btnApplyAPxx.TabIndex = 25;
+            this.btnApplyAPxx.Text = "Apply";
+            this.btnApplyAPxx.UseVisualStyleBackColor = true;
+            this.btnApplyAPxx.Click += new System.EventHandler(this.btnApplyAPxx_Click);
+            // 
+            // gbXX
+            // 
+            this.gbXX.Controls.Add(this.tbXX);
+            this.gbXX.Controls.Add(this.lbXX);
+            this.gbXX.Controls.Add(this.label13);
+            this.gbXX.Location = new System.Drawing.Point(198, 476);
+            this.gbXX.Name = "gbXX";
+            this.gbXX.Size = new System.Drawing.Size(334, 156);
+            this.gbXX.TabIndex = 24;
+            this.gbXX.TabStop = false;
+            this.gbXX.Text = "Change Application";
+            // 
+            // tbXX
+            // 
+            this.tbXX.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tbXX.Location = new System.Drawing.Point(139, 112);
+            this.tbXX.Name = "tbXX";
+            this.tbXX.Size = new System.Drawing.Size(51, 26);
+            this.tbXX.TabIndex = 25;
+            this.tbXX.Text = "XX";
+            // 
+            // lbXX
+            // 
+            this.lbXX.AutoSize = true;
+            this.lbXX.BackColor = System.Drawing.SystemColors.Info;
+            this.lbXX.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbXX.Location = new System.Drawing.Point(22, 115);
+            this.lbXX.Name = "lbXX";
+            this.lbXX.Size = new System.Drawing.Size(101, 20);
+            this.lbXX.TabIndex = 24;
+            this.lbXX.Text = "/tasks/4/XX";
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.BackColor = System.Drawing.SystemColors.Info;
+            this.label13.Location = new System.Drawing.Point(18, 32);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(209, 48);
+            this.label13.TabIndex = 23;
+            this.label13.Text = "replace XX with the app id:\r\nView the webpage and select\r\nan applicatoin to see t" +
+    "he XX";
+            // 
+            // lbViewRawH
+            // 
+            this.lbViewRawH.FormattingEnabled = true;
+            this.lbViewRawH.ItemHeight = 16;
+            this.lbViewRawH.Location = new System.Drawing.Point(21, 476);
+            this.lbViewRawH.Name = "lbViewRawH";
+            this.lbViewRawH.Size = new System.Drawing.Size(111, 164);
+            this.lbViewRawH.TabIndex = 23;
+            this.lbViewRawH.SelectedIndexChanged += new System.EventHandler(this.lbViewRawH_SelectedIndexChanged);
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.BackColor = System.Drawing.SystemColors.Info;
+            this.label12.Location = new System.Drawing.Point(18, 423);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(121, 32);
+            this.label12.TabIndex = 22;
+            this.label12.Text = "Click to view raw\r\ndata and find XX";
+            // 
+            // lbNameHost
+            // 
+            this.lbNameHost.AutoSize = true;
+            this.lbNameHost.Location = new System.Drawing.Point(195, 115);
+            this.lbNameHost.Name = "lbNameHost";
+            this.lbNameHost.Size = new System.Drawing.Size(58, 16);
+            this.lbNameHost.TabIndex = 20;
+            this.lbNameHost.Text = "label12";
+            // 
+            // nudPages
+            // 
+            this.nudPages.Location = new System.Drawing.Point(98, 115);
+            this.nudPages.Maximum = new decimal(new int[] {
+            4,
+            0,
+            0,
+            0});
+            this.nudPages.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.nudPages.Name = "nudPages";
+            this.nudPages.Size = new System.Drawing.Size(51, 22);
+            this.nudPages.TabIndex = 19;
+            this.nudPages.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(29, 115);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(52, 16);
+            this.label11.TabIndex = 18;
+            this.label11.Text = "Pages";
+            // 
+            // lbURLtoSequence
+            // 
+            this.lbURLtoSequence.FormattingEnabled = true;
+            this.lbURLtoSequence.ItemHeight = 16;
+            this.lbURLtoSequence.Location = new System.Drawing.Point(21, 170);
+            this.lbURLtoSequence.Name = "lbURLtoSequence";
+            this.lbURLtoSequence.Size = new System.Drawing.Size(511, 228);
+            this.lbURLtoSequence.TabIndex = 17;
+            this.lbURLtoSequence.MouseClick += new System.Windows.Forms.MouseEventHandler(this.lbURLtoSequence_MouseClick);
+            this.lbURLtoSequence.SelectedIndexChanged += new System.EventHandler(this.lbURLtoSequence_SelectedIndexChanged);
+            this.lbURLtoSequence.DoubleClick += new System.EventHandler(this.lbURLtoSequence_DoubleClick);
+            this.lbURLtoSequence.MouseEnter += new System.EventHandler(this.lbURLtoSequence_MouseEnter);
+            this.lbURLtoSequence.MouseMove += new System.Windows.Forms.MouseEventHandler(this.lbURLtoSequence_MouseMove);
+            // 
+            // btnRunSeq
+            // 
+            this.btnRunSeq.ForeColor = System.Drawing.Color.Blue;
+            this.btnRunSeq.Location = new System.Drawing.Point(412, 87);
+            this.btnRunSeq.Name = "btnRunSeq";
+            this.btnRunSeq.Size = new System.Drawing.Size(120, 51);
+            this.btnRunSeq.TabIndex = 16;
+            this.btnRunSeq.Text = "Sequence the data analysis";
+            this.btnRunSeq.UseVisualStyleBackColor = true;
+            this.btnRunSeq.Click += new System.EventHandler(this.btnRunSeq_Click);
+            // 
+            // btnViewUrl
+            // 
+            this.btnViewUrl.Enabled = false;
+            this.btnViewUrl.ForeColor = System.Drawing.Color.Blue;
+            this.btnViewUrl.Location = new System.Drawing.Point(412, 19);
+            this.btnViewUrl.Name = "btnViewUrl";
+            this.btnViewUrl.Size = new System.Drawing.Size(120, 51);
+            this.btnViewUrl.TabIndex = 14;
+            this.btnViewUrl.Text = "Click to view Selected URL";
+            this.btnViewUrl.UseVisualStyleBackColor = true;
+            this.btnViewUrl.Click += new System.EventHandler(this.btnViewUrl_Click);
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.ForeColor = System.Drawing.Color.Red;
+            this.label10.Location = new System.Drawing.Point(18, 16);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(329, 64);
+            this.label10.TabIndex = 4;
+            this.label10.Text = "Verify each URL represents the data you want\r\nin the study.  Select a URL and the" +
+    "n click VIEW\r\nPAGE to verify it is correct. If not then edit it\r\nPress run when " +
+    "you are ready";
+            // 
             // TaskTimer
             // 
-            this.TaskTimer.Interval = 1000;
+            this.TaskTimer.Interval = 800;
             this.TaskTimer.Tick += new System.EventHandler(this.TaskTimer_Tick);
-            // 
-            // cbComputerList
-            // 
-            this.cbComputerList.FormattingEnabled = true;
-            this.cbComputerList.Location = new System.Drawing.Point(125, 116);
-            this.cbComputerList.Name = "cbComputerList";
-            this.cbComputerList.Size = new System.Drawing.Size(130, 24);
-            this.cbComputerList.TabIndex = 13;
-            this.toolTip1.SetToolTip(this.cbComputerList, "This PC will be loaded\r\ninto your Projects tab");
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.BackColor = System.Drawing.SystemColors.Info;
-            this.label7.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label7.Location = new System.Drawing.Point(122, 99);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(133, 14);
-            this.label7.TabIndex = 14;
-            this.label7.Text = "Select Computer ID";
-            // 
-            // btnApplyNewPC
-            // 
-            this.btnApplyNewPC.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnApplyNewPC.ForeColor = System.Drawing.Color.Blue;
-            this.btnApplyNewPC.Location = new System.Drawing.Point(180, 146);
-            this.btnApplyNewPC.Name = "btnApplyNewPC";
-            this.btnApplyNewPC.Size = new System.Drawing.Size(75, 23);
-            this.btnApplyNewPC.TabIndex = 15;
-            this.btnApplyNewPC.Text = "Apply";
-            this.btnApplyNewPC.UseVisualStyleBackColor = true;
-            this.btnApplyNewPC.Click += new System.EventHandler(this.btnApplyNewPC_Click);
             // 
             // CreditStatistics
             // 
@@ -736,9 +1049,17 @@
             this.groupBox1.PerformLayout();
             this.tabpage.ResumeLayout(false);
             this.tabpage.PerformLayout();
-            this.tabPage4.ResumeLayout(false);
-            this.tabPage4.PerformLayout();
+            this.TabHost.ResumeLayout(false);
+            this.gbAllowSeq.ResumeLayout(false);
+            this.gbAllowSeq.PerformLayout();
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgv)).EndInit();
+            this.lbViewRaw.ResumeLayout(false);
+            this.lbViewRaw.PerformLayout();
+            this.gbXX.ResumeLayout(false);
+            this.gbXX.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudPages)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -751,7 +1072,7 @@
         private System.Windows.Forms.GroupBox gbGetStats;
         private System.Windows.Forms.TextBox ProjUrl;
         private System.Windows.Forms.TextBox tbHdrInfo;
-        private System.Windows.Forms.Button btnFind;
+        private System.Windows.Forms.Button btnRunHdr;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.CheckBox cbfilterSTD;
         private System.Windows.Forms.Label lbHdr;
@@ -783,7 +1104,7 @@
         private System.Windows.Forms.Button btnClearURL;
         private System.Windows.Forms.Button btnPaste;
         private System.Windows.Forms.ToolTip toolTip1;
-        private System.Windows.Forms.TabPage tabPage4;
+        private System.Windows.Forms.TabPage TabHost;
         private System.Windows.Forms.Button btFetchID;
         private System.Windows.Forms.Button btnSaveIDs;
         private System.Windows.Forms.Button btnSaveDefIDs;
@@ -797,6 +1118,29 @@
         private System.Windows.Forms.ComboBox cbComputerList;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Button btnApplyNewPC;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.ComboBox cbStudy;
+        private System.Windows.Forms.GroupBox gbAllowSeq;
+        private System.Windows.Forms.Button btnRunCmp;
+        private System.Windows.Forms.TabPage lbViewRaw;
+        private System.Windows.Forms.Button btnViewUrl;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.ListBox lbURLtoSequence;
+        private System.Windows.Forms.Button btnRunSeq;
+        private System.Windows.Forms.Button btnClearAll;
+        private System.Windows.Forms.Button btnSetAll;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.NumericUpDown nudPages;
+        private System.Windows.Forms.Label lbNameHost;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.ListBox lbViewRawH;
+        private System.Windows.Forms.Button btnApplyAPxx;
+        private System.Windows.Forms.GroupBox gbXX;
+        private System.Windows.Forms.Label lbXX;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.TextBox tbXX;
     }
 }
 

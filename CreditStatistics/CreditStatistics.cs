@@ -1,15 +1,21 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Deployment.Application;
 using System.Diagnostics;
+using System.Diagnostics.Eventing.Reader;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.Remoting.Messaging;
+using System.Security.Principal;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
@@ -43,6 +49,13 @@ namespace CreditStatistics
             }
         }
 
+        private List<string> MyList = new List<string>();
+        private string SequencerOut = "";   // used when running sequencer instead of output to text box
+        private bool bInSequencer = false;
+        private string sOutInfo = "";
+        private string sOutHdrs = "";
+
+        private string sTotals;
         public List<string> sNames = new List<string>();
         public cProjectStats ProjectStats = new cProjectStats();
         public string SelectedProject = "";
@@ -61,8 +74,8 @@ namespace CreditStatistics
 
         cOutFilter cNAS = new cOutFilter();
 
-        public List<cCreditInfo> CreditInfo;  
-
+        public List<cCreditInfo> CreditInfo;
+        private CancellationTokenSource cts;
         private Uri myUri;
         private WebClient client;
         private string RawPage;
@@ -75,6 +88,7 @@ namespace CreditStatistics
         private int TagOfProject = -1;
         private int RecordsPerPage = 0;
         private int MaxShortSize = 8;  // will be pixel with times character count
+        TabPage hiddenTabPage;
 
         private static string[] FindHdr = { "All (", "Valid (", "Invalid (", "Error (" };
         private static string[] FindHdrA = { "All</a> (", "Valid</a> (", "Invalid</a> (", "Error</a> (" };
@@ -102,6 +116,19 @@ namespace CreditStatistics
             btnCreateIDs.Enabled = false;
             btnSaveDefIDs.Enabled = false;
 #endif
+            this.Shown += InitialLoad;
+            
+        }
+
+        private void InitialLoad(object sendler, EventArgs e)
+        {
+            Refresh();
+            Task.Delay(1);
+            Application.DoEvents();
+            SetRB(0,false); // set default to first project
+            hiddenTabPage = tcProj.TabPages["lbViewRaw"]; 
+            tcProj.TabPages.Remove(hiddenTabPage);
+            TryGetHostSets();
         }
 
         private void FormProjectRB()
@@ -136,7 +163,6 @@ namespace CreditStatistics
                 }
                 i++;
             }
-            //cbSelProj.SelectedIndex = 0; // select first item
         }
 
         private void UpdateRB()
@@ -171,7 +197,7 @@ namespace CreditStatistics
             }
         }
 
-        private void SetRB(int iTag)
+        private void SetRB(int iTag, bool b)
         {
             TagOfProject = iTag;
             foreach (Control c in gbSamURL.Controls)
@@ -181,9 +207,9 @@ namespace CreditStatistics
                     RadioButton rb = (RadioButton)c;
                     if ((int)rb.Tag == iTag)
                     {
-                        rb.CheckedChanged -= new System.EventHandler(this.rbProject_CheckedChanged);
+                        if(b)rb.CheckedChanged -= new System.EventHandler(this.rbProject_CheckedChanged);
                         rb.Checked = true;
-                        rb.CheckedChanged += new System.EventHandler(this.rbProject_CheckedChanged);
+                        if(b)rb.CheckedChanged += new System.EventHandler(this.rbProject_CheckedChanged);
                         return;
                     }
                 }
@@ -240,10 +266,10 @@ namespace CreditStatistics
             SumC.Init();
             tbInfo.Clear();
             ApplyFilter();
-            string sOut = "Num" + Rp("     Date Completed", 22) + "    Credit     RunTime     RunTime     CPUtime     CPUtime  Valid" + Environment.NewLine;
-            sOut += "   " + Rp(" ", 22) + "    Points        Secs     Credits        Secs     Credits";
-            lbHdr.Text = sOut;
-            sOut = "";
+            sOutHdrs = "Num" + Rp("     Date Completed", 22) + "    Credit     RunTime     RunTime     CPUtime     CPUtime  Valid" + Environment.NewLine;
+            sOutHdrs += "   " + Rp(" ", 22) + "    Points        Secs     Credits        Secs     Credits";
+            lbHdr.Text = sOutHdrs;
+            sOutInfo = "";
             for (int i = 0; i < CreditInfo.Count; i++)
             {
                 cCreditInfo ci = CreditInfo[i];
@@ -255,7 +281,7 @@ namespace CreditStatistics
                     dH = (double) ((double)(Ed - Sd) / TimeSpan.TicksPerHour);
                 }
                     
-                sOut += Lp((i + 1).ToString(), 2) + " "
+                sOutInfo += Lp((i + 1).ToString(), 2) + " "
                     + Rp(dtS, 22)
                     + Lp(ci.Credits.ToString("F2"), 10)
                     + Lp(ci.ElapsedSecs.ToString("F2"), 12)
@@ -283,8 +309,8 @@ namespace CreditStatistics
                 SumC.ElapsedSecs /= n;
                 SumC.CPUtimeSecs /= n;
             }
-            sOut += Environment.NewLine;
-            sOut += Lp(SumC.nCnt.ToString(), 2)
+            sOutInfo += Environment.NewLine;
+            sTotals = Lp(SumC.nCnt.ToString(), 2)
                 + Rp("   Hours:" + dH.ToString("F2"), 22) + " "
                 + Lp(SumC.Credits.ToString("F2"), 10)
                 + Lp(SumC.ElapsedSecs.ToString("F2"), 12)
@@ -292,34 +318,52 @@ namespace CreditStatistics
                 + Lp(SumC.CPUtimeSecs.ToString("F2"), 12)
                 + Lp(SumC.mCPU.ToString("F4"), 12)
                 + "\r\n";
-            sOut += Lp(MyComputerID,25) + Lp("Total", 10) // put hostname here
+            sTotals += Lp(MyComputerID,25) + Lp("Total", 10) // put hostname here
                 + Lp("Avg", 12)
                 + Lp("Avg", 12)
                 + Lp("Avg", 12)
                 + Lp("Avg", 12);
-            tbInfo.Text = sOut;
+            if(bInSequencer)
+            {                
+                SequencerOut += sOutHdrs + sOutInfo + sTotals;
+            }
+            else
+            {
+                tbInfo.Text = sOutHdrs + sOutInfo + sTotals;
+            }
+               
         }
 
         private void TaskStart()
         {
+            cts = new CancellationTokenSource();
             TaskTimer.Start();
-            Task.Run(() => ReadOnePage());
+  
+            Task longRunningTask = Task.Run(async () =>
+            {
+               await ReadOnePage();
+            }, cts.Token);
         }
 
+        private void RunNext()
+        {
+            if (ProjectStats.IncrementReader() && CreditInfo.Count < MaximumRecsToRead)
+            {
+                tbPage.Text = ProjectStats.sTaskOffset;
+                TaskStart();
+            }
+        }
         private void btnStart_Click(object sender, EventArgs e)
         {
-            if(ProjectStats.IncrementReader() && CreditInfo.Count < MaximumRecsToRead)
-            {
-                TaskStart();
-            }    
+            RunNext();
         }
 
-        string AsyncContent = "";   
         private async Task ReadOnePage()
         {
             ProjectStats.TaskBusy = true;
-            while(ProjectStats.TaskBusy)
+            //while(ProjectStats.TaskBusy)
             {
+                ProjectStats.RawPage = "";
                 using (HttpClient client = new HttpClient())
                 {
                     //client.DefaultRequestHeaders.Add("Referer", ProjectStats.TaskUrl);
@@ -395,10 +439,11 @@ namespace CreditStatistics
             return NumValid;
         }
 
-        private void TaskLoadHeader()
+        // type is HDR or SEQ for header or sequencer
+        private void TaskLoadHeader(string sType)
         {
             ProjectStats.ConfigureTask(TagOfProject, tbHOSTID.Text.ToString().Trim(),
-                tbPage.Text.ToString().Trim(), "HDR");
+                tbPage.Text.ToString().Trim(), sType);
             CreditInfo = ProjectStats.LCreditInfo;
             mCPU = ProjectStats.mCPU;
             mELA = ProjectStats.mELA;
@@ -487,29 +532,24 @@ namespace CreditStatistics
             if (i < 0) return strIn.Substring(0, cnt);
             return "                                               ".Substring(0, i) + strIn;
         }
-   
 
         private void AllowGS(bool b)
         {
             btnClear.Enabled = b;
             btnStart.Enabled = b;
         }
-        private void btnFind_Click(object sender, EventArgs e)
+
+        private void StartRun(string sType)
         {
-            string sOut = "";
-            string sHost = "";
-            int ProjectID = -1;
-            if (ParseUrl(ProjUrl.Text, ref sOut, ref ProjectID, ref sHost, ref SelectedProject))
-            {
-                ProjUrl.Text = sOut;
-                tbHOSTID.Text = sHost;
-                SetRB(ProjectID);
-                AllowGS(false);
-                tbHdrInfo.Clear();
-                TaskLoadHeader();
-            }   
+            AllowGS(false);
+            tbHdrInfo.Clear();
+            TaskLoadHeader(sType);
         }
 
+        private void btnRunHdr_Click(object sender, EventArgs e)
+        {
+            StartRun("HDR");
+        }
         private (List<double>, List<int>) RemoveOutliersWithIndexes(ref List<double> data, double threshold = 2)
         {            
             double mean = data.Average();
@@ -560,7 +600,7 @@ namespace CreditStatistics
             }
             if (IsInteger(sID))
             {
-                string sURL = ProjectStats.GetURL0(SelectedProject, sID,  ref CanPageValids);
+                string sURL = ProjectStats.GetURL0(SelectedProject, sID, ref CanPageValids);
                 if (sURL == "")
                 {
                     Debug.Assert(false);
@@ -594,7 +634,7 @@ namespace CreditStatistics
         }
 
         // check url for errors and reform url to simplify
-        public bool ParseUrl(string s, ref string sOut, ref int ProjectID,
+        public bool ParseUrl(string s, ref string sOut, ref int ProjectIndex,
             ref string sHost, ref string sSelectedProject)
         {
             string sPageOffset = "";    // page: 0,1,2 or offset: 0,20,40 etc value + increment of 20
@@ -605,7 +645,8 @@ namespace CreditStatistics
             string tValid = "";
             string tPage = "";
             string tCountValids = "";
-
+            string tStudy = "";
+            string t;
             int i, j;
 
             s = s.Trim();
@@ -620,14 +661,62 @@ namespace CreditStatistics
             }
             sUrl = sUrl.Substring(i);
 
-            ProjectID = ProjectStats.GetNameIndex(sUrl);
-            if(ProjectID < 0)
+            ProjectIndex = ProjectStats.GetNameIndex(sUrl);
+            if(ProjectIndex < 0)
             {
                 MessageBox.Show("Project not found in url");
                 return false;
             }
 
-            ProjectStats.GetBaseInfo(ProjectID, ref tURL, ref tHid, ref tValid, ref tPage, ref tCountValids);
+            // determine if the project uses an application ID and if not then flag default
+            if(ProjectStats.ProjectList[ProjectIndex].sStudy == "null")
+            {
+                tStudy = "null";
+                ProjectStats.ProjectList[ProjectIndex].UseDefault = true;
+            }
+            else
+            {
+                string ProjectName = ProjectStats.ProjectList[ProjectIndex].name;
+                if (ProjectName == "einstein")
+                {
+                    i = sUrl.IndexOf("/tasks/4/");
+                    if(i < 0)
+                    {
+                        MessageBox.Show("Task ID not found in url");
+                        return false;
+                    }
+                    j = FirstNonInteger(sUrl, i + 9);
+                    t = sUrl.Substring(i + 9, j - i - 9);
+                    if (t == "0")
+                    {
+                        ProjectStats.ProjectList[ProjectIndex].UseDefault = true;
+                    }
+                    else
+                        ProjectStats.ProjectList[ProjectIndex].UseDefault = false;
+                        ProjectStats.ProjectList[ProjectIndex].sStudyV = t;
+                }
+                else
+                {
+                    i = sUrl.IndexOf("?appid=");
+                    if(i > 0)
+                    {
+                        j = FirstNonInteger(sUrl, i + 7);
+                        t = sUrl.Substring(i + 7, j - i - 7);
+                        if (t == "0")
+                        {
+                            ProjectStats.ProjectList[ProjectIndex].sStudyV = t;
+                            ProjectStats.ProjectList[ProjectIndex].UseDefault = true;
+                        }
+                        else ProjectStats.ProjectList[ProjectIndex].UseDefault = false;
+                    }
+                    else
+                    {
+                        ProjectStats.ProjectList[ProjectIndex].UseDefault = false;
+                    }
+                }                
+            }
+
+            ProjectStats.GetBaseInfo(ProjectIndex, ref tURL, ref tHid, ref tValid, ref tPage, ref tStudy, ref tCountValids);
 
             //need to get the value assigned to tHid and to tPage
             i = sUrl.IndexOf(tHid);
@@ -639,7 +728,7 @@ namespace CreditStatistics
 
             j = FirstNonInteger(sUrl, i + tHid.Length);
             sHost = s.Substring(i + tHid.Length, j - i - tHid.Length);
-
+            string sPage = "0";
             //need to get the page offset indexing into the table if it exists
             if (tPage != "null")
             {
@@ -651,16 +740,54 @@ namespace CreditStatistics
                 else
                 {
                     j = FirstNonInteger(s, i + tPage.Length);
-                    string sPage = s.Substring(i + tPage.Length, j - i - tPage.Length);
+                    sPage = s.Substring(i + tPage.Length, j - i - tPage.Length);
                     sPageOffset = tPage + sPage;
-                }
+                }                
             }
             else sPageOffset = "";
-            sOut = tURL + tHid + sHost + tValid + sPageOffset;
-            sSelectedProject = ProjectStats.ProjectList[ProjectID].name;
+            ProjectStats.sTaskOffset = sPage;
+            sOut = tURL + tHid + sHost + tValid +  ((tStudy=="null") ? "" : tStudy) + sPageOffset;
+            //sOut = tURL + tHid + sHost + tValid + tStudy + sPageOffset;
+            sSelectedProject = ProjectStats.ProjectList[ProjectIndex].name;
+            return true;
+            if (tStudy != "null")
+            {
+                i = sUrl.IndexOf(tStudy); // the /0 or /56 of the /4/xxg or ?appid=xx the x part
+                if (i < 0)
+                {
+                    sOut = tURL + tHid + sHost + tValid + tStudy + sPageOffset;
+                }
+                else
+                {
+                    j = FirstNonInteger(s, i + tStudy.Length);
+                    string sStudyV = s.Substring(i + tStudy.Length, j - i - tStudy.Length);
+                    // need to put sStudyV where the default study value is
+                    // default is like &appid=13 or like /0
+                    int k = FindFirstNonNumericFromEnd(tStudy);
+                    Debug.Assert(k > 0);
+                    string sStudy = tStudy.Substring(0, k) + sStudyV;
+                    sOut = tURL + tHid + sHost + tValid + sStudy + sPageOffset;
+                }
+            }
+            else
+            {
+                sOut = tURL + tHid + sHost + tValid + sPageOffset;
+            }
+            sSelectedProject = ProjectStats.ProjectList[ProjectIndex].name;
             return true;
         }
 
+        private int FindFirstNonNumericFromEnd(string str)
+        {
+            for (int i = str.Length - 1; i >= 0; i--)
+            {
+                if (!char.IsDigit(str[i]))
+                {
+                    return i;
+                }
+            }
+            return -1; // All characters are digits
+        }
         private void btnExtract_Click(object sender, EventArgs e)
         {
             string sOut = "";
@@ -670,7 +797,7 @@ namespace CreditStatistics
             {
                 ProjUrl.Text = sOut;
                 tbHOSTID.Text = sHost;
-                SetRB(ProjectID);
+                SetRB(ProjectID,true);
             }
         }
 
@@ -690,9 +817,18 @@ namespace CreditStatistics
             tbInfo.Clear();
         }
 
+
+        private void RunCancel(bool bErr)
+        {
+            cts.Cancel();
+            ProjectStats.TaskDone = true;
+            ProjectStats.TaskError = bErr;
+            bInSequencer = false;
+            pbTask.Value = 0;
+        }
         private void btCancel_Click(object sender, EventArgs e)
         {
-            ProjectStats.TaskDone = true;
+            RunCancel(true);
         }
 
         private void btnCancel1_Click(object sender, EventArgs e)
@@ -729,21 +865,50 @@ namespace CreditStatistics
             ProjUrl.Clear();
         }
 
-        private void btnPaste_Click(object sender, EventArgs e)
+        private void InstallURL(string sIn)
         {
             string sOut = "";
             int ProjectID = -1;
             string sHost = "";
             string sName = "";
-            ProjUrl.Text = Clipboard.GetText().Trim();
-            if (ParseUrl(Clipboard.GetText().Trim(), ref sOut, ref ProjectID, ref sHost, ref sName))
+            ProjUrl.Text = sIn;
+            if (ParseUrl(sIn, ref sOut, ref ProjectID, ref sHost, ref sName))
             {
                 ProjUrl.Text = sOut;
                 tbHOSTID.Text = sHost;
-                SetRB(ProjectID);
+                TagOfProject = ProjectID;
+                SetRB(ProjectID,false);
             }
         }
+        private void btnPaste_Click(object sender, EventArgs e)
+        {
+            InstallURL(Clipboard.GetText().Trim());
+        }
 
+        private void InstallUrlNoEvent(string sIn)
+        {
+            string sOut = "";
+            int ProjectID = -1;
+            string sHost = "";
+            string sName = "";
+            ProjUrl.Text = sIn;
+            if (ParseUrl(sIn, ref sOut, ref ProjectID, ref sHost, ref sName))
+            {
+                ProjUrl.Text = sOut;
+                tbHOSTID.Text = sHost;
+                TagOfProject = ProjectID;
+                SetRB(ProjectID, true);
+                SelectedProject = ProjectStats.ProjectList[TagOfProject].name;
+                tbPage.Text = "0";
+                tbHdrInfo.Clear();
+                tbInfo.Clear();
+                if (ProjectStats.LocalHosts.Count > 0)
+                {
+                    tbHOSTID.Text = ProjectStats.GetIDfromName(SelectedProject);
+                    ApplyName();
+                }
+            }
+        }
 
         private void TaskTimer_Tick(object sender, EventArgs e)
         {
@@ -751,7 +916,12 @@ namespace CreditStatistics
             if (pbTask.Value >= pbTask.Maximum || ProjectStats.TaskDone)
             {
                 TaskTimer.Stop();
-                pbTask.Value = 0;
+                if(!bInSequencer)
+                    pbTask.Value = 0;
+                if(ProjectStats.TaskDone == false)
+                {
+                    RunCancel(true);
+                }
                 switch (ProjectStats.sTaskType)
                 {
                     case "HDR":
@@ -767,7 +937,32 @@ namespace CreditStatistics
                     case "BODY":
                         RecordsPerPage = ProcessBody();
                         break;
-                    case "FetchHostIDs":                        
+                    case "SEQBODY":
+                        RecordsPerPage = ProcessBody();
+                        Sequencer((RecordsPerPage == 0) ? "VOID" : "NEXT");
+                        break;
+                    case "SEQ":
+                        if(ProjectStats.TaskError)
+                        {
+                            Sequencer("ERROR");
+                            return;
+                        }
+                        if (ProjectStats.sCountValids != "null")
+                        {
+                            ProjectStats.NumValid = ProcessHDR();
+                            if (ProjectStats.NumValid > 0)
+                            {
+                                RecordsPerPage = ProcessBody();
+                                ProjectStats.sTaskType = "SEQBODY";
+                                Sequencer((RecordsPerPage == 0) ? "VOID" : "NEXT");
+                                return;
+                            }
+                            else
+                            {
+
+                            }
+                        }
+                        Sequencer("VOID");
                         break;
                 }
             }
@@ -818,6 +1013,8 @@ namespace CreditStatistics
                     try
                     {
                         string[] lines = File.ReadAllLines(openFileDialog.FileName);
+                        Properties.Settings.Default.HostList = lines;
+                        Properties.Settings.Default.Save();
                         sList.Clear(); // Clear current items
                         sList.AddRange(lines); // Add all lines
                     }
@@ -831,7 +1028,6 @@ namespace CreditStatistics
 
         private void btnLoadFrom_Click(object sender, EventArgs e)
         {
-            List<string> MyList = new List<string>();
             ReadStringsIntoList(ref MyList);
             lbSelectDemo.Items.Clear();
             foreach (string s in MyList)
@@ -846,10 +1042,19 @@ namespace CreditStatistics
             }   
         }
 
-        private int ReadHostsSets()
+        private int TryGetHostSets()
         {
-            List<string> MyList = new List<string>();
-            ReadStringsIntoList(ref MyList);
+            string[] SavedHostList = Properties.Settings.Default.HostList;
+            if (SavedHostList == null || SavedHostList.Length == 0) return  -1;
+            MyList.Clear();
+            MyList.AddRange(SavedHostList);
+            if (MyList.Count == 0) return -1;
+            return FormHostList();
+        }
+
+        private int FormHostList()
+        {
+
             if (MyList.Count == 0) return 0;
             int i, n = 0;
             cbComputerList.Items.Clear();
@@ -868,14 +1073,14 @@ namespace CreditStatistics
                 int iLoc = ProjectStats.GetNameIndex(sName);
                 if (iLoc < 0)
                 {
-                    MessageBox.Show("Unknown project found: ",sName);
+                    MessageBox.Show("Unknown project found: ", sName);
                     return n;
                 }
                 ProjectStats.ProjectList[iLoc].Hosts.Clear();
                 ProjectStats.ProjectList[iLoc].HostNames.Clear();
 
-                string[] sPairHosts = sRem.Split(new char[] {','}, StringSplitOptions.RemoveEmptyEntries);
-                for(i = 0; i < sPairHosts.Length; i++)
+                string[] sPairHosts = sRem.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                for (i = 0; i < sPairHosts.Length; i++)
                 {
                     string[] sPair = sPairHosts[i].Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
                     if (sPair.Length != 2)
@@ -889,9 +1094,24 @@ namespace CreditStatistics
                     ProjectStats.ProjectList[iLoc].HostNames.Add(sPC);
                     ProjectStats.ProjectList[iLoc].Hosts.Add(sPair[1].Trim());
                     n++;
-                }
+                }                
+            }
+            if(n>0)
+            {
+                gbAllowSeq.Enabled = true;
+                btnSaveIDs.Enabled = true;
+                btnSetAll.Enabled = true;
+                btnClearAll.Enabled = true;
+                cbSelProj.SelectedIndex = 0;
             }
             return n;
+        }
+
+        private int ReadHostsSets()
+        {
+            MyList.Clear();
+            ReadStringsIntoList(ref MyList);
+            return FormHostList();
         }
 
         private void ReadAllList()
@@ -974,7 +1194,11 @@ namespace CreditStatistics
             int n = ReadHostsSets();
             if (n > 0)
             {
-                FillInDGV(0);
+                gbAllowSeq.Enabled = true;
+                btnSaveIDs.Enabled = true;
+                btnSetAll.Enabled = true;
+                btnClearAll.Enabled = true;
+                cbSelProj.SelectedIndex = 0;
             }
             else
             {
@@ -1114,11 +1338,264 @@ namespace CreditStatistics
                 MyComputerID = sPC;
                 UpdateRB();
                 ProjUrl.Clear();
+                lbViewRaw.Show();
                 tabPage1.Show();
             }
             else
             {
                 MessageBox.Show("No valid project found");
+            }
+        }
+
+        private void btnRunCmp_Click(object sender, EventArgs e)
+        {
+            lbURLtoSequence.Items.Clear();
+            lbViewRawH.Items.Clear();
+            SelectedProject = cbSelProj.Text;
+            int n = 0;
+            foreach ( DataGridViewRow r in dgv.SelectedRows)
+            {
+                if (r.Cells[0].Value == null) continue;
+                if (r.Cells[1].Value == null) continue;
+                string sPCname = r.Cells[0].Value.ToString();
+                tbPage.Text = "0";
+                tbHdrInfo.Clear();
+                tbInfo.Clear();
+                lbViewRawH.Items.Add(r.Cells[0].Value.ToString());
+                tbHOSTID.Text = r.Cells[1].Value.ToString();
+                ApplyName();
+                lbURLtoSequence.Items.Add(ProjUrl.Text);
+                n++;
+            }
+            if (n > 0)
+            {
+                tcProj.SelectedTab = lbViewRaw;
+                lbViewRawH.Items.Add("Totals only");
+                lbXX.Text = ProjectStats.GetStudy(ProjUrl.Text);
+                bool b = lbXX.Text.ToString().Count() > 0;
+                btnApplyAPxx.Enabled = b;
+                gbXX.Enabled = b;
+                if(!tcProj.TabPages.Contains(lbViewRaw))
+                    tcProj.TabPages.Add(hiddenTabPage);                       
+            }
+            else tcProj.TabPages.Remove(hiddenTabPage);
+        }
+
+
+        private void btnSetAll_Click(object sender, EventArgs e)
+        {
+            foreach (DataGridViewRow row in dgv.Rows)
+            {
+                row.Selected = true;
+            }
+        }
+
+        private void btnClearAll_Click(object sender, EventArgs e)
+        {
+            foreach (DataGridViewRow row in dgv.Rows)
+            {
+                row.Selected = false;
+            }
+        }
+
+        
+        private void lbURLtoSequence_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (lbURLtoSequence.SelectedItems == null) return;
+            if(lbURLtoSequence.SelectedItems.Count == 0) return;
+            string sUrl = lbURLtoSequence.SelectedItem.ToString();
+            if (!string.IsNullOrEmpty(sUrl))
+            {
+                ProjUrl.Text = sUrl;
+                btnViewUrl.Enabled = true;
+            }
+            
+        }
+        cSequencer ts;
+        private class cSequencer
+        {
+            public List<string>SeqResults = new List<string>();
+            public List<string> SeqTotals = new List<string>();
+            public int NumPagesToRead;
+            public int CurrentPage;
+            public int UrlIndex;
+            public string sProject;
+            public string sHostName;
+            
+        }
+        private int mHover=0;
+        private void StartSEQ()
+        {
+            tbInfo.Clear();
+            if(lbURLtoSequence.Items.Count == 0) return;    
+            string sUrl = lbURLtoSequence.Items[ts.UrlIndex].ToString(); 
+            ts.sHostName = lbViewRawH.Items[ts.UrlIndex].ToString();
+            MyComputerID = ts.sHostName;
+            InstallUrlNoEvent(sUrl);
+            StartRun("SEQ");
+        }
+
+
+        private void btnRunSeq_Click(object sender, EventArgs e)
+        {
+            ts = new cSequencer()
+            {
+                SeqResults = new List<string>(),
+                SeqTotals = new List<string>(),
+                NumPagesToRead = (int)nudPages.Value,
+                CurrentPage = 0,
+                UrlIndex = 0
+            };
+            ts.sProject = SelectedProject;
+            bInSequencer = true;
+            StartSEQ();
+        }
+
+        private void btnViewUrl_Click(object sender, EventArgs e)
+        {
+            Process.Start(ProjUrl.Text.ToString());
+        }
+
+        private void SeqFinished()
+        {
+            tbInfo.Text = string.Join(Environment.NewLine, ts.SeqTotals);
+        }
+
+        private void Sequencer(string sCmd)
+        {
+            switch(sCmd)
+            {
+                case "NEXT":
+                    ts.CurrentPage++;
+                    if (ts.CurrentPage >= ts.NumPagesToRead)
+                    {
+                        ts.SeqResults.Add(SequencerOut);
+                        SequencerOut = "";
+                        ts.SeqTotals.Add(sTotals + Environment.NewLine);
+                        ts.UrlIndex++;
+                        if (ts.UrlIndex >= lbURLtoSequence.Items.Count)
+                        {
+                            RunCancel(false);   // did all required
+                            SeqFinished();
+                            return;
+                        }
+                        ts.CurrentPage = 0;
+                        StartSEQ();
+                        break;
+                    }
+                    else SequencerOut = "";
+                    RunNext();
+                    break;
+                case "VOID":
+                    SequencerOut = "No valid " + ts.sProject + " records found for " + ts.sHostName;
+                    sTotals = SequencerOut;
+                    Sequencer("NEXT");
+                    break;
+                case "ERROR":;
+                    SequencerOut = "Error in " + ts.sProject + " problem with host " + ts.sHostName;
+                    sTotals = SequencerOut;
+                    RunCancel(true);
+                    SeqFinished();
+                    break;
+            }
+        }
+
+        private void lbURLtoSequence_DoubleClick(object sender, EventArgs e)
+        {
+            
+            MouseEventArgs me = (MouseEventArgs)e;
+            int index = lbURLtoSequence.IndexFromPoint(me.Location);
+            if (index != ListBox.NoMatches)
+            {
+                string selectedUrl = lbURLtoSequence.Items[index].ToString();
+                if (!string.IsNullOrEmpty(selectedUrl))
+                {
+                    Process.Start(selectedUrl);
+                }
+            }
+        }
+
+        private void lbURLtoSequence_MouseClick(object sender, MouseEventArgs e)
+        {
+            int index = lbURLtoSequence.IndexFromPoint(e.Location);
+            if (index != ListBox.NoMatches)
+            {
+                lbNameHost.Text = lbViewRawH.Items[index].ToString();
+            }            
+        }
+
+        private void lbViewRawH_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            int n = lbViewRawH.SelectedIndex;
+            if(n < 0) return;
+            if (ts == null) return;
+            if (ts.SeqResults == null) return;
+            if (lbViewRawH == null) return;            
+            if (ts.SeqResults.Count == 0 || lbViewRawH.Items.Count==0) return;
+            if(n >= lbViewRawH.Items.Count) return;
+
+            if (n == lbViewRawH.Items.Count-1)
+            {
+                tbInfo.Text = string.Join(Environment.NewLine, ts.SeqTotals);
+            }
+            else
+            {
+                tbInfo.Text = ts.SeqResults[n];
+            }
+        }
+
+        private void btnApplyAPxx_Click(object sender, EventArgs e)
+        {
+            string t = lbXX.Text.ToString().Replace("XX", tbXX.Text.Trim());
+            string s="";
+            string sOld, sNew;
+
+            for (int j = 0; j < lbURLtoSequence.Items.Count; j++)
+            {
+                sNew = t;
+                s = lbURLtoSequence.Items[j].ToString();
+                int i = s.IndexOf("/tasks/4/");
+                if (i >= 0)
+                {
+                    int k = FirstNonInteger(s, i + 9);
+                    Debug.Assert(k > 0);
+                    sOld = s.Substring(i, k - i);
+                }
+                else
+                {
+                    i = s.IndexOf("?appid=");
+                    if ((i > 0))
+                    {
+                        int k = FirstNonInteger(s, i + 7);
+                        sOld = s.Substring(i, k - i);
+                    }
+                    else
+                    {
+                        i = s.IndexOf("&offset=");
+                        Debug.Assert(i > 0);
+                        sOld = "&offset=";
+                        sNew = sNew + "&offset=";
+                        return;
+                    }
+                }
+                string u = s.Replace(sOld, sNew);
+                lbURLtoSequence.Items[j] = u;
+            }
+        }
+
+        private void lbURLtoSequence_MouseEnter(object sender, EventArgs e)
+        {
+            toolTip1.SetToolTip(lbURLtoSequence, lbViewRawH.Items[mHover].ToString());
+        }
+
+        private void lbURLtoSequence_MouseMove(object sender, MouseEventArgs e)
+        {
+            int index = lbURLtoSequence.IndexFromPoint(e.Location);
+
+            if (index >= 0)
+            {
+                mHover = index;
+                toolTip1.SetToolTip(lbURLtoSequence, lbViewRawH.Items[mHover].ToString());
             }
         }
     }

@@ -33,16 +33,19 @@ using System.Xml.Linq;
 
 namespace CreditStatistics
 {
-
-
     public class cPSlist
     {
+        public bool UseDefault;   // use tasks/4/0 and omit ?appid=       
+
         public string name;
         public string sURL;
-        public string sHid; 
+        public string sHid;
         public string sValid;
+        public string sStudy;
+        public string sStudyV;
         public string sPage;
         public string sCountValids;
+
         public List<string> Hosts = new List<string>();
         public List<string> HostNames = new List<string>();
         public void AddHosts(string sHostIDs)
@@ -64,6 +67,8 @@ sidock
 https://www.sidock.si/sidock/results.php?
 hostid=
 &state=4
+&appid=
+5
 &offset=
  Valid () .
 
@@ -71,6 +76,8 @@ denis
 https://denis.usj.es/denisathome/results.php?
 hostid=
 &state=4
+&appid=
+17
 &offset=
  Valid () .
 
@@ -78,6 +85,8 @@ gpugrid
 https://gpugrid.net/gpugrid/results.php?
 hostid=
 &state=4
+&appid=
+41
 &offset=
  Valid () .
 
@@ -85,6 +94,8 @@ rosetta
 https://boinc.bakerlab.org/rosetta/results.php?
 hostid=
 &state=4
+&appid=
+3
 &offset=
  Valid () .
 
@@ -92,6 +103,8 @@ asteroids
 https://asteroidsathome.net/boinc/results.php?
 hostid=
 &state=4
+null
+null
 &offset=
  Valid () .
 
@@ -99,13 +112,17 @@ milkyway
 https://milkyway.cs.rpi.edu/milkyway/results.php?
 hostid=
 &state=4
+&appid=
+4
 &offset=
  Valid () .
 
 einstein
 https://einsteinathome.org
 /host/
-/tasks/4/0
+/tasks/4
+/
+0
 ?page=
 >Valid ()</span>.
 
@@ -113,6 +130,8 @@ lhc
 https://lhcathome.cern.ch/lhcathome/results.php?
 hostid=
 &state=4
+&appid=
+13
 &offset=
  Valid () .
 
@@ -120,6 +139,8 @@ amicable
 https://sech.me/boinc/Amicable/results.php?
 hostid=
 &state=4
+null
+null
 &offset=
  Valid () .
 
@@ -127,6 +148,8 @@ numberfields
 https://numberfields.asu.edu/NumberFields/results.php?
 hostid=
 &state=4
+null
+null
 &offset=
  Valid () .
 
@@ -134,6 +157,8 @@ odlk progger
 https://boinc.progger.info/odlk/results.php?
 hostid=
 &state=4
+&appid=
+3
 &offset=
  Valid () .
 
@@ -141,6 +166,8 @@ odlk1 latinsquares
 https://boinc.multi-pool.info/latinsquares/results.php?
 hostid=
 &state=4
+&appid=
+1
 &offset=
  Valid () .
 
@@ -148,6 +175,8 @@ moowrap
 https://moowrap.net/results.php?
 hostid=
 &state=4
+null
+null
 &offset=
  Valid () .
 
@@ -155,6 +184,8 @@ nfs escatter
 https://escatter11.fullerton.edu/nfs/results.php?
 hostid=
 &state=4
+&appid=
+9
 &offset=
  Valid () .
 
@@ -162,6 +193,8 @@ PrimeGrid
 https://www.primegrid.com/results.php?
 hostid=
 &state=4
+&appid=
+8
 &offset=
 <b>Valid</b> 0 |.
 
@@ -170,12 +203,16 @@ https://gerasim.boinc.ru/users/viewHostResults.aspx?
 hostid=
 &opt=2
 null
+null
+null
 >Valid 0 </a>.
 
 srbase
 https://srbase.my-firewall.org/sr5/results.php?
 hostid=
 &state=4
+&appid=
+15
 &offset=
  Valid () .
 
@@ -183,6 +220,8 @@ rakesearch
 https://rake.boincfast.ru/rakesearch/results.php?
 hostid=
 &state=4
+&appid=
+8
 &offset=
  Valid () .
 
@@ -190,6 +229,8 @@ rnma
 https://rnma.xyz/boinc/results.php?
 hostid=
 &state=4
+&appid=
+6
 &offset=
  Valid () .
 
@@ -197,6 +238,8 @@ loda
 https://boinc.loda-lang.org/loda/results.php?
 hostid=
 &state=4
+null
+null
 &offset=
  Valid () .
 
@@ -204,6 +247,8 @@ yafu
 https://yafu.myfirewall.org/yafu/results.php?
 hostid=
 &state=4
+&appid=
+15
 &offset=
  Valid () .
 
@@ -211,12 +256,16 @@ cpdn ClimatePrediction
 https://main.cpdn.org/results.php?
 hostid=
 &state=4
+null
+null
 &offset=
  Valid () .
 
 yoyo
 https://www.rechenkraft.net/yoyo/results.php?
 hostid=
+null
+null
 null
 &offset=
 null
@@ -225,6 +274,8 @@ WCG WORLDCOMMUNITYGRID
 https://www.worldcommunitygrid.org/contribution
 /device?id=
 &type=B
+?projectId=
+124
 null
 null
 
@@ -232,6 +283,8 @@ radioactive
 http://radioactiveathome.org/boinc/results.php?
 hostid=
 &state=3
+null
+null
 &offset=
 null
 "
@@ -252,7 +305,6 @@ null
                     LocalHosts.Add(cLHe);
                 }
             }
-
         }
         
         public void Init()
@@ -260,7 +312,7 @@ null
             int i, j, n = KnownProjects.Length;
             List<string>UnsortedNames = new List<string>();
 
-            for (j = 0; j < n; j += 6)
+            for (j = 0; j < n; j += 8)
             {
                 UnsortedNames.Add(KnownProjects[j].ToLower());
             }
@@ -269,16 +321,22 @@ null
             indices.Sort((i1, i2) => UnsortedNames[i1].CompareTo(UnsortedNames[i2]));
             for (j = 0; j < n; j++)
             {
-                i = indices[j]*6;
+                i = indices[j]*8;
                 ProjectList.Add(new cPSlist()
                 {
                     name = KnownProjects[i++].ToLower(),
                     sURL = KnownProjects[i++],
                     sHid = KnownProjects[i++],
                     sValid = KnownProjects[i++],
+                    sStudy = KnownProjects[i++],
+                    sStudyV = KnownProjects[i++],
                     sPage = KnownProjects[i++],
                     sCountValids = KnownProjects[i]
                 });
+            }
+            for (j = 0; j < n; j++)
+            {
+                ProjectList[j].UseDefault = true;
             }
         }
 
@@ -298,17 +356,18 @@ null
             return names;
         }
 
-        private string GetBaseURL(int iTask, string sID, string sPage)
+        private string GetBaseURL(int iLoc, string sID, string sPage)
         {
-            cPSlist p = ProjectList[iTask];
-            string s = p.sURL + p.sHid + sID + p.sValid;
+            cPSlist p = ProjectList[iLoc];
+            string s = p.sURL + p.sHid + sID + p.sValid + ((p.sStudy == "null") ? "" : p.sStudy + p.sStudyV);
             BaseUrl = s;
             CannotIncrement = (sPage == "");
             if (CannotIncrement) return s;
             return s + p.sPage + sPage;
         }
 
-        public bool GetBaseInfo(int ProjectID, ref string sURL, ref string sHid, ref string sValid, ref string sPage, ref string sCountValids)
+        public bool GetBaseInfo(int ProjectID, ref string sURL, ref string sHid,
+                ref string sValid, ref string sPage, ref string sStudy, ref string sCountValids)
         {
             if (ProjectID < 0 || ProjectID >= ProjectList.Count) return false;
             cPSlist p = ProjectList[ProjectID];
@@ -316,10 +375,41 @@ null
             sHid = p.sHid;
             sValid = p.sValid;
             sPage = p.sPage;
+            if (p.UseDefault)
+            {
+                if (p.name == "einstein")
+                {
+                    sStudy = p.sStudy + "0";
+                }
+                else sStudy = "null";
+            }
+            else
+            {
+                sStudy = p.sStudy + p.sStudyV;
+            }
             sCountValids = p.sCountValids;
             return true;
         }
 
+        public string GetStudy(string s)
+        {
+            foreach (cPSlist c in ProjectList)
+            {
+                string[] st = c.name.Split(' ');
+                foreach (string s1 in st)
+                {
+                    if (s.Contains(s1))
+                    {
+                        string t = c.sStudy;
+                        if(t == "null") return "";
+                        bool b = (t == "/");
+                        if(b)return "/tasks/4/XX";
+                        return t + "XX";
+                    }
+                }                
+            }
+            return "";
+        }
         public string ShortName(int i)
         {
             string[] s = ProjectList[i].name.Split(' ');
@@ -329,50 +419,73 @@ null
         public string GetURL0(string name, string sID, ref bool HasValids)
         {
             HasValids = true;   // unless otherwise
+            string sE = ""; // for einstein
+            string sNE = "";// for non-einstein 
             foreach (var p in ProjectList)
             {
-                if (p.name == name)
+                if (p.name.Contains(name))
                 {
                     string s = p.sURL + p.sHid;
+                    if(p.UseDefault)
+                    {
+                        if(name == "einstein")
+                        {
+                            sE = "/tasks/4/0";
+                        }
+                        else
+                        {
+                            sNE = "";
+                        }
+                    }
+                    else
+                    {
+                        if (name == "einstein")
+                        {
+                            sE = p.sValid + p.sStudy + p.sStudyV;
+                        }
+                        else
+                        {
+                            sNE = "";
+                            if(p.sValid != "null")
+                            {
+                                sNE = p.sValid;
+                                if(p.sStudy != "null")
+                                {
+                                    sNE += p.sStudy + p.sStudyV;
+                                }
+                            }                            
+                        }
+                    }
                     s = s + sID;
-                    if (p.sValid == "&state=4")
+                    if (p.sValid == "&state=4" || p.sValid == "&state=3")
                     {
-                        s += p.sValid;
-                        s += p.sPage + "0";
-                        //Debug.Assert(p.sCountValids == " Valid () .");
-                        //sTermDelim = p.sCountValids;
+                        s += sNE;
+                        s += p.sPage + "0"; //jys cannot be 0
                         return s;
                     }
-                    if (p.sValid == "&state=3")
+
+                    if (p.sValid == "/tasks/4")
                     {
-                        s += p.sValid;
-                        s += p.sPage + "0";
-                        //Debug.Assert(p.sCountValids == "null");
-                        //sTermDelim = p.sCountValids;
-                        return s;
-                    }
-                    if (p.sValid == "/tasks/4/0")
-                    {
-                        s += p.sValid;
-                        s += p.sPage + "0";
-                        //Debug.Assert(p.sCountValids == ">Valid ()</span>.");
-                        //sTermDelim = p.sCountValids;
+                        s += sE;
+                        s += p.sPage + "0"; // jys cannot be 0
                         return s;
                     }
                     if (p.sValid == "&opt=2")
                     {
-                        s += p.sValid;
-                        //Debug.Assert(p.sCountValids == ">Valid 0 </a>.");
-                        //sTermDelim = p.sCountValids;
+                        s += sNE;
                         HasValids = false;
                         return s;
                     }
                     if (p.sValid == "&type=B")
                     {
-                        s += p.sValid;
-                        //Debug.Assert(p.sCountValids == "null");
+                        s += sNE;
                         Debug.Assert(p.sPage == "null");
-                        //sTermDelim = p.sCountValids;
+                        HasValids = false;
+                        return s;
+                    }
+                    if(p.sValid == "null")
+                    {
+                        s += sNE;
                         HasValids = false;
                         return s;
                     }
@@ -493,7 +606,7 @@ null
         public string BaseUrl;      // just the url no offset
         public bool CannotIncrement;
         private int TaskOffset;   // could be page 0,1,etc or 20,40, etc
-        private string sTaskOffset;   // could be page 0,1,etc or 20,40, etc
+        public string sTaskOffset;   // could be page 0,1,etc or 20,40, etc
         private int nTaskOffset;        
         private string sTaskHost;
         private int TaskIncrement;// 1 or 20
@@ -519,7 +632,7 @@ null
         {
             if (CannotIncrement) return false;
             nTaskOffset += TaskIncrement;
-            sTaskOffset = nTaskOffset.ToString();
+            sTaskOffset = nTaskOffset.ToString();            
             TaskUrl = BaseUrl + PageCommand + sTaskOffset;
             return true;
         }
@@ -538,6 +651,8 @@ null
             TaskDone = false;
             cPSlist p = ProjectList[jTask];
             TaskName = p.name;
+            // jys url is required and can be different from the one created by the previous
+            // parse. this need to be cleaned up eventually
             TaskUrl = GetBaseURL(jTask, sHost, sOffset);            
             sTaskOffset = sOffset;
             TaskOffset = 0;
@@ -556,17 +671,6 @@ null
                 else HasOffset = false;
                 PageCommand = p.sPage;
             }
-        }
-        private bool URLincrementOffset()
-        {
-            if (HasOffset)
-            {
-                TaskOffset += TaskIncrement;
-            }
-            else return false;
-            sTaskOffset = TaskOffset.ToString();
-            TaskUrl = GetBaseURL(iTask, sTaskHost, sTaskOffset);
-            return true;
         }
 
         public int GetTableFromRaw()
