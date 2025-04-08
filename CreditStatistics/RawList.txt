@@ -1,0 +1,129 @@
+asusx299 
+Amicable Numbers, 250099
+Asteroids@home, 757796
+climateprediction.net, 1556725
+Cosmology@Home, 462320
+DENIS@home, 223521
+Einstein@Home, 13165236
+gpugrid, 621577
+latinsquares, 128066
+LHC@home, 10825078
+Milkyway@home, 1046337
+NFS@Home, 7205907
+NumberFields@home, 2883430
+Radioactive@Home, 48545
+RamanujanMachine, 25716
+Rosetta@home, 6323416
+SiDock@home, 45921
+SRBase, 223945
+TN-Grid Platform, 84364
+Universe@Home, 499530
+World Community Grid, 8788717
+WUProp@Home, 279812
+yoyo@home, 517504
+h110btc 
+Amicable Numbers, 247724
+Asteroids@home, 801421
+Cosmology@Home, 462200
+DENIS@home, 223524
+Einstein@Home, 13220820
+gpugrid, 636833
+latinsquares, 128063
+LHC@home, 10824337
+Milkyway@home, 1046347
+Moo! Wrapper, 1323852
+NFS@Home, 7205910
+NumberFields@home, 2848215
+PrimeGrid, 1304227
+Rosetta@home, 6237587
+SiDock@home, 67646
+SRBase, 236401
+TN-Grid Platform, 84366
+Universe@Home, 636073
+World Community Grid, 8866993
+WUProp@Home, 329358
+yoyo@home, 517506
+jys-rtx-3070 
+World Community Grid, 8866995
+Asteroids@home, 801550
+Einstein@Home, 13145961
+Milkyway@home, 1046345
+dual-linux 
+gpugrid, 634428
+Asteroids@home, 799366
+Einstein@Home, 13221038
+Milkyway@home, 1047240
+SiDock@home, 57544
+WUProp@Home, 329359
+dualx5675 
+Amicable Numbers, 249986
+Asteroids@home, 801547
+Einstein@Home, 13221047
+gpugrid, 637576
+Milkyway@home, 1047310
+jysevga --passwd jys 
+Amicable Numbers, 230481
+Asteroids@home, 588146
+Citizen Science Grid, 117645
+Cosmology@Home, 449942
+DENIS@home, 223527
+Einstein@Home, 12869112
+gpugrid, 575787
+latinsquares, 102545
+LHC@home, 10679582
+Milkyway@home, 880900
+NFS@Home, 7176916
+NumberFields@home, 1060700
+Rosetta@home, 5999379
+SiDock@home, 45927
+SRBase, 223943
+TN-Grid Platform, 66014
+Universe@Home, 585240
+World Community Grid, 8821760
+WUProp@Home, 256982
+yoyo@home, 517510
+jysevga3 --passwd RatDogTrip 
+Milkyway@home, 1047480
+World Community Grid, 8867440
+Asteroids@home, 801930
+Einstein@Home, 13218819
+gpugrid, 636834
+SiDock@home, 70715
+WUProp@Home, 329354
+jysomen 
+World Community Grid, 8866994
+Amicable Numbers, 249983
+Asteroids@home, 785798
+Cosmology@Home, 464562
+DENIS@home, 223525
+Einstein@Home, 13180083
+gpugrid, 604468
+latinsquares, 128062
+LHC@home, 10825081
+Milkyway@home, 989898
+NFS@Home, 7205913
+NumberFields@home, 2848216
+SiDock@home, 56719
+SRBase, 223941
+TN-Grid Platform, 84368
+Universe@Home, 644012
+WUProp@Home, 284758
+yoyo@home, 517505
+jysx299 --passwd jys 
+Milkyway@home, 1046341
+Amicable Numbers, 247720
+Asteroids@home, 739274
+Einstein@Home, 13177545
+gpugrid, 622167
+NFS@Home, 7229360
+NumberFields@home, 2883421
+SiDock@home, 55910
+SRBase, 236324
+World Community Grid, 8800933
+WUProp@Home, 329355
+shire2 --passwd jys 
+Asteroids@home, 798739
+Einstein@Home, 13205645
+gpugrid, 636835
+Milkyway@home, 1046342
+World Community Grid, 8862947

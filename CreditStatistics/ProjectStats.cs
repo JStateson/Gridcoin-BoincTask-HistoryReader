@@ -46,7 +46,7 @@ namespace CreditStatistics
         public string sPage;
         public string sCountValids;
 
-        public List<string> Hosts = new List<string>();
+        public List<string> Hosts = new List<string>(); // the ID of the pc
         public List<string> HostNames = new List<string>();
         public void AddHosts(string sHostIDs)
         {
@@ -171,7 +171,7 @@ hostid=
 &offset=
  Valid () .
 
-moowrap
+moowrap moo
 https://moowrap.net/results.php?
 hostid=
 &state=4
@@ -225,7 +225,7 @@ hostid=
 &offset=
  Valid () .
 
-rnma
+rnma ramanujanmachine
 https://rnma.xyz/boinc/results.php?
 hostid=
 &state=4
@@ -270,7 +270,7 @@ null
 &offset=
 null
 
-WCG WORLDCOMMUNITYGRID
+WCG WORLDCOMMUNITYGRID WORLD
 https://www.worldcommunitygrid.org/contribution
 /device?id=
 &type=B
@@ -287,10 +287,19 @@ null
 null
 &offset=
 null
+
+gene tn-grid
+https://gene.disi.unitn.it/test/results.php?
+hostid=
+&state=4
+null
+null
+&offset=
+null
 "
         .Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
 
-        public void SelectComputer(string sPC)
+        public void SelectComputer(string sPC) // name of computer is sPC such as "shire2"
         {
             LocalHosts.Clear();
             foreach (cPSlist p in ProjectList)
@@ -300,13 +309,13 @@ null
                 {
                     cLHe cLHe = new cLHe();
                     cLHe.ComputerID = sPC;
-                    cLHe.name = p.name;
-                    cLHe.HostID = p.Hosts[i];
+                    cLHe.ProjectName = p.name;
+                    cLHe.ProjectsHostID = p.Hosts[i];
                     LocalHosts.Add(cLHe);
                 }
             }
         }
-        
+
         public void Init()
         {
             int i, j, n = KnownProjects.Length;
@@ -496,13 +505,13 @@ null
 
         public class cLHe
         {
-            public string ComputerID;
-            public string name;
-            public string HostID;
+            public string ComputerID;   // name of the PC such as "shire2"
+            public string ProjectName;  // cpdn, lhc, etc
+            public string ProjectsHostID;   // the ID given by the project to the PC
         }
         public List<cLHe> LocalHosts = new List<cLHe>();
 
-        private string GetName(string s)
+        private bool ProjectExists (string s)
         {
             foreach (cPSlist c in ProjectList)
             {
@@ -511,11 +520,11 @@ null
                 {
                     if (s.Contains(s1))
                     {
-                        return c.name;
+                        return true;
                     }
                 }
             }
-            return "";
+            return false;
         }
 
         public int GetNameIndex(string s)
@@ -536,57 +545,145 @@ null
             }
             return -1;
         }
-        public string GetHosts(string sBoincLoc)
+
+        public class cOrganizedRaw
         {
-            LocalHosts.Clear();
-            string CurrentHostName = Dns.GetHostName();
-            string[] LookFiles = { "SCHED_REP*", "SCHED_REQ*" };
-            if (Directory.Exists(sBoincLoc))
+            public string ProjNameFull;
+            public List<string> PCnameHostID = new List<string>();
+        }
+        public class cBoincRaw
+        {
+            public string PCname;
+            public List<string> Proj = new List<string>();
+            public List<string> HostID = new List<string>();
+        }
+        public class cOldraw
+        {   public List<string> RawOut = new List<string>();
+            public List<cOrganizedRaw> OrgRaw = new List<cOrganizedRaw>();
+            public int AddProjName(string s)
             {
-                for (int k = 0; k < 2; k++)
+                if (OrgRaw.Count == 0)
                 {
-                    string[] files = Directory.GetFiles(sBoincLoc, LookFiles[k]);
-                    foreach (string filepath in files)
+                    cOrganizedRaw OR = new cOrganizedRaw();
+                    OR.ProjNameFull = s;
+                    OrgRaw.Add(OR);
+                    return OrgRaw.Count - 1;
+                }
+                int i = 0;
+                foreach(cOrganizedRaw OR1 in OrgRaw)
+                {
+                    if (s == OR1.ProjNameFull) return i;
+                    i++;
+                }
+                cOrganizedRaw OR2 = new cOrganizedRaw();
+                OR2.ProjNameFull = s;
+                OrgRaw.Add(OR2);
+                return OrgRaw.Count - 1;
+            }
+            public void AddTriple(string sPCname, string ProjName, string sPCid)
+            {
+                int i = AddProjName(ProjName);
+                OrgRaw[i].PCnameHostID.Add(sPCname + " " + sPCid);
+            }
+        }
+ 
+        public void GetHosts(string sBoincLoc)
+        {
+            List<cBoincRaw> LocalHostsRaw = new List<cBoincRaw>();
+            cOldraw cOl = new cOldraw();
+            string UnknownProjects  = "";
+            if (File.Exists(sBoincLoc))
+            {
+                string v = File.ReadAllText(sBoincLoc).ToLower();
+                v = v.Replace("@home", "");
+                string[] content = v.Split(new string[] { "\n", "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+                int i = 0;
+                while(true)
+                {
+                    if (i >= content.Length) break;
+                    string sPCname = content[i].Trim();
+                    if (sPCname.Contains(",") || sPCname == "")
                     {
-                        string sName = GetName(filepath.ToLower());
-                        if (sName == "") continue;
-                        string content = File.ReadAllText(filepath);
-                        int i = content.IndexOf("<hostid>");
-                        if (i < 0) continue;
-                        i += 8;
-                        int j = content.IndexOf("</hostid>", i);
-                        if (j < 0) continue;
-                        string sID = content.Substring(i, j - i);
-                        if (sID == "0") continue;
-                        cLHe cLHe = new cLHe();
-                        bool bFound = false;
-                        foreach (cLHe c in LocalHosts)
+                        MessageBox.Show("Bad line in " + sBoincLoc + " file: " + sPCname);
+                        break;
+                    }
+                    i++;
+                    string ProjHost = content[i].Trim(); 
+                    int j = ProjHost.IndexOf(",");
+                    if(j < 0)
+                    {
+                        // possibly bad line or just no projects or hosts
+                        continue;
+                    }
+                    string sProj = ProjHost.Substring(0, j).Trim();
+                    string sHost = ProjHost.Substring(j + 1).Trim();
+                    cBoincRaw br = new cBoincRaw();
+                    br.PCname = sPCname;
+                    br.Proj.Add(sProj);
+                    br.HostID.Add(sHost);
+                    while(true)
+                    {
+                        i++;
+                        if (i >= content.Length) break;
+                        string s = content[i].Trim();
+                        if (s == "") break;
+                        j = s.IndexOf(",");
+                        if (j < 0)
                         {
-                            if (c.name == sName)
-                            {
-                                bFound = true;
-                                break;
-                            }
+                            LocalHostsRaw.Add(br);
+                            break;
                         }
-                        if (bFound) continue;
-                        cLHe.ComputerID = CurrentHostName;                        
-                        cLHe.name = sName;
-                        cLHe.HostID = sID;
-                        LocalHosts.Add(cLHe);
+                        sProj = s.Substring(0, j).Trim();
+                        sHost = s.Substring(j + 1).Trim();
+                        br.Proj.Add(sProj);
+                        br.HostID.Add(sHost);
                     }
                 }
-
+                foreach(cBoincRaw br in  LocalHostsRaw)
+                {
+                    int k = 0;
+                    for(i = 0; i < br.Proj.Count; i++) 
+                    {                        
+                        if (ProjectExists(br.Proj[i]))
+                        {
+                            cOl.AddTriple(br.PCname, br.Proj[i], br.HostID[i]);
+                        }
+                        else
+                        {
+                            string u = br.Proj[i];
+                            if(!UnknownProjects.Contains(u))
+                                UnknownProjects += u + " ";
+                            k++;
+                            if(k == 4)
+                            {
+                                k = 0;
+                                UnknownProjects += Environment.NewLine;
+                            }
+                        }
+                    }
+                }
+                foreach(cOrganizedRaw OR in cOl.OrgRaw)
+                {
+                    string sOut = OR.ProjNameFull + ": ";
+                    for (int j = 0; j < OR.PCnameHostID.Count(); j++)
+                        sOut += OR.PCnameHostID[j] + ",";
+                    cOl.RawOut.Add(sOut);
+                }
+                Properties.Settings.Default.HostList = cOl.RawOut.ToArray();
+                if(UnknownProjects != "")
+                {
+                    MessageBox.Show("Unknown or old projects:" + Environment.NewLine + UnknownProjects);
+                }
             }
-            return CurrentHostName;
         }
 
         public string GetIDfromName(string name)
         {
             foreach (cLHe c in LocalHosts)
             {
-                if (c.name == name)
+                if (c.ProjectName == name)
                 {
-                    return c.HostID;
+                    return c.ProjectsHostID;
                 }
             }
             return "";

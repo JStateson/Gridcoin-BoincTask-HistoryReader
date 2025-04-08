@@ -64,7 +64,10 @@
             this.tbProjHostList = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.btnReadBoinc = new System.Windows.Forms.Button();
-            this.tbBoincLoc = new System.Windows.Forms.TextBox();
+            this.label15 = new System.Windows.Forms.Label();
+            this.BoincHostFolder = new System.Windows.Forms.TextBox();
+            this.label14 = new System.Windows.Forms.Label();
+            this.WorkingFolderLoc = new System.Windows.Forms.TextBox();
             this.tabpage = new System.Windows.Forms.TabPage();
             this.btnSaveAS = new System.Windows.Forms.Button();
             this.btnLoadFrom = new System.Windows.Forms.Button();
@@ -72,10 +75,10 @@
             this.tbSelected = new System.Windows.Forms.TextBox();
             this.lbSelectDemo = new System.Windows.Forms.ListBox();
             this.TabHost = new System.Windows.Forms.TabPage();
-            this.btnClearAll = new System.Windows.Forms.Button();
-            this.btnSetAll = new System.Windows.Forms.Button();
             this.gbAllowSeq = new System.Windows.Forms.GroupBox();
+            this.btnClearAll = new System.Windows.Forms.Button();
             this.btnRunCmp = new System.Windows.Forms.Button();
+            this.btnSetAll = new System.Windows.Forms.Button();
             this.cbSelProj = new System.Windows.Forms.ComboBox();
             this.label6 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
@@ -105,6 +108,8 @@
             this.label10 = new System.Windows.Forms.Label();
             this.TaskTimer = new System.Windows.Forms.Timer(this.components);
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.btnSavePmap = new System.Windows.Forms.Button();
+            this.btnLoadPmap = new System.Windows.Forms.Button();
             this.gbGetStats.SuspendLayout();
             this.gbSamURL.SuspendLayout();
             this.tcProj.SuspendLayout();
@@ -497,6 +502,8 @@
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.btnLoadPmap);
+            this.tabPage2.Controls.Add(this.btnSavePmap);
             this.tabPage2.Controls.Add(this.tbProjHostList);
             this.tabPage2.Controls.Add(this.groupBox1);
             this.tabPage2.Location = new System.Drawing.Point(4, 25);
@@ -511,43 +518,75 @@
             // 
             this.tbProjHostList.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tbProjHostList.ForeColor = System.Drawing.Color.Blue;
-            this.tbProjHostList.Location = new System.Drawing.Point(17, 229);
+            this.tbProjHostList.Location = new System.Drawing.Point(6, 257);
             this.tbProjHostList.Multiline = true;
             this.tbProjHostList.Name = "tbProjHostList";
             this.tbProjHostList.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.tbProjHostList.Size = new System.Drawing.Size(422, 385);
+            this.tbProjHostList.Size = new System.Drawing.Size(548, 385);
             this.tbProjHostList.TabIndex = 1;
             // 
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.btnReadBoinc);
-            this.groupBox1.Controls.Add(this.tbBoincLoc);
+            this.groupBox1.Controls.Add(this.label15);
+            this.groupBox1.Controls.Add(this.BoincHostFolder);
+            this.groupBox1.Controls.Add(this.label14);
+            this.groupBox1.Controls.Add(this.WorkingFolderLoc);
             this.groupBox1.Location = new System.Drawing.Point(17, 16);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(437, 175);
+            this.groupBox1.Size = new System.Drawing.Size(548, 175);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "BOINC location, change if necessary";
+            this.groupBox1.Text = "Folder Locations";
             // 
             // btnReadBoinc
             // 
-            this.btnReadBoinc.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnReadBoinc.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnReadBoinc.ForeColor = System.Drawing.Color.Blue;
-            this.btnReadBoinc.Location = new System.Drawing.Point(105, 80);
+            this.btnReadBoinc.Location = new System.Drawing.Point(433, 115);
             this.btnReadBoinc.Name = "btnReadBoinc";
-            this.btnReadBoinc.Size = new System.Drawing.Size(122, 50);
+            this.btnReadBoinc.Size = new System.Drawing.Size(95, 40);
             this.btnReadBoinc.TabIndex = 1;
             this.btnReadBoinc.Text = "Click to read\r\nyour Host IDs";
             this.btnReadBoinc.UseVisualStyleBackColor = true;
             this.btnReadBoinc.Click += new System.EventHandler(this.btnReadBoinc_Click);
             // 
-            // tbBoincLoc
+            // label15
             // 
-            this.tbBoincLoc.Location = new System.Drawing.Point(21, 31);
-            this.tbBoincLoc.Name = "tbBoincLoc";
-            this.tbBoincLoc.Size = new System.Drawing.Size(386, 22);
-            this.tbBoincLoc.TabIndex = 0;
-            this.tbBoincLoc.Text = "c:\\programdata\\boinc";
+            this.label15.AutoSize = true;
+            this.label15.BackColor = System.Drawing.SystemColors.Info;
+            this.label15.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label15.Location = new System.Drawing.Point(30, 109);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(357, 14);
+            this.label15.TabIndex = 14;
+            this.label15.Text = "Boinctask folder: AppData\\Roaming\\eFMer\\BoincTasks\r\n";
+            // 
+            // BoincHostFolder
+            // 
+            this.BoincHostFolder.Location = new System.Drawing.Point(24, 133);
+            this.BoincHostFolder.Name = "BoincHostFolder";
+            this.BoincHostFolder.Size = new System.Drawing.Size(386, 22);
+            this.BoincHostFolder.TabIndex = 13;
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.BackColor = System.Drawing.SystemColors.Info;
+            this.label14.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label14.Location = new System.Drawing.Point(30, 31);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(105, 14);
+            this.label14.TabIndex = 12;
+            this.label14.Text = "Working folder";
+            // 
+            // WorkingFolderLoc
+            // 
+            this.WorkingFolderLoc.Location = new System.Drawing.Point(24, 55);
+            this.WorkingFolderLoc.Name = "WorkingFolderLoc";
+            this.WorkingFolderLoc.ReadOnly = true;
+            this.WorkingFolderLoc.Size = new System.Drawing.Size(386, 22);
+            this.WorkingFolderLoc.TabIndex = 0;
             // 
             // tabpage
             // 
@@ -655,31 +694,6 @@
             this.TabHost.Text = "Host List";
             this.TabHost.UseVisualStyleBackColor = true;
             // 
-            // btnClearAll
-            // 
-            this.btnClearAll.Enabled = false;
-            this.btnClearAll.ForeColor = System.Drawing.Color.Blue;
-            this.btnClearAll.Location = new System.Drawing.Point(152, 146);
-            this.btnClearAll.Name = "btnClearAll";
-            this.btnClearAll.Size = new System.Drawing.Size(77, 23);
-            this.btnClearAll.TabIndex = 19;
-            this.btnClearAll.Text = "Clear all";
-            this.btnClearAll.UseVisualStyleBackColor = true;
-            this.btnClearAll.Click += new System.EventHandler(this.btnClearAll_Click);
-            // 
-            // btnSetAll
-            // 
-            this.btnSetAll.Enabled = false;
-            this.btnSetAll.ForeColor = System.Drawing.Color.Blue;
-            this.btnSetAll.Location = new System.Drawing.Point(152, 117);
-            this.btnSetAll.Name = "btnSetAll";
-            this.btnSetAll.Size = new System.Drawing.Size(77, 23);
-            this.btnSetAll.TabIndex = 18;
-            this.btnSetAll.Text = "Set all";
-            this.toolTip1.SetToolTip(this.btnSetAll, "use this to read your list\r\nof computers and projects\r\nor use the demo list");
-            this.btnSetAll.UseVisualStyleBackColor = true;
-            this.btnSetAll.Click += new System.EventHandler(this.btnSetAll_Click);
-            // 
             // gbAllowSeq
             // 
             this.gbAllowSeq.Controls.Add(this.btnClearAll);
@@ -695,6 +709,18 @@
             this.gbAllowSeq.TabStop = false;
             this.gbAllowSeq.Text = "Select PCs\\r\\n to compare";
             // 
+            // btnClearAll
+            // 
+            this.btnClearAll.Enabled = false;
+            this.btnClearAll.ForeColor = System.Drawing.Color.Blue;
+            this.btnClearAll.Location = new System.Drawing.Point(152, 146);
+            this.btnClearAll.Name = "btnClearAll";
+            this.btnClearAll.Size = new System.Drawing.Size(77, 23);
+            this.btnClearAll.TabIndex = 19;
+            this.btnClearAll.Text = "Clear all";
+            this.btnClearAll.UseVisualStyleBackColor = true;
+            this.btnClearAll.Click += new System.EventHandler(this.btnClearAll_Click);
+            // 
             // btnRunCmp
             // 
             this.btnRunCmp.ForeColor = System.Drawing.Color.Blue;
@@ -705,6 +731,19 @@
             this.btnRunCmp.Text = "Click to Setup Compare";
             this.btnRunCmp.UseVisualStyleBackColor = true;
             this.btnRunCmp.Click += new System.EventHandler(this.btnRunCmp_Click);
+            // 
+            // btnSetAll
+            // 
+            this.btnSetAll.Enabled = false;
+            this.btnSetAll.ForeColor = System.Drawing.Color.Blue;
+            this.btnSetAll.Location = new System.Drawing.Point(152, 117);
+            this.btnSetAll.Name = "btnSetAll";
+            this.btnSetAll.Size = new System.Drawing.Size(77, 23);
+            this.btnSetAll.TabIndex = 18;
+            this.btnSetAll.Text = "Set all";
+            this.toolTip1.SetToolTip(this.btnSetAll, "use this to read your list\r\nof computers and projects\r\nor use the demo list");
+            this.btnSetAll.UseVisualStyleBackColor = true;
+            this.btnSetAll.Click += new System.EventHandler(this.btnSetAll_Click);
             // 
             // cbSelProj
             // 
@@ -1024,6 +1063,28 @@
             this.TaskTimer.Interval = 800;
             this.TaskTimer.Tick += new System.EventHandler(this.TaskTimer_Tick);
             // 
+            // btnSavePmap
+            // 
+            this.btnSavePmap.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnSavePmap.ForeColor = System.Drawing.Color.Blue;
+            this.btnSavePmap.Location = new System.Drawing.Point(57, 211);
+            this.btnSavePmap.Name = "btnSavePmap";
+            this.btnSavePmap.Size = new System.Drawing.Size(95, 40);
+            this.btnSavePmap.TabIndex = 2;
+            this.btnSavePmap.Text = "Save project information";
+            this.btnSavePmap.UseVisualStyleBackColor = true;
+            // 
+            // btnLoadPmap
+            // 
+            this.btnLoadPmap.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnLoadPmap.ForeColor = System.Drawing.Color.Blue;
+            this.btnLoadPmap.Location = new System.Drawing.Point(232, 211);
+            this.btnLoadPmap.Name = "btnLoadPmap";
+            this.btnLoadPmap.Size = new System.Drawing.Size(95, 40);
+            this.btnLoadPmap.TabIndex = 3;
+            this.btnLoadPmap.Text = "Read project information";
+            this.btnLoadPmap.UseVisualStyleBackColor = true;
+            // 
             // CreditStatistics
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1086,7 +1147,7 @@
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.TextBox tbProjHostList;
         private System.Windows.Forms.Button btnReadBoinc;
-        private System.Windows.Forms.TextBox tbBoincLoc;
+        private System.Windows.Forms.TextBox WorkingFolderLoc;
         private System.Windows.Forms.TextBox tbPage;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button btnExtract;
@@ -1141,6 +1202,11 @@
         private System.Windows.Forms.Label lbXX;
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.TextBox tbXX;
+        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.TextBox BoincHostFolder;
+        private System.Windows.Forms.Button btnLoadPmap;
+        private System.Windows.Forms.Button btnSavePmap;
     }
 }
 
