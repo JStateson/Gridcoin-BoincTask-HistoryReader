@@ -586,17 +586,24 @@ null
                 OrgRaw[i].PCnameHostID.Add(sPCname + " " + sPCid);
             }
         }
- 
-        public void GetHosts(string sBoincLoc)
+
+        public void GetHostsFile(string sBoincLoc)
+        {
+            if (File.Exists(sBoincLoc))
+            {
+                string v = File.ReadAllText(sBoincLoc).ToLower();
+                GetHosts(v);
+            }
+        }
+        public void GetHosts(string sBoincInfo)
         {
             List<cBoincRaw> LocalHostsRaw = new List<cBoincRaw>();
             cOldraw cOl = new cOldraw();
             string UnknownProjects  = "";
-            if (File.Exists(sBoincLoc))
+            if (true)
             {
-                string v = File.ReadAllText(sBoincLoc).ToLower();
-                v = v.Replace("@home", "");
-                string[] content = v.Split(new string[] { "\n", "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+                sBoincInfo = sBoincInfo.Replace("@home", "");
+                string[] content = sBoincInfo.Split(new string[] { "\n", "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
                 int i = 0;
                 while(true)
                 {
@@ -604,7 +611,7 @@ null
                     string sPCname = content[i].Trim();
                     if (sPCname.Contains(",") || sPCname == "")
                     {
-                        MessageBox.Show("Bad line in " + sBoincLoc + " file: " + sPCname);
+                        MessageBox.Show("Bad line in found " + sPCname);
                         break;
                     }
                     i++;

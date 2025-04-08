@@ -93,6 +93,7 @@
     <Compile Include="CreditStatistics.Designer.cs">
       <DependentUpon>CreditStatistics.cs</DependentUpon>
     </Compile>
+    <Compile Include="HostRPC.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="ProjectStats.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

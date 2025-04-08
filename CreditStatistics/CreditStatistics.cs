@@ -115,25 +115,37 @@ namespace CreditStatistics
             BoincHostLoc = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\eFMer\\BoincTasks";
             BoincHostFolder.Text = BoincHostLoc;
             lbVersion.Text = "Build Date:" + GetSimpleDate(Properties.Resources.BuildDate);
-            //jys //must do that select computer and have localhosts created and filed in
+            MyComputerID = Dns.GetHostName().ToLower();
 
-            TryReadBThostlist();
 
             if (args.Length > 0)
             {
-                ProjectStats.GetHosts(args[0]);
+                ProjectStats.GetHostsFile(args[0]);
                 // produces: Properties.Settings.Default.HostList
             }
-            MyComputerID = Dns.GetHostName().ToLower();
+            
+
             ProjectStats.Init();
+
             if (TryGetHostSets())
             {
                 ProjectStats.SelectComputer(MyComputerID);
             }
             else
             {
-                MessageBox.Show("Project IDs for your PC are missing and must be obtained");
+                if (TryReadBThostlist())
+                {
+                    TryGetHostSets();
+                    ProjectStats.SelectComputer(MyComputerID);
+                }
+                else
+                {
+                    MessageBox.Show("Project IDs missing, tried reading local file then tried RPC to boinc");
+                }
+
             }
+
+
             FormProjectRB();
 
             foreach (DataGridViewColumn column in dgv.Columns)
@@ -644,12 +656,25 @@ namespace CreditStatistics
             ApplyName();
         }
 
-        private void TryReadBThostlist() // boinctask host list
+        private bool GetHostInfo(string[] HostNames)
+        {
+            HostRPC MYrpc = new HostRPC();
+            string sOut = "";
+            foreach(string sIP in HostNames)
+            {
+                MYrpc.GetHostInfo(sIP, ref sOut);
+            }
+            if (sOut == "") return false;
+            ProjectStats.GetHosts(sOut.ToLower());
+            return true;
+        }
+
+        private bool TryReadBThostlist() // boinctask host list
         {
             LocalHostList = GetComputerXML(BoincHostFolder.Text + "//computers.xml");
-            if (LocalHostList == null) return;
-            if( LocalHostList.Count() == 0) return;
-            // todo use each PC name over RPC to get ID used by projects
+            if (LocalHostList == null) return false;
+            if( LocalHostList.Count() == 0) return false;
+            return GetHostInfo(LocalHostList);
         }
 
         private void btnReadBoinc_Click(object sender, EventArgs e)
