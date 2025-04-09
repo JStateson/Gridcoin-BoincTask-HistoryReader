@@ -20,16 +20,6 @@ using System.Security.Cryptography;
 using System.Net;
 using System.Xml.Linq;
 
-/*
- ---------- ALL_PROJECTS_LIST.XML
-
-        https://www.rnaworld.de/rnaworld/
-        https://root.ithena.net/usr/
-
-        https://boinc.berkeley.edu/central/
-
-*/
-
 
 namespace CreditStatistics
 {
@@ -597,7 +587,14 @@ null
         }
         public void GetHosts(string sBoincInfo)
         {
+            string sPCname;
+            string ProjHost;
+            string sProj;
+            string sHost;
+            bool b;
+            int j;
             List<cBoincRaw> LocalHostsRaw = new List<cBoincRaw>();
+            cBoincRaw br;
             cOldraw cOl = new cOldraw();
             string UnknownProjects  = "";
             if (true)
@@ -607,57 +604,59 @@ null
                 int i = 0;
                 while(true)
                 {
-                    if (i >= content.Length) break;
-                    string sPCname = content[i].Trim();
-                    if (sPCname.Contains(",") || sPCname == "")
-                    {
-                        MessageBox.Show("Bad line in found " + sPCname);
+                    if (i >= content.Length)
+                    {                        
                         break;
                     }
-                    i++;
-                    string ProjHost = content[i].Trim(); 
-                    int j = ProjHost.IndexOf(",");
-                    if(j < 0)
+
+                    do
                     {
-                        // possibly bad line or just no projects or hosts
-                        continue;
-                    }
-                    string sProj = ProjHost.Substring(0, j).Trim();
-                    string sHost = ProjHost.Substring(j + 1).Trim();
-                    cBoincRaw br = new cBoincRaw();
-                    br.PCname = sPCname;
-                    br.Proj.Add(sProj);
-                    br.HostID.Add(sHost);
-                    while(true)
-                    {
+                        sPCname = content[i].Trim();
                         i++;
-                        if (i >= content.Length) break;
-                        string s = content[i].Trim();
-                        if (s == "") break;
-                        j = s.IndexOf(",");
+                        if (sPCname.Contains(",") || sPCname == "")
+                        {
+                            MessageBox.Show("expected hostname found: " + sPCname);                            
+                            b = true;
+                        }
+                        else b = false;
+                    } while (b);
+                    br = new cBoincRaw();
+                    br.PCname = sPCname;
+                    LocalHostsRaw.Add(br);
+
+                    do
+                    {
+                        ProjHost = content[i].Trim();
+                        i++;
+                        j = ProjHost.IndexOf(",");
                         if (j < 0)
                         {
-                            LocalHostsRaw.Add(br);
+                            i--;
                             break;
-                        }
-                        sProj = s.Substring(0, j).Trim();
-                        sHost = s.Substring(j + 1).Trim();
-                        br.Proj.Add(sProj);
-                        br.HostID.Add(sHost);
-                    }
-                }
-                foreach(cBoincRaw br in  LocalHostsRaw)
-                {
-                    int k = 0;
-                    for(i = 0; i < br.Proj.Count; i++) 
-                    {                        
-                        if (ProjectExists(br.Proj[i]))
-                        {
-                            cOl.AddTriple(br.PCname, br.Proj[i], br.HostID[i]);
                         }
                         else
                         {
-                            string u = br.Proj[i];
+                            sProj = ProjHost.Substring(0, j).Trim();
+                            sHost = ProjHost.Substring(j + 1).Trim();
+                            LocalHostsRaw.Last().Proj.Add(sProj);
+                            LocalHostsRaw.Last().HostID.Add(sHost);
+                        }
+                        b = (i < content.Length);
+                    } while (b);
+                }
+
+                foreach(cBoincRaw abr in LocalHostsRaw)
+                {
+                    int k = 0;
+                    for(i = 0; i < abr.Proj.Count; i++) 
+                    {                        
+                        if (ProjectExists(abr.Proj[i]))
+                        {
+                            cOl.AddTriple(abr.PCname, abr.Proj[i], abr.HostID[i]);
+                        }
+                        else
+                        {
+                            string u = abr.Proj[i];
                             if(!UnknownProjects.Contains(u))
                                 UnknownProjects += u + " ";
                             k++;
@@ -672,7 +671,7 @@ null
                 foreach(cOrganizedRaw OR in cOl.OrgRaw)
                 {
                     string sOut = OR.ProjNameFull + ": ";
-                    for (int j = 0; j < OR.PCnameHostID.Count(); j++)
+                    for (j = 0; j < OR.PCnameHostID.Count(); j++)
                         sOut += OR.PCnameHostID[j] + ",";
                     cOl.RawOut.Add(sOut);
                 }

@@ -10,10 +10,12 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Sockets;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.Remoting.Messaging;
+using System.Security;
 using System.Security.Principal;
 using System.Text;
 using System.Threading;
@@ -107,6 +109,7 @@ namespace CreditStatistics
         private string BoincHostLoc = "";
         private string WorkingFolder = "";
         private string WhereEXE = "";
+        HostRPC MYrpc = new HostRPC();
         public CreditStatistics(string[] args)
         {
             InitializeComponent();
@@ -118,14 +121,13 @@ namespace CreditStatistics
             MyComputerID = Dns.GetHostName().ToLower();
 
 
+            ProjectStats.Init();
             if (args.Length > 0)
             {
                 ProjectStats.GetHostsFile(args[0]);
                 // produces: Properties.Settings.Default.HostList
             }
             
-
-            ProjectStats.Init();
 
             if (TryGetHostSets())
             {
@@ -140,7 +142,7 @@ namespace CreditStatistics
                 }
                 else
                 {
-                    MessageBox.Show("Project IDs missing, tried reading local file then tried RPC to boinc");
+                    MessageBox.Show("Project IDs missing: bring up");
                 }
 
             }
@@ -656,13 +658,29 @@ namespace CreditStatistics
             ApplyName();
         }
 
+
+
         private bool GetHostInfo(string[] HostNames)
         {
-            HostRPC MYrpc = new HostRPC();
+            //HostRPC MYrpc = new HostRPC();
+
             string sOut = "";
-            foreach(string sIP in HostNames)
+            int sN = 0;
+            int NonZero = 0;
+            int n=0;
+            
+            //string sIP = HostNames[0];
+            foreach (string sIP in HostNames)
             {
-                MYrpc.GetHostInfo(sIP, ref sOut);
+                //int n =MYrpc.GetHostInfo(sIP, ref sOut);
+                HostRPC.GetHostInfo(sIP);
+                if (n > 0) NonZero++;
+                sN += n;
+
+                Refresh();
+                Task.Delay(1);
+                Application.DoEvents();
+
             }
             if (sOut == "") return false;
             ProjectStats.GetHosts(sOut.ToLower());
@@ -674,7 +692,8 @@ namespace CreditStatistics
             LocalHostList = GetComputerXML(BoincHostFolder.Text + "//computers.xml");
             if (LocalHostList == null) return false;
             if( LocalHostList.Count() == 0) return false;
-            return GetHostInfo(LocalHostList);
+            return false;
+            //return GetHostInfo(LocalHostList);
         }
 
         private void btnReadBoinc_Click(object sender, EventArgs e)
@@ -882,10 +901,10 @@ namespace CreditStatistics
             tbInfo.Clear();
         }
 
-
         private void RunCancel(bool bErr)
         {
-            cts.Cancel();
+            if(cts != null)
+                cts.Cancel();
             ProjectStats.TaskDone = true;
             ProjectStats.TaskError = bErr;
             bInSequencer = false;
@@ -950,34 +969,25 @@ namespace CreditStatistics
             InstallURL(Clipboard.GetText().Trim());
         }
 
-        private void InstallUrlNoEvent(string sIn)
-        {
-            string sOut = "";
-            int ProjectID = -1;
-            string sHost = "";
-            string sName = "";
-            ProjUrl.Text = sIn;
-            if (ParseUrl(sIn, ref sOut, ref ProjectID, ref sHost, ref sName))
-            {
-                ProjUrl.Text = sOut;
-                tbHOSTID.Text = sHost;
-                TagOfProject = ProjectID;
-                SetRB(ProjectID, true);
-                SelectedProject = ProjectStats.ProjectList[TagOfProject].name;
-                tbPage.Text = "0";
-                tbHdrInfo.Clear();
-                tbInfo.Clear();
-                if (ProjectStats.LocalHosts.Count > 0)
-                {
-                    tbHOSTID.Text = ProjectStats.GetIDfromName(SelectedProject);
-                    ApplyName();
-                }
-            }
-        }
-
+        // from TaskTimer.Start(); TaskStart
         private void TaskTimer_Tick(object sender, EventArgs e)
         {
             pbTask.Value++;
+            if (MYrpc.InScheduler())
+            {
+                if (pbTask.Value >= pbTask.Maximum)
+                {
+                    TaskTimer.Stop();
+                    MYrpc.StopScheduler();
+                    pbTask.Value = 0;
+                    return;
+                }
+                if (MYrpc.SchedulerDone())
+                {
+                    ScheduleNext();
+                }
+                return;
+            }
             if (pbTask.Value >= pbTask.Maximum || ProjectStats.TaskDone)
             {
                 TaskTimer.Stop();
@@ -1030,7 +1040,7 @@ namespace CreditStatistics
                         Sequencer("VOID");
                         break;
                 }
-            }
+            }            
         }
 
         /*
@@ -1231,11 +1241,21 @@ namespace CreditStatistics
                     string line;
                     while ((line = reader.ReadLine()) != null)
                     {
-                        int i = line.IndexOf("<id_name>");
+                        int i = line.IndexOf("<ip>");
                         if (i < 0) continue;
-                        int j = line.IndexOf("</id_name>", i);
+                        int j = line.IndexOf("</ip>", i);
                         Debug.Assert(j > 0);
-                        PCnames.Add(line.Substring(i + 9, j - i - 9));
+                        string s = line.Substring(i + 4, j - i - 4);
+                        if(s == "localhost")
+                            s = Dns.GetHostName();
+                        if(IsPortOpen(s))
+                        {
+                            PCnames.Add(s);
+                        }
+                        else
+                        {
+
+                        }
                     }
                 }
             }
@@ -1254,10 +1274,11 @@ namespace CreditStatistics
                 openFileDialog.Filter = "XML Files (*.xml)|*.xml|All Files (*.*)|*.*";
                 openFileDialog.Title = "Open computers.xml";
                 openFileDialog.InitialDirectory = FolderPath;
-                string FilePath = openFileDialog.FileName;
+                
 
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
+                    string FilePath = openFileDialog.FileName;
                     return GetComputerXML(FilePath);
                 }
             }
@@ -1705,6 +1726,67 @@ namespace CreditStatistics
             {
                 mHover = index;
                 toolTip1.SetToolTip(lbURLtoSequence, lbViewRawH.Items[mHover].ToString());
+            }
+        }
+
+        private bool bInScheduler = false;
+        private int iCurrentHOST = 0;
+        private int iHostCount = 0;
+        private void btnScanClients_Click(object sender, EventArgs e)
+        {
+            bInScheduler = true;
+            iHostCount = LocalHostList.Count();
+            if(iHostCount > 0)
+            {
+                MYrpc.InitScheduler();
+                TaskTimer.Start();
+                StartScheduler();
+            }
+        }
+        private void StartScheduler()
+        {            
+            HostRPC.GetHostInfo(LocalHostList[iCurrentHOST].ToString());
+        }
+        private void ScheduleNext()
+        {
+            /*
+            
+            Refresh();
+            Task.Delay(1);
+            Application.DoEvents();
+            */
+            iCurrentHOST++;
+            
+            if(iCurrentHOST == iHostCount)
+            {
+                TaskTimer.Stop();
+                pbTask.Value = 0;
+                ProjectStats.GetHosts(MYrpc.GetSchedulerResults().ToLower());
+                TryGetHostSets();
+                //string sTemp = MYrpc.GetSchedulerResults();
+            }
+            else
+            {
+                StartScheduler();
+            }
+        }
+
+
+        private bool IsPortOpen(string host)
+        {
+            int port = 31416;
+            try
+            {
+                using (TcpClient client = new TcpClient())
+                {
+                    var result = client.BeginConnect(host, port, null, null);
+                    bool success = result.AsyncWaitHandle.WaitOne(TimeSpan.FromSeconds(1));
+                    return success && client.Connected;
+                }
+            }
+            catch
+            {
+                return false;
             }
         }
     }

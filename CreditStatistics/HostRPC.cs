@@ -6,33 +6,78 @@ using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Diagnostics;
+using System.Windows.Forms;
 
 namespace CreditStatistics
 {
     internal class HostRPC
     {
-        public bool GetHostInfo(string IP, ref string sOut)
+
+        private static string r = Environment.NewLine;
+        private static string[] StartTok = { "<project_name>", "<hostid>" };
+        private static string[] StopTok = { "</project_name>", "</hostid>" };
+        public static string sOut = "";
+        public static bool bDone = true;
+        public static int sErr = 0;
+        public static bool bInScheduler = false;
+        public void InitScheduler()
         {
-            var ip = IPAddress.Loopback;
+            sOut = "";
+            bInScheduler = true;
+        }
+
+        public void StopScheduler()
+        {
+            bInScheduler = false;
+        }
+
+        public string GetSchedulerResults()
+        {
+            bInScheduler = false;
+            return sOut;
+        }
+        public bool InScheduler(){return bInScheduler;}
+        public  bool SchedulerDone() { return bDone; }
+        public int SchedulerError() { return sErr; }
+        public int GetHostInfo1(string hostname, ref string sOut)
+        {
+            var ipx = IPAddress.Loopback;
             var port = 31416;
             string StatisticsRequest = "<boinc_gui_rpc_request>\n" +
                 "<get_project_status/>\n" +
-                "</boinc_gui_rpc_request>\n\u0003";//+ "\x01";
+                "</boinc_gui_rpc_request>\n\u0003\u0001";//+ "\x01";
             string sBuff = string.Empty;
             int n = 0;
-            string r = Environment.NewLine;
-            string[] StartTok = { "<project_name>", "<hostid>" };
-            string[] StopTok = { "</project_name>", "</hostid>" };
 
-            Socket client = new Socket(ip.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+            int Numfound = 0;
+
             try
             {
-                client.Connect(new IPEndPoint(ip, port));
-                Console.WriteLine("Connected to server.");
+                IPAddress[] addresses = Dns.GetHostAddresses(hostname);
+
+                foreach (IPAddress ip in addresses)
+                {
+                    if (ip.AddressFamily == AddressFamily.InterNetwork) // IPv4 only
+                    {
+                        ipx = ip;
+                        break;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return 0;
+            }
+
+
+            Socket client = new Socket(ipx.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+            try
+            {
+                client.Connect(new IPEndPoint(ipx, port));
 
                 byte[] data = Encoding.UTF8.GetBytes(StatisticsRequest);
                 client.Send(data);
-                Console.WriteLine($"Sent: {StatisticsRequest}");
+                //Console.WriteLine($"Sent: {StatisticsRequest}");
 
                 var buffer = new byte[256];
                 while (true)
@@ -48,31 +93,159 @@ namespace CreditStatistics
                 }
                 n = 0;
                 int i,j, nRec = 0;
-                sOut += IP + r;
+                sOut += hostname + r;
                 i = 0;
-                while (n < sBuff.Length)
+                while (i < sBuff.Length)
                 {
-                    i = sBuff.IndexOf(StartTok[0],i);
-                    if (i < 0) return nRec > 0;
+                    int k = sBuff.IndexOf(StartTok[0],i);
+                    if (k < 0)
+                    {
+                        return Numfound;
+                    }
+                    i = k;
                     j = sBuff.IndexOf(StopTok[0],i);
                     Debug.Assert(j > 0);
                     string sPROJ = sBuff.Substring(i + StartTok[0].Length, j - i - StartTok[0].Length);
                     i += StopTok[0].Length;
-                    i = sBuff.IndexOf(StartTok[1],i);
-                    if (i < 0) return nRec > 0;
+                    k = sBuff.IndexOf(StartTok[1],i);
+                    if (k < 0) 
+                    {
+                        return Numfound;
+                    }
+                    i = k;
                     j = sBuff.IndexOf(StopTok[1], i);
                     Debug.Assert(j > 0);
                     string sProjID = sBuff.Substring(i + StartTok[1].Length, j - i - StartTok[1].Length);
                     i += StopTok[1].Length;
                     sOut += sPROJ + "," + sProjID + r;
+                    Numfound++;
                 }
-                return true;
+                return Numfound;
             }
             finally
             {
                 client.Dispose();
             }
-            return false;
+            return Numfound;
         }
+
+
+
+        public static int ProcessOUT(string hostname, ref string sBuff)
+        {
+            int Numfound = 0;
+            int i, j;
+            sOut += r + hostname + r;
+            i = 0;
+            
+            while (i < sBuff.Length)
+            {
+                int k = sBuff.IndexOf(StartTok[0], i);
+                if (k < 0)
+                {
+                    return Numfound;
+                }
+                i = k;
+                j = sBuff.IndexOf(StopTok[0], i);
+                Debug.Assert(j > 0);
+                string sPROJ = sBuff.Substring(i + StartTok[0].Length, j - i - StartTok[0].Length);
+                i += StopTok[0].Length;
+                k = sBuff.IndexOf(StartTok[1], i);
+                if (k < 0)
+                {
+                    return Numfound;
+                }
+                i = k;
+                j = sBuff.IndexOf(StopTok[1], i);
+                Debug.Assert(j > 0);
+                string sProjID = sBuff.Substring(i + StartTok[1].Length, j - i - StartTok[1].Length);
+                i += StopTok[1].Length;
+                sOut += sPROJ + "," + sProjID + r;
+                Numfound++;
+            }
+            return Numfound;
+        }
+
+
+
+        // Replace 'using declarations' with explicit using statements to ensure compatibility with C# 7.3.  
+        public static async Task GetHostInfo(string hostname)
+        {
+            string StatisticsRequest = "<boinc_gui_rpc_request>\n" +
+    "<get_project_status/>\n" +
+    "</boinc_gui_rpc_request>\n\u0003";//+ "\x01";
+            string sBuff = string.Empty;
+            int n = 0;
+            bool bTrue = true;
+            string r = Environment.NewLine;
+            string[] StartTok = { "<project_name>", "<hostid>" };
+            string[] StopTok = { "</project_name>", "</hostid>" };
+            int Numfound = 0;
+            var ipx = IPAddress.Loopback;
+            string sTemp = "";
+            bDone = false;
+            try
+            {
+                IPAddress[] addresses = Dns.GetHostAddresses(hostname);
+
+                foreach (IPAddress ip in addresses)
+                {
+                    if (ip.AddressFamily == AddressFamily.InterNetwork) // IPv4 only
+                    {
+                        ipx = ip;
+                        break;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                sErr = 1;
+                bDone = true;
+                bTrue = false;
+                return;
+            }
+
+            TcpClient client = new TcpClient();
+            try
+            {
+                await client.ConnectAsync(ipx, 31416);                
+
+                NetworkStream stream = client.GetStream();
+                try
+                {
+                    byte[] data = Encoding.UTF8.GetBytes(StatisticsRequest);
+                    await stream.WriteAsync(data, 0, data.Length);
+                    var buffer = new byte[1024*64];
+                    //while (bTrue)
+                    {
+                        int bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length);
+                        if(bytesRead == 0)
+                        {
+                            bTrue = false;
+                        }
+                        //sTemp = Encoding.UTF8.GetString(buffer);
+                        //ProcessOUT(hostname, ref sTemp);
+                        else sBuff += Encoding.UTF8.GetString(buffer);
+                        //Application.DoEvents();
+                    }
+
+                }
+                finally
+                {
+                    bTrue = false;
+                    stream.Dispose();
+                }
+
+            }
+            finally
+            {
+                client.Dispose();
+                bTrue = false;
+            }
+            ProcessOUT(hostname, ref sBuff);
+            sErr = 0;
+            bDone = true;
+        }
+
     }
 }

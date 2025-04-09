@@ -61,6 +61,8 @@
             this.label3 = new System.Windows.Forms.Label();
             this.btnExtract = new System.Windows.Forms.Button();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.btnLoadPmap = new System.Windows.Forms.Button();
+            this.btnSavePmap = new System.Windows.Forms.Button();
             this.tbProjHostList = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.btnReadBoinc = new System.Windows.Forms.Button();
@@ -108,8 +110,7 @@
             this.label10 = new System.Windows.Forms.Label();
             this.TaskTimer = new System.Windows.Forms.Timer(this.components);
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.btnSavePmap = new System.Windows.Forms.Button();
-            this.btnLoadPmap = new System.Windows.Forms.Button();
+            this.btnScanClients = new System.Windows.Forms.Button();
             this.gbGetStats.SuspendLayout();
             this.gbSamURL.SuspendLayout();
             this.tcProj.SuspendLayout();
@@ -502,6 +503,7 @@
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.btnScanClients);
             this.tabPage2.Controls.Add(this.btnLoadPmap);
             this.tabPage2.Controls.Add(this.btnSavePmap);
             this.tabPage2.Controls.Add(this.tbProjHostList);
@@ -513,6 +515,28 @@
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Host IDs";
             this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // btnLoadPmap
+            // 
+            this.btnLoadPmap.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnLoadPmap.ForeColor = System.Drawing.Color.Blue;
+            this.btnLoadPmap.Location = new System.Drawing.Point(232, 211);
+            this.btnLoadPmap.Name = "btnLoadPmap";
+            this.btnLoadPmap.Size = new System.Drawing.Size(95, 40);
+            this.btnLoadPmap.TabIndex = 3;
+            this.btnLoadPmap.Text = "Read project information";
+            this.btnLoadPmap.UseVisualStyleBackColor = true;
+            // 
+            // btnSavePmap
+            // 
+            this.btnSavePmap.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnSavePmap.ForeColor = System.Drawing.Color.Blue;
+            this.btnSavePmap.Location = new System.Drawing.Point(57, 211);
+            this.btnSavePmap.Name = "btnSavePmap";
+            this.btnSavePmap.Size = new System.Drawing.Size(95, 40);
+            this.btnSavePmap.TabIndex = 2;
+            this.btnSavePmap.Text = "Save project information";
+            this.btnSavePmap.UseVisualStyleBackColor = true;
             // 
             // tbProjHostList
             // 
@@ -1063,27 +1087,17 @@
             this.TaskTimer.Interval = 800;
             this.TaskTimer.Tick += new System.EventHandler(this.TaskTimer_Tick);
             // 
-            // btnSavePmap
+            // btnScanClients
             // 
-            this.btnSavePmap.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnSavePmap.ForeColor = System.Drawing.Color.Blue;
-            this.btnSavePmap.Location = new System.Drawing.Point(57, 211);
-            this.btnSavePmap.Name = "btnSavePmap";
-            this.btnSavePmap.Size = new System.Drawing.Size(95, 40);
-            this.btnSavePmap.TabIndex = 2;
-            this.btnSavePmap.Text = "Save project information";
-            this.btnSavePmap.UseVisualStyleBackColor = true;
-            // 
-            // btnLoadPmap
-            // 
-            this.btnLoadPmap.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnLoadPmap.ForeColor = System.Drawing.Color.Blue;
-            this.btnLoadPmap.Location = new System.Drawing.Point(232, 211);
-            this.btnLoadPmap.Name = "btnLoadPmap";
-            this.btnLoadPmap.Size = new System.Drawing.Size(95, 40);
-            this.btnLoadPmap.TabIndex = 3;
-            this.btnLoadPmap.Text = "Read project information";
-            this.btnLoadPmap.UseVisualStyleBackColor = true;
+            this.btnScanClients.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnScanClients.ForeColor = System.Drawing.Color.Blue;
+            this.btnScanClients.Location = new System.Drawing.Point(387, 211);
+            this.btnScanClients.Name = "btnScanClients";
+            this.btnScanClients.Size = new System.Drawing.Size(95, 40);
+            this.btnScanClients.TabIndex = 4;
+            this.btnScanClients.Text = "Scan for BOINC clients";
+            this.btnScanClients.UseVisualStyleBackColor = true;
+            this.btnScanClients.Click += new System.EventHandler(this.btnScanClients_Click);
             // 
             // CreditStatistics
             // 
@@ -1207,6 +1221,7 @@
         private System.Windows.Forms.TextBox BoincHostFolder;
         private System.Windows.Forms.Button btnLoadPmap;
         private System.Windows.Forms.Button btnSavePmap;
+        private System.Windows.Forms.Button btnScanClients;
     }
 }
 
