@@ -1,3 +1,10 @@
+shire2 
+Asteroids@home, 798739
+Einstein@Home, 13205645
+gpugrid, 636835
+Milkyway@home, 1046342
+World Community Grid, 8862947
+ 
 asusx299 
 Amicable Numbers, 250099
 Asteroids@home, 757796
@@ -21,6 +28,55 @@ Universe@Home, 499530
 World Community Grid, 8788717
 WUProp@Home, 279812
 yoyo@home, 517504
+ 
+jysx299 
+Amicable Numbers, 247720
+Asteroids@home, 739274
+Einstein@Home, 13177545
+gpugrid, 622167
+Milkyway@home, 1046341
+NFS@Home, 7229360
+NumberFields@home, 2883421
+SiDock@home, 55910
+SRBase, 236324
+World Community Grid, 8800933
+WUProp@Home, 329355
+ 
+jysomen 
+Amicable Numbers, 249983
+Asteroids@home, 785798
+Cosmology@Home, 464562
+DENIS@home, 223525
+Einstein@Home, 13180083
+gpugrid, 604468
+latinsquares, 128062
+LHC@home, 10825081
+Milkyway@home, 989898
+NFS@Home, 7205913
+NumberFields@home, 2848216
+SiDock@home, 56719
+SRBase, 223941
+TN-Grid Platform, 84368
+Universe@Home, 644012
+World Community Grid, 8866994
+WUProp@Home, 284758
+yoyo@home, 517505
+ 
+jysevga3 
+Asteroids@home, 801930
+Einstein@Home, 13218819
+gpugrid, 636834
+Milkyway@home, 1047480
+SiDock@home, 70715
+World Community Grid, 8867440
+WUProp@Home, 329354
+ 
+jys-rtx-3070 
+Asteroids@home, 801550
+Einstein@Home, 13145961
+Milkyway@home, 1046345
+World Community Grid, 8866995
+ 
 h110btc 
 Amicable Numbers, 247724
 Asteroids@home, 801421
@@ -43,11 +99,14 @@ Universe@Home, 636073
 World Community Grid, 8866993
 WUProp@Home, 329358
 yoyo@home, 517506
-jys-rtx-3070 
-World Community Grid, 8866995
-Asteroids@home, 801550
-Einstein@Home, 13145961
-Milkyway@home, 1046345
+ 
+dualx5675 
+Amicable Numbers, 249986
+Asteroids@home, 801547
+Einstein@Home, 13221047
+gpugrid, 637576
+Milkyway@home, 1047310
+ 
 dual-linux 
 gpugrid, 634428
 Asteroids@home, 799366
@@ -55,13 +114,8 @@ Einstein@Home, 13221038
 Milkyway@home, 1047240
 SiDock@home, 57544
 WUProp@Home, 329359
-dualx5675 
-Amicable Numbers, 249986
-Asteroids@home, 801547
-Einstein@Home, 13221047
-gpugrid, 637576
-Milkyway@home, 1047310
-192.168.1.145 --passwd jys 
+ 
+jysevga 
 Amicable Numbers, 230481
 Asteroids@home, 588146
 Citizen Science Grid, 117645
@@ -82,48 +136,4 @@ Universe@Home, 585240
 World Community Grid, 8821760
 WUProp@Home, 256982
 yoyo@home, 517510
-jysevga3 --passwd RatDogTrip 
-Milkyway@home, 1047480
-World Community Grid, 8867440
-Asteroids@home, 801930
-Einstein@Home, 13218819
-gpugrid, 636834
-SiDock@home, 70715
-WUProp@Home, 329354
-jysomen 
-World Community Grid, 8866994
-Amicable Numbers, 249983
-Asteroids@home, 785798
-Cosmology@Home, 464562
-DENIS@home, 223525
-Einstein@Home, 13180083
-gpugrid, 604468
-latinsquares, 128062
-LHC@home, 10825081
-Milkyway@home, 989898
-NFS@Home, 7205913
-NumberFields@home, 2848216
-SiDock@home, 56719
-SRBase, 223941
-TN-Grid Platform, 84368
-Universe@Home, 644012
-WUProp@Home, 284758
-yoyo@home, 517505
-jysx299 --passwd jys 
-Milkyway@home, 1046341
-Amicable Numbers, 247720
-Asteroids@home, 739274
-Einstein@Home, 13177545
-gpugrid, 622167
-NFS@Home, 7229360
-NumberFields@home, 2883421
-SiDock@home, 55910
-SRBase, 236324
-World Community Grid, 8800933
-WUProp@Home, 329355
-shire2 --passwd jys 
-Asteroids@home, 798739
-Einstein@Home, 13205645
-gpugrid, 636835
-Milkyway@home, 1046342
-World Community Grid, 8862947
+ 

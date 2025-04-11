@@ -61,8 +61,7 @@
             this.label3 = new System.Windows.Forms.Label();
             this.btnExtract = new System.Windows.Forms.Button();
             this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.btnLoadPmap = new System.Windows.Forms.Button();
-            this.btnSavePmap = new System.Windows.Forms.Button();
+            this.btnScanClients = new System.Windows.Forms.Button();
             this.tbProjHostList = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.btnReadBoinc = new System.Windows.Forms.Button();
@@ -71,12 +70,15 @@
             this.label14 = new System.Windows.Forms.Label();
             this.WorkingFolderLoc = new System.Windows.Forms.TextBox();
             this.tabpage = new System.Windows.Forms.TabPage();
+            this.btnRunTop = new System.Windows.Forms.Button();
+            this.btnViewTop = new System.Windows.Forms.Button();
             this.btnSaveAS = new System.Windows.Forms.Button();
             this.btnLoadFrom = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
             this.tbSelected = new System.Windows.Forms.TextBox();
             this.lbSelectDemo = new System.Windows.Forms.ListBox();
             this.TabHost = new System.Windows.Forms.TabPage();
+            this.btnFetchID = new System.Windows.Forms.Button();
             this.gbAllowSeq = new System.Windows.Forms.GroupBox();
             this.btnClearAll = new System.Windows.Forms.Button();
             this.btnRunCmp = new System.Windows.Forms.Button();
@@ -87,12 +89,10 @@
             this.cbComputerList = new System.Windows.Forms.ComboBox();
             this.label7 = new System.Windows.Forms.Label();
             this.btnApplyNewPC = new System.Windows.Forms.Button();
-            this.btnCreateIDs = new System.Windows.Forms.Button();
             this.dgv = new System.Windows.Forms.DataGridView();
             this.Project = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.HostID = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.btnSaveIDs = new System.Windows.Forms.Button();
-            this.btFetchID = new System.Windows.Forms.Button();
             this.lbViewRaw = new System.Windows.Forms.TabPage();
             this.btnApplyAPxx = new System.Windows.Forms.Button();
             this.gbXX = new System.Windows.Forms.GroupBox();
@@ -110,7 +110,6 @@
             this.label10 = new System.Windows.Forms.Label();
             this.TaskTimer = new System.Windows.Forms.Timer(this.components);
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.btnScanClients = new System.Windows.Forms.Button();
             this.gbGetStats.SuspendLayout();
             this.gbSamURL.SuspendLayout();
             this.tcProj.SuspendLayout();
@@ -298,9 +297,9 @@
             this.label2.Location = new System.Drawing.Point(16, 29);
             this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(184, 32);
+            this.label2.Size = new System.Drawing.Size(145, 32);
             this.label2.TabIndex = 7;
-            this.label2.Text = "Enter HOST ID and select\r\nproject then click apply";
+            this.label2.Text = "Select project name\r\nthen enter HOST ID";
             // 
             // tbHdrInfo
             // 
@@ -440,7 +439,7 @@
             this.btnPaste.Name = "btnPaste";
             this.btnPaste.Size = new System.Drawing.Size(70, 20);
             this.btnPaste.TabIndex = 18;
-            this.btnPaste.Text = "Paste";
+            this.btnPaste.Text = "PASTE";
             this.btnPaste.UseVisualStyleBackColor = true;
             this.btnPaste.Click += new System.EventHandler(this.btnPaste_Click);
             // 
@@ -493,7 +492,7 @@
             // 
             this.btnExtract.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnExtract.ForeColor = System.Drawing.Color.Blue;
-            this.btnExtract.Location = new System.Drawing.Point(18, 157);
+            this.btnExtract.Location = new System.Drawing.Point(10, 156);
             this.btnExtract.Name = "btnExtract";
             this.btnExtract.Size = new System.Drawing.Size(126, 45);
             this.btnExtract.TabIndex = 11;
@@ -504,8 +503,6 @@
             // tabPage2
             // 
             this.tabPage2.Controls.Add(this.btnScanClients);
-            this.tabPage2.Controls.Add(this.btnLoadPmap);
-            this.tabPage2.Controls.Add(this.btnSavePmap);
             this.tabPage2.Controls.Add(this.tbProjHostList);
             this.tabPage2.Controls.Add(this.groupBox1);
             this.tabPage2.Location = new System.Drawing.Point(4, 25);
@@ -516,27 +513,18 @@
             this.tabPage2.Text = "Host IDs";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
-            // btnLoadPmap
+            // btnScanClients
             // 
-            this.btnLoadPmap.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnLoadPmap.ForeColor = System.Drawing.Color.Blue;
-            this.btnLoadPmap.Location = new System.Drawing.Point(232, 211);
-            this.btnLoadPmap.Name = "btnLoadPmap";
-            this.btnLoadPmap.Size = new System.Drawing.Size(95, 40);
-            this.btnLoadPmap.TabIndex = 3;
-            this.btnLoadPmap.Text = "Read project information";
-            this.btnLoadPmap.UseVisualStyleBackColor = true;
-            // 
-            // btnSavePmap
-            // 
-            this.btnSavePmap.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnSavePmap.ForeColor = System.Drawing.Color.Blue;
-            this.btnSavePmap.Location = new System.Drawing.Point(57, 211);
-            this.btnSavePmap.Name = "btnSavePmap";
-            this.btnSavePmap.Size = new System.Drawing.Size(95, 40);
-            this.btnSavePmap.TabIndex = 2;
-            this.btnSavePmap.Text = "Save project information";
-            this.btnSavePmap.UseVisualStyleBackColor = true;
+            this.btnScanClients.Enabled = false;
+            this.btnScanClients.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnScanClients.ForeColor = System.Drawing.Color.Blue;
+            this.btnScanClients.Location = new System.Drawing.Point(192, 211);
+            this.btnScanClients.Name = "btnScanClients";
+            this.btnScanClients.Size = new System.Drawing.Size(111, 40);
+            this.btnScanClients.TabIndex = 4;
+            this.btnScanClients.Text = "Create List from\r\nBoincTasks IDs";
+            this.btnScanClients.UseVisualStyleBackColor = true;
+            this.btnScanClients.Click += new System.EventHandler(this.btnScanClients_Click);
             // 
             // tbProjHostList
             // 
@@ -614,6 +602,8 @@
             // 
             // tabpage
             // 
+            this.tabpage.Controls.Add(this.btnRunTop);
+            this.tabpage.Controls.Add(this.btnViewTop);
             this.tabpage.Controls.Add(this.btnSaveAS);
             this.tabpage.Controls.Add(this.btnLoadFrom);
             this.tabpage.Controls.Add(this.label4);
@@ -626,11 +616,34 @@
             this.tabpage.Text = "Top PCs";
             this.tabpage.UseVisualStyleBackColor = true;
             // 
+            // btnRunTop
+            // 
+            this.btnRunTop.Enabled = false;
+            this.btnRunTop.ForeColor = System.Drawing.Color.Blue;
+            this.btnRunTop.Location = new System.Drawing.Point(24, 97);
+            this.btnRunTop.Name = "btnRunTop";
+            this.btnRunTop.Size = new System.Drawing.Size(123, 23);
+            this.btnRunTop.TabIndex = 15;
+            this.btnRunTop.Text = "Run Selected";
+            this.btnRunTop.UseVisualStyleBackColor = true;
+            this.btnRunTop.Click += new System.EventHandler(this.btnRunTop_Click);
+            // 
+            // btnViewTop
+            // 
+            this.btnViewTop.Enabled = false;
+            this.btnViewTop.ForeColor = System.Drawing.Color.Blue;
+            this.btnViewTop.Location = new System.Drawing.Point(24, 61);
+            this.btnViewTop.Name = "btnViewTop";
+            this.btnViewTop.Size = new System.Drawing.Size(123, 23);
+            this.btnViewTop.TabIndex = 16;
+            this.btnViewTop.Text = "View Selected";
+            this.btnViewTop.UseVisualStyleBackColor = true;
+            this.btnViewTop.Click += new System.EventHandler(this.btnViewTop_Click);
+            // 
             // btnSaveAS
             // 
-            this.btnSaveAS.Enabled = false;
             this.btnSaveAS.ForeColor = System.Drawing.Color.Blue;
-            this.btnSaveAS.Location = new System.Drawing.Point(24, 97);
+            this.btnSaveAS.Location = new System.Drawing.Point(201, 97);
             this.btnSaveAS.Name = "btnSaveAS";
             this.btnSaveAS.Size = new System.Drawing.Size(87, 23);
             this.btnSaveAS.TabIndex = 5;
@@ -640,14 +653,14 @@
             // 
             // btnLoadFrom
             // 
-            this.btnLoadFrom.Enabled = false;
             this.btnLoadFrom.ForeColor = System.Drawing.Color.Blue;
-            this.btnLoadFrom.Location = new System.Drawing.Point(24, 138);
+            this.btnLoadFrom.Location = new System.Drawing.Point(416, 101);
             this.btnLoadFrom.Name = "btnLoadFrom";
             this.btnLoadFrom.Size = new System.Drawing.Size(87, 23);
             this.btnLoadFrom.TabIndex = 4;
             this.btnLoadFrom.Text = "Load from";
             this.btnLoadFrom.UseVisualStyleBackColor = true;
+            this.btnLoadFrom.Visible = false;
             this.btnLoadFrom.Click += new System.EventHandler(this.btnLoadFrom_Click);
             // 
             // label4
@@ -656,9 +669,9 @@
             this.label4.ForeColor = System.Drawing.Color.Coral;
             this.label4.Location = new System.Drawing.Point(21, 16);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(141, 64);
+            this.label4.Size = new System.Drawing.Size(126, 32);
             this.label4.TabIndex = 3;
-            this.label4.Text = "Not Programmed\r\n denis, yoyo, wcg\r\nIf you select a url it\r\ngoes into clipboard";
+            this.label4.Text = "Not Programmed\r\n denis, yoyo, wcg";
             // 
             // tbSelected
             // 
@@ -666,7 +679,7 @@
             this.tbSelected.Location = new System.Drawing.Point(201, 16);
             this.tbSelected.Multiline = true;
             this.tbSelected.Name = "tbSelected";
-            this.tbSelected.Size = new System.Drawing.Size(337, 131);
+            this.tbSelected.Size = new System.Drawing.Size(337, 47);
             this.tbSelected.TabIndex = 1;
             // 
             // lbSelectDemo
@@ -696,20 +709,19 @@
             "https://boinc.progger.info/odlk/results.php?hostid=29350&state=4&offset=0",
             "https://www.primegrid.com/results.php?hostid=905516&offset=0&state=4",
             "https://gerasim.boinc.ru/users/viewHostResults.aspx?hostid=70676&opt=2"});
-            this.lbSelectDemo.Location = new System.Drawing.Point(15, 192);
+            this.lbSelectDemo.Location = new System.Drawing.Point(3, 144);
             this.lbSelectDemo.Name = "lbSelectDemo";
-            this.lbSelectDemo.Size = new System.Drawing.Size(536, 452);
+            this.lbSelectDemo.Size = new System.Drawing.Size(536, 500);
             this.lbSelectDemo.TabIndex = 0;
             this.lbSelectDemo.SelectedIndexChanged += new System.EventHandler(this.lbSelectDemo_SelectedIndexChanged);
             // 
             // TabHost
             // 
+            this.TabHost.Controls.Add(this.btnFetchID);
             this.TabHost.Controls.Add(this.gbAllowSeq);
             this.TabHost.Controls.Add(this.groupBox2);
-            this.TabHost.Controls.Add(this.btnCreateIDs);
             this.TabHost.Controls.Add(this.dgv);
             this.TabHost.Controls.Add(this.btnSaveIDs);
-            this.TabHost.Controls.Add(this.btFetchID);
             this.TabHost.Location = new System.Drawing.Point(4, 25);
             this.TabHost.Name = "TabHost";
             this.TabHost.Padding = new System.Windows.Forms.Padding(3);
@@ -717,6 +729,17 @@
             this.TabHost.TabIndex = 3;
             this.TabHost.Text = "Host List";
             this.TabHost.UseVisualStyleBackColor = true;
+            // 
+            // btnFetchID
+            // 
+            this.btnFetchID.ForeColor = System.Drawing.Color.Blue;
+            this.btnFetchID.Location = new System.Drawing.Point(24, 18);
+            this.btnFetchID.Name = "btnFetchID";
+            this.btnFetchID.Size = new System.Drawing.Size(94, 23);
+            this.btnFetchID.TabIndex = 18;
+            this.btnFetchID.Text = "Fetch IDs";
+            this.btnFetchID.UseVisualStyleBackColor = true;
+            this.btnFetchID.Click += new System.EventHandler(this.btnFetchID_Click);
             // 
             // gbAllowSeq
             // 
@@ -726,20 +749,20 @@
             this.gbAllowSeq.Controls.Add(this.cbSelProj);
             this.gbAllowSeq.Controls.Add(this.label6);
             this.gbAllowSeq.Enabled = false;
-            this.gbAllowSeq.Location = new System.Drawing.Point(15, 106);
+            this.gbAllowSeq.Location = new System.Drawing.Point(15, 51);
             this.gbAllowSeq.Name = "gbAllowSeq";
-            this.gbAllowSeq.Size = new System.Drawing.Size(253, 216);
+            this.gbAllowSeq.Size = new System.Drawing.Size(253, 271);
             this.gbAllowSeq.TabIndex = 17;
             this.gbAllowSeq.TabStop = false;
-            this.gbAllowSeq.Text = "Select PCs\\r\\n to compare";
+            this.gbAllowSeq.Text = "Select PCs to compare";
             // 
             // btnClearAll
             // 
             this.btnClearAll.Enabled = false;
             this.btnClearAll.ForeColor = System.Drawing.Color.Blue;
-            this.btnClearAll.Location = new System.Drawing.Point(152, 146);
+            this.btnClearAll.Location = new System.Drawing.Point(152, 127);
             this.btnClearAll.Name = "btnClearAll";
-            this.btnClearAll.Size = new System.Drawing.Size(77, 23);
+            this.btnClearAll.Size = new System.Drawing.Size(95, 23);
             this.btnClearAll.TabIndex = 19;
             this.btnClearAll.Text = "Clear all";
             this.btnClearAll.UseVisualStyleBackColor = true;
@@ -748,11 +771,11 @@
             // btnRunCmp
             // 
             this.btnRunCmp.ForeColor = System.Drawing.Color.Blue;
-            this.btnRunCmp.Location = new System.Drawing.Point(9, 118);
+            this.btnRunCmp.Location = new System.Drawing.Point(152, 171);
             this.btnRunCmp.Name = "btnRunCmp";
-            this.btnRunCmp.Size = new System.Drawing.Size(120, 51);
+            this.btnRunCmp.Size = new System.Drawing.Size(95, 46);
             this.btnRunCmp.TabIndex = 13;
-            this.btnRunCmp.Text = "Click to Setup Compare";
+            this.btnRunCmp.Text = "Click for sequencer";
             this.btnRunCmp.UseVisualStyleBackColor = true;
             this.btnRunCmp.Click += new System.EventHandler(this.btnRunCmp_Click);
             // 
@@ -760,9 +783,9 @@
             // 
             this.btnSetAll.Enabled = false;
             this.btnSetAll.ForeColor = System.Drawing.Color.Blue;
-            this.btnSetAll.Location = new System.Drawing.Point(152, 117);
+            this.btnSetAll.Location = new System.Drawing.Point(152, 81);
             this.btnSetAll.Name = "btnSetAll";
-            this.btnSetAll.Size = new System.Drawing.Size(77, 23);
+            this.btnSetAll.Size = new System.Drawing.Size(95, 23);
             this.btnSetAll.TabIndex = 18;
             this.btnSetAll.Text = "Set all";
             this.toolTip1.SetToolTip(this.btnSetAll, "use this to read your list\r\nof computers and projects\r\nor use the demo list");
@@ -771,11 +794,12 @@
             // 
             // cbSelProj
             // 
+            this.cbSelProj.DropDownHeight = 200;
             this.cbSelProj.FormattingEnabled = true;
             this.cbSelProj.IntegralHeight = false;
             this.cbSelProj.ItemHeight = 16;
             this.cbSelProj.Location = new System.Drawing.Point(9, 21);
-            this.cbSelProj.MaxDropDownItems = 10;
+            this.cbSelProj.MaxDropDownItems = 20;
             this.cbSelProj.Name = "cbSelProj";
             this.cbSelProj.Size = new System.Drawing.Size(130, 24);
             this.cbSelProj.TabIndex = 8;
@@ -802,7 +826,7 @@
             this.groupBox2.Size = new System.Drawing.Size(233, 200);
             this.groupBox2.TabIndex = 16;
             this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Change Default PC";
+            this.groupBox2.Text = "Change Default Project PC";
             // 
             // cbComputerList
             // 
@@ -837,17 +861,6 @@
             this.btnApplyNewPC.UseVisualStyleBackColor = true;
             this.btnApplyNewPC.Click += new System.EventHandler(this.btnApplyNewPC_Click);
             // 
-            // btnCreateIDs
-            // 
-            this.btnCreateIDs.ForeColor = System.Drawing.Color.Blue;
-            this.btnCreateIDs.Location = new System.Drawing.Point(6, 22);
-            this.btnCreateIDs.Name = "btnCreateIDs";
-            this.btnCreateIDs.Size = new System.Drawing.Size(94, 23);
-            this.btnCreateIDs.TabIndex = 7;
-            this.btnCreateIDs.Text = "Create IDs";
-            this.btnCreateIDs.UseVisualStyleBackColor = true;
-            this.btnCreateIDs.Click += new System.EventHandler(this.btnCreateIDs_Click);
-            // 
             // dgv
             // 
             this.dgv.AllowUserToResizeColumns = false;
@@ -878,25 +891,13 @@
             // 
             this.btnSaveIDs.Enabled = false;
             this.btnSaveIDs.ForeColor = System.Drawing.Color.Blue;
-            this.btnSaveIDs.Location = new System.Drawing.Point(137, 60);
+            this.btnSaveIDs.Location = new System.Drawing.Point(150, 18);
             this.btnSaveIDs.Name = "btnSaveIDs";
             this.btnSaveIDs.Size = new System.Drawing.Size(94, 23);
             this.btnSaveIDs.TabIndex = 5;
             this.btnSaveIDs.Text = "Save IDs";
             this.btnSaveIDs.UseVisualStyleBackColor = true;
             this.btnSaveIDs.Click += new System.EventHandler(this.btnSaveIDs_Click);
-            // 
-            // btFetchID
-            // 
-            this.btFetchID.ForeColor = System.Drawing.Color.Blue;
-            this.btFetchID.Location = new System.Drawing.Point(137, 22);
-            this.btFetchID.Name = "btFetchID";
-            this.btFetchID.Size = new System.Drawing.Size(94, 23);
-            this.btFetchID.TabIndex = 4;
-            this.btFetchID.Text = "Fetch IDs";
-            this.toolTip1.SetToolTip(this.btFetchID, "use this to read your list\r\nof computers and projects\r\nor use the demo list");
-            this.btFetchID.UseVisualStyleBackColor = true;
-            this.btFetchID.Click += new System.EventHandler(this.btFetchID_Click);
             // 
             // lbViewRaw
             // 
@@ -1087,18 +1088,6 @@
             this.TaskTimer.Interval = 800;
             this.TaskTimer.Tick += new System.EventHandler(this.TaskTimer_Tick);
             // 
-            // btnScanClients
-            // 
-            this.btnScanClients.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnScanClients.ForeColor = System.Drawing.Color.Blue;
-            this.btnScanClients.Location = new System.Drawing.Point(387, 211);
-            this.btnScanClients.Name = "btnScanClients";
-            this.btnScanClients.Size = new System.Drawing.Size(95, 40);
-            this.btnScanClients.TabIndex = 4;
-            this.btnScanClients.Text = "Scan for BOINC clients";
-            this.btnScanClients.UseVisualStyleBackColor = true;
-            this.btnScanClients.Click += new System.EventHandler(this.btnScanClients_Click);
-            // 
             // CreditStatistics
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1180,11 +1169,9 @@
         private System.Windows.Forms.Button btnPaste;
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.TabPage TabHost;
-        private System.Windows.Forms.Button btFetchID;
         private System.Windows.Forms.Button btnSaveIDs;
         private System.Windows.Forms.Button btnSaveDefIDs;
         private System.Windows.Forms.DataGridView dgv;
-        private System.Windows.Forms.Button btnCreateIDs;
         private System.Windows.Forms.ComboBox cbSelProj;
         private System.Windows.Forms.DataGridViewTextBoxColumn Project;
         private System.Windows.Forms.DataGridViewTextBoxColumn HostID;
@@ -1219,9 +1206,10 @@
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.Label label15;
         private System.Windows.Forms.TextBox BoincHostFolder;
-        private System.Windows.Forms.Button btnLoadPmap;
-        private System.Windows.Forms.Button btnSavePmap;
         private System.Windows.Forms.Button btnScanClients;
+        private System.Windows.Forms.Button btnFetchID;
+        private System.Windows.Forms.Button btnRunTop;
+        private System.Windows.Forms.Button btnViewTop;
     }
 }
 

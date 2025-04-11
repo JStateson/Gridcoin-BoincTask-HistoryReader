@@ -577,15 +577,15 @@ null
             }
         }
 
-        public void GetHostsFile(string sBoincLoc)
+        public bool GetHostsFile(string sBoincLoc)
         {
             if (File.Exists(sBoincLoc))
             {
-                string v = File.ReadAllText(sBoincLoc).ToLower();
-                GetHosts(v);
+                return GetHosts(File.ReadAllText(sBoincLoc).ToLower());
             }
+            return false;
         }
-        public void GetHosts(string sBoincInfo)
+        public bool GetHosts(string sBoincInfo)
         {
             string sPCname;
             string ProjHost;
@@ -620,6 +620,7 @@ null
                         }
                         else b = false;
                     } while (b);
+
                     br = new cBoincRaw();
                     br.PCname = sPCname;
                     LocalHostsRaw.Add(br);
@@ -681,6 +682,7 @@ null
                     MessageBox.Show("Unknown or old projects:" + Environment.NewLine + UnknownProjects);
                 }
             }
+            return Properties.Settings.Default.HostList.Length > 0;
         }
 
         public string GetIDfromName(string name)

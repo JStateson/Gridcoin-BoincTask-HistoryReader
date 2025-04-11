@@ -20,6 +20,7 @@ namespace CreditStatistics
         public static bool bDone = true;
         public static int sErr = 0;
         public static bool bInScheduler = false;
+        public static string sBuff;
         public void InitScheduler()
         {
             sOut = "";
@@ -39,17 +40,21 @@ namespace CreditStatistics
         public bool InScheduler(){return bInScheduler;}
         public  bool SchedulerDone() { return bDone; }
         public int SchedulerError() { return sErr; }
-        public int GetHostInfo1(string hostname, ref string sOut)
+
+
+        public int ReadStream(string hostname)
         {
             var ipx = IPAddress.Loopback;
             var port = 31416;
             string StatisticsRequest = "<boinc_gui_rpc_request>\n" +
                 "<get_project_status/>\n" +
-                "</boinc_gui_rpc_request>\n\u0003\u0001";//+ "\x01";
-            string sBuff = string.Empty;
+                "</boinc_gui_rpc_request>\n\u0003\u0001";//+ "\u0001";
+            sBuff = string.Empty;
             int n = 0;
-
             int Numfound = 0;
+
+            const int blockSize = 256;
+            byte[] buffer = new byte[blockSize];
 
             try
             {
@@ -69,31 +74,48 @@ namespace CreditStatistics
                 return 0;
             }
 
-
             Socket client = new Socket(ipx.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+            client.Connect(new IPEndPoint(ipx, port));
+            byte[] data = Encoding.UTF8.GetBytes(StatisticsRequest);
+            client.ReceiveTimeout = 1000;
+            client.Send(data);
+
             try
             {
-                client.Connect(new IPEndPoint(ipx, port));
-
-                byte[] data = Encoding.UTF8.GetBytes(StatisticsRequest);
-                client.Send(data);
-                //Console.WriteLine($"Sent: {StatisticsRequest}");
-
-                var buffer = new byte[256];
                 while (true)
                 {
-                    n = client.Receive(buffer); 
-                    if(n>0)
+                                        
+                    
+                    try
+                    {
+                        n = client.Receive(buffer);
+                       
+                    }
+                    catch (SocketException ex) when (ex.SocketErrorCode == SocketError.TimedOut)
+                    {
+                        break;
+                    }
+                    catch (SocketException ex)
+                    {
+                        break;
+                    }
+
+
+
+                    if (n > 0)
                     {
                         string s = Encoding.UTF8.GetString(buffer, 0, n);
-                        if(s.Contains("</projects>")) break;
                         sBuff += s;
-                        if (n < 256) break;
+                        //if (n < blockSize) break;
+                        continue;
                     }
+                    else break;
                 }
+                client.Shutdown(SocketShutdown.Both);
+                client.Close();
                 n = 0;
                 int i,j, nRec = 0;
-                sOut += hostname + r;
+                sOut += r + hostname + r;
                 i = 0;
                 while (i < sBuff.Length)
                 {
@@ -124,6 +146,9 @@ namespace CreditStatistics
             }
             finally
             {
+                sErr = 0;
+                bDone = true;
+                //ProcessOUT(hostname, ref sBuff);
                 client.Dispose();
             }
             return Numfound;
