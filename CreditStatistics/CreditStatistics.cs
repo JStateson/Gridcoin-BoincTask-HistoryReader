@@ -26,6 +26,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.ComponentModel.Com2Interop;
 using System.Xml;
+using System.Xml.Linq;
 using static CreditStatistics.cProjectStats;
 using static System.Windows.Forms.LinkLabel;
 
@@ -167,13 +168,12 @@ namespace CreditStatistics
     Properties.Settings.Default.HostList = null;
 #endif
             FormProjectRB();
-
+            btnRestoreID.Enabled = bHaveHostInfo;
             foreach (DataGridViewColumn column in dgv.Columns)
             {
                 column.SortMode = DataGridViewColumnSortMode.NotSortable;
             }
-            this.Shown += InitialLoad;
-            
+            this.Shown += InitialLoad;            
         }
 
         private void InitialLoad(object sender, EventArgs e)
@@ -186,6 +186,8 @@ namespace CreditStatistics
             tcProj.TabPages.Remove(hiddenTabPage);
             cbSelProj.SelectedIndex = 0;
             ParseProjUrl();
+            btnRestoreID.Tag = MyComputerID;
+            lbPCname.Text = "PC name: " + MyComputerID;
         }
 
         private void FormProjectRB()
@@ -611,6 +613,7 @@ namespace CreditStatistics
 
         private void btnRunHdr_Click(object sender, EventArgs e)
         {
+            string PCname = "";
             if (UrlPassed())
             {
                 tbInfo.Text = "";
@@ -966,6 +969,7 @@ namespace CreditStatistics
             ProjUrl.Clear();
         }
 
+        // unknown is the PC name
         private void InstallURL(string sIn, string sUnknown)
         {
             string sOut = "";
@@ -977,9 +981,10 @@ namespace CreditStatistics
 
             if (ParseUrl(sIn, ref sOut, ref ProjectID, ref sHost, ref sName, ref sPage))
             {
-                if(sUnknown != null)
+                if(sUnknown != "")
                 {
-                    ApplyOneProject(sHost, sName);
+                    ApplyOneProject(sHost, sName, sUnknown);
+                    lbPCname.Text = "PC name is unknown";
                 }
 
                 ProjUrl.Text = sOut;
@@ -989,9 +994,51 @@ namespace CreditStatistics
                 SetRB(ProjectID,false);
             }
         }
+
+        // just determines if the project ID exists or not
+        // since PCname is unknown if the ID is not registered
+        private bool  GetPCnameFromURL(string sUrl, ref string sHost)
+        {
+            string tURL = "";
+            string tHid = "";
+            string tValid = "";
+            string tPage = "";
+            string tStudy = "";
+            string tCountValids = "";
+            int ProjectIndex = ProjectStats.GetNameIndex(sUrl);
+
+            ProjectStats.GetBaseInfo(ProjectIndex, ref tURL, ref tHid, ref tValid, ref tPage, ref tStudy, ref tCountValids);
+
+            //need to get the value assigned to tHid and to tPage
+            int i  = sUrl.IndexOf(tHid);
+            if (i < 0)
+            {
+                MessageBox.Show(tHid + " not found in url");
+                return false;
+            }
+
+            int j = FirstNonInteger(sUrl, i + tHid.Length);
+            sHost = sUrl.Substring(i + tHid.Length, j - i - tHid.Length);
+            if(bHaveHostInfo)
+                return ProjectStats.HasProjectID(sHost, ProjectIndex);            
+            return false;
+        }
+
+        private bool InstallKnownPCurl(string sUrl, ref string sProjectID)
+        {
+            bool bFound = GetPCnameFromURL(sUrl, ref sProjectID);
+            if (bFound)
+                InstallURL(sUrl, "");
+            else
+                InstallURL(sUrl, sProjectID);
+            return bFound;
+        }
+
         private void btnPaste_Click(object sender, EventArgs e)
         {
-            InstallURL(Clipboard.GetText().Trim(),"");
+            string sProjectID = "";
+            string sUrl = Clipboard.GetText().Trim().ToLower();
+            InstallKnownPCurl(sUrl, ref sProjectID);  
         }
 
         // from TaskTimer.Start(); TaskStart
@@ -1460,22 +1507,18 @@ namespace CreditStatistics
         }
         private void btnSaveDefIDs_Click(object sender, EventArgs e)
         {
+            string sOut = "";
+            foreach(string s in defaultNameHost) { sOut += s; }
+            if (sOut.Length == 0) return;
             using (SaveFileDialog saveFileDialog = new SaveFileDialog())
             {
                 saveFileDialog.Filter = "Text Files (*.txt)|*.txt|All Files (*.*)|*.*";
-                saveFileDialog.Title = "Save List As";
-
+                saveFileDialog.Title = "Save default IDs s";
                 if (saveFileDialog.ShowDialog() == DialogResult.OK)
                 {
                     try
                     {
-                        using (StreamWriter writer = new StreamWriter(saveFileDialog.FileName))
-                        {
-                            foreach (string sOut in defaultNameHost)
-                            {
-                                writer.WriteLine(sOut);
-                            }
-                        }
+                        File.WriteAllText(saveFileDialog.FileName, sOut);
                     }
                     catch (Exception ex)
                     {
@@ -1485,6 +1528,8 @@ namespace CreditStatistics
             }
         }
 
+
+ 
         private void FillInDGV( int iLoc)
         {
             dgv.Rows.Clear();
@@ -1512,16 +1557,20 @@ namespace CreditStatistics
         }
 
 
-        private void ApplyOneProject(string HostID, string ProjName)
+        //PCName is always unknown todo
+        // bug this should lookup the PCName to see if it needs to be added to localhosts
+        // todo TO DO TODO
+        private void ApplyOneProject(string HostID, string ProjName, string PCName)
         {
             ProjectStats.LocalHosts.Clear();
             int i = ProjectStats.GetNameIndex(ProjName);
-            if (i >= 0)
+            if (!ProjectStats.DoesPCexist(PCName))
             {
                 cLHe c = new cLHe();
                 c.ProjectsHostID = HostID;
                 c.ProjectName = ProjName;
-                c.ComputerID = "unknown";
+                c.ComputerID = PCName;
+                c.IndexToProjectList = i;
                 ProjectStats.LocalHosts.Add(c);
             }
             if (ProjectStats.LocalHosts.Count > 0)
@@ -1531,7 +1580,7 @@ namespace CreditStatistics
                 {
                     tbProjHostList.AppendText(c.ProjectName + " " + c.ProjectsHostID + Environment.NewLine);
                 }
-                MyComputerID = "unknown";
+                MyComputerID = PCName;
                 UpdateRB();
                 ProjUrl.Clear();
                 lbViewRaw.Show();
@@ -1539,9 +1588,8 @@ namespace CreditStatistics
             }
         }
 
-        private void btnApplyNewPC_Click(object sender, EventArgs e)
+        private void RestoreLocalList(string sPC)
         {
-            string sPC = cbComputerList.SelectedItem.ToString();
             ProjectStats.LocalHosts.Clear();
             foreach (cPSlist cP in ProjectStats.ProjectList)
             {
@@ -1549,9 +1597,11 @@ namespace CreditStatistics
                 if (i >= 0)
                 {
                     cLHe c = new cLHe();
-                    c.ProjectsHostID = cP.Hosts[i];
-                    c.ProjectName = cP.name;
-                    c.ComputerID = sPC;
+                    c.ProjectsHostID = cP.Hosts[i];     //id used by project for PC
+                    c.ProjectName = cP.name;            //name of project
+                    c.ComputerID = sPC;                 //name of the pc (not known unless local
+                    int nID = ProjectStats.GetNameIndex(cP.name);
+                    c.IndexToProjectList = nID;
                     ProjectStats.LocalHosts.Add(c);
                 }
             }
@@ -1567,11 +1617,19 @@ namespace CreditStatistics
                 ProjUrl.Clear();
                 lbViewRaw.Show();
                 tcProj.SelectTab(0);
+                int nID = ProjectStats.LocalHosts[0].IndexToProjectList;
+                SetRB(nID, false);
+                lbPCname.Text = "PC name: " + sPC;
             }
             else
             {
                 MessageBox.Show("No valid project found");
             }
+        }
+        private void btnApplyNewPC_Click(object sender, EventArgs e)
+        {
+            string sPC = cbComputerList.SelectedItem.ToString();
+            RestoreLocalList(sPC);
         }
 
         private void btnRunCmp_Click(object sender, EventArgs e)
@@ -1875,10 +1933,10 @@ namespace CreditStatistics
                     int n = Properties.Settings.Default.HostList.Length;
                     if(n == 0)
                         MessageBox.Show("No hosts found or all hosts required passwords"+ Environment.NewLine +
-                        "You must open a default list or create one in tab Host List ");
+                        "You must open a default list or create one in the tab 'Host List' ");
                     else
                     {
-                        MessageBox.Show("Useing previous host list");
+                        MessageBox.Show("Using previous host list");
                     }
                 }
                 
@@ -1920,9 +1978,16 @@ namespace CreditStatistics
 
         private void btnRunTop_Click(object sender, EventArgs e)
         {
-            InstallURL(SelectedDemo,"unknown");
+            string sProjectID = "";
+            InstallKnownPCurl(SelectedDemo, ref sProjectID);
             StartRun("HDR");
             tcProj.SelectTab(0);
+        }
+
+        private void btnRestoreID_Click(object sender, EventArgs e)
+        {
+            string sPCID = (string) btnRestoreID.Tag;
+            RestoreLocalList(sPCID);
         }
     }
 }

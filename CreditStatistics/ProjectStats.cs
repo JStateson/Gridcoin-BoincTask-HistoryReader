@@ -289,6 +289,8 @@ null
 "
         .Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
 
+        // lookup project
+
         public void SelectComputer(string sPC) // name of computer is sPC such as "shire2"
         {
             LocalHosts.Clear();
@@ -301,6 +303,8 @@ null
                     cLHe.ComputerID = sPC;
                     cLHe.ProjectName = p.name;
                     cLHe.ProjectsHostID = p.Hosts[i];
+                    int nID = GetNameIndex(p.name);
+                    cLHe.IndexToProjectList = nID;
                     LocalHosts.Add(cLHe);
                 }
             }
@@ -498,9 +502,18 @@ null
             public string ComputerID;   // name of the PC such as "shire2"
             public string ProjectName;  // cpdn, lhc, etc
             public string ProjectsHostID;   // the ID given by the project to the PC
+            public int IndexToProjectList;
         }
         public List<cLHe> LocalHosts = new List<cLHe>();
 
+        public bool DoesPCexist(string pcName)
+        {
+            foreach (cLHe cle in LocalHosts)
+            {
+                if (cle.ComputerID == pcName) return true;
+            }
+            return false;
+        }
         private bool ProjectExists (string s)
         {
             foreach (cPSlist c in ProjectList)
@@ -517,6 +530,14 @@ null
             return false;
         }
 
+        public bool HasProjectID(string projectID, int iLoc)
+        {
+            foreach (cLHe cle in LocalHosts)
+            {
+                if (cle.ProjectsHostID == projectID && cle.IndexToProjectList == iLoc) return true;
+            }
+            return false;
+        }
         public int GetNameIndex(string s)
         {
             int i = 0;

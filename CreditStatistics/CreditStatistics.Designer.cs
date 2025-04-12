@@ -110,6 +110,8 @@
             this.label10 = new System.Windows.Forms.Label();
             this.TaskTimer = new System.Windows.Forms.Timer(this.components);
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.btnRestoreID = new System.Windows.Forms.Button();
+            this.lbPCname = new System.Windows.Forms.Label();
             this.gbGetStats.SuspendLayout();
             this.gbSamURL.SuspendLayout();
             this.tcProj.SuspendLayout();
@@ -259,6 +261,7 @@
             // 
             // gbSamURL
             // 
+            this.gbSamURL.Controls.Add(this.lbPCname);
             this.gbSamURL.Controls.Add(this.btnApplyName);
             this.gbSamURL.Controls.Add(this.tbHOSTID);
             this.gbSamURL.Controls.Add(this.label2);
@@ -353,6 +356,7 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.btnRestoreID);
             this.tabPage1.Controls.Add(this.cbStudy);
             this.tabPage1.Controls.Add(this.label9);
             this.tabPage1.Controls.Add(this.label8);
@@ -1088,6 +1092,27 @@
             this.TaskTimer.Interval = 800;
             this.TaskTimer.Tick += new System.EventHandler(this.TaskTimer_Tick);
             // 
+            // btnRestoreID
+            // 
+            this.btnRestoreID.ForeColor = System.Drawing.Color.Blue;
+            this.btnRestoreID.Location = new System.Drawing.Point(457, 348);
+            this.btnRestoreID.Name = "btnRestoreID";
+            this.btnRestoreID.Size = new System.Drawing.Size(107, 23);
+            this.btnRestoreID.TabIndex = 25;
+            this.btnRestoreID.Text = "Restore IDs";
+            this.toolTip1.SetToolTip(this.btnRestoreID, "Restore ID using the Host List");
+            this.btnRestoreID.UseVisualStyleBackColor = true;
+            this.btnRestoreID.Click += new System.EventHandler(this.btnRestoreID_Click);
+            // 
+            // lbPCname
+            // 
+            this.lbPCname.AutoSize = true;
+            this.lbPCname.Location = new System.Drawing.Point(16, 297);
+            this.lbPCname.Name = "lbPCname";
+            this.lbPCname.Size = new System.Drawing.Size(128, 16);
+            this.lbPCname.TabIndex = 10;
+            this.lbPCname.Text = "PC name if known";
+            // 
             // CreditStatistics
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1210,6 +1235,8 @@
         private System.Windows.Forms.Button btnFetchID;
         private System.Windows.Forms.Button btnRunTop;
         private System.Windows.Forms.Button btnViewTop;
+        private System.Windows.Forms.Button btnRestoreID;
+        private System.Windows.Forms.Label lbPCname;
     }
 }
 
