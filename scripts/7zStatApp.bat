@@ -1,7 +1,7 @@
 rem removed echos to allow other users to build in their own environment (no D drive)
 rem but they need 7z in program files
 set SRC=%2
-set ARC=%1\CreditStatistics\CSexecutables.7z
+set ARC=%1\CreditStatistics\CSappbins.7z
 set DOC=%1\CreditStatistics
 set IS_64=%Src:~-12,-9%
 rem "C:\Program Files\7-Zip\7z.exe -u"
