@@ -93,6 +93,12 @@
     <Compile Include="CreditStatistics.Designer.cs">
       <DependentUpon>CreditStatistics.cs</DependentUpon>
     </Compile>
+    <Compile Include="help.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="help.Designer.cs">
+      <DependentUpon>help.cs</DependentUpon>
+    </Compile>
     <Compile Include="HostRPC.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="ProjectStats.cs" />
@@ -100,6 +106,9 @@
     <Compile Include="Settings.cs" />
     <EmbeddedResource Include="CreditStatistics.resx">
       <DependentUpon>CreditStatistics.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="help.resx">
+      <DependentUpon>help.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

@@ -41,6 +41,7 @@
             this.cbfilterSTD = new System.Windows.Forms.CheckBox();
             this.ProjUrl = new System.Windows.Forms.TextBox();
             this.gbSamURL = new System.Windows.Forms.GroupBox();
+            this.lbPCname = new System.Windows.Forms.Label();
             this.btnApplyName = new System.Windows.Forms.Button();
             this.tbHOSTID = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
@@ -49,6 +50,7 @@
             this.label5 = new System.Windows.Forms.Label();
             this.tcProj = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.btnRestoreID = new System.Windows.Forms.Button();
             this.cbStudy = new System.Windows.Forms.ComboBox();
             this.label9 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
@@ -110,8 +112,13 @@
             this.label10 = new System.Windows.Forms.Label();
             this.TaskTimer = new System.Windows.Forms.Timer(this.components);
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.btnRestoreID = new System.Windows.Forms.Button();
-            this.lbPCname = new System.Windows.Forms.Label();
+            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.descriptionOfProgramToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.getYourCreditsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.getAnyonesCreditsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.compareCreditsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.gbGetStats.SuspendLayout();
             this.gbSamURL.SuspendLayout();
             this.tcProj.SuspendLayout();
@@ -126,6 +133,7 @@
             this.lbViewRaw.SuspendLayout();
             this.gbXX.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudPages)).BeginInit();
+            this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnViewData
@@ -161,7 +169,7 @@
             this.tbInfo.Multiline = true;
             this.tbInfo.Name = "tbInfo";
             this.tbInfo.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.tbInfo.Size = new System.Drawing.Size(692, 480);
+            this.tbInfo.Size = new System.Drawing.Size(692, 505);
             this.tbInfo.TabIndex = 4;
             // 
             // lbVersion
@@ -183,9 +191,9 @@
             this.gbGetStats.Controls.Add(this.cbfilterSTD);
             this.gbGetStats.Controls.Add(this.lbVersion);
             this.gbGetStats.Controls.Add(this.btnStart);
-            this.gbGetStats.Location = new System.Drawing.Point(634, 54);
+            this.gbGetStats.Location = new System.Drawing.Point(634, 52);
             this.gbGetStats.Name = "gbGetStats";
-            this.gbGetStats.Size = new System.Drawing.Size(731, 657);
+            this.gbGetStats.Size = new System.Drawing.Size(731, 676);
             this.gbGetStats.TabIndex = 10;
             this.gbGetStats.TabStop = false;
             this.gbGetStats.Text = "WU / Credit statistics";
@@ -272,6 +280,15 @@
             this.gbSamURL.TabStop = false;
             this.gbSamURL.Text = "Select Project";
             // 
+            // lbPCname
+            // 
+            this.lbPCname.AutoSize = true;
+            this.lbPCname.Location = new System.Drawing.Point(16, 297);
+            this.lbPCname.Name = "lbPCname";
+            this.lbPCname.Size = new System.Drawing.Size(128, 16);
+            this.lbPCname.TabIndex = 10;
+            this.lbPCname.Text = "PC name if known";
+            // 
             // btnApplyName
             // 
             this.btnApplyName.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -348,7 +365,7 @@
             this.tcProj.Controls.Add(this.TabHost);
             this.tcProj.Controls.Add(this.lbViewRaw);
             this.tcProj.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tcProj.Location = new System.Drawing.Point(12, 29);
+            this.tcProj.Location = new System.Drawing.Point(12, 52);
             this.tcProj.Name = "tcProj";
             this.tcProj.SelectedIndex = 0;
             this.tcProj.Size = new System.Drawing.Size(592, 689);
@@ -381,6 +398,18 @@
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Projects";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // btnRestoreID
+            // 
+            this.btnRestoreID.ForeColor = System.Drawing.Color.Blue;
+            this.btnRestoreID.Location = new System.Drawing.Point(457, 348);
+            this.btnRestoreID.Name = "btnRestoreID";
+            this.btnRestoreID.Size = new System.Drawing.Size(107, 23);
+            this.btnRestoreID.TabIndex = 25;
+            this.btnRestoreID.Text = "Restore IDs";
+            this.toolTip1.SetToolTip(this.btnRestoreID, "Restore ID using the Host List");
+            this.btnRestoreID.UseVisualStyleBackColor = true;
+            this.btnRestoreID.Click += new System.EventHandler(this.btnRestoreID_Click);
             // 
             // cbStudy
             // 
@@ -994,9 +1023,9 @@
             this.label12.BackColor = System.Drawing.SystemColors.Info;
             this.label12.Location = new System.Drawing.Point(18, 423);
             this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(121, 32);
+            this.label12.Size = new System.Drawing.Size(93, 32);
             this.label12.TabIndex = 22;
-            this.label12.Text = "Click to view raw\r\ndata and find XX";
+            this.label12.Text = "Click to view\r\nraw data";
             // 
             // lbNameHost
             // 
@@ -1092,35 +1121,73 @@
             this.TaskTimer.Interval = 800;
             this.TaskTimer.Tick += new System.EventHandler(this.TaskTimer_Tick);
             // 
-            // btnRestoreID
+            // menuStrip1
             // 
-            this.btnRestoreID.ForeColor = System.Drawing.Color.Blue;
-            this.btnRestoreID.Location = new System.Drawing.Point(457, 348);
-            this.btnRestoreID.Name = "btnRestoreID";
-            this.btnRestoreID.Size = new System.Drawing.Size(107, 23);
-            this.btnRestoreID.TabIndex = 25;
-            this.btnRestoreID.Text = "Restore IDs";
-            this.toolTip1.SetToolTip(this.btnRestoreID, "Restore ID using the Host List");
-            this.btnRestoreID.UseVisualStyleBackColor = true;
-            this.btnRestoreID.Click += new System.EventHandler(this.btnRestoreID_Click);
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.helpToolStripMenuItem});
+            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Size = new System.Drawing.Size(1377, 24);
+            this.menuStrip1.TabIndex = 14;
+            this.menuStrip1.Text = "menuStrip1";
             // 
-            // lbPCname
+            // helpToolStripMenuItem
             // 
-            this.lbPCname.AutoSize = true;
-            this.lbPCname.Location = new System.Drawing.Point(16, 297);
-            this.lbPCname.Name = "lbPCname";
-            this.lbPCname.Size = new System.Drawing.Size(128, 16);
-            this.lbPCname.TabIndex = 10;
-            this.lbPCname.Text = "PC name if known";
+            this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.descriptionOfProgramToolStripMenuItem,
+            this.getYourCreditsToolStripMenuItem,
+            this.toolStripMenuItem1,
+            this.getAnyonesCreditsToolStripMenuItem,
+            this.compareCreditsToolStripMenuItem});
+            this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
+            this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
+            this.helpToolStripMenuItem.Text = "Help";
+            // 
+            // descriptionOfProgramToolStripMenuItem
+            // 
+            this.descriptionOfProgramToolStripMenuItem.Name = "descriptionOfProgramToolStripMenuItem";
+            this.descriptionOfProgramToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
+            this.descriptionOfProgramToolStripMenuItem.Text = "Description of program";
+            this.descriptionOfProgramToolStripMenuItem.Click += new System.EventHandler(this.descriptionOfProgramToolStripMenuItem_Click);
+            // 
+            // getYourCreditsToolStripMenuItem
+            // 
+            this.getYourCreditsToolStripMenuItem.Name = "getYourCreditsToolStripMenuItem";
+            this.getYourCreditsToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
+            this.getYourCreditsToolStripMenuItem.Text = "Get all your credits";
+            this.getYourCreditsToolStripMenuItem.Click += new System.EventHandler(this.GetHelp);
+            // 
+            // toolStripMenuItem1
+            // 
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(197, 22);
+            this.toolStripMenuItem1.Text = "Quick Demo";
+            this.toolStripMenuItem1.Click += new System.EventHandler(this.GetHelp);
+            // 
+            // getAnyonesCreditsToolStripMenuItem
+            // 
+            this.getAnyonesCreditsToolStripMenuItem.Name = "getAnyonesCreditsToolStripMenuItem";
+            this.getAnyonesCreditsToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
+            this.getAnyonesCreditsToolStripMenuItem.Text = "Get anyones credit";
+            this.getAnyonesCreditsToolStripMenuItem.Click += new System.EventHandler(this.GetHelp);
+            // 
+            // compareCreditsToolStripMenuItem
+            // 
+            this.compareCreditsToolStripMenuItem.Name = "compareCreditsToolStripMenuItem";
+            this.compareCreditsToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
+            this.compareCreditsToolStripMenuItem.Text = "Compare Credits";
+            this.compareCreditsToolStripMenuItem.Click += new System.EventHandler(this.GetHelp);
             // 
             // CreditStatistics
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1377, 744);
+            this.ClientSize = new System.Drawing.Size(1377, 740);
             this.Controls.Add(this.tcProj);
             this.Controls.Add(this.gbGetStats);
+            this.Controls.Add(this.menuStrip1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.MainMenuStrip = this.menuStrip1;
             this.MaximizeBox = false;
             this.Name = "CreditStatistics";
             this.Text = "Credit Statistics";
@@ -1149,7 +1216,10 @@
             this.gbXX.ResumeLayout(false);
             this.gbXX.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudPages)).EndInit();
+            this.menuStrip1.ResumeLayout(false);
+            this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -1237,6 +1307,13 @@
         private System.Windows.Forms.Button btnViewTop;
         private System.Windows.Forms.Button btnRestoreID;
         private System.Windows.Forms.Label lbPCname;
+        private System.Windows.Forms.MenuStrip menuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem descriptionOfProgramToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem getYourCreditsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem getAnyonesCreditsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem compareCreditsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
     }
 }
 

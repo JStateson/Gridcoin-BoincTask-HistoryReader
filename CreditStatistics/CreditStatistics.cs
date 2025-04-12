@@ -119,6 +119,7 @@ namespace CreditStatistics
         bool bHaveHostInfo = false; // have hostname, project names and host ID for project
         HostRPC MYrpc = new HostRPC();
         private string SelectedDemo = "";
+        bool bShowHostAvailable = false;
         public CreditStatistics(string[] args)
         {
             InitializeComponent();
@@ -151,8 +152,8 @@ namespace CreditStatistics
             {
                 if (TryReadBThostlist())
                 {
-                    MessageBox.Show("Hosts are shown below.  Select Create to make the list");
                     tcProj.SelectTab(1);
+                    bShowHostAvailable = true;
                 }
                 else
                 {
@@ -165,8 +166,10 @@ namespace CreditStatistics
 
             }
 #else
-    Properties.Settings.Default.HostList = null;
+            Properties.Settings.Default.HostList = null;
+            Properties.Settings.Default.Save();
 #endif
+
             FormProjectRB();
             btnRestoreID.Enabled = bHaveHostInfo;
             foreach (DataGridViewColumn column in dgv.Columns)
@@ -188,6 +191,12 @@ namespace CreditStatistics
             ParseProjUrl();
             btnRestoreID.Tag = MyComputerID;
             lbPCname.Text = "PC name: " + MyComputerID;
+            if(bShowHostAvailable)
+            {
+                MessageBox.Show("Hosts are shown below." + Environment.NewLine + "Select Create to make the list or just load the demo:" +
+                    Environment.NewLine + "Select tab 'HOST LIST' and click 'Fetch IDs' then read the help");
+                btnScanClients.Enabled = true;
+            }
         }
 
         private void FormProjectRB()
@@ -1860,7 +1869,6 @@ namespace CreditStatistics
                         Debug.Assert(i > 0);
                         sOld = "&offset=";
                         sNew = sNew + "&offset=";
-                        return;
                     }
                 }
                 string u = s.Replace(sOld, sNew);
@@ -1988,6 +1996,38 @@ namespace CreditStatistics
         {
             string sPCID = (string) btnRestoreID.Tag;
             RestoreLocalList(sPCID);
+        }
+
+        private void descriptionOfProgramToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Process.Start("https://stateson.net/bthistory/CreditStats.html");
+        }
+
+        private void GetHelp(object sender, EventArgs e)
+        {
+            string sHelp = "";
+            if (sender is ToolStripMenuItem item)
+            {
+                string name = item.Text;
+                switch(name)
+                {
+                    case "Get anyones credit":
+                        sHelp = "AnyoneCR.rtf";
+                        break;
+                    case "Get all your credits":
+                        sHelp = "AllCR.rtf";
+                        break;
+                    case "Compare Credits":
+                        sHelp = "CompareCR.rtf";
+                        break;
+                    case "Quick Demo":
+                        sHelp = "QuickDemo.rtf";
+                        break;
+                }
+                string FilePath = WhereEXE + "/" + sHelp;
+                if(File.Exists(FilePath))
+                    Process.Start(FilePath);
+            }
         }
     }
 }

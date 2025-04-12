@@ -3,6 +3,8 @@ rem it was modified so that the project status returned the host IDs and names f
 rem this was used to verify that the RPC tool I used matched what boinccmd provided
 rem my RPC method in CreditStatistics.exe does not use passwords. If you use passwords 
 rem then this script can be used but you need a copy of my mod'ed boinccmd.exe
+rem the output of using boinccmd is rawlist.txt and it can be applied as input to the application
+rem CreditStats rawlist.txt
 del systems.txt
 echo shire2>> systems.txt
 echo asusx299>> systems.txt
