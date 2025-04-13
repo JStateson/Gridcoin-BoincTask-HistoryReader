@@ -188,7 +188,8 @@ namespace CreditStatistics
             //SetRB(0,false); // set default to first project
             hiddenTabPage = tcProj.TabPages["lbViewRaw"]; 
             tcProj.TabPages.Remove(hiddenTabPage);
-            cbSelProj.SelectedIndex = 0;
+            if(bHaveHostInfo)
+                cbSelProj.SelectedIndex = 0;
             ParseProjUrl();
             btnRestoreID.Tag = MyComputerID;
             lbPCname.Text = "PC name: " + MyComputerID;
@@ -705,8 +706,9 @@ namespace CreditStatistics
 
         private void btnReadBoinc_Click(object sender, EventArgs e)
         {
-            LocalHostList = ReadXmlList(BoincHostFolder.Text);
-            if (LocalHostList == null) return;
+            string[] TempHostList = ReadXmlList(BoincHostFolder.Text);            
+            if (TempHostList == null) return;
+            LocalHostList = TempHostList;
             btnScanClients.Enabled = true;
             ShowXML();
         }
@@ -1943,7 +1945,11 @@ namespace CreditStatistics
                 if(ProjectStats.GetHosts(MYrpc.GetSchedulerResults().ToLower()))
                 {
                     if(TryGetHostSets())
+                    {
                         ProjectStats.SelectComputer(MyComputerID);
+                        cbSelProj.SelectedIndex = 0;
+                    }    
+
                 }
                 else
                 {

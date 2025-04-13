@@ -630,95 +630,97 @@ null
             cBoincRaw br;
             cOldraw cOl = new cOldraw();
             string UnknownProjects  = "";
-            if (true)
+            sBoincInfo = sBoincInfo.Replace("@home", "");
+            string[] content = sBoincInfo.Split(new string[] { "\n", "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+            int i = 0;
+            while (true)
             {
-                sBoincInfo = sBoincInfo.Replace("@home", "");
-                string[] content = sBoincInfo.Split(new string[] { "\n", "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
-                int i = 0;
-                while(true)
+                if (i >= content.Length)
                 {
-                    if (i >= content.Length)
-                    {                        
+                    break;
+                }
+
+                do
+                {
+                    sPCname = content[i].Trim();
+                    i++;
+                    if (sPCname.Contains(",") || sPCname == "")
+                    {
+                        MessageBox.Show("expected hostname found: " + sPCname);
+                        b = true;
+                    }
+                    else b = false;
+                } while (b);
+
+                br = new cBoincRaw();
+                br.PCname = sPCname;
+                LocalHostsRaw.Add(br);
+
+                do
+                {
+                    if(i >= content.Length)
+                    {
+                        break;  // todo this is an error as there should be data for this PC
+                    }
+                    ProjHost = content[i].Trim();
+                    i++;
+                    j = ProjHost.IndexOf(",");
+                    if (j < 0)
+                    {
+                        i--;
                         break;
                     }
-
-                    do
+                    else
                     {
-                        sPCname = content[i].Trim();
-                        i++;
-                        if (sPCname.Contains(",") || sPCname == "")
+                        if (j >= (ProjHost.Length - 1))
                         {
-                            MessageBox.Show("expected hostname found: " + sPCname);                            
-                            b = true;
-                        }
-                        else b = false;
-                    } while (b);
-
-                    br = new cBoincRaw();
-                    br.PCname = sPCname;
-                    LocalHostsRaw.Add(br);
-
-                    do
-                    {
-                        ProjHost = content[i].Trim();
-                        i++;
-                        j = ProjHost.IndexOf(",");
-                        if (j < 0)
-                        {
-                            i--;
                             break;
                         }
-                        else
-                        {
-                            if(j>= (ProjHost.Length-1))
-                            {
-                                break;
-                            }
-                            sProj = ProjHost.Substring(0, j).Trim();
-                            sHost = ProjHost.Substring(j + 1).Trim();
-                            LocalHostsRaw.Last().Proj.Add(sProj);
-                            LocalHostsRaw.Last().HostID.Add(sHost);
-                        }
-                        b = (i < content.Length);
-                    } while (b);
-                }
+                        sProj = ProjHost.Substring(0, j).Trim();
+                        sHost = ProjHost.Substring(j + 1).Trim();
+                        LocalHostsRaw.Last().Proj.Add(sProj);
+                        LocalHostsRaw.Last().HostID.Add(sHost);
+                    }
+                    b = (i < content.Length);
+                } while (b);
+            }
 
-                foreach(cBoincRaw abr in LocalHostsRaw)
+            foreach (cBoincRaw abr in LocalHostsRaw)
+            {
+                int k = 0;
+                for (i = 0; i < abr.Proj.Count; i++)
                 {
-                    int k = 0;
-                    for(i = 0; i < abr.Proj.Count; i++) 
-                    {                        
-                        if (ProjectExists(abr.Proj[i]))
+                    if (ProjectExists(abr.Proj[i]))
+                    {
+                        cOl.AddTriple(abr.PCname, abr.Proj[i], abr.HostID[i]);
+                    }
+                    else
+                    {
+                        string u = abr.Proj[i];
+                        if (!UnknownProjects.Contains(u))
+                            UnknownProjects += u + " ";
+                        k++;
+                        if (k == 4)
                         {
-                            cOl.AddTriple(abr.PCname, abr.Proj[i], abr.HostID[i]);
-                        }
-                        else
-                        {
-                            string u = abr.Proj[i];
-                            if(!UnknownProjects.Contains(u))
-                                UnknownProjects += u + " ";
-                            k++;
-                            if(k == 4)
-                            {
-                                k = 0;
-                                UnknownProjects += Environment.NewLine;
-                            }
+                            k = 0;
+                            UnknownProjects += Environment.NewLine;
                         }
                     }
                 }
-                foreach(cOrganizedRaw OR in cOl.OrgRaw)
-                {
-                    string sOut = OR.ProjNameFull + ": ";
-                    for (j = 0; j < OR.PCnameHostID.Count(); j++)
-                        sOut += OR.PCnameHostID[j] + ",";
-                    cOl.RawOut.Add(sOut);
-                }
-                Properties.Settings.Default.HostList = cOl.RawOut.ToArray();
-                if(UnknownProjects != "")
-                {
-                    MessageBox.Show("Unknown or old projects:" + Environment.NewLine + UnknownProjects);
-                }
             }
+            foreach (cOrganizedRaw OR in cOl.OrgRaw)
+            {
+                string sOut = OR.ProjNameFull + ": ";
+                for (j = 0; j < OR.PCnameHostID.Count(); j++)
+                    sOut += OR.PCnameHostID[j] + ",";
+                cOl.RawOut.Add(sOut);
+            }
+            Properties.Settings.Default.HostList = cOl.RawOut.ToArray();
+            if (UnknownProjects != "")
+            {
+                MessageBox.Show("Unknown or old projects:" + Environment.NewLine + UnknownProjects);
+            }
+
             return Properties.Settings.Default.HostList.Length > 0;
         }
 
