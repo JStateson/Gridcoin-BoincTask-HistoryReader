@@ -96,8 +96,9 @@
             this.HostID = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.btnSaveIDs = new System.Windows.Forms.Button();
             this.lbViewRaw = new System.Windows.Forms.TabPage();
-            this.btnApplyAPxx = new System.Windows.Forms.Button();
             this.gbXX = new System.Windows.Forms.GroupBox();
+            this.btnApplyAPxx = new System.Windows.Forms.Button();
+            this.cbKnownIDs = new System.Windows.Forms.ComboBox();
             this.tbXX = new System.Windows.Forms.TextBox();
             this.lbXX = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
@@ -105,7 +106,6 @@
             this.label12 = new System.Windows.Forms.Label();
             this.lbNameHost = new System.Windows.Forms.Label();
             this.nudPages = new System.Windows.Forms.NumericUpDown();
-            this.label11 = new System.Windows.Forms.Label();
             this.lbURLtoSequence = new System.Windows.Forms.ListBox();
             this.btnRunSeq = new System.Windows.Forms.Button();
             this.btnViewUrl = new System.Windows.Forms.Button();
@@ -119,6 +119,8 @@
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.getAnyonesCreditsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.compareCreditsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.label16 = new System.Windows.Forms.Label();
+            this.label17 = new System.Windows.Forms.Label();
             this.gbGetStats.SuspendLayout();
             this.gbSamURL.SuspendLayout();
             this.tcProj.SuspendLayout();
@@ -718,6 +720,7 @@
             // lbSelectDemo
             // 
             this.lbSelectDemo.FormattingEnabled = true;
+            this.lbSelectDemo.HorizontalScrollbar = true;
             this.lbSelectDemo.ItemHeight = 16;
             this.lbSelectDemo.Items.AddRange(new object[] {
             "https://numberfields.asu.edu/NumberFields/results.php?hostid=2883430&state=4&offs" +
@@ -741,7 +744,9 @@
             "http://radioactiveathome.org/boinc/results.php?hostid=45736&offset=0&state=3",
             "https://boinc.progger.info/odlk/results.php?hostid=29350&state=4&offset=0",
             "https://www.primegrid.com/results.php?hostid=905516&offset=0&state=4",
-            "https://gerasim.boinc.ru/users/viewHostResults.aspx?hostid=70676&opt=2"});
+            "https://gerasim.boinc.ru/users/viewHostResults.aspx?hostid=70676&opt=2",
+            "https://gpugrid.net/gpugrid/results.php?hostid=635604&offset=0&show_names=0&state" +
+                "=4"});
             this.lbSelectDemo.Location = new System.Drawing.Point(3, 144);
             this.lbSelectDemo.Name = "lbSelectDemo";
             this.lbSelectDemo.Size = new System.Drawing.Size(536, 500);
@@ -934,13 +939,10 @@
             // 
             // lbViewRaw
             // 
-            this.lbViewRaw.Controls.Add(this.btnApplyAPxx);
             this.lbViewRaw.Controls.Add(this.gbXX);
             this.lbViewRaw.Controls.Add(this.lbViewRawH);
             this.lbViewRaw.Controls.Add(this.label12);
             this.lbViewRaw.Controls.Add(this.lbNameHost);
-            this.lbViewRaw.Controls.Add(this.nudPages);
-            this.lbViewRaw.Controls.Add(this.label11);
             this.lbViewRaw.Controls.Add(this.lbURLtoSequence);
             this.lbViewRaw.Controls.Add(this.btnRunSeq);
             this.lbViewRaw.Controls.Add(this.btnViewUrl);
@@ -953,10 +955,27 @@
             this.lbViewRaw.Text = "Sequencer";
             this.lbViewRaw.UseVisualStyleBackColor = true;
             // 
+            // gbXX
+            // 
+            this.gbXX.Controls.Add(this.label17);
+            this.gbXX.Controls.Add(this.label16);
+            this.gbXX.Controls.Add(this.btnApplyAPxx);
+            this.gbXX.Controls.Add(this.cbKnownIDs);
+            this.gbXX.Controls.Add(this.nudPages);
+            this.gbXX.Controls.Add(this.tbXX);
+            this.gbXX.Controls.Add(this.lbXX);
+            this.gbXX.Controls.Add(this.label13);
+            this.gbXX.Location = new System.Drawing.Point(155, 417);
+            this.gbXX.Name = "gbXX";
+            this.gbXX.Size = new System.Drawing.Size(377, 215);
+            this.gbXX.TabIndex = 24;
+            this.gbXX.TabStop = false;
+            this.gbXX.Text = "Change Application";
+            // 
             // btnApplyAPxx
             // 
             this.btnApplyAPxx.ForeColor = System.Drawing.Color.Blue;
-            this.btnApplyAPxx.Location = new System.Drawing.Point(198, 423);
+            this.btnApplyAPxx.Location = new System.Drawing.Point(219, 21);
             this.btnApplyAPxx.Name = "btnApplyAPxx";
             this.btnApplyAPxx.Size = new System.Drawing.Size(90, 32);
             this.btnApplyAPxx.TabIndex = 25;
@@ -964,22 +983,21 @@
             this.btnApplyAPxx.UseVisualStyleBackColor = true;
             this.btnApplyAPxx.Click += new System.EventHandler(this.btnApplyAPxx_Click);
             // 
-            // gbXX
+            // cbKnownIDs
             // 
-            this.gbXX.Controls.Add(this.tbXX);
-            this.gbXX.Controls.Add(this.lbXX);
-            this.gbXX.Controls.Add(this.label13);
-            this.gbXX.Location = new System.Drawing.Point(198, 476);
-            this.gbXX.Name = "gbXX";
-            this.gbXX.Size = new System.Drawing.Size(334, 156);
-            this.gbXX.TabIndex = 24;
-            this.gbXX.TabStop = false;
-            this.gbXX.Text = "Change Application";
+            this.cbKnownIDs.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cbKnownIDs.FormattingEnabled = true;
+            this.cbKnownIDs.Location = new System.Drawing.Point(280, 97);
+            this.cbKnownIDs.Name = "cbKnownIDs";
+            this.cbKnownIDs.Size = new System.Drawing.Size(68, 28);
+            this.cbKnownIDs.TabIndex = 26;
+            this.toolTip1.SetToolTip(this.cbKnownIDs, "Application to obtain\r\ndata from or a default");
+            this.cbKnownIDs.SelectedIndexChanged += new System.EventHandler(this.cbKnownIDs_SelectedIndexChanged);
             // 
             // tbXX
             // 
             this.tbXX.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbXX.Location = new System.Drawing.Point(139, 112);
+            this.tbXX.Location = new System.Drawing.Point(43, 136);
             this.tbXX.Name = "tbXX";
             this.tbXX.Size = new System.Drawing.Size(51, 26);
             this.tbXX.TabIndex = 25;
@@ -990,7 +1008,7 @@
             this.lbXX.AutoSize = true;
             this.lbXX.BackColor = System.Drawing.SystemColors.Info;
             this.lbXX.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbXX.Location = new System.Drawing.Point(22, 115);
+            this.lbXX.Location = new System.Drawing.Point(6, 101);
             this.lbXX.Name = "lbXX";
             this.lbXX.Size = new System.Drawing.Size(101, 20);
             this.lbXX.TabIndex = 24;
@@ -1000,20 +1018,19 @@
             // 
             this.label13.AutoSize = true;
             this.label13.BackColor = System.Drawing.SystemColors.Info;
-            this.label13.Location = new System.Drawing.Point(18, 32);
+            this.label13.Location = new System.Drawing.Point(7, 29);
             this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(209, 48);
+            this.label13.Size = new System.Drawing.Size(138, 48);
             this.label13.TabIndex = 23;
-            this.label13.Text = "replace XX with the app id:\r\nView the webpage and select\r\nan applicatoin to see t" +
-    "he XX";
+            this.label13.Text = "replace XX with ID\r\nin the combox box\r\nor enter it manually";
             // 
             // lbViewRawH
             // 
             this.lbViewRawH.FormattingEnabled = true;
             this.lbViewRawH.ItemHeight = 16;
-            this.lbViewRawH.Location = new System.Drawing.Point(21, 476);
+            this.lbViewRawH.Location = new System.Drawing.Point(21, 460);
             this.lbViewRawH.Name = "lbViewRawH";
-            this.lbViewRawH.Size = new System.Drawing.Size(111, 164);
+            this.lbViewRawH.Size = new System.Drawing.Size(111, 180);
             this.lbViewRawH.TabIndex = 23;
             this.lbViewRawH.SelectedIndexChanged += new System.EventHandler(this.lbViewRawH_SelectedIndexChanged);
             // 
@@ -1021,7 +1038,7 @@
             // 
             this.label12.AutoSize = true;
             this.label12.BackColor = System.Drawing.SystemColors.Info;
-            this.label12.Location = new System.Drawing.Point(18, 423);
+            this.label12.Location = new System.Drawing.Point(18, 417);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(93, 32);
             this.label12.TabIndex = 22;
@@ -1032,13 +1049,15 @@
             this.lbNameHost.AutoSize = true;
             this.lbNameHost.Location = new System.Drawing.Point(195, 115);
             this.lbNameHost.Name = "lbNameHost";
-            this.lbNameHost.Size = new System.Drawing.Size(58, 16);
+            this.lbNameHost.Size = new System.Drawing.Size(69, 16);
             this.lbNameHost.TabIndex = 20;
-            this.lbNameHost.Text = "label12";
+            this.lbNameHost.Text = "PC name";
+            this.toolTip1.SetToolTip(this.lbNameHost, "The name of the PC if\r\nknown else the PC\'s ID");
             // 
             // nudPages
             // 
-            this.nudPages.Location = new System.Drawing.Point(98, 115);
+            this.nudPages.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.nudPages.Location = new System.Drawing.Point(195, 97);
             this.nudPages.Maximum = new decimal(new int[] {
             4,
             0,
@@ -1050,22 +1069,13 @@
             0,
             0});
             this.nudPages.Name = "nudPages";
-            this.nudPages.Size = new System.Drawing.Size(51, 22);
+            this.nudPages.Size = new System.Drawing.Size(51, 26);
             this.nudPages.TabIndex = 19;
             this.nudPages.Value = new decimal(new int[] {
             1,
             0,
             0,
             0});
-            // 
-            // label11
-            // 
-            this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(29, 115);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(52, 16);
-            this.label11.TabIndex = 18;
-            this.label11.Text = "Pages";
             // 
             // lbURLtoSequence
             // 
@@ -1178,6 +1188,28 @@
             this.compareCreditsToolStripMenuItem.Text = "Compare Credits";
             this.compareCreditsToolStripMenuItem.Click += new System.EventHandler(this.GetHelp);
             // 
+            // label16
+            // 
+            this.label16.AutoSize = true;
+            this.label16.BackColor = System.Drawing.SystemColors.Info;
+            this.label16.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label16.Location = new System.Drawing.Point(187, 74);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(59, 20);
+            this.label16.TabIndex = 27;
+            this.label16.Text = "Pages";
+            // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.BackColor = System.Drawing.SystemColors.Info;
+            this.label17.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label17.Location = new System.Drawing.Point(293, 74);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(55, 20);
+            this.label17.TabIndex = 28;
+            this.label17.Text = "Study";
+            // 
             // CreditStatistics
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1288,7 +1320,6 @@
         private System.Windows.Forms.Button btnRunSeq;
         private System.Windows.Forms.Button btnClearAll;
         private System.Windows.Forms.Button btnSetAll;
-        private System.Windows.Forms.Label label11;
         private System.Windows.Forms.NumericUpDown nudPages;
         private System.Windows.Forms.Label lbNameHost;
         private System.Windows.Forms.Label label12;
@@ -1314,6 +1345,9 @@
         private System.Windows.Forms.ToolStripMenuItem getAnyonesCreditsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem compareCreditsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
+        private System.Windows.Forms.ComboBox cbKnownIDs;
+        private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.Label label16;
     }
 }
 

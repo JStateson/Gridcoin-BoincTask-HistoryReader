@@ -19,6 +19,7 @@ using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Net;
 using System.Xml.Linq;
+using Microsoft.Win32;
 
 
 namespace CreditStatistics
@@ -38,6 +39,7 @@ namespace CreditStatistics
 
         public List<string> Hosts = new List<string>(); // the ID of the pc
         public List<string> HostNames = new List<string>();
+        public List<string> AppID = new List<string>(); // some projects list the applications in the xml files
         public void AddHosts(string sHostIDs)
         {
             if (sHostIDs == "") return;
@@ -47,6 +49,12 @@ namespace CreditStatistics
                 if (s1 == "") continue;
                 Hosts.Add(s1);
             }
+        }
+        public void AddAppID(string sAppID)
+        {
+            if (AppID.Count == 0) AppID.Add(sAppID);
+            else if (AppID.Contains(sAppID)) return;
+            else AppID.Add(sAppID);
         }
     }
     public class cProjectStats
@@ -1172,6 +1180,44 @@ null
             List<int> indices = Enumerable.Range(0, UnsortedDT.Count).ToList();
             indices.Sort((i1, i2) => UnsortedDT[i2].CompareTo(UnsortedDT[i1]));
             LCreditInfo = indices.Select(i => UnsortedLCI[i]).ToList();
+        }
+
+        public void GetProjectAPPIDs()
+        {
+            foreach (cPSlist p in ProjectList)
+            {
+                p.AppID.Clear();
+                if(p.sStudyV != "null")
+                {
+                    p.AddAppID(p.sStudyV);
+                }
+            }
+            RegistryKey key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Space Sciences Laboratory, U.C. Berkeley\BOINC Setup");
+            if (key != null)
+            {
+                string folderPath = key.GetValue("DATADIR")?.ToString();
+                key.Close();
+                string[] files = Directory.GetFiles(folderPath, "account*.xml");
+                foreach (string file in files)
+                {
+                    int iLoc = GetNameIndex(file.ToLower());
+                    if (iLoc >= 0)
+                    {
+                        string[] lines = File.ReadAllLines(file);
+                        foreach(string line in lines)
+                        {
+                            int i = line.IndexOf("<app_id>");
+                            if(i >= 0)
+                            {
+                                int j = line.IndexOf("</app_id>", i);
+                                Debug.Assert(j > 0);
+                                string sID = line.Substring(i + 8, j - i - 8);
+                                ProjectList[iLoc].AddAppID(sID);
+                            }
+                        }
+                    }
+                }
+            }
         }
 
     }
