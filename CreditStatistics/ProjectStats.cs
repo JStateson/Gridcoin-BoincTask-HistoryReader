@@ -713,6 +713,7 @@ null
                 string sOut = OR.ProjNameFull + ": ";
                 for (j = 0; j < OR.PCnameHostID.Count(); j++)
                     sOut += OR.PCnameHostID[j] + ",";
+                sOut = sOut.Substring(0,sOut.Length - 1);   // remove trailing comma
                 cOl.RawOut.Add(sOut);
             }
             Properties.Settings.Default.HostList = cOl.RawOut.ToArray();
