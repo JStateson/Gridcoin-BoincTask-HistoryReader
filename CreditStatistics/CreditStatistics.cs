@@ -1725,11 +1725,17 @@ namespace CreditStatistics
             if(lbURLtoSequence.Items.Count == 0) return;    
             string sUrl = lbURLtoSequence.Items[ts.UrlIndex].ToString(); 
             ts.sHostName = lbViewRawH.Items[ts.UrlIndex].ToString();
+            SequenceChanged(ts.UrlIndex);
             MyComputerID = ts.sHostName;
             InstallURL(sUrl,"");
             StartRun("SEQ");
         }
 
+        private void SequenceChanged(int index)
+        {
+            lbURLtoSequence.SelectedIndex = index;
+            lbNameHost.Text = lbViewRawH.Items[index].ToString();
+        }
 
         private void btnRunSeq_Click(object sender, EventArgs e)
         {
@@ -1774,6 +1780,7 @@ namespace CreditStatistics
                             SeqFinished();
                             return;
                         }
+                        SequenceChanged(ts.UrlIndex);
                         ts.CurrentPage = 0;
                         StartSEQ();
                         break;
@@ -1815,9 +1822,10 @@ namespace CreditStatistics
             int index = lbURLtoSequence.IndexFromPoint(e.Location);
             if (index != ListBox.NoMatches)
             {
-                lbNameHost.Text = lbViewRawH.Items[index].ToString();
+                SequenceChanged(index);
             }            
         }
+
 
         private void lbViewRawH_SelectedIndexChanged(object sender, EventArgs e)
         {

@@ -617,7 +617,7 @@ null
             string sHost;
             bool b;
             int j;
-#if DEBUG
+#if DEBUGno
             string sDout =  WhereEXE + "/ClientList_out.txt";
             string sDin = WhereEXE + "/ClientList_in.txt";
             File.WriteAllText(sDout, sBoincInfo);
@@ -670,6 +670,10 @@ null
                         }
                         else
                         {
+                            if(j>= (ProjHost.Length-1))
+                            {
+                                break;
+                            }
                             sProj = ProjHost.Substring(0, j).Trim();
                             sHost = ProjHost.Substring(j + 1).Trim();
                             LocalHostsRaw.Last().Proj.Add(sProj);
