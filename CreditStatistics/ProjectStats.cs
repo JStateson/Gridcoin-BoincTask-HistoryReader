@@ -606,6 +606,9 @@ null
             }
             return false;
         }
+
+
+        public string WhereEXE = "";
         public bool GetHosts(string sBoincInfo)
         {
             string sPCname;
@@ -614,7 +617,16 @@ null
             string sHost;
             bool b;
             int j;
-            List<cBoincRaw> LocalHostsRaw = new List<cBoincRaw>();
+#if DEBUG
+            string sDout =  WhereEXE + "/ClientList_out.txt";
+            string sDin = WhereEXE + "/ClientList_in.txt";
+            File.WriteAllText(sDout, sBoincInfo);
+            MessageBox.Show("Just wrote your client list to: " + Environment.NewLine +
+                sDout + Environment.NewLine + "Going to read and use: " + sDin);
+            sBoincInfo = File.ReadAllText(sDin).ToLower();
+#endif
+
+            List <cBoincRaw> LocalHostsRaw = new List<cBoincRaw>();
             cBoincRaw br;
             cOldraw cOl = new cOldraw();
             string UnknownProjects  = "";

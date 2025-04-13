@@ -124,6 +124,7 @@ namespace CreditStatistics
         {
             InitializeComponent();
             WhereEXE = Directory.GetParent(Assembly.GetExecutingAssembly().Location).ToString();
+            ProjectStats.WhereEXE = WhereEXE;
             WorkingFolderLoc.Text = WhereEXE;
             BoincHostLoc = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\eFMer\\BoincTasks";
             BoincHostFolder.Text = BoincHostLoc;
