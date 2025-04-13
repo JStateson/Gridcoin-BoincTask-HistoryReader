@@ -617,7 +617,7 @@ null
             string sHost;
             bool b;
             int j;
-#if DEBUGno
+#if DEBUGNO
             string sDout =  WhereEXE + "/ClientList_out.txt";
             string sDin = WhereEXE + "/ClientList_in.txt";
             File.WriteAllText(sDout, sBoincInfo);
