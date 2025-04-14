@@ -1,6 +1,4 @@
-﻿#define HAVEDATA
-
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
@@ -135,10 +133,23 @@ namespace CreditStatistics
 
 
             ProjectStats.Init();
-#if HAVEDATA
 
             if (args.Length > 0)
             {
+                string s = args[0].ToLower();
+                if (s == "reset")
+                {
+                    Properties.Settings.Default.Reset();
+                    Properties.Settings.Default.Save();
+                }
+                else if(s=="/?" || s=="-h")
+                {
+                    string t = 
+                        "CreditStatistics reset             : remove all client data\r\n" +
+                        "CreditStatistics ClientList_in.txt : get client information from file";
+
+                MessageBox.Show(t);                                        }
+
                 bHaveHostInfo = ProjectStats.GetHostsFile(args[0]);
                 // produces: Properties.Settings.Default.HostList  FROM 
                 // hostname or pc: projname1,id1 projname2,i2  etc using space delim between pairs
@@ -168,10 +179,6 @@ namespace CreditStatistics
                 }
 
             }
-#else
-            Properties.Settings.Default.HostList = null;
-            Properties.Settings.Default.Save();
-#endif
 
             FormProjectRB();
             btnRestoreID.Enabled = bHaveHostInfo;

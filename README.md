@@ -11,3 +11,5 @@ Possibly can be used in Linux under wine 6.02 with mono 5
 If problems then use the debug version of the app as it can provide lines numbers where the fault occurs.
 
 Download the 7z binaries to get both the release and debug versions of CreditStatistics
+
+To remove all your client data run the app by entering 'CreditStatistics.exe reset'  You can load your data again or just use the demo list
