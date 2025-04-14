@@ -46,5 +46,29 @@ namespace CreditStatistics.Properties {
                 this["HostList"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool AskForStudy {
+            get {
+                return ((bool)(this["AskForStudy"]));
+            }
+            set {
+                this["AskForStudy"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool AskForBoinctasks {
+            get {
+                return ((bool)(this["AskForBoinctasks"]));
+            }
+            set {
+                this["AskForBoinctasks"] = value;
+            }
+        }
     }
 }

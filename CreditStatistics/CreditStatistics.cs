@@ -64,7 +64,7 @@ namespace CreditStatistics
         }
 
 
-        private List<string> Proj_PC_ID = new List<string>();   // project name, pc name and pc id "computer id"
+        
         private string SequencerOut = "";   // used when running sequencer instead of output to text box
         private bool bInSequencer = false;
         private string sOutInfo = "";
@@ -660,6 +660,7 @@ namespace CreditStatistics
             string PCname = "";
             if (UrlPassed())
             {
+                tbPage.Text = "0";
                 tbInfo.Text = "";
                 StartRun("HDR");
             }
@@ -1234,14 +1235,20 @@ namespace CreditStatistics
         private bool TryGetHostSets()
         {
             string[] SavedHostList = Properties.Settings.Default.HostList;
+            List<string> Proj_PC_ID = new List<string>();   // project name, pc name and pc id "computer id"
             if (SavedHostList == null || SavedHostList.Length == 0)
+            {
+                if (Properties.Settings.Default.AskForBoinctasks)
+                {
+                    
+                }
                 return false;
-            Proj_PC_ID.Clear();
+            }
             Proj_PC_ID.AddRange(SavedHostList);
-            return FormHostList();
+            return FormHostList(ref Proj_PC_ID);
         }
 
-        private bool FormHostList()
+        private bool FormHostList(ref List<string> Proj_PC_ID)
         {
             if (Proj_PC_ID.Count == 0) return false;
             int i, n = 0;

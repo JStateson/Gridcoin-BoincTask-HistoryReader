@@ -97,15 +97,17 @@
             this.btnSaveIDs = new System.Windows.Forms.Button();
             this.lbViewRaw = new System.Windows.Forms.TabPage();
             this.gbXX = new System.Windows.Forms.GroupBox();
+            this.label17 = new System.Windows.Forms.Label();
+            this.label16 = new System.Windows.Forms.Label();
             this.btnApplyAPxx = new System.Windows.Forms.Button();
             this.cbKnownIDs = new System.Windows.Forms.ComboBox();
+            this.nudPages = new System.Windows.Forms.NumericUpDown();
             this.tbXX = new System.Windows.Forms.TextBox();
             this.lbXX = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
             this.lbViewRawH = new System.Windows.Forms.ListBox();
             this.label12 = new System.Windows.Forms.Label();
             this.lbNameHost = new System.Windows.Forms.Label();
-            this.nudPages = new System.Windows.Forms.NumericUpDown();
             this.lbURLtoSequence = new System.Windows.Forms.ListBox();
             this.btnRunSeq = new System.Windows.Forms.Button();
             this.btnViewUrl = new System.Windows.Forms.Button();
@@ -119,8 +121,6 @@
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.getAnyonesCreditsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.compareCreditsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.label16 = new System.Windows.Forms.Label();
-            this.label17 = new System.Windows.Forms.Label();
             this.gbGetStats.SuspendLayout();
             this.gbSamURL.SuspendLayout();
             this.tcProj.SuspendLayout();
@@ -508,6 +508,7 @@
             this.tbPage.ForeColor = System.Drawing.Color.Blue;
             this.tbPage.Location = new System.Drawing.Point(18, 251);
             this.tbPage.Name = "tbPage";
+            this.tbPage.ReadOnly = true;
             this.tbPage.Size = new System.Drawing.Size(62, 22);
             this.tbPage.TabIndex = 13;
             // 
@@ -972,6 +973,28 @@
             this.gbXX.TabStop = false;
             this.gbXX.Text = "Change Application";
             // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.BackColor = System.Drawing.SystemColors.Info;
+            this.label17.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label17.Location = new System.Drawing.Point(293, 74);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(55, 20);
+            this.label17.TabIndex = 28;
+            this.label17.Text = "Study";
+            // 
+            // label16
+            // 
+            this.label16.AutoSize = true;
+            this.label16.BackColor = System.Drawing.SystemColors.Info;
+            this.label16.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label16.Location = new System.Drawing.Point(187, 74);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(59, 20);
+            this.label16.TabIndex = 27;
+            this.label16.Text = "Pages";
+            // 
             // btnApplyAPxx
             // 
             this.btnApplyAPxx.ForeColor = System.Drawing.Color.Blue;
@@ -993,6 +1016,29 @@
             this.cbKnownIDs.TabIndex = 26;
             this.toolTip1.SetToolTip(this.cbKnownIDs, "Application to obtain\r\ndata from or a default");
             this.cbKnownIDs.SelectedIndexChanged += new System.EventHandler(this.cbKnownIDs_SelectedIndexChanged);
+            // 
+            // nudPages
+            // 
+            this.nudPages.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.nudPages.Location = new System.Drawing.Point(195, 97);
+            this.nudPages.Maximum = new decimal(new int[] {
+            4,
+            0,
+            0,
+            0});
+            this.nudPages.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.nudPages.Name = "nudPages";
+            this.nudPages.Size = new System.Drawing.Size(51, 26);
+            this.nudPages.TabIndex = 19;
+            this.nudPages.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
             // 
             // tbXX
             // 
@@ -1053,29 +1099,6 @@
             this.lbNameHost.TabIndex = 20;
             this.lbNameHost.Text = "PC name";
             this.toolTip1.SetToolTip(this.lbNameHost, "The name of the PC if\r\nknown else the PC\'s ID");
-            // 
-            // nudPages
-            // 
-            this.nudPages.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.nudPages.Location = new System.Drawing.Point(195, 97);
-            this.nudPages.Maximum = new decimal(new int[] {
-            4,
-            0,
-            0,
-            0});
-            this.nudPages.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.nudPages.Name = "nudPages";
-            this.nudPages.Size = new System.Drawing.Size(51, 26);
-            this.nudPages.TabIndex = 19;
-            this.nudPages.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
             // 
             // lbURLtoSequence
             // 
@@ -1187,28 +1210,6 @@
             this.compareCreditsToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
             this.compareCreditsToolStripMenuItem.Text = "Compare Credits";
             this.compareCreditsToolStripMenuItem.Click += new System.EventHandler(this.GetHelp);
-            // 
-            // label16
-            // 
-            this.label16.AutoSize = true;
-            this.label16.BackColor = System.Drawing.SystemColors.Info;
-            this.label16.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label16.Location = new System.Drawing.Point(187, 74);
-            this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(59, 20);
-            this.label16.TabIndex = 27;
-            this.label16.Text = "Pages";
-            // 
-            // label17
-            // 
-            this.label17.AutoSize = true;
-            this.label17.BackColor = System.Drawing.SystemColors.Info;
-            this.label17.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label17.Location = new System.Drawing.Point(293, 74);
-            this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(55, 20);
-            this.label17.TabIndex = 28;
-            this.label17.Text = "Study";
             // 
             // CreditStatistics
             // 

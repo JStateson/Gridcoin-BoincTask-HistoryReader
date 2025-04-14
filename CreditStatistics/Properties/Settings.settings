@@ -8,5 +8,11 @@
     <Setting Name="HostList" Type="System.String[]" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
+    <Setting Name="AskForStudy" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="AskForBoinctasks" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
