@@ -150,6 +150,9 @@
   <PropertyGroup>
     <PostBuildEvent>if $(ConfigurationName) == Release (
 call "$(SolutionDir)scripts\7zStatApp.bat" $(SolutionDir) $(TargetDir)  $(TargetName) $(TargetPath)
+)
+if $(ConfigurationName) == Debug (
+call "$(SolutionDir)scripts\7zStatAppDeb.bat" $(SolutionDir) $(TargetDir)  $(TargetName) $(TargetPath)
 )</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
