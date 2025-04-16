@@ -4,8 +4,6 @@ VisualStudioVersion = 17.11.35327.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BTHistoryReader", "BTHistoryReader\BTHistoryReader.csproj", "{678E5BC2-E16C-4396-909E-37ED92143F4A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CreditStatistics", "CreditStatistics\CreditStatistics.csproj", "{0D2731A1-C247-41AD-9310-773A0E51090C}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -26,14 +24,6 @@ Global
 		{678E5BC2-E16C-4396-909E-37ED92143F4A}.Release|x64.ActiveCfg = Release|x64
 		{678E5BC2-E16C-4396-909E-37ED92143F4A}.Release|x64.Build.0 = Release|x64
 		{678E5BC2-E16C-4396-909E-37ED92143F4A}.Release|x86.ActiveCfg = Release|Any CPU
-		{0D2731A1-C247-41AD-9310-773A0E51090C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0D2731A1-C247-41AD-9310-773A0E51090C}.Debug|x64.ActiveCfg = Debug|x64
-		{0D2731A1-C247-41AD-9310-773A0E51090C}.Debug|x64.Build.0 = Debug|x64
-		{0D2731A1-C247-41AD-9310-773A0E51090C}.Debug|x86.ActiveCfg = Debug|x86
-		{0D2731A1-C247-41AD-9310-773A0E51090C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0D2731A1-C247-41AD-9310-773A0E51090C}.Release|x64.ActiveCfg = Release|x64
-		{0D2731A1-C247-41AD-9310-773A0E51090C}.Release|x64.Build.0 = Release|x64
-		{0D2731A1-C247-41AD-9310-773A0E51090C}.Release|x86.ActiveCfg = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
