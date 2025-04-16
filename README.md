@@ -12,4 +12,6 @@ If problems then use the debug version of the app as it can provide lines number
 
 Download the 7z binaries to get both the release and debug versions of CreditStatistics
 
-To remove all your client data run the app by entering 'CreditStatistics.exe reset'  You can load your data again or just use the demo list
+To remove all your client data run the app by entering 'CreditStatistics.exe reset'  
+
+The program will ask once if you wish to use the demo mode.  The demo data is included in the app but text files are provide so show the format.

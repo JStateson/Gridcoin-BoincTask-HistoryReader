@@ -71,7 +71,7 @@ namespace CreditStatistics
             }
             catch (Exception ex)
             {
-                return 0;
+                return -1;
             }
 
             Socket client = new Socket(ipx.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
@@ -99,8 +99,6 @@ namespace CreditStatistics
                     {
                         break;
                     }
-
-
 
                     if (n > 0)
                     {

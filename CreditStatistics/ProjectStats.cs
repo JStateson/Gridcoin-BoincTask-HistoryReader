@@ -50,11 +50,12 @@ namespace CreditStatistics
                 Hosts.Add(s1);
             }
         }
-        public void AddAppID(string sAppID)
+        public int AddAppID(string sAppID)
         {
             if (AppID.Count == 0) AppID.Add(sAppID);
-            else if (AppID.Contains(sAppID)) return;
+            else if (AppID.Contains(sAppID)) return 0;
             else AppID.Add(sAppID);
+            return 1;
         }
     }
     public class cProjectStats
@@ -321,7 +322,7 @@ null
         public void Init()
         {
             int i, j, n = KnownProjects.Length;
-            List<string>UnsortedNames = new List<string>();
+            List<string> UnsortedNames = new List<string>();
 
             for (j = 0; j < n; j += 8)
             {
@@ -332,7 +333,7 @@ null
             indices.Sort((i1, i2) => UnsortedNames[i1].CompareTo(UnsortedNames[i2]));
             for (j = 0; j < n; j++)
             {
-                i = indices[j]*8;
+                i = indices[j] * 8;
                 ProjectList.Add(new cPSlist()
                 {
                     name = KnownProjects[i++].ToLower(),
@@ -345,12 +346,25 @@ null
                     sCountValids = KnownProjects[i]
                 });
             }
-            for (j = 0; j < n; j++)
+
+            foreach (cPSlist p in ProjectList)
             {
-                ProjectList[j].UseDefault = true;
+                p.UseDefault = true;
+                p.AppID.Clear();
+                if (p.sStudyV != "null")
+                {
+                    p.AddAppID(p.sStudyV);
+                }
             }
         }
 
+        public List<string>ComputerList = new List<string>();   // any PCs the user could find
+        public string[] LocalHostList; // remote system managed by boinctasks
+        public void AddLocalPC(string sPCname)
+        {
+            if(!ComputerList.Contains(sPCname))
+                ComputerList.Add(sPCname);
+        }
         public void AddDemo(string sUrl)
         {
             int pLoc = GetNameIndex(sUrl);
@@ -412,12 +426,12 @@ null
                     if (s.Contains(s1))
                     {
                         string t = c.sStudy;
-                        if(t == "null") return "";
+                        if (t == "null") return "";
                         bool b = (t == "/");
-                        if(b)return "/tasks/4/XX";
+                        if (b) return "/tasks/4/XX";
                         return t + "XX";
                     }
-                }                
+                }
             }
             return "";
         }
@@ -437,9 +451,9 @@ null
                 if (p.name.Contains(name))
                 {
                     string s = p.sURL + p.sHid;
-                    if(p.UseDefault)
+                    if (p.UseDefault)
                     {
-                        if(name == "einstein")
+                        if (name == "einstein")
                         {
                             sE = "/tasks/4/0";
                         }
@@ -457,14 +471,14 @@ null
                         else
                         {
                             sNE = "";
-                            if(p.sValid != "null")
+                            if (p.sValid != "null")
                             {
                                 sNE = p.sValid;
-                                if(p.sStudy != "null")
+                                if (p.sStudy != "null")
                                 {
                                     sNE += p.sStudy + p.sStudyV;
                                 }
-                            }                            
+                            }
                         }
                     }
                     s = s + sID;
@@ -494,7 +508,7 @@ null
                         HasValids = false;
                         return s;
                     }
-                    if(p.sValid == "null")
+                    if (p.sValid == "null")
                     {
                         s += sNE;
                         HasValids = false;
@@ -522,7 +536,7 @@ null
             }
             return false;
         }
-        private bool ProjectExists (string s)
+        private bool ProjectExists(string s)
         {
             foreach (cPSlist c in ProjectList)
             {
@@ -577,7 +591,7 @@ null
             public List<string> HostID = new List<string>();
         }
         public class cOldraw
-        {   public List<string> RawOut = new List<string>();
+        { public List<string> RawOut = new List<string>();
             public List<cOrganizedRaw> OrgRaw = new List<cOrganizedRaw>();
             public int AddProjName(string s)
             {
@@ -589,7 +603,7 @@ null
                     return OrgRaw.Count - 1;
                 }
                 int i = 0;
-                foreach(cOrganizedRaw OR1 in OrgRaw)
+                foreach (cOrganizedRaw OR1 in OrgRaw)
                 {
                     if (s == OR1.ProjNameFull) return i;
                     i++;
@@ -625,19 +639,10 @@ null
             string sHost;
             bool b;
             int j;
-#if DEBUGNO
-            string sDout =  WhereEXE + "/ClientList_out.txt";
-            string sDin = WhereEXE + "/ClientList_in.txt";
-            File.WriteAllText(sDout, sBoincInfo);
-            MessageBox.Show("Just wrote your client list to: " + Environment.NewLine +
-                sDout + Environment.NewLine + "Going to read and use: " + sDin);
-            sBoincInfo = File.ReadAllText(sDin).ToLower();
-#endif
-
-            List <cBoincRaw> LocalHostsRaw = new List<cBoincRaw>();
+            List<cBoincRaw> LocalHostsRaw = new List<cBoincRaw>();
             cBoincRaw br;
             cOldraw cOl = new cOldraw();
-            string UnknownProjects  = "";
+            string UnknownProjects = "";
             sBoincInfo = sBoincInfo.Replace("@home", "");
             string[] content = sBoincInfo.Split(new string[] { "\n", "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
             int i = 0;
@@ -666,7 +671,7 @@ null
 
                 do
                 {
-                    if(i >= content.Length)
+                    if (i >= content.Length)
                     {
                         break;  // todo this is an error as there should be data for this PC
                     }
@@ -721,7 +726,7 @@ null
                 string sOut = OR.ProjNameFull + ": ";
                 for (j = 0; j < OR.PCnameHostID.Count(); j++)
                     sOut += OR.PCnameHostID[j] + ",";
-                sOut = sOut.Substring(0,sOut.Length - 1);   // remove trailing comma
+                sOut = sOut.Substring(0, sOut.Length - 1);   // remove trailing comma
                 cOl.RawOut.Add(sOut);
             }
             Properties.Settings.Default.HostList = cOl.RawOut.ToArray();
@@ -760,7 +765,7 @@ null
         public bool CannotIncrement;
         private int TaskOffset;   // could be page 0,1,etc or 20,40, etc
         public string sTaskOffset;   // could be page 0,1,etc or 20,40, etc
-        private int nTaskOffset;        
+        private int nTaskOffset;
         private string sTaskHost;
         private int TaskIncrement;// 1 or 20
         private bool HasOffset;  // if false , then no offset
@@ -785,7 +790,7 @@ null
         {
             if (CannotIncrement) return false;
             nTaskOffset += TaskIncrement;
-            sTaskOffset = nTaskOffset.ToString();            
+            sTaskOffset = nTaskOffset.ToString();
             TaskUrl = BaseUrl + PageCommand + sTaskOffset;
             return true;
         }
@@ -806,7 +811,7 @@ null
             TaskName = p.name;
             // jys url is required and can be different from the one created by the previous
             // parse. this need to be cleaned up eventually
-            TaskUrl = GetBaseURL(jTask, sHost, sOffset);            
+            TaskUrl = GetBaseURL(jTask, sHost, sOffset);
             sTaskOffset = sOffset;
             TaskOffset = 0;
             TaskIncrement = 0;
@@ -820,7 +825,7 @@ null
             {
                 nTaskOffset = Convert.ToInt32(sTaskOffset);
                 if (p.sPage.Contains("page")) TaskIncrement = 1;
-                else if (p.sPage.Contains("offset")) TaskIncrement = 20;                
+                else if (p.sPage.Contains("offset")) TaskIncrement = 20;
                 else HasOffset = false;
                 PageCommand = p.sPage;
             }
@@ -896,14 +901,14 @@ null
                     if (iStart < 0 || iEnd < 0 || (iStart >= iEnd)) return -4;
                     RawTable = RawPage.Substring(iStart, iEnd - iStart);
                     return BuildPrimeTable();
-               case "gerasim":
+                case "gerasim":
                     iStart = RawPage.IndexOf("<table class=\"gridTable\"");
-                    iEnd = RawPage.IndexOf("</table>",iStart);
+                    iEnd = RawPage.IndexOf("</table>", iStart);
                     RawTable = RawPage.Substring(iStart, iEnd - iStart);
                     string[] OuterTable = RawTable.Split(new string[] { "\n", "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
                     bool bNext = false;
                     i = 0;
-                    while(i < OuterTable.Length)
+                    while (i < OuterTable.Length)
                     {
                         string s = OuterTable[i++];
                         j = s.IndexOf("<span id=");
@@ -912,7 +917,7 @@ null
                         if (j < 0) continue;
                         j = s.LastIndexOf(">", k);
                         t = s.Substring(j + 1, k - j - 1);
-                        CreditStatistics.cCreditInfo ci = new cCreditInfo();
+                        cCreditInfo ci = new cCreditInfo();
                         if (DateTime.TryParseExact(t, format2, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out DateTime dateTime1))
                         {
                             ci.tCompleted = dateTime1;
@@ -932,7 +937,7 @@ null
                         if (j < 0) return 0;
                         k = s.LastIndexOf(">", j);
                         if (k < 0) return 0;
-                        t = s.Substring(k+1, j - k - 1);
+                        t = s.Substring(k + 1, j - k - 1);
                         ci.Credits = Convert.ToDouble(t);
                         ci.mELA = ci.Credits / ci.ElapsedSecs;
                         mELA.Add(ci.mELA);
@@ -968,9 +973,9 @@ null
         {
             string s;
             string[] OuterTable = RawTable.Split(new string[] { "\n", "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
-            foreach(string sLine in OuterTable)
+            foreach (string sLine in OuterTable)
             {
-                CreditStatistics.cCreditInfo ci = new cCreditInfo();
+                cCreditInfo ci = new cCreditInfo();
                 RawLines = sLine.Split(new string[] { "<td>", "</td>" }, StringSplitOptions.RemoveEmptyEntries);
                 s = RawLines[4];
                 if (DateTime.TryParseExact(s, formats, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out DateTime dateTime1))
@@ -1033,7 +1038,7 @@ null
             string lSide;
             if ((iLoc + iOffset) >= RawLines.Length)
                 return DateTime.MinValue;
-            string sTemp = RawLines[iLoc + iOffset];            
+            string sTemp = RawLines[iLoc + iOffset];
             int iRight = sTemp.IndexOf("<td>");
             if (iRight < 0)
             {
@@ -1086,16 +1091,16 @@ null
         }
         private bool ExtractTriplet(int iLocation)
         {
-            CreditStatistics.cCreditInfo ci = new cCreditInfo();
+            cCreditInfo ci = new cCreditInfo();
             ci.tCompleted = GetValueT(iLocation, -2);
-            if(ci.tCompleted == DateTime.MinValue)
+            if (ci.tCompleted == DateTime.MinValue)
             {
                 return false;
             }
 
             ci.ElapsedSecs = GetValueD(iLocation, 0) / NumberConcurrent;
             ci.CPUtimeSecs = GetValueD(iLocation, 1);
-            ci.Credits = GetValueD(iLocation, 2);            
+            ci.Credits = GetValueD(iLocation, 2);
             ci.mELA = ci.Credits / ci.ElapsedSecs;
             mELA.Add(ci.mELA);
             if (ci.CPUtimeSecs == 0.0) ci.CPUtimeSecs = 0.01;
@@ -1113,7 +1118,7 @@ null
             string sDataKey = "</td><td>Completed and validated</td><td>";
             double t;
             string[] RawLineValues;
-            string[] eDTformats = { "d MMM yyyy H:mm:ss UTC", "dd MMM yyyy H:mm:ss UTC", };           
+            string[] eDTformats = { "d MMM yyyy H:mm:ss UTC", "dd MMM yyyy H:mm:ss UTC", };
             RawLines = RawTable.Split(new string[] { "\n", "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
             NumberToCollect = RawLines.Length - 1;
             NumberRecordsRead = 0;
@@ -1125,7 +1130,7 @@ null
                 j = s.IndexOf(sDataKey); // to the left is a date and the right is data
                 if (j > 0)
                 {
-                    CreditStatistics.cCreditInfo ci = new cCreditInfo();
+                    cCreditInfo ci = new cCreditInfo();
                     k = s.LastIndexOf("</td><td>", j);
                     k += 9;
 
@@ -1146,11 +1151,11 @@ null
 
                     t = Convert.ToDouble(RawLineValues[2]);
                     t /= NumberConcurrent;
-                    ci.ElapsedSecs = t;                    
-                    
+                    ci.ElapsedSecs = t;
+
                     t = Convert.ToDouble(RawLineValues[3]);
                     t /= NumberConcurrent;
-                    ci.CPUtimeSecs = t;                    
+                    ci.CPUtimeSecs = t;
 
                     t = Convert.ToDouble(RawLineValues[4]);
                     t /= NumberConcurrent;
@@ -1182,17 +1187,12 @@ null
             LCreditInfo = indices.Select(i => UnsortedLCI[i]).ToList();
         }
 
-        public void GetProjectAPPIDs()
+        public int GetProjectAPPIDs()
         {
-            foreach (cPSlist p in ProjectList)
-            {
-                p.AppID.Clear();
-                if(p.sStudyV != "null")
-                {
-                    p.AddAppID(p.sStudyV);
-                }
-            }
             RegistryKey key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Space Sciences Laboratory, U.C. Berkeley\BOINC Setup");
+            int n = 0;
+            int iLoc;
+            List<string> StudyList = new List<string>();
             if (key != null)
             {
                 string folderPath = key.GetValue("DATADIR")?.ToString();
@@ -1200,14 +1200,14 @@ null
                 string[] files = Directory.GetFiles(folderPath, "account*.xml");
                 foreach (string file in files)
                 {
-                    int iLoc = GetNameIndex(file.ToLower());
+                    iLoc = GetNameIndex(file.ToLower());
                     if (iLoc >= 0)
                     {
                         string[] lines = File.ReadAllLines(file);
-                        foreach(string line in lines)
+                        foreach (string line in lines)
                         {
                             int i = line.IndexOf("<app_id>");
-                            if(i >= 0)
+                            if (i >= 0)
                             {
                                 int j = line.IndexOf("</app_id>", i);
                                 Debug.Assert(j > 0);
@@ -1215,11 +1215,50 @@ null
                                 ProjectList[iLoc].AddAppID(sID);
                             }
                         }
+                        n += ProjectList[iLoc].AppID.Count;
                     }
                 }
             }
+            iLoc = -1;
+            foreach (cPSlist p in ProjectList)
+            {
+                iLoc++;
+                if (p.sStudyV != "null")
+                {
+                    if (p.AppID.Count > 0)
+                    {
+                        string[] sS = p.name.Split(' ');
+                        string s = sS[0] + ":";
+                        foreach (string t in p.AppID)
+                        {
+                            s += t  + " ";
+                        }
+                        StudyList.Add(s.Trim());
+                    }
+                }
+            }
+            string[] stemp = StudyList.ToArray();
+            Properties.Settings.Default.AppList = stemp;
+            Properties.Settings.Default.Save();
+            ParseAppsStrings(ref stemp);
+            return n;
         }
 
+        public void ParseAppsStrings(ref string[] AppStrings)
+        {
+            foreach (string s in AppStrings)
+            {
+                string[] sS = s.Split(new char[] { ':', ' '}, StringSplitOptions.RemoveEmptyEntries);
+                if (sS.Length < 2) continue;
+                string sName = sS[0];
+                int iLoc = GetNameIndex(sName);
+                cPSlist p = ProjectList[iLoc];
+                for(int i = 1; i < sS.Length; i++)
+                {
+                    p.AddAppID(sS[i]);
+                }
+            }
+        }
     }
 
 }

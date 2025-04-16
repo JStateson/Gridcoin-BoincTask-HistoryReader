@@ -29,44 +29,22 @@ using System.Xml.Linq;
 using static CreditStatistics.cProjectStats;
 using static CreditStatistics.CreditStatistics;
 using static System.Windows.Forms.LinkLabel;
+using static CreditStatistics.globals.Utils;
+
 
 
 
 namespace CreditStatistics
 {
-    // debugger cmd line: C:\Users\josep\source\repos\Gridcoin-BoincTask-HistoryReader\CreditStatistics\rawlist.txt
+    // debugger cmd line: C:\Users\josep\source\repos\Gridcoin-BoincTask-HistoryReader\CreditStatistics\ClientList_in.txt
+    // debugger cmd line: reset
+
     // as generated using mod'ed boinccmd.exe, systems.txt and script: GetHostIDs.cmd
 
     public partial class CreditStatistics : Form
     {
-        public class cCreditInfo
-        {
-            public DateTime tCompleted;
-            public int nCnt;
-            public bool bValid;
-            public double ElapsedSecs;
-            public double CPUtimeSecs;
-            public double Credits;
-            public double mELA;
-            public double mCPU;
-
-            public void Init()
-            {
-                Credits = 0;
-                ElapsedSecs = 0;
-                CPUtimeSecs = 0;
-                mELA = 0;
-                mCPU = 0;
-                nCnt = 0;
-            }
-        }
-
-
-        
         private string SequencerOut = "";   // used when running sequencer instead of output to text box
         private bool bInSequencer = false;
-        private string sOutInfo = "";
-        private string sOutHdrs = "";
 
         private string sTotals;
         public List<string> sNames = new List<string>();
@@ -101,43 +79,38 @@ namespace CreditStatistics
         private int TagOfProject = -1;
         private int RecordsPerPage = 0;
         private int MaxShortSize = 8;  // will be pixel with times character count
-        TabPage hiddenTabPage;
+        private TabPage tTabP; // Page0;
+        private TabPage tTabT; // Page1;
+        private TabPage tTabH; // Page2;  
+        private TabPage tTabS; // Page3;
+   
 
-        private string[] LocalHostList;    // from boinctasks list and used only to access via RPC once I figure it out
-
-        private static string[] FindHdr = { "All (", "Valid (", "Invalid (", "Error (" };
-        private static string[] FindHdrA = { "All</a> (", "Valid</a> (", "Invalid</a> (", "Error</a> (" };
-        private static string[] FindHdrB = { "All</a> ", "Valid</b> ", "Invalid</font> ", "Error</a> " };
-        private static string[] FindBTrm = { "|", "|", "|", "<" };
-        private static string[] FindHdrC = { ">All ", ">Valid ", ">Invalid ", ">To late " };
-        private static string[] FindCTrm = { "</a>", "</a>", "</a>", "</a>" };
+         
 
         private List<string>defaultNameHost = new List<string>();
-        private string BoincHostLoc = "";
         private string WorkingFolder = "";
         private string WhereEXE = "";
         bool bHaveHostInfo = false; // have hostname, project names and host ID for project
-        HostRPC MYrpc = new HostRPC();
+        private HostRPC MYrpc = new HostRPC();
         private string SelectedDemo = "";
-        bool bShowHostAvailable = false;
         public CreditStatistics(string[] args)
         {
             InitializeComponent();
             WhereEXE = Directory.GetParent(Assembly.GetExecutingAssembly().Location).ToString();
             ProjectStats.WhereEXE = WhereEXE;
-            WorkingFolderLoc.Text = WhereEXE;
-            BoincHostLoc = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\eFMer\\BoincTasks";
-            BoincHostFolder.Text = BoincHostLoc;
             lbVersion.Text = "Build Date:" + GetSimpleDate(Properties.Resources.BuildDate);
             MyComputerID = Dns.GetHostName().ToLower();
-
+            tTabP = tcProj.TabPages["TabP"];
+            tTabT = tcProj.TabPages["TabT"];
+            tTabH = tcProj.TabPages["TabH"];
+            tTabS = tcProj.TabPages["TabS"];
 
             ProjectStats.Init();
 
-            if (args.Length > 0)
+            if (args.Length > 0 )
             {
                 string s = args[0].ToLower();
-                if (s == "reset")
+                if (s == "reset")// && false)
                 {
                     Properties.Settings.Default.Reset();
                     Properties.Settings.Default.Save();
@@ -148,36 +121,34 @@ namespace CreditStatistics
                         "CreditStatistics reset             : remove all client data\r\n" +
                         "CreditStatistics ClientList_in.txt : get client information from file";
 
-                MessageBox.Show(t);                                        }
-
-                bHaveHostInfo = ProjectStats.GetHostsFile(args[0]);
+                    MessageBox.Show(t);   
+                }
+                else 
+                    bHaveHostInfo = ProjectStats.GetHostsFile(args[0]);
                 // produces: Properties.Settings.Default.HostList  FROM 
                 // hostname or pc: projname1,id1 projname2,i2  etc using space delim between pairs
                 // giving projname1 : pc,pcid  pc,pcid
             }
-            
-
+            if(Properties.Settings.Default.AskForDemo)
+            {
+                Properties.Settings.Default.AskForDemo = false;
+                Properties.Settings.Default.AskForStudy = false;
+                Properties.Settings.Default.AskForBoinctasks = false;
+                Properties.Settings.Default.Save();
+                DialogResult Res = MessageBox.Show("Start in demo mode: Select Yes", "Can be changed in the config menu", MessageBoxButtons.YesNo);
+                if (Res == DialogResult.Yes)
+                {
+                    UseDemoData();
+                    GetSavedAppStudy(ref ProjectStats);
+                }
+            }
+            AskToGetAppList(ref ProjectStats);
+            bool bWantsRunScheduler = AskToGetClientList(MyComputerID);
+            HaveBThostlist();
             if (TryGetHostSets())
             {
                 bHaveHostInfo = true;
                 ProjectStats.SelectComputer(MyComputerID);
-            }
-            else
-            {
-                if (TryReadBThostlist())
-                {
-                    tcProj.SelectTab(1);
-                    bShowHostAvailable = true;
-                }
-                else
-                {
-                    MessageBox.Show("Cannot find a host list, default is localhost");
-                    btnScanClients.Enabled = true;
-                    tbProjHostList.Text = Dns.GetHostName().ToLower();
-                    tcProj.SelectTab(1);
-                    LocalHostList = new string[] { tbProjHostList.Text.ToString()};
-                }
-
             }
 
             FormProjectRB();
@@ -194,51 +165,14 @@ namespace CreditStatistics
             //Refresh();
             //Task.Delay(1);
             //Application.DoEvents();
-            //SetRB(0,false); // set default to first project
-            hiddenTabPage = tcProj.TabPages["lbViewRaw"]; 
-            tcProj.TabPages.Remove(hiddenTabPage);
+ 
+            tcProj.TabPages.Remove(tTabS);
             if(bHaveHostInfo)
                 cbSelProj.SelectedIndex = 0;
             ParseProjUrl();
             btnRestoreID.Tag = MyComputerID;
             lbPCname.Text = "PC name: " + MyComputerID;
-            if(bShowHostAvailable)
-            {
-                MessageBox.Show("Hosts are shown below." + Environment.NewLine + "Select Create to make the list or just load the demo:" +
-                    Environment.NewLine + "Select tab 'HOST LIST' and click 'Fetch IDs' then read the help");
-                btnScanClients.Enabled = true;
-            }
-            ProjectStats.GetProjectAPPIDs();
-            string sOut = "";
-            string sOne = "";
-            int i = 0;
-            int nWidth = 0;
-            foreach (cPSlist p in ProjectStats.ProjectList)
-            {
-                if (p.AppID.Count > 0)
-                {
-                    nWidth = Math.Max(nWidth, ProjectStats.ShortName(i).Length);
-                }
-                i++;
-            }
-            i = 0;
-            nWidth += 7;
-            foreach (cPSlist p in ProjectStats.ProjectList)
-            {
-                if (p.AppID.Count > 0)
-                {
-                    sOne = Rp(ProjectStats.ShortName(i) + " apps: ", nWidth);
-                    foreach (string s in p.AppID)
-                    {
-                        sOne += s + " ";
-                    }
-                    sOne += Environment.NewLine;
-                    sOut += sOne;
-                }
-                i++;
-            }
-            sOut = Environment.NewLine + "Application codes for various projects" + Environment.NewLine + sOut;
-            tbProjHostList.Text += sOut;
+            GetSavedAppStudy(ref ProjectStats);
         }
 
         private void FormProjectRB()
@@ -289,7 +223,7 @@ namespace CreditStatistics
             }
         }
          
-        private void RBchanged()
+        private void RBchanged(bool bIsLocal)
         {
             SelectedProject = ProjectStats.ProjectList[TagOfProject].name;
             tbPage.Text = "0";
@@ -298,7 +232,7 @@ namespace CreditStatistics
 
             if (ProjectStats.LocalHosts.Count > 0)
             {
-                tbHOSTID.Text = ProjectStats.GetIDfromName(SelectedProject);
+                if(bIsLocal)tbHOSTID.Text = ProjectStats.GetIDfromName(SelectedProject);
                 ApplyName();
             }
         }
@@ -308,11 +242,12 @@ namespace CreditStatistics
             RadioButton rb = (RadioButton)sender; 
             if(rb.Checked)
                 TagOfProject = (int)rb.Tag;
-            RBchanged();
+            RBchanged(bIsLocal);
         }
-
+        bool bIsLocal = true;
         private void SetRB(int iTag, bool b)
         {
+            bIsLocal = b;
             TagOfProject = iTag;
             foreach (Control c in gbSamURL.Controls)
             {
@@ -321,9 +256,9 @@ namespace CreditStatistics
                     RadioButton rb = (RadioButton)c;
                     if ((int)rb.Tag == iTag)
                     {
-                        if(b)rb.CheckedChanged -= new System.EventHandler(this.rbProject_CheckedChanged);
+                        //if(b)rb.CheckedChanged -= new System.EventHandler(this.rbProject_CheckedChanged);
                         rb.Checked = true;
-                        if(b)rb.CheckedChanged += new System.EventHandler(this.rbProject_CheckedChanged);
+                        //if(b)rb.CheckedChanged += new System.EventHandler(this.rbProject_CheckedChanged);
                         return;
                     }
                 }
@@ -336,14 +271,7 @@ namespace CreditStatistics
         }
 
 
-        private string GetSimpleDate(string sDT)
-        {
-            //Sun 06/09/2019 23:33:53.18 
-            int i = sDT.IndexOf(' ');
-            i++;
-            int j = sDT.LastIndexOf('.');
-            return sDT.Substring(i, j - i);
-        }
+
 
         private void ApplyFilter()
         {
@@ -373,6 +301,7 @@ namespace CreditStatistics
 
         private void GetResults()
         {
+            string sOutInfo = "";
             cCreditInfo SumC = new cCreditInfo();
             double dH = 0;  // hours
             long Sd = 0;
@@ -380,10 +309,9 @@ namespace CreditStatistics
             SumC.Init();
             if(!bInSequencer) tbInfo.Clear();
             ApplyFilter();
-            sOutHdrs = "Num" + Rp("     Date Completed", 22) + "    Credit     RunTime     RunTime     CPUtime     CPUtime  Valid" + Environment.NewLine;
+            string sOutHdrs = "Num" + Rp("     Date Completed", 22) + "    Credit     RunTime     RunTime     CPUtime     CPUtime  Valid" + Environment.NewLine;
             sOutHdrs += "   " + Rp(" ", 22) + "    Points        Secs     Credits        Secs     Credits";
             lbHdr.Text = sOutHdrs;
-            sOutInfo = "";
             for (int i = 0; i < CreditInfo.Count; i++)
             {
                 cCreditInfo ci = CreditInfo[i];
@@ -477,6 +405,7 @@ namespace CreditStatistics
         private async Task ReadOnePage()
         {
             ProjectStats.TaskBusy = true;
+            ProjectStats.TaskDone = false;
             //while(ProjectStats.TaskBusy)
             {
                 ProjectStats.RawPage = "";
@@ -506,54 +435,6 @@ namespace CreditStatistics
             }
         }
         
-        private int ProcessHDR()
-        {
-            RawPage = ProjectStats.RawPage;
-            if (RawPage == null) return 0;
-            int NumValid = 0;
-            for (int k = 0; k < FindHdr.Length; k++)
-            {
-                string sDFT = ")";  // default terminator
-
-                string sB = FindHdrB[k];
-                string tB = FindBTrm[k];
-                string sC = FindHdrC[k];
-                string tC = FindCTrm[k];
-
-
-                string sA = FindHdrA[k];
-                string s = FindHdr[k];
-                int i = RawPage.IndexOf(s);
-                int n = s.Length;
-                if (i < 0)
-                {
-                    i = RawPage.IndexOf(sA);
-                    n = sA.Length;
-                }
-                if (i < 0)
-                {
-                    i = RawPage.IndexOf(sB);
-                    n = sB.Length;
-                    sDFT = tB;
-                }
-                if (i < 0)
-                {
-                    i = RawPage.IndexOf(sC);
-                    n = sC.Length;
-                    sDFT = tC;
-                }
-                if (i < 0) return 0;
-
-                int j = RawPage.IndexOf(sDFT, i + n);
-                if (j < 0)  return 0;
-
-                string t = RawPage.Substring(i + n, j - i - n).Trim();
-                if (t == "") t = "0";
-                if (k == 1) NumValid = Convert.ToInt32(t);
-                tbHdrInfo.Text += FindHdr[k] + t + ")\r\n";
-            }
-            return NumValid;
-        }
 
         // type is HDR or SEQ for header or sequencer
         private void TaskLoadHeader(string sType)
@@ -569,23 +450,6 @@ namespace CreditStatistics
             TaskStart();
         }
 
-        private void LoadTask(string TaskType, string sUrl)
-        {
-            ProjectStats.sTaskType = TaskType;
-            ProjectStats.TaskUrl = sUrl;
-            ProjectStats.StopTask = false;
-            ProjectStats.TaskBusy = false;
-            ProjectStats.TaskDone = false;
-            switch (TaskType)
-            {
-                case "FetchHostIDs":
-                    AllowGS(false);
-                    tbHdrInfo.Clear();
-                    break;
-            }
-            TaskStart();
-        }
-   
         private int ProcessBody()
         {
             int n = 0;
@@ -611,43 +475,13 @@ namespace CreditStatistics
             return n;
         }
 
-        private string Add20(string s)
-        {
-            int i = s.IndexOf("offset=");
-            if (i < 0) return "";
-            i += 7;
-            int j = s.IndexOf('&', i);
-            if (j < 0) return "";
-            string s1 = s.Substring(0, i);
-            string s2 = s.Substring(j);
-            int n = Convert.ToInt32(s.Substring(i, j - i));
-            n += 20;
-            return s1 + n.ToString() + s2;
-        }
 
         private void ErrorAnalysis_FormClosing(object sender, FormClosingEventArgs e)
         {
             Properties.Settings.Default.InitialUrl = ProjUrl.Text;
             Properties.Settings.Default.Save();
-        }
+        }   
 
-    
-
-        // pad right side with spaces to fill
-        public static string Rp(string strIn, int cnt)
-        {
-            int i = cnt - strIn.Length;
-            if (i < 0) return strIn.Substring(0, cnt);
-            return strIn + "                              ".Substring(0, i);
-        }
-
-        // pad left side with spaces to fill
-        public static string Lp(string strIn, int cnt)
-        {
-            int i = cnt - strIn.Length;
-            if (i < 0) return strIn.Substring(0, cnt);
-            return "                                               ".Substring(0, i) + strIn;
-        }
 
         private void AllowGS(bool b)
         {
@@ -665,34 +499,13 @@ namespace CreditStatistics
         private void btnRunHdr_Click(object sender, EventArgs e)
         {
             string PCname = "";
+            tbHdrInfo.Clear();
             if (UrlPassed())
             {
                 tbPage.Text = "0";
                 tbInfo.Text = "";
                 StartRun("HDR");
             }
-        }
-        private (List<double>, List<int>) RemoveOutliersWithIndexes(ref List<double> data, double threshold = 2)
-        {            
-            double mean = data.Average();
-            double stdDev = Math.Sqrt(data.Average(v => Math.Pow(v - mean, 2)));
-
-            // Track indexes of removed outliers
-            List<int> outlierIndexes = new List<int>();
-
-            // Filter data while keeping track of original indexes
-            List<double> filteredData = data
-                .Select((value, index) => new { value, index }) // Store original index
-                .Where(item =>
-                {
-                    bool isOutlier = Math.Abs(item.value - mean) > threshold * stdDev;
-                    if (!isOutlier) outlierIndexes.Add(item.index);
-                    return !isOutlier;
-                })
-                .Select(item => item.value)
-                .ToList();
-
-            return (filteredData, outlierIndexes);
         }
 
         private void cbfilterSTD_CheckedChanged(object sender, EventArgs e)
@@ -703,11 +516,6 @@ namespace CreditStatistics
         private void ProjUrl_TextChanged(object sender, EventArgs e)
         {
             AllowGS(false);
-        }
-
-        bool IsInteger(string input)
-        {
-            return int.TryParse(input, out _);
         }
 
         private void ApplyName()
@@ -736,186 +544,13 @@ namespace CreditStatistics
         }
 
 
-        private bool TryReadBThostlist() // boinctask host list
-        {
-            LocalHostList = GetComputerXML(BoincHostFolder.Text + "//computers.xml");
-            if (LocalHostList == null) return false;
-            if( LocalHostList.Count() == 0) return false;
-            ShowXML();
-            return true;
+        private bool HaveBThostlist() // boinctask host list
+        {            
+            ProjectStats.LocalHostList = Properties.Settings.Default.RemoteHosts;
+            return (!(ProjectStats.LocalHostList == null)) ;
         }
 
-        private void btnReadBoinc_Click(object sender, EventArgs e)
-        {
-            string[] TempHostList = ReadXmlList(BoincHostFolder.Text);            
-            if (TempHostList == null) return;
-            LocalHostList = TempHostList;
-            btnScanClients.Enabled = true;
-            ShowXML();
-        }
 
-        private void ShowXML()
-        {
-            tbProjHostList.Text = "List of PCs handled by BoincTasks" + Environment.NewLine +
-                string.Join(Environment.NewLine, LocalHostList) + Environment.NewLine;
-
-        }
-
-        // check url for errors and reform url to simplify
-        public bool ParseUrl(string s, ref string sOut, ref int ProjectIndex,
-            ref string sHost, ref string sSelectedProject, ref string sPage)
-        {
-            string sPageOffset = "";    // page: 0,1,2 or offset: 0,20,40 etc value + increment of 20
-                                        // includes the directive (?offset=) or (page)
-
-            string tURL = "";
-            string tHid = "";
-            string tValid = "";
-            string tPage = "";
-            string tCountValids = "";
-            string tStudy = "";
-            string t;
-            int i, j;
-            sPage = "0";
-            s = s.Trim();
-            if (s == "") return false;
-            string sUrl = s.ToLower();
-
-            i = sUrl.IndexOf("http");
-            if (i < 0)
-            {
-                MessageBox.Show("badly formed url: missing http");
-                return false;
-            }
-            sUrl = sUrl.Substring(i);
-
-            ProjectIndex = ProjectStats.GetNameIndex(sUrl);
-            if(ProjectIndex < 0)
-            {
-                MessageBox.Show("Project not found in url");
-                return false;
-            }
-
-            // determine if the project uses an application ID and if not then flag default
-            if(ProjectStats.ProjectList[ProjectIndex].sStudy == "null")
-            {
-                tStudy = "null";
-                ProjectStats.ProjectList[ProjectIndex].UseDefault = true;
-            }
-            else
-            {
-                string ProjectName = ProjectStats.ProjectList[ProjectIndex].name;
-                if (ProjectName == "einstein")
-                {
-                    i = sUrl.IndexOf("/tasks/4/");
-                    if(i < 0)
-                    {
-                        MessageBox.Show("Task ID not found in url");
-                        return false;
-                    }
-                    j = FirstNonInteger(sUrl, i + 9);
-                    t = sUrl.Substring(i + 9, j - i - 9);
-                    if (t == "0")
-                    {
-                        ProjectStats.ProjectList[ProjectIndex].UseDefault = true;
-                    }
-                    else
-                        ProjectStats.ProjectList[ProjectIndex].UseDefault = false;
-                        ProjectStats.ProjectList[ProjectIndex].sStudyV = t;
-                }
-                else
-                {
-                    i = sUrl.IndexOf("?appid=");
-                    if(i > 0)
-                    {
-                        j = FirstNonInteger(sUrl, i + 7);
-                        t = sUrl.Substring(i + 7, j - i - 7);
-                        if (t == "0")
-                        {
-                            ProjectStats.ProjectList[ProjectIndex].sStudyV = t;
-                            ProjectStats.ProjectList[ProjectIndex].UseDefault = true;
-                        }
-                        else ProjectStats.ProjectList[ProjectIndex].UseDefault = false;
-                    }
-                    else
-                    {
-                        ProjectStats.ProjectList[ProjectIndex].UseDefault = false;
-                    }
-                }                
-            }
-
-            ProjectStats.GetBaseInfo(ProjectIndex, ref tURL, ref tHid, ref tValid, ref tPage, ref tStudy, ref tCountValids);
-
-            //need to get the value assigned to tHid and to tPage
-            i = sUrl.IndexOf(tHid);
-            if (i < 0)
-            {
-                MessageBox.Show(tHid + " not found in url");
-                return false;
-            }
-
-            j = FirstNonInteger(sUrl, i + tHid.Length);
-            sHost = s.Substring(i + tHid.Length, j - i - tHid.Length);
-            
-            //need to get the page offset indexing into the table if it exists
-            if (tPage != "null")
-            {
-                i = sUrl.IndexOf(tPage);
-                if (i < 0)
-                {
-                    sPageOffset = tPage + "0";
-                }
-                else
-                {
-                    j = FirstNonInteger(s, i + tPage.Length);
-                    sPage = s.Substring(i + tPage.Length, j - i - tPage.Length);
-                    sPageOffset = tPage + sPage;
-                }                
-            }
-            else sPageOffset = "";
-            ProjectStats.sTaskOffset = sPage;
-            sOut = tURL + tHid + sHost + tValid +  ((tStudy=="null") ? "" : tStudy) + sPageOffset;
-            //sOut = tURL + tHid + sHost + tValid + tStudy + sPageOffset;
-            sSelectedProject = ProjectStats.ProjectList[ProjectIndex].name;
-            return true;
-            if (tStudy != "null")
-            {
-                i = sUrl.IndexOf(tStudy); // the /0 or /56 of the /4/xxg or ?appid=xx the x part
-                if (i < 0)
-                {
-                    sOut = tURL + tHid + sHost + tValid + tStudy + sPageOffset;
-                }
-                else
-                {
-                    j = FirstNonInteger(s, i + tStudy.Length);
-                    string sStudyV = s.Substring(i + tStudy.Length, j - i - tStudy.Length);
-                    // need to put sStudyV where the default study value is
-                    // default is like &appid=13 or like /0
-                    int k = FindFirstNonNumericFromEnd(tStudy);
-                    Debug.Assert(k > 0);
-                    string sStudy = tStudy.Substring(0, k) + sStudyV;
-                    sOut = tURL + tHid + sHost + tValid + sStudy + sPageOffset;
-                }
-            }
-            else
-            {
-                sOut = tURL + tHid + sHost + tValid + sPageOffset;
-            }
-            sSelectedProject = ProjectStats.ProjectList[ProjectIndex].name;
-            return true;
-        }
-
-        private int FindFirstNonNumericFromEnd(string str)
-        {
-            for (int i = str.Length - 1; i >= 0; i--)
-            {
-                if (!char.IsDigit(str[i]))
-                {
-                    return i;
-                }
-            }
-            return -1; // All characters are digits
-        }
 
         private void ParseProjUrl()
         {
@@ -924,11 +559,11 @@ namespace CreditStatistics
             int ProjectID = -1;
             string sPage = "";
             
-            if (ParseUrl(ProjUrl.Text, ref sOut, ref ProjectID, ref sHost, ref SelectedProject, ref sPage))
+            if (ParseUrl( ref ProjectStats, ProjUrl.Text, ref sOut, ref ProjectID, ref sHost, ref SelectedProject, ref sPage))
             {
                 ProjUrl.Text = sOut;
                 tbHOSTID.Text = sHost;
-                SetRB(ProjectID, false);
+                SetRB(ProjectID, true);
                 tbPage.Text = sPage;
             }
         }
@@ -958,17 +593,6 @@ namespace CreditStatistics
         private void btnExtract_Click(object sender, EventArgs e)
         {
             UrlPassed();
-        }
-
-        private int FirstNonInteger(string s, int iOffset)
-        {
-            int i = iOffset;
-            while (i < s.Length)
-            {
-                if (s[i] < '0' || s[i] > '9') return i;
-                i++;
-            }
-            return s.Length;
         }
 
         private void btnClear_Click(object sender, EventArgs e)
@@ -1032,7 +656,7 @@ namespace CreditStatistics
             string sPage = "";
             ProjUrl.Text = sIn;
 
-            if (ParseUrl(sIn, ref sOut, ref ProjectID, ref sHost, ref sName, ref sPage))
+            if (ParseUrl(ref ProjectStats, sIn, ref sOut, ref ProjectID, ref sHost, ref sName, ref sPage))
             {
                 if(sUnknown != "")
                 {
@@ -1048,38 +672,10 @@ namespace CreditStatistics
             }
         }
 
-        // just determines if the project ID exists or not
-        // since PCname is unknown if the ID is not registered
-        private bool  GetPCnameFromURL(string sUrl, ref string sHost)
-        {
-            string tURL = "";
-            string tHid = "";
-            string tValid = "";
-            string tPage = "";
-            string tStudy = "";
-            string tCountValids = "";
-            int ProjectIndex = ProjectStats.GetNameIndex(sUrl);
-
-            ProjectStats.GetBaseInfo(ProjectIndex, ref tURL, ref tHid, ref tValid, ref tPage, ref tStudy, ref tCountValids);
-
-            //need to get the value assigned to tHid and to tPage
-            int i  = sUrl.IndexOf(tHid);
-            if (i < 0)
-            {
-                MessageBox.Show(tHid + " not found in url");
-                return false;
-            }
-
-            int j = FirstNonInteger(sUrl, i + tHid.Length);
-            sHost = sUrl.Substring(i + tHid.Length, j - i - tHid.Length);
-            if(bHaveHostInfo)
-                return ProjectStats.HasProjectID(sHost, ProjectIndex);            
-            return false;
-        }
 
         private bool InstallKnownPCurl(string sUrl, ref string sProjectID)
         {
-            bool bFound = GetPCnameFromURL(sUrl, ref sProjectID);
+            bool bFound = GetPCnameFromURL(ref ProjectStats, sUrl, ref sProjectID);
             if (bFound)
                 InstallURL(sUrl, "");
             else
@@ -1098,22 +694,7 @@ namespace CreditStatistics
         private void TaskTimer_Tick(object sender, EventArgs e)
         {
             pbTask.Value++;
-            //if (pbTask.Value < 10) return;
-            if (MYrpc.InScheduler())
-            {
-                if (pbTask.Value >= pbTask.Maximum)
-                {
-                    TaskTimer.Stop();
-                    MYrpc.StopScheduler();
-                    pbTask.Value = 0;
-                    return;
-                }
-                if (MYrpc.SchedulerDone())
-                {
-                    ScheduleNext();
-                }
-                return;
-            }
+            string sTemp = "";
             if (pbTask.Value >= pbTask.Maximum || ProjectStats.TaskDone)
             {
                 TaskTimer.Stop();
@@ -1128,8 +709,15 @@ namespace CreditStatistics
                     case "HDR":
                         if (ProjectStats.sCountValids != "null")
                         {
-                            ProjectStats.NumValid = ProcessHDR();
-                            if (ProjectStats.NumValid == 0) return;
+                            sTemp = "";
+                            ProjectStats.NumValid = ProcessHDR(ref ProjectStats.RawPage, ref sTemp);
+                            tbHdrInfo.Text += sTemp;
+                            if (ProjectStats.NumValid == 0)
+                            {
+                                tbInfo.Text = "No valid records found for " + MyComputerID + " and project " +
+                                   ProjectStats.ShortName(TagOfProject);
+                                return;
+                            }
                         }
                         AllowGS(!ProjectStats.TaskError);
                         RecordsPerPage = ProcessBody();
@@ -1150,7 +738,9 @@ namespace CreditStatistics
                         }
                         if (ProjectStats.sCountValids != "null")
                         {
-                            ProjectStats.NumValid = ProcessHDR();
+                            sTemp = "";
+                            ProjectStats.NumValid = ProcessHDR(ref ProjectStats.RawPage, ref sTemp);
+                            tbHdrInfo.Text += sTemp;
                             if (ProjectStats.NumValid > 0)
                             {
                                 RecordsPerPage = ProcessBody();
@@ -1195,32 +785,6 @@ namespace CreditStatistics
             }
         }
 
-        private void ReadStringsIntoList(ref List<string> sList)
-        {
-            using (OpenFileDialog openFileDialog = new OpenFileDialog())
-            {
-                openFileDialog.Filter = "Text Files (*.txt)|*.txt|All Files (*.*)|*.*";
-                openFileDialog.Title = "Open Text File";
-                openFileDialog.InitialDirectory = WhereEXE;
-
-                if (openFileDialog.ShowDialog() == DialogResult.OK)
-                {
-                    try
-                    {
-                        string[] lines = File.ReadAllLines(openFileDialog.FileName);
-                        Properties.Settings.Default.HostList = lines;
-                        Properties.Settings.Default.Save();
-                        sList.Clear(); // Clear current items
-                        sList.AddRange(lines); // Add all lines
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show("Error reading file: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                }
-            }
-        }
-
         private void btnLoadFrom_Click(object sender, EventArgs e)
         {
             List<string> MyList = new List<string>();
@@ -1233,216 +797,29 @@ namespace CreditStatistics
                 int ProjectID = -1;
                 string sName = "";
                 string sPage = "";
-                if (ParseUrl(s.Trim(), ref sOut, ref ProjectID, ref sHost, ref sName, ref sPage))
+                if (ParseUrl(ref ProjectStats, s.Trim(), ref sOut, ref ProjectID, ref sHost, ref sName, ref sPage))
                     lbSelectDemo.Items.Add(sOut);
                 else break;                
             }   
         }
 
+
+
         private bool TryGetHostSets()
         {
-            string[] SavedHostList = Properties.Settings.Default.HostList;
-            List<string> Proj_PC_ID = new List<string>();   // project name, pc name and pc id "computer id"
-            if (SavedHostList == null || SavedHostList.Length == 0)
+            bool b = GetHostsSet(ref ProjectStats);
+            if(b)
             {
-                if (Properties.Settings.Default.AskForBoinctasks)
-                {
-                    
-                }
-                return false;
-            }
-            Proj_PC_ID.AddRange(SavedHostList);
-            return FormHostList(ref Proj_PC_ID);
-        }
-
-        private bool FormHostList(ref List<string> Proj_PC_ID)
-        {
-            if (Proj_PC_ID.Count == 0) return false;
-            int i, n = 0;
-            cbComputerList.Items.Clear();
-            foreach (string s in Proj_PC_ID)
-            {
-                i = s.IndexOf(":");
-                if (i < 0)
-                {
-                    MessageBox.Show("Expected format of project name: id1 id2 .. not found!");
-                    continue;
-                }
-                string sName = s.Substring(0, i).Trim();
-                if (i >= s.Length) continue;
-
-                string sRem = s.Substring(i + 1).Trim();
-                int iLoc = ProjectStats.GetNameIndex(sName);
-                if (iLoc < 0)
-                {
-                    MessageBox.Show("Unknown project found: ", sName);
-                    continue;
-                }
-                ProjectStats.ProjectList[iLoc].Hosts.Clear();
-                ProjectStats.ProjectList[iLoc].HostNames.Clear();
-
-                string[] sPairHosts = sRem.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-                for (i = 0; i < sPairHosts.Length; i++)
-                {
-                    string u = sPairHosts[i];
-                    int i1 = u.IndexOf("--passwd ");
-                    if(i1 > 0)
-                    {
-                        int i2 = u.LastIndexOf(" ");
-                        Debug.Assert(i2 > 0);
-                        string v = u.Substring(0, i1).Trim();
-                        string w = u.Substring(i2 + 1).Trim();
-                        u = v + " " + w;
-                        sPairHosts[i] = u;
-                    }
-                    string[] sPair = sPairHosts[i].Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-                    if (sPair.Length != 2)
-                    {
-                        MessageBox.Show("Expected format of 'hostname hostid'");
-                        continue;
-                    }
-                    string sPC = sPair[0].Trim();
-                    if (!cbComputerList.Items.Contains(sPC))
-                        cbComputerList.Items.Add(sPC);
-                    ProjectStats.ProjectList[iLoc].HostNames.Add(sPC);
-                    ProjectStats.ProjectList[iLoc].Hosts.Add(sPair[1].Trim());
-                    n++;
-                }                
-            }
-            if(n>0)
-            {
+                cbComputerList.DataSource = ProjectStats.ComputerList.ToArray();
                 gbAllowSeq.Enabled = true;
                 btnSaveIDs.Enabled = true;
                 btnSetAll.Enabled = true;
-                btnClearAll.Enabled = true;              
-                DisplayKnownSystems();
+                btnClearAll.Enabled = true;
             }
-            return n > 0;
-        }
-
-        private void DisplayKnownSystems()
-        {
-            string sout = "";
-            string s;
-            int i,j, n = 2;
-            string r = Environment.NewLine;
-            foreach(cPSlist ps in ProjectStats.ProjectList)
-            {
-                sout += ps.name + r;    // project name
-                s ="";
-                j = 0;
-                for (i = 0; i < ps.HostNames.Count; i++)
-                {
-                    if (j + 1 == ps.HostNames[i].Length)
-                    {
-                        s += "\t"+ ps.HostNames[i] + " " + ps.Hosts[i] + r;
-                    }
-                    else s += "\t"+ ps.HostNames[i] + " " + ps.Hosts[i] + ", ";
-                    j++;
-                    if(j == n)
-                    {
-                        j = 0;
-                        s += r;
-                    }
-                }
-                sout += s + r;
-            }
-            tbProjHostList.Text = sout;
+            return b;
         }
 
 
-        private int ReadHostsSets()
-        {
-            bool bFirstValid = true;
-            int ShowPos = 0;
-            List<string> MyList = new List<string>();
-            ReadStringsIntoList(ref MyList);
-            if(MyList.Count == 0)return 0;
-            for (int i = 0; i < ProjectStats.ProjectList.Count(); i++)
-            {
-                ProjectStats.ProjectList[i].Hosts.Clear();
-                ProjectStats.ProjectList[i].HostNames.Clear();
-            }
-            foreach(string line in MyList)
-            {
-                string[] parts = line.Split(new[] {':', ',', ' '}, StringSplitOptions.RemoveEmptyEntries);
-                if (parts.Length >= 2)
-                {
-                    string projectName = parts[0].Trim().ToLower();
-                    int iLoc = ProjectStats.GetNameIndex(projectName);
-                    if (iLoc < 0)
-                    {
-                        MessageBox.Show("Project name not found: " + projectName);
-                        continue;
-                    }
-                    if(bFirstValid)
-                    {
-                        bFirstValid = false;
-                        ShowPos = iLoc;
-                    }
-                    for (int i = 1; i < parts.Length - 1; i += 2)                    {
-
-                        ProjectStats.ProjectList[iLoc].Hosts.Add(parts[i+1]);
-                        ProjectStats.ProjectList[iLoc].HostNames.Add(parts[i]);
-                    }
-                }
-            }
-            return ShowPos;
-        }
-
-        private string[] GetComputerXML(string FilePath)
-        {
-            List<string> PCnames = new List<string>();
-            try
-            {
-                using (StreamReader reader = new StreamReader(FilePath))
-                {
-                    string line;
-                    while ((line = reader.ReadLine()) != null)
-                    {
-                        int i = line.IndexOf("<ip>");
-                        if (i < 0) continue;
-                        int j = line.IndexOf("</ip>", i);
-                        Debug.Assert(j > 0);
-                        string s = line.Substring(i + 4, j - i - 4);
-                        if(s == "localhost")
-                            s = Dns.GetHostName();
-                        if(IsPortOpen(s))
-                        {
-                            PCnames.Add(s);
-                        }
-                        else
-                        {
-
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error reading file: " + ex.Message);
-            }
-            return PCnames.ToArray();
-        }
-
-        private string[] ReadXmlList(string FolderPath)
-        {            
-            
-            using (OpenFileDialog openFileDialog = new OpenFileDialog())
-            {
-                openFileDialog.Filter = "XML Files (*.xml)|*.xml|All Files (*.*)|*.*";
-                openFileDialog.Title = "Open computers.xml";
-                openFileDialog.InitialDirectory = FolderPath;
-                
-
-                if (openFileDialog.ShowDialog() == DialogResult.OK)
-                {
-                    string FilePath = openFileDialog.FileName;
-                    return GetComputerXML(FilePath);
-                }
-            }
-            return null;          
-        }
 
         /*
          * used to read a temp file that might still be useful
@@ -1488,7 +865,7 @@ namespace CreditStatistics
         private bool GetDemoList()
         {
 
-            int iLoc = ReadHostsSets();
+            int iLoc = ReadHostsSets(ref ProjectStats);
             if (iLoc >= 0)
             {
                 gbAllowSeq.Enabled = true;
@@ -1581,7 +958,7 @@ namespace CreditStatistics
 
 
  
-        private void FillInDGV( int iLoc)
+        private void FillInDGV(int iLoc)
         {
             dgv.Rows.Clear();
             cPSlist cp = ProjectStats.ProjectList[iLoc];
@@ -1627,10 +1004,6 @@ namespace CreditStatistics
             FillInDGV(cbSelProj.SelectedIndex);
         }
 
-
-        //PCName is always unknown todo
-        // bug this should lookup the PCName to see if it needs to be added to localhosts
-        // todo TO DO TODO
         private void ApplyOneProject(string HostID, string ProjName, string PCName)
         {
             ProjectStats.LocalHosts.Clear();
@@ -1646,16 +1019,13 @@ namespace CreditStatistics
             }
             if (ProjectStats.LocalHosts.Count > 0)
             {
-                tbProjHostList.Clear();
-                foreach (cLHe c in ProjectStats.LocalHosts)
-                {
-                    tbProjHostList.AppendText(c.ProjectName + " " + c.ProjectsHostID + Environment.NewLine);
-                }
+                // jys use to show contents of ProjectStates.LocalHosts here
+                //foreach (cLHe c in ProjectStats.LocalHosts)
                 MyComputerID = PCName;
                 UpdateRB();
                 ProjUrl.Clear();
-                lbViewRaw.Show();
-                tcProj.SelectTab(0);
+                TabS.Show();
+                tcProj.SelectTab("TabP");
             }
         }
 
@@ -1678,18 +1048,13 @@ namespace CreditStatistics
             }
             if (ProjectStats.LocalHosts.Count > 0)
             {
-                tbProjHostList.Clear();
-                foreach (cLHe c in ProjectStats.LocalHosts)
-                {
-                    tbProjHostList.AppendText(c.ProjectName + " " + c.ProjectsHostID + Environment.NewLine);
-                }
                 MyComputerID = sPC;
                 UpdateRB();
                 ProjUrl.Clear();
-                lbViewRaw.Show();
-                tcProj.SelectTab(0);
+                TabS.Show();
+                tcProj.SelectTab("TabP");
                 int nID = ProjectStats.LocalHosts[0].IndexToProjectList;
-                SetRB(nID, false);
+                SetRB(nID, true);
                 lbPCname.Text = "PC name: " + sPC;
             }
             else
@@ -1703,12 +1068,14 @@ namespace CreditStatistics
             RestoreLocalList(sPC);
         }
 
+        private List<string>SelectedIDs = new List<string>();
         private void btnRunCmp_Click(object sender, EventArgs e)
         {
             lbURLtoSequence.Items.Clear();
             lbViewRawH.Items.Clear();
             SelectedProject = cbSelProj.Text;
             int n = 0;
+            SelectedIDs.Clear();
             foreach ( DataGridViewRow r in dgv.SelectedRows)
             {
                 if (r.Cells[0].Value == null) continue;
@@ -1721,20 +1088,21 @@ namespace CreditStatistics
                 tbHOSTID.Text = r.Cells[1].Value.ToString();
                 ApplyName();
                 lbURLtoSequence.Items.Add(ProjUrl.Text);
+                SelectedIDs.Add(tbHOSTID.Text);
                 n++;
             }
             if (n > 0)
             {
-                tcProj.SelectedTab = lbViewRaw;
+                tcProj.SelectedTab = TabS;
                 lbViewRawH.Items.Add("Totals only");
                 lbXX.Text = ProjectStats.GetStudy(ProjUrl.Text);
                 bool b = lbXX.Text.ToString().Count() > 0;
                 btnApplyAPxx.Enabled = b;
                 gbXX.Enabled = b;
-                if(!tcProj.TabPages.Contains(lbViewRaw))
-                    tcProj.TabPages.Add(hiddenTabPage);                       
+                if(!tcProj.TabPages.Contains(TabS))
+                    tcProj.TabPages.Add(tTabS);                       
             }
-            else tcProj.TabPages.Remove(hiddenTabPage);
+            else tcProj.TabPages.Remove(tTabS);
         }
 
 
@@ -1822,6 +1190,7 @@ namespace CreditStatistics
             ts.nLongestName = Math.Max(ts.nLongestName, ts.sHostName.Length);
             SequenceChanged(ts.UrlIndex);
             MyComputerID = ts.sHostName;
+            tbHOSTID.Text = SelectedIDs[ts.UrlIndex].ToString();
             InstallURL(sUrl,"");
             StartRun("SEQ");
         }
@@ -2019,91 +1388,10 @@ namespace CreditStatistics
             }
         }
 
-        private bool bInScheduler = false;
-        private int iCurrentHOST = 0;
-        private int iHostCount = 0;
-        private void btnScanClients_Click(object sender, EventArgs e)
-        {
-            bInScheduler = true;
-            iHostCount = LocalHostList.Count();
-            if(iHostCount > 0)
-            {
-                iCurrentHOST = 0;
-                MYrpc.InitScheduler();
-                TaskTimer.Start();
-                StartScheduler();
-            }
-        }
-
-        private bool TryStream = true;
-        private void StartScheduler()
-        {
-            if (TryStream)
-                MYrpc.ReadStream(LocalHostList[iCurrentHOST].ToString());
-            else
-                HostRPC.GetHostInfo(LocalHostList[iCurrentHOST].ToString());
-
-        }
-        private void ScheduleNext()
-        {
-            /*
-            
-            Refresh();
-            Task.Delay(1);
-            Application.DoEvents();
-            */
-            iCurrentHOST++;
-            
-            if(iCurrentHOST == iHostCount)
-            {
-                TaskTimer.Stop();
-                pbTask.Value = 0;
-                if(ProjectStats.GetHosts(MYrpc.GetSchedulerResults().ToLower()))
-                {
-                    if(TryGetHostSets())
-                    {
-                        ProjectStats.SelectComputer(MyComputerID);
-                        cbSelProj.SelectedIndex = 0;
-                    }    
-
-                }
-                else
-                {
-                    int n = Properties.Settings.Default.HostList.Length;
-                    if(n == 0)
-                        MessageBox.Show("No hosts found or all hosts required passwords"+ Environment.NewLine +
-                        "You must open a default list or create one in the tab 'Host List' ");
-                    else
-                    {
-                        MessageBox.Show("Using previous host list");
-                    }
-                }
-                
-            }
-            else
-            {
-                StartScheduler();
-            }
-        }
 
 
-        private bool IsPortOpen(string host)
-        {
-            int port = 31416;
-            try
-            {
-                using (TcpClient client = new TcpClient())
-                {
-                    var result = client.BeginConnect(host, port, null, null);
-                    bool success = result.AsyncWaitHandle.WaitOne(TimeSpan.FromSeconds(1));
-                    return success && client.Connected;
-                }
-            }
-            catch
-            {
-                return false;
-            }
-        }
+        // the following scheduler is for get getting project IDs 
+
 
         private void btnFetchID_Click(object sender, EventArgs e)
         {
@@ -2120,7 +1408,7 @@ namespace CreditStatistics
             string sProjectID = "";
             InstallKnownPCurl(SelectedDemo, ref sProjectID);
             StartRun("HDR");
-            tcProj.SelectTab(0);
+            tcProj.SelectTab("TabP");
         }
 
         private void btnRestoreID_Click(object sender, EventArgs e)
@@ -2165,6 +1453,13 @@ namespace CreditStatistics
         {
             string s = cbKnownIDs.Text;
             tbXX.Text = s;
+        }
+
+        private void tsmConfigure_Click(object sender, EventArgs e)
+        {
+            config DoConfig = new config(ref ProjectStats);
+            DoConfig.ShowDialog();
+            DoConfig.Dispose();
         }
     }
 }

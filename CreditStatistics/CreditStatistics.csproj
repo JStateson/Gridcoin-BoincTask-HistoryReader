@@ -99,6 +99,7 @@
     <Compile Include="CreditStatistics.Designer.cs">
       <DependentUpon>CreditStatistics.cs</DependentUpon>
     </Compile>
+    <Compile Include="globals.cs" />
     <Compile Include="help.cs">
       <SubType>Form</SubType>
     </Compile>

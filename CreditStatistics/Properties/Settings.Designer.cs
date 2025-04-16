@@ -70,5 +70,39 @@ namespace CreditStatistics.Properties {
                 this["AskForBoinctasks"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public string[] AppList {
+            get {
+                return ((string[])(this["AppList"]));
+            }
+            set {
+                this["AppList"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public string[] RemoteHosts {
+            get {
+                return ((string[])(this["RemoteHosts"]));
+            }
+            set {
+                this["RemoteHosts"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool AskForDemo {
+            get {
+                return ((bool)(this["AskForDemo"]));
+            }
+            set {
+                this["AskForDemo"] = value;
+            }
+        }
     }
 }

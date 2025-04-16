@@ -117,4 +117,30 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <metadata name="toolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
+  </metadata>
+  <data name="label5.Text" xml:space="preserve">
+    <value>If you installed BOINC or recently
+ added one or more projects then
+re-run the App Study to get more
+app IDs.  You can also save and
+load the list of App IDs as a text 
+ile.  IDs are always added to any
+existing IDs.</value>
+  </data>
+  <data name="label2.Text" xml:space="preserve">
+    <value>This form is used to obtain the names of your PCs running the BOINC
+ application.  f you are running BoincTasks then all remote PCs will
+be found. If not then only the local PC.  Your PCs can be used to
+find the project names and host ID used for research.  Alternately
+you can open a demo file containing a list of project names and IDs.
+Please select the ClientList tab and open the demo or run the query.</value>
+  </data>
+  <metadata name="SchTimer.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>115, 17</value>
+  </metadata>
+  <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>59</value>
+  </metadata>
 </root>

@@ -49,7 +49,7 @@
             this.btnRunHdr = new System.Windows.Forms.Button();
             this.label5 = new System.Windows.Forms.Label();
             this.tcProj = new System.Windows.Forms.TabControl();
-            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.tabP = new System.Windows.Forms.TabPage();
             this.btnRestoreID = new System.Windows.Forms.Button();
             this.cbStudy = new System.Windows.Forms.ComboBox();
             this.label9 = new System.Windows.Forms.Label();
@@ -62,16 +62,7 @@
             this.tbPage = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.btnExtract = new System.Windows.Forms.Button();
-            this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.btnScanClients = new System.Windows.Forms.Button();
-            this.tbProjHostList = new System.Windows.Forms.TextBox();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.btnReadBoinc = new System.Windows.Forms.Button();
-            this.label15 = new System.Windows.Forms.Label();
-            this.BoincHostFolder = new System.Windows.Forms.TextBox();
-            this.label14 = new System.Windows.Forms.Label();
-            this.WorkingFolderLoc = new System.Windows.Forms.TextBox();
-            this.tabpage = new System.Windows.Forms.TabPage();
+            this.TabT = new System.Windows.Forms.TabPage();
             this.btnRunTop = new System.Windows.Forms.Button();
             this.btnViewTop = new System.Windows.Forms.Button();
             this.btnSaveAS = new System.Windows.Forms.Button();
@@ -79,7 +70,7 @@
             this.label4 = new System.Windows.Forms.Label();
             this.tbSelected = new System.Windows.Forms.TextBox();
             this.lbSelectDemo = new System.Windows.Forms.ListBox();
-            this.TabHost = new System.Windows.Forms.TabPage();
+            this.TabL = new System.Windows.Forms.TabPage();
             this.btnFetchID = new System.Windows.Forms.Button();
             this.gbAllowSeq = new System.Windows.Forms.GroupBox();
             this.btnClearAll = new System.Windows.Forms.Button();
@@ -95,7 +86,7 @@
             this.Project = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.HostID = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.btnSaveIDs = new System.Windows.Forms.Button();
-            this.lbViewRaw = new System.Windows.Forms.TabPage();
+            this.TabS = new System.Windows.Forms.TabPage();
             this.gbXX = new System.Windows.Forms.GroupBox();
             this.label17 = new System.Windows.Forms.Label();
             this.label16 = new System.Windows.Forms.Label();
@@ -121,18 +112,17 @@
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.getAnyonesCreditsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.compareCreditsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmConfigure = new System.Windows.Forms.ToolStripMenuItem();
             this.gbGetStats.SuspendLayout();
             this.gbSamURL.SuspendLayout();
             this.tcProj.SuspendLayout();
-            this.tabPage1.SuspendLayout();
-            this.tabPage2.SuspendLayout();
-            this.groupBox1.SuspendLayout();
-            this.tabpage.SuspendLayout();
-            this.TabHost.SuspendLayout();
+            this.tabP.SuspendLayout();
+            this.TabT.SuspendLayout();
+            this.TabL.SuspendLayout();
             this.gbAllowSeq.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgv)).BeginInit();
-            this.lbViewRaw.SuspendLayout();
+            this.TabS.SuspendLayout();
             this.gbXX.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudPages)).BeginInit();
             this.menuStrip1.SuspendLayout();
@@ -361,11 +351,10 @@
             // 
             // tcProj
             // 
-            this.tcProj.Controls.Add(this.tabPage1);
-            this.tcProj.Controls.Add(this.tabPage2);
-            this.tcProj.Controls.Add(this.tabpage);
-            this.tcProj.Controls.Add(this.TabHost);
-            this.tcProj.Controls.Add(this.lbViewRaw);
+            this.tcProj.Controls.Add(this.tabP);
+            this.tcProj.Controls.Add(this.TabT);
+            this.tcProj.Controls.Add(this.TabL);
+            this.tcProj.Controls.Add(this.TabS);
             this.tcProj.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tcProj.Location = new System.Drawing.Point(12, 52);
             this.tcProj.Name = "tcProj";
@@ -373,33 +362,33 @@
             this.tcProj.Size = new System.Drawing.Size(592, 689);
             this.tcProj.TabIndex = 13;
             // 
-            // tabPage1
+            // tabP
             // 
-            this.tabPage1.Controls.Add(this.btnRestoreID);
-            this.tabPage1.Controls.Add(this.cbStudy);
-            this.tabPage1.Controls.Add(this.label9);
-            this.tabPage1.Controls.Add(this.label8);
-            this.tabPage1.Controls.Add(this.btnLoadDefIDs);
-            this.tabPage1.Controls.Add(this.btnSaveDefIDs);
-            this.tabPage1.Controls.Add(this.btnPaste);
-            this.tabPage1.Controls.Add(this.btnClearURL);
-            this.tabPage1.Controls.Add(this.label1);
-            this.tabPage1.Controls.Add(this.tbPage);
-            this.tabPage1.Controls.Add(this.label3);
-            this.tabPage1.Controls.Add(this.btnExtract);
-            this.tabPage1.Controls.Add(this.gbSamURL);
-            this.tabPage1.Controls.Add(this.label5);
-            this.tabPage1.Controls.Add(this.tbHdrInfo);
-            this.tabPage1.Controls.Add(this.ProjUrl);
-            this.tabPage1.Controls.Add(this.btnRunHdr);
-            this.tabPage1.Controls.Add(this.btnViewData);
-            this.tabPage1.Location = new System.Drawing.Point(4, 25);
-            this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(584, 660);
-            this.tabPage1.TabIndex = 0;
-            this.tabPage1.Text = "Projects";
-            this.tabPage1.UseVisualStyleBackColor = true;
+            this.tabP.Controls.Add(this.btnRestoreID);
+            this.tabP.Controls.Add(this.cbStudy);
+            this.tabP.Controls.Add(this.label9);
+            this.tabP.Controls.Add(this.label8);
+            this.tabP.Controls.Add(this.btnLoadDefIDs);
+            this.tabP.Controls.Add(this.btnSaveDefIDs);
+            this.tabP.Controls.Add(this.btnPaste);
+            this.tabP.Controls.Add(this.btnClearURL);
+            this.tabP.Controls.Add(this.label1);
+            this.tabP.Controls.Add(this.tbPage);
+            this.tabP.Controls.Add(this.label3);
+            this.tabP.Controls.Add(this.btnExtract);
+            this.tabP.Controls.Add(this.gbSamURL);
+            this.tabP.Controls.Add(this.label5);
+            this.tabP.Controls.Add(this.tbHdrInfo);
+            this.tabP.Controls.Add(this.ProjUrl);
+            this.tabP.Controls.Add(this.btnRunHdr);
+            this.tabP.Controls.Add(this.btnViewData);
+            this.tabP.Location = new System.Drawing.Point(4, 25);
+            this.tabP.Name = "tabP";
+            this.tabP.Padding = new System.Windows.Forms.Padding(3);
+            this.tabP.Size = new System.Drawing.Size(584, 660);
+            this.tabP.TabIndex = 0;
+            this.tabP.Text = "Projects";
+            this.tabP.UseVisualStyleBackColor = true;
             // 
             // btnRestoreID
             // 
@@ -415,6 +404,7 @@
             // 
             // cbStudy
             // 
+            this.cbStudy.Enabled = false;
             this.cbStudy.FormattingEnabled = true;
             this.cbStudy.Location = new System.Drawing.Point(111, 251);
             this.cbStudy.Name = "cbStudy";
@@ -536,121 +526,21 @@
             this.btnExtract.UseVisualStyleBackColor = true;
             this.btnExtract.Click += new System.EventHandler(this.btnExtract_Click);
             // 
-            // tabPage2
+            // TabT
             // 
-            this.tabPage2.Controls.Add(this.btnScanClients);
-            this.tabPage2.Controls.Add(this.tbProjHostList);
-            this.tabPage2.Controls.Add(this.groupBox1);
-            this.tabPage2.Location = new System.Drawing.Point(4, 25);
-            this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(584, 660);
-            this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "Host IDs";
-            this.tabPage2.UseVisualStyleBackColor = true;
-            // 
-            // btnScanClients
-            // 
-            this.btnScanClients.Enabled = false;
-            this.btnScanClients.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnScanClients.ForeColor = System.Drawing.Color.Blue;
-            this.btnScanClients.Location = new System.Drawing.Point(192, 211);
-            this.btnScanClients.Name = "btnScanClients";
-            this.btnScanClients.Size = new System.Drawing.Size(111, 40);
-            this.btnScanClients.TabIndex = 4;
-            this.btnScanClients.Text = "Create List from\r\nBoincTasks IDs";
-            this.btnScanClients.UseVisualStyleBackColor = true;
-            this.btnScanClients.Click += new System.EventHandler(this.btnScanClients_Click);
-            // 
-            // tbProjHostList
-            // 
-            this.tbProjHostList.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbProjHostList.ForeColor = System.Drawing.Color.Blue;
-            this.tbProjHostList.Location = new System.Drawing.Point(6, 257);
-            this.tbProjHostList.Multiline = true;
-            this.tbProjHostList.Name = "tbProjHostList";
-            this.tbProjHostList.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.tbProjHostList.Size = new System.Drawing.Size(548, 385);
-            this.tbProjHostList.TabIndex = 1;
-            // 
-            // groupBox1
-            // 
-            this.groupBox1.Controls.Add(this.btnReadBoinc);
-            this.groupBox1.Controls.Add(this.label15);
-            this.groupBox1.Controls.Add(this.BoincHostFolder);
-            this.groupBox1.Controls.Add(this.label14);
-            this.groupBox1.Controls.Add(this.WorkingFolderLoc);
-            this.groupBox1.Location = new System.Drawing.Point(17, 16);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(548, 175);
-            this.groupBox1.TabIndex = 0;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Folder Locations";
-            // 
-            // btnReadBoinc
-            // 
-            this.btnReadBoinc.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnReadBoinc.ForeColor = System.Drawing.Color.Blue;
-            this.btnReadBoinc.Location = new System.Drawing.Point(433, 115);
-            this.btnReadBoinc.Name = "btnReadBoinc";
-            this.btnReadBoinc.Size = new System.Drawing.Size(95, 40);
-            this.btnReadBoinc.TabIndex = 1;
-            this.btnReadBoinc.Text = "Click to read\r\nyour Host IDs";
-            this.btnReadBoinc.UseVisualStyleBackColor = true;
-            this.btnReadBoinc.Click += new System.EventHandler(this.btnReadBoinc_Click);
-            // 
-            // label15
-            // 
-            this.label15.AutoSize = true;
-            this.label15.BackColor = System.Drawing.SystemColors.Info;
-            this.label15.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label15.Location = new System.Drawing.Point(30, 109);
-            this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(357, 14);
-            this.label15.TabIndex = 14;
-            this.label15.Text = "Boinctask folder: AppData\\Roaming\\eFMer\\BoincTasks\r\n";
-            // 
-            // BoincHostFolder
-            // 
-            this.BoincHostFolder.Location = new System.Drawing.Point(24, 133);
-            this.BoincHostFolder.Name = "BoincHostFolder";
-            this.BoincHostFolder.Size = new System.Drawing.Size(386, 22);
-            this.BoincHostFolder.TabIndex = 13;
-            // 
-            // label14
-            // 
-            this.label14.AutoSize = true;
-            this.label14.BackColor = System.Drawing.SystemColors.Info;
-            this.label14.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label14.Location = new System.Drawing.Point(30, 31);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(105, 14);
-            this.label14.TabIndex = 12;
-            this.label14.Text = "Working folder";
-            // 
-            // WorkingFolderLoc
-            // 
-            this.WorkingFolderLoc.Location = new System.Drawing.Point(24, 55);
-            this.WorkingFolderLoc.Name = "WorkingFolderLoc";
-            this.WorkingFolderLoc.ReadOnly = true;
-            this.WorkingFolderLoc.Size = new System.Drawing.Size(386, 22);
-            this.WorkingFolderLoc.TabIndex = 0;
-            // 
-            // tabpage
-            // 
-            this.tabpage.Controls.Add(this.btnRunTop);
-            this.tabpage.Controls.Add(this.btnViewTop);
-            this.tabpage.Controls.Add(this.btnSaveAS);
-            this.tabpage.Controls.Add(this.btnLoadFrom);
-            this.tabpage.Controls.Add(this.label4);
-            this.tabpage.Controls.Add(this.tbSelected);
-            this.tabpage.Controls.Add(this.lbSelectDemo);
-            this.tabpage.Location = new System.Drawing.Point(4, 25);
-            this.tabpage.Name = "tabpage";
-            this.tabpage.Size = new System.Drawing.Size(584, 660);
-            this.tabpage.TabIndex = 2;
-            this.tabpage.Text = "Top PCs";
-            this.tabpage.UseVisualStyleBackColor = true;
+            this.TabT.Controls.Add(this.btnRunTop);
+            this.TabT.Controls.Add(this.btnViewTop);
+            this.TabT.Controls.Add(this.btnSaveAS);
+            this.TabT.Controls.Add(this.btnLoadFrom);
+            this.TabT.Controls.Add(this.label4);
+            this.TabT.Controls.Add(this.tbSelected);
+            this.TabT.Controls.Add(this.lbSelectDemo);
+            this.TabT.Location = new System.Drawing.Point(4, 25);
+            this.TabT.Name = "TabT";
+            this.TabT.Size = new System.Drawing.Size(584, 660);
+            this.TabT.TabIndex = 2;
+            this.TabT.Text = "Top PCs";
+            this.TabT.UseVisualStyleBackColor = true;
             // 
             // btnRunTop
             // 
@@ -690,7 +580,7 @@
             // btnLoadFrom
             // 
             this.btnLoadFrom.ForeColor = System.Drawing.Color.Blue;
-            this.btnLoadFrom.Location = new System.Drawing.Point(416, 101);
+            this.btnLoadFrom.Location = new System.Drawing.Point(426, 97);
             this.btnLoadFrom.Name = "btnLoadFrom";
             this.btnLoadFrom.Size = new System.Drawing.Size(87, 23);
             this.btnLoadFrom.TabIndex = 4;
@@ -754,20 +644,20 @@
             this.lbSelectDemo.TabIndex = 0;
             this.lbSelectDemo.SelectedIndexChanged += new System.EventHandler(this.lbSelectDemo_SelectedIndexChanged);
             // 
-            // TabHost
+            // TabL
             // 
-            this.TabHost.Controls.Add(this.btnFetchID);
-            this.TabHost.Controls.Add(this.gbAllowSeq);
-            this.TabHost.Controls.Add(this.groupBox2);
-            this.TabHost.Controls.Add(this.dgv);
-            this.TabHost.Controls.Add(this.btnSaveIDs);
-            this.TabHost.Location = new System.Drawing.Point(4, 25);
-            this.TabHost.Name = "TabHost";
-            this.TabHost.Padding = new System.Windows.Forms.Padding(3);
-            this.TabHost.Size = new System.Drawing.Size(584, 660);
-            this.TabHost.TabIndex = 3;
-            this.TabHost.Text = "Host List";
-            this.TabHost.UseVisualStyleBackColor = true;
+            this.TabL.Controls.Add(this.btnFetchID);
+            this.TabL.Controls.Add(this.gbAllowSeq);
+            this.TabL.Controls.Add(this.groupBox2);
+            this.TabL.Controls.Add(this.dgv);
+            this.TabL.Controls.Add(this.btnSaveIDs);
+            this.TabL.Location = new System.Drawing.Point(4, 25);
+            this.TabL.Name = "TabL";
+            this.TabL.Padding = new System.Windows.Forms.Padding(3);
+            this.TabL.Size = new System.Drawing.Size(584, 660);
+            this.TabL.TabIndex = 3;
+            this.TabL.Text = "Host List";
+            this.TabL.UseVisualStyleBackColor = true;
             // 
             // btnFetchID
             // 
@@ -938,23 +828,23 @@
             this.btnSaveIDs.UseVisualStyleBackColor = true;
             this.btnSaveIDs.Click += new System.EventHandler(this.btnSaveIDs_Click);
             // 
-            // lbViewRaw
+            // TabS
             // 
-            this.lbViewRaw.Controls.Add(this.gbXX);
-            this.lbViewRaw.Controls.Add(this.lbViewRawH);
-            this.lbViewRaw.Controls.Add(this.label12);
-            this.lbViewRaw.Controls.Add(this.lbNameHost);
-            this.lbViewRaw.Controls.Add(this.lbURLtoSequence);
-            this.lbViewRaw.Controls.Add(this.btnRunSeq);
-            this.lbViewRaw.Controls.Add(this.btnViewUrl);
-            this.lbViewRaw.Controls.Add(this.label10);
-            this.lbViewRaw.Location = new System.Drawing.Point(4, 25);
-            this.lbViewRaw.Name = "lbViewRaw";
-            this.lbViewRaw.Padding = new System.Windows.Forms.Padding(3);
-            this.lbViewRaw.Size = new System.Drawing.Size(584, 660);
-            this.lbViewRaw.TabIndex = 4;
-            this.lbViewRaw.Text = "Sequencer";
-            this.lbViewRaw.UseVisualStyleBackColor = true;
+            this.TabS.Controls.Add(this.gbXX);
+            this.TabS.Controls.Add(this.lbViewRawH);
+            this.TabS.Controls.Add(this.label12);
+            this.TabS.Controls.Add(this.lbNameHost);
+            this.TabS.Controls.Add(this.lbURLtoSequence);
+            this.TabS.Controls.Add(this.btnRunSeq);
+            this.TabS.Controls.Add(this.btnViewUrl);
+            this.TabS.Controls.Add(this.label10);
+            this.TabS.Location = new System.Drawing.Point(4, 25);
+            this.TabS.Name = "TabS";
+            this.TabS.Padding = new System.Windows.Forms.Padding(3);
+            this.TabS.Size = new System.Drawing.Size(584, 660);
+            this.TabS.TabIndex = 4;
+            this.TabS.Text = "Sequencer";
+            this.TabS.UseVisualStyleBackColor = true;
             // 
             // gbXX
             // 
@@ -1157,7 +1047,8 @@
             // menuStrip1
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.helpToolStripMenuItem});
+            this.helpToolStripMenuItem,
+            this.tsmConfigure});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(1377, 24);
@@ -1211,6 +1102,13 @@
             this.compareCreditsToolStripMenuItem.Text = "Compare Credits";
             this.compareCreditsToolStripMenuItem.Click += new System.EventHandler(this.GetHelp);
             // 
+            // tsmConfigure
+            // 
+            this.tsmConfigure.Name = "tsmConfigure";
+            this.tsmConfigure.Size = new System.Drawing.Size(72, 20);
+            this.tsmConfigure.Text = "Configure";
+            this.tsmConfigure.Click += new System.EventHandler(this.tsmConfigure_Click);
+            // 
             // CreditStatistics
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1230,22 +1128,18 @@
             this.gbSamURL.ResumeLayout(false);
             this.gbSamURL.PerformLayout();
             this.tcProj.ResumeLayout(false);
-            this.tabPage1.ResumeLayout(false);
-            this.tabPage1.PerformLayout();
-            this.tabPage2.ResumeLayout(false);
-            this.tabPage2.PerformLayout();
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
-            this.tabpage.ResumeLayout(false);
-            this.tabpage.PerformLayout();
-            this.TabHost.ResumeLayout(false);
+            this.tabP.ResumeLayout(false);
+            this.tabP.PerformLayout();
+            this.TabT.ResumeLayout(false);
+            this.TabT.PerformLayout();
+            this.TabL.ResumeLayout(false);
             this.gbAllowSeq.ResumeLayout(false);
             this.gbAllowSeq.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgv)).EndInit();
-            this.lbViewRaw.ResumeLayout(false);
-            this.lbViewRaw.PerformLayout();
+            this.TabS.ResumeLayout(false);
+            this.TabS.PerformLayout();
             this.gbXX.ResumeLayout(false);
             this.gbXX.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudPages)).EndInit();
@@ -1273,12 +1167,7 @@
         private System.Windows.Forms.Button btnApplyName;
         private System.Windows.Forms.TextBox tbHOSTID;
         private System.Windows.Forms.TabControl tcProj;
-        private System.Windows.Forms.TabPage tabPage1;
-        private System.Windows.Forms.TabPage tabPage2;
-        private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.TextBox tbProjHostList;
-        private System.Windows.Forms.Button btnReadBoinc;
-        private System.Windows.Forms.TextBox WorkingFolderLoc;
+        private System.Windows.Forms.TabPage tabP;
         private System.Windows.Forms.TextBox tbPage;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button btnExtract;
@@ -1286,7 +1175,7 @@
         private System.Windows.Forms.ProgressBar pbTask;
         private System.Windows.Forms.Timer TaskTimer;
         private System.Windows.Forms.Button btCancel;
-        private System.Windows.Forms.TabPage tabpage;
+        private System.Windows.Forms.TabPage TabT;
         private System.Windows.Forms.ListBox lbSelectDemo;
         private System.Windows.Forms.TextBox tbSelected;
         private System.Windows.Forms.Label label4;
@@ -1296,7 +1185,7 @@
         private System.Windows.Forms.Button btnClearURL;
         private System.Windows.Forms.Button btnPaste;
         private System.Windows.Forms.ToolTip toolTip1;
-        private System.Windows.Forms.TabPage TabHost;
+        private System.Windows.Forms.TabPage TabL;
         private System.Windows.Forms.Button btnSaveIDs;
         private System.Windows.Forms.Button btnSaveDefIDs;
         private System.Windows.Forms.DataGridView dgv;
@@ -1314,7 +1203,6 @@
         private System.Windows.Forms.ComboBox cbStudy;
         private System.Windows.Forms.GroupBox gbAllowSeq;
         private System.Windows.Forms.Button btnRunCmp;
-        private System.Windows.Forms.TabPage lbViewRaw;
         private System.Windows.Forms.Button btnViewUrl;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.ListBox lbURLtoSequence;
@@ -1330,10 +1218,6 @@
         private System.Windows.Forms.Label lbXX;
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.TextBox tbXX;
-        private System.Windows.Forms.Label label14;
-        private System.Windows.Forms.Label label15;
-        private System.Windows.Forms.TextBox BoincHostFolder;
-        private System.Windows.Forms.Button btnScanClients;
         private System.Windows.Forms.Button btnFetchID;
         private System.Windows.Forms.Button btnRunTop;
         private System.Windows.Forms.Button btnViewTop;
@@ -1349,6 +1233,8 @@
         private System.Windows.Forms.ComboBox cbKnownIDs;
         private System.Windows.Forms.Label label17;
         private System.Windows.Forms.Label label16;
+        private System.Windows.Forms.ToolStripMenuItem tsmConfigure;
+        private System.Windows.Forms.TabPage TabS;
     }
 }
 
