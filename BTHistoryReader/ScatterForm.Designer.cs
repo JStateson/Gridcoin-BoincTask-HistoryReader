@@ -30,9 +30,9 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ScatterForm));
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend3 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend4 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             this.lbScatUsage = new System.Windows.Forms.Label();
             this.GetLegendInfo = new System.Windows.Forms.Timer(this.components);
             this.labelShowSeries = new System.Windows.Forms.Label();
@@ -110,7 +110,7 @@
             this.tboxShowing.Name = "tboxShowing";
             this.tboxShowing.ReadOnly = true;
             this.tboxShowing.ScrollBars = System.Windows.Forms.ScrollBars.Horizontal;
-            this.tboxShowing.Size = new System.Drawing.Size(222, 20);
+            this.tboxShowing.Size = new System.Drawing.Size(280, 20);
             this.tboxShowing.TabIndex = 5;
             this.tboxShowing.Text = "Show All";
             // 
@@ -127,15 +127,15 @@
             // 
             // ChartScatter
             // 
-            chartArea2.Name = "ChartArea1";
-            this.ChartScatter.ChartAreas.Add(chartArea2);
-            legend3.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Left;
-            legend3.IsDockedInsideChartArea = false;
-            legend3.Name = "Legend1";
-            legend4.DockedToChartArea = "ChartArea1";
-            legend4.Name = "SysLeg";
-            this.ChartScatter.Legends.Add(legend3);
-            this.ChartScatter.Legends.Add(legend4);
+            chartArea1.Name = "ChartArea1";
+            this.ChartScatter.ChartAreas.Add(chartArea1);
+            legend1.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Left;
+            legend1.IsDockedInsideChartArea = false;
+            legend1.Name = "Legend1";
+            legend2.DockedToChartArea = "ChartArea1";
+            legend2.Name = "SysLeg";
+            this.ChartScatter.Legends.Add(legend1);
+            this.ChartScatter.Legends.Add(legend2);
             this.ChartScatter.Location = new System.Drawing.Point(21, 35);
             this.ChartScatter.Name = "ChartScatter";
             this.ChartScatter.Size = new System.Drawing.Size(923, 320);
@@ -183,7 +183,7 @@
             this.columnHeader1});
             this.lviewSubSeries.FullRowSelect = true;
             this.lviewSubSeries.HideSelection = false;
-            this.lviewSubSeries.Location = new System.Drawing.Point(411, 369);
+            this.lviewSubSeries.Location = new System.Drawing.Point(448, 369);
             this.lviewSubSeries.MultiSelect = false;
             this.lviewSubSeries.Name = "lviewSubSeries";
             this.lviewSubSeries.ShowGroups = false;

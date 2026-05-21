@@ -51,12 +51,20 @@
             this.lbl_sysname = new System.Windows.Forms.Label();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.labYoffset = new System.Windows.Forms.Label();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.tbTotalHours = new System.Windows.Forms.TextBox();
+            this.tbCredPerSec = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.tbCredits = new System.Windows.Forms.TextBox();
+            this.label4 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             this.gboxLKBACK.SuspendLayout();
             this.gboxFilter.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudConcur)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.SpinBin)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.DetailFilter)).BeginInit();
+            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // chart1
@@ -294,11 +302,75 @@
             this.labYoffset.Text = "Y-Axis offset to left for data visibility";
             this.labYoffset.Visible = false;
             // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.tbCredits);
+            this.groupBox1.Controls.Add(this.label4);
+            this.groupBox1.Controls.Add(this.tbCredPerSec);
+            this.groupBox1.Controls.Add(this.label3);
+            this.groupBox1.Controls.Add(this.tbTotalHours);
+            this.groupBox1.Controls.Add(this.label2);
+            this.groupBox1.Location = new System.Drawing.Point(784, 25);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(329, 305);
+            this.groupBox1.TabIndex = 8;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Estimated Credits";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(22, 37);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(123, 13);
+            this.label2.TabIndex = 0;
+            this.label2.Text = "Number of hours worked";
+            // 
+            // tbTotalHours
+            // 
+            this.tbTotalHours.Location = new System.Drawing.Point(214, 34);
+            this.tbTotalHours.Name = "tbTotalHours";
+            this.tbTotalHours.Size = new System.Drawing.Size(100, 20);
+            this.tbTotalHours.TabIndex = 1;
+            // 
+            // tbCredPerSec
+            // 
+            this.tbCredPerSec.Location = new System.Drawing.Point(214, 78);
+            this.tbCredPerSec.Name = "tbCredPerSec";
+            this.tbCredPerSec.Size = new System.Drawing.Size(100, 20);
+            this.tbCredPerSec.TabIndex = 3;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(22, 81);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(95, 13);
+            this.label3.TabIndex = 2;
+            this.label3.Text = "Credits per second";
+            // 
+            // tbCredits
+            // 
+            this.tbCredits.Location = new System.Drawing.Point(214, 245);
+            this.tbCredits.Name = "tbCredits";
+            this.tbCredits.Size = new System.Drawing.Size(100, 20);
+            this.tbCredits.TabIndex = 5;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(22, 248);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(85, 13);
+            this.label4.TabIndex = 4;
+            this.label4.Text = "Estimated Points";
+            // 
             // TPchart
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 424);
+            this.ClientSize = new System.Drawing.Size(1136, 424);
+            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.labYoffset);
             this.Controls.Add(this.labStartTime);
             this.Controls.Add(this.lbl_sysname);
@@ -318,6 +390,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.nudConcur)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.SpinBin)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.DetailFilter)).EndInit();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -344,5 +418,12 @@
         private System.Windows.Forms.TextBox tBoxTruncValue;
         private System.Windows.Forms.CheckBox cboxTruncate;
         private System.Windows.Forms.Label labYoffset;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.TextBox tbCredits;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.TextBox tbCredPerSec;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.TextBox tbTotalHours;
+        private System.Windows.Forms.Label label2;
     }
 }

@@ -774,22 +774,12 @@ namespace BTHistoryReader
                 strClass = OneSplitLine.PlanClass;
                 if (strClass != "") strClass = " [" + strClass + "]";
                 AppName = kpa.SymbolInsert(OneSplitLine.Application + strClass, 3 + iLine);  // first real data is in 5th line (0..4)
-                //AppName.nEntriesThisComputer[nThisPC]++;
-                int iN = AppName.AddUse(OneSplitLine.use);   
+                //AppName.nEntriesThisComputer[nThisPC]++; 
                 iGrp = AppName.DataName.NameInsert(OneSplitLine.Name, OneSplitLine.Project);
-                iLocDevice = OneSplitLine.use.IndexOf("device "); //1234567  note that sometimes the device is missing, if so, then use 0 as
-                    // possible there was only 1 device and no number was assigned
-                if (iLocDevice > 0)
-                {
-                    jloc = OneSplitLine.use.LastIndexOf(")");
-                    iLocDevice += 7;
-                    jloc -= iLocDevice;
-                    OneSplitLine.iDeviceUsed = Convert.ToInt32(OneSplitLine.use.Substring(iLocDevice, jloc));
-                    // AppName.nDevices = Math.Max(1, OneSplitLine.iDeviceUsed + 1); // same as iN
-                }
-                else OneSplitLine.iDeviceUsed = 0;  // device is not shown if only one gpu so use 0   
-                AppName.nEntriesThisComputer[nThisPC] = Math.Max(AppName.nEntriesThisComputer[nThisPC], OneSplitLine.iDeviceUsed + 1);
-                AppName.AddETinfo(OneSplitLine.dElapsedTimeCpu, iGrp, OneSplitLine.iDeviceUsed);
+                //int iN = AppName.AddUse(OneSplitLine.use);  // code below does this
+                AppName.nUsesGPU = OneSplitLine.SetGPUCPU();  // -1:cpu else 0..deviceN              
+                AppName.nEntriesThisComputer[nThisPC] = 1;// 2025 Math.Max(AppName.nEntriesThisComputer[nThisPC], OneSplitLine.iDeviceUsed + 1);
+                AppName.AddETinfo(OneSplitLine.dElapsedTimeCpu, iGrp, OneSplitLine.iDeviceUsed, OneSplitLine.idGPUCPUx);
                 // the above iGrp needs to go into ThisProjectInfo which unfortunately does not exist here
                 // and I do not want to rewrite this code at this time.
                 // going to append that value to the current history line
@@ -1059,6 +1049,9 @@ namespace BTHistoryReader
                     strWTF = LinesHistory[i].Substring(iWTF, (jWTF - iWTF));
                     ThisProjectInfo[j].DatasetGroup = Convert.ToInt32(strWTF);
                 }
+
+                ThisProjectInfo[j].SetGPUCPU(LinesHistory[i]);
+                
                 iWTF = LinesHistory[i].IndexOf("device ");
                 if (iWTF > 0)
                 {
@@ -1074,7 +1067,7 @@ namespace BTHistoryReader
                     nGPUnum = Math.Max(nGPUnum, AppName.iLastGpuUsed);
                     AppName.GpuReassignment.NumGPUs = 1 + nGPUnum; // note that the filter may have fewer GPUs
                 }
-                else // either GPU is missing or it is a CPU app
+                else // either GPU is missing or it is a CPU app 2025 or amd or nvidia and only 1 each
                 {
 /*
  Problem 1/1/2023  Need to identify if a GPU is unknown (no device id) or if there is only one gpu 
@@ -1082,6 +1075,7 @@ namespace BTHistoryReader
 */
                     if (AppName.bHasGPU)
                     {
+
                         ThisProjectInfo[j].iDeviceUsed = 64; // jys 1/1/2023 signal possible missing or just 1 gpu
                         AppName.GpuReassignment.AddGpu(64);
                         ThisProjectInfo[j].bDeviceUnk = true; //AppName.bHasDevices;
@@ -1141,7 +1135,10 @@ namespace BTHistoryReader
                 ThisProjectInfo[j].strElapsedTimeGpu = fmtHMS(Convert.ToInt64(strSymbols[(int)eHindex.ElapsedTimeGpu].ToString()));
                 sTemp += " " + ThisProjectInfo[j].strElapsedTimeCpu;
                 //    "(" + ThisProjectInfo[j].strElapsedTimeGpu + ")";
-                ThisProjectInfo[j].strOutput = sTemp + " D" + ThisProjectInfo[j].iDeviceUsed.ToString();               // eventually put into our text box to allow selections
+                string D = " D";                
+                //D = " " + "DNAI".Substring(ThisProjectInfo[j].idGPUCPUy, 1);
+                // above not needed here as there are different apps for nvidia amd or intel
+                ThisProjectInfo[j].strOutput = sTemp + D + ThisProjectInfo[j].iDeviceUsed.ToString();               // eventually put into our text box to allow selections
                 ThisProjectInfo[j].strName = strSymbols[(int)eHindex.Name];
                 if (cbUseAdvFilter.Checked)
                 {
@@ -1175,7 +1172,6 @@ namespace BTHistoryReader
         // are being done
         private void PerformThruput()
         {
-
             long t_start, t_stop, t_diff;
             int i, j, k;
             int i1, i2; // used to access iSort..
@@ -2316,6 +2312,52 @@ namespace BTHistoryReader
             else tb_Info.Text = "Probably no data for ET analysis\r\n";
         }
 
+        private List<double> ElapsedTime = new List<double>();
+        private List<double> CompletionTime = new List<double>();   
+        private bool GetCreditResources()
+        {
+            ElapsedTime.Clear();
+            CompletionTime.Clear();
+            int i, j, n;
+            if (lb_SelWorkUnits.Items.Count < 2) return false           ;
+            if (lb_SelWorkUnits.SelectedIndices.Count != 2) return false;
+            i = lb_SelWorkUnits.SelectedIndices[0]; // difference between this shows the selection
+            j = lb_SelWorkUnits.SelectedIndices[1];
+            n = j - i;
+            if (n < 3) return false;  // need to show two segments at least    
+            for (n = i; n <= j; n++)
+            {
+                int k = iSortIndex[n];
+                if (!ThisProjectInfo[k].bState) continue;
+                ElapsedTime.Add(ThisProjectInfo[k].dElapsedTime);
+                CompletionTime.Add(ThisProjectInfo[k].time_t_Completed);
+            }
+            return true;
+        }
+        private void btnPlotCredit_Click(object sender, EventArgs e) // this is the histogram
+        {
+            double dCrInfo = tb_AvgCredit.Text == "" ? 0.0 : Convert.ToDouble(tb_AvgCredit.Text);
+            bool bUsingWUs = dCrInfo >= 1.0;
+            if (bUsingWUs) return;
+            if(!GetCreditResources()) return;
+            CalculateCosts(dCrInfo);
+        }
+
+        private void CalculateCosts(double dCrInfo)
+        {
+            double dCost = 0;
+            int n = CompletionTime.Count;
+            for (int i = 0; i < n; i++)
+            {
+                dCost += ElapsedTime[i] * dCrInfo;   // cost per second of completion time which is in minutes
+            }
+            double TimeDiff = CompletionTime[n-1] - CompletionTime[0];
+            TimeDiff /= 3600;  // convert to hours
+            //tbTotalHours.Text = TimeDiff.ToString("F2");
+            tbPoints.Text = dCost.ToString("F2");
+        }
+
+
         // the next group in ascending order of time
         private void btnCheckNext_Click(object sender, EventArgs e)
         {
@@ -2417,6 +2459,7 @@ namespace BTHistoryReader
                     sa.dValues = new List<double>();
                     jLoc = 0;
                     sa.iGpuDevice = new List<int>();
+                    sa.iGpuType = new List<int>();
                     foreach (double d in appName.dElapsedTime)
                     {
                         bGood = appName.bIsValid[jLoc];
@@ -2484,6 +2527,8 @@ namespace BTHistoryReader
                     iGpu = pi.iDeviceUsed;
                     iGPUsUsed.Add(iGpu);
                     sa = new cSeriesData();
+                    //string D = "D";
+                    //D = OneSplitLine.CPUGPUtypes[(pi.idGPUCPUy)].Substring(0, 1);
                     sa.strSeriesName = "D" + iGpu.ToString();
                     GPUtoSeries[iGpu] = nSeries;
                     nSeries++;
@@ -2492,7 +2537,8 @@ namespace BTHistoryReader
                     sa.strAppName = cb_AppNames.Text;       // usually more than one app this must be first in listview
                     sa.strProjName = CurrentProject;    //only doing one project use this for title info
                     sa.dValues = new List<double>();
-                    sa.iGpuDevice = new List<int>();    
+                    sa.iGpuDevice = new List<int>();  
+                    sa.iGpuType = new List<int>();
                     sa.ShowType = eShowType.DoingGPUs;
                     sa.bIsValid = new List<bool>();
                     sa.dAvgs = 0.0;

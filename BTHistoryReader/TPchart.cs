@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Text;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -35,6 +36,7 @@ namespace BTHistoryReader
         private double dFirst, dLast;
         List<double> xAxis;
         List<double> yAxis;
+        private bool bDoingCredits = false;
 
         private void ShowOrHideHist(bool bValue)
         {
@@ -156,7 +158,6 @@ namespace BTHistoryReader
             // gl = refGL;
             lbl_sysname.Text = "System: " + strProject;
             ShowOrHideHist(AvgGap == -1);
-
 
             labStartTime.Visible = (AvgGap != -1);  // only for plot of idle time
             labYoffset.Visible = (AvgGap != -1);

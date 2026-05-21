@@ -33,9 +33,10 @@ namespace BTHistoryReader
         public long time_t_Completed;
         public long time_t_Diff_C_S;
         public string strUse;
-        public int iDeviceUsed; //if -1 then CPU or not known  only applies to GPUs
+        public int iDeviceUsed; //if -1 then CPU or not known  0..n-1 is GPU device number or 0 
         public int iSaveDeviceUsed; // want to be able to return to the gpu res-assignement
         public bool bDeviceUnk; // was not identified as gpu0 or whatever.  might be device 0 or might have not executed long enough to be identified
+        public int idGPUCPUy; // 2025 0 for cpu, 1 for NVIDIA 2 for AMD 3 for INTEL y
         public string strReceived;
         public string strVMem;
         public string strMem;
@@ -43,6 +44,34 @@ namespace BTHistoryReader
         public int iSystem;    // index to system data came from
         public int DatasetGroup;
         public bool bExclude;  // used by the advanced filter program
+        public int SetGPUCPU(string use)
+        {
+            int i = 0;
+            idGPUCPUy = 0;
+            iDeviceUsed = 0;
+            string[] CPUGPUtypes = new string[] { "NVIDIA", "AMD", "INTEL" };
+            foreach (string s in CPUGPUtypes)
+            {
+                i++;
+                if (use.Contains(s))
+                {
+                    idGPUCPUy = i;
+                    break;
+                }
+            }
+            i = use.IndexOf("device ");
+            if (i > 0)
+            {
+                int j = use.LastIndexOf(")");
+                Debug.Assert(j > i);
+                i += 7; // length of "device "   
+                string strTemp = use.Substring(i, j - i);
+                iDeviceUsed = Convert.ToInt32(strTemp);
+            }
+            // the below is that that AddUse did which seems unnecessary 
+            if (idGPUCPUy == 0) return -1;
+            return iDeviceUsed;
+        }
     }
 
     public class cOutFilter
@@ -65,7 +94,7 @@ namespace BTHistoryReader
 
     public class cGpuReassigned
     {
-        public int NumGPUs; // this is actually the orginal of the largest GPU id + 1 which may or may not be the total number of gpus
+        public int NumGPUs; // this is actually the original of the largest GPU id + 1 which may or may not be the total number of gpus
         public int ReassignedGPU;   // if -1 then use previous gpu id else use 0..(NumGPUs-1)
                                     // it appears the unknown gpus are from the fastest one eg: the amd Vii
         public int NumberGPUsUnknown;
@@ -481,7 +510,8 @@ namespace BTHistoryReader
                                             // and each number is unique unless the same dataset is used by another app
                                             // for scattering datasets this is the group number that matches the dataset name
                                             // and does not correspond to a point
-        public List<int> iGpuDevice;      // gpu devcice number 0..whatever or 0 if a cpu                       
+        public List<int> iGpuDevice;      // gpu device number 0..whatever or 0 if a cpu                       
+        public List<int> iGpuType;        // 0 for cpu, 1 for NVIDIA, 2 for AMD, 3 for INTEL
         public string GetNameToShow(eShowType eST)
         {
             switch (eST)
@@ -615,6 +645,35 @@ namespace BTHistoryReader
             RtnCod |= (CompletedTime == 0) ? (int)eHistoryError.NoCompletionTime : 0;
             return RtnCod;
         }
+        
+        public int SetGPUCPU()
+        {
+            int i = 0;
+            idGPUCPUx = 0;
+            iDeviceUsed = 0;
+            string[] CPUGPUtypes = new string[] { "NVIDIA", "AMD", "INTEL" };
+            foreach (string s in CPUGPUtypes)
+            {
+                i++;
+                if(use.Contains(s))
+                {
+                    idGPUCPUx = i;
+                    break;
+                }   
+            }
+            i = use.IndexOf("device ");
+            if(i>0)
+            {
+                int j = use.LastIndexOf(")");
+                Debug.Assert(j > i);
+                i += 7; // length of "device "   
+                string strTemp = use.Substring(i, j - i);
+                iDeviceUsed = Convert.ToInt32(strTemp);
+            }
+            // the below is that that AddUse did which seems unnecessary 
+            if (idGPUCPUx == 0) return -1;
+            return iDeviceUsed;
+        }
 
         public int Run;
         public string Project;
@@ -634,6 +693,7 @@ namespace BTHistoryReader
         public string strCompletedTime;
         public string use;
         public int iDeviceUsed; // if gpu we want id else =1
+        public int idGPUCPUx; // 2025 0 for cpu, 1 for NVIDIA 2 for AMD 3 for INTEL x
         public double Received;
         public double vMem;
         public double Mem;
@@ -664,6 +724,7 @@ namespace BTHistoryReader
         public List<int> DataSetGroup;
         public List<bool> bIsValid;
         public List<int> DeviceID;  // can be used in plot all datasets to show GPU
+        public List<int> DeviceType; // 0 for cpu, 1 for NVIDIA, 2 for AMD, 3 for INTEL 
         public int NumberBadWorkUnits;
         public double AvgRunTime;
         public double StdRunTime;
@@ -673,6 +734,7 @@ namespace BTHistoryReader
         // note that all records are read in but only last n-Skip will be processed
         public int nDevices;            // this is the total number of different GPUs
         public int nUsesGPU;            // if uses gpu then gpu cannot be 0 elapsed time (except bitcoin utopia crap!!)
+        public bool bIsUnknown;         // if true then this is an unknown gpu
         public List<int> LineLoc;       // offset or index into the history file. Index "4" is the history line identifier "1"
                                         // the above can be used to extract a value from the history file
                                         // subtract 3 from it to get the identifier.  the identifier is shown lb_SelWorkUnits
@@ -681,6 +743,7 @@ namespace BTHistoryReader
                                         // areas of the code.  if nUsesGPU < 0 then is not using a gpu else is device number
 
         public cGpuReassigned GpuReassignment;
+
         public int AddUse(string strUse)
         {
             string strTemp = strUse.ToLower();
@@ -701,11 +764,12 @@ namespace BTHistoryReader
             else nUsesGPU = -1;
             return 1 + nUsesGPU;
         }
-        public void AddETinfo(double d, int n, int j)
+        public void AddETinfo(double d, int n, int j, int k)
         {
             dElapsedTime.Add(d);
             DataSetGroup.Add(n);
             DeviceID.Add(j);
+            DeviceType.Add(k);
         }
         public string GetInfo
         {
@@ -814,6 +878,7 @@ namespace BTHistoryReader
             dElapsedTime = new List<double>();
             DataSetGroup = new List<int>();
             DeviceID = new List<int>();
+            DeviceType = new List<int>();
             bIsValid = new List<bool>();
             bIsUnknown = bIsUnk;
             //bUseThisAppInStatsListBox = true;   // unless specified otherwise in listbox
@@ -822,7 +887,6 @@ namespace BTHistoryReader
             iAssignedGPUs = 0;
             NumberBadWorkUnits = 0;
         }
-        public bool bIsUnknown;
     }
 
     // this structure is the "symbol table" used to lookup apps found in history

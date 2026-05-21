@@ -41,9 +41,11 @@ namespace BTHistoryReader
             public int nDev;    // number of unique devices d0, d1 would be 2 devices
             public double cpd;  // credits per day
             public List<int> nDevL = new List<int>();
-            public void AddnDev(int d)
+            public List<int> nDevT = new List<int>();
+            public void AddnDev(int d, int e)
             {
                 nDevL.Add(d);
+                nDevT.Add(e);
             }
             public List<double> dLelapsedTime = new List<double>();
             public void AddValue(double d)
@@ -210,7 +212,7 @@ namespace BTHistoryReader
                             if (AppName.bIsValid[iLoc])
                             {
                                 ckpaa.AddValue(d / 60.0);
-                                ckpaa.AddnDev(AppName.DeviceID[iLoc]);
+                                ckpaa.AddnDev(AppName.DeviceID[iLoc], AppName.DeviceType[iLoc]);
                             }
                             iLoc++;
                         }
@@ -649,6 +651,7 @@ namespace BTHistoryReader
                                     sa.dValues.Add(d/ckpaa.nConcurrent);
                                     sa.bIsValid.Add(true);
                                     sa.iGpuDevice.Add(ckpaa.nDevL[iLoc]);
+                                    sa.iGpuType.Add(ckpaa.nDevT[iLoc]);
                                     iLoc++;
                                 }
                             }
@@ -685,6 +688,7 @@ namespace BTHistoryReader
                                     sa.dValues.Add(d/ckpaa.nConcurrent);
                                     sa.iSystem.Add(ckpaa.iSystem);
                                     sa.iGpuDevice.Add(ckpaa.nDevL[iLoc]);
+                                    sa.iGpuType.Add(ckpaa.nDevT[iLoc]);
                                     sa.bIsValid.Add(true);
                                     iLoc++;
                                 }
@@ -726,6 +730,7 @@ namespace BTHistoryReader
                 sa.TheseSystems = new List<string>();
                 sa.iTheseSystem = new List<int>();
                 sa.iGpuDevice = new List<int>();
+                sa.iGpuType = new List<int>();
                 sa.ShowType = eShowType.DoingApps;
                 sa.bIsValid = new List<bool>();
                 sa.nConcurrent = 1; // this may be revised when data is obtain as we dont know the system yet
@@ -763,6 +768,7 @@ namespace BTHistoryReader
                     sa.strProjName = LBoxProjects.Text;
                     sa.dValues = new List<double>();
                     sa.iGpuDevice = new List<int>();
+                    sa.iGpuType = new List<int>();
                     sa.ShowType = eShowType.DoingSystems;
                     sa.nConcurrent = Convert.ToInt32(itm.SubItems[0].Text);
                     sa.bIsValid = new List<bool>();

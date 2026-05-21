@@ -71,6 +71,7 @@
             this.cbShowError = new System.Windows.Forms.CheckBox();
             this.btnScatSets = new System.Windows.Forms.Button();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.btnPlotCredit = new System.Windows.Forms.Button();
             this.cbIdleGpu = new System.Windows.Forms.ComboBox();
             this.btnPlotET = new System.Windows.Forms.Button();
             this.btnPlot = new System.Windows.Forms.Button();
@@ -114,6 +115,7 @@
             this.ofd_history = new System.Windows.Forms.OpenFileDialog();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.TimerShowBuild = new System.Windows.Forms.Timer(this.components);
+            this.tbPoints = new System.Windows.Forms.TextBox();
             this.panel1.SuspendLayout();
             this.groupBox8.SuspendLayout();
             this.groupBox7.SuspendLayout();
@@ -634,22 +636,36 @@
             // 
             // groupBox5
             // 
+            this.groupBox5.Controls.Add(this.tbPoints);
+            this.groupBox5.Controls.Add(this.btnPlotCredit);
             this.groupBox5.Controls.Add(this.cbIdleGpu);
             this.groupBox5.Controls.Add(this.btnPlotET);
             this.groupBox5.Controls.Add(this.btnPlot);
-            this.groupBox5.Location = new System.Drawing.Point(376, 269);
+            this.groupBox5.Location = new System.Drawing.Point(306, 269);
             this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(110, 127);
+            this.groupBox5.Size = new System.Drawing.Size(180, 127);
             this.groupBox5.TabIndex = 21;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Above Selections";
+            // 
+            // btnPlotCredit
+            // 
+            this.btnPlotCredit.ForeColor = System.Drawing.SystemColors.HotTrack;
+            this.btnPlotCredit.Location = new System.Drawing.Point(103, 19);
+            this.btnPlotCredit.Name = "btnPlotCredit";
+            this.btnPlotCredit.Size = new System.Drawing.Size(62, 23);
+            this.btnPlotCredit.TabIndex = 28;
+            this.btnPlotCredit.Text = "Credits";
+            this.toolTip1.SetToolTip(this.btnPlotCredit, "Plots idle but showss\r\ncalculated credits");
+            this.btnPlotCredit.UseVisualStyleBackColor = true;
+            this.btnPlotCredit.Click += new System.EventHandler(this.btnPlotCredit_Click);
             // 
             // cbIdleGpu
             // 
             this.cbIdleGpu.FormattingEnabled = true;
             this.cbIdleGpu.Location = new System.Drawing.Point(11, 75);
             this.cbIdleGpu.Name = "cbIdleGpu";
-            this.cbIdleGpu.Size = new System.Drawing.Size(79, 21);
+            this.cbIdleGpu.Size = new System.Drawing.Size(66, 21);
             this.cbIdleGpu.TabIndex = 27;
             // 
             // btnPlotET
@@ -1021,16 +1037,17 @@
             this.tb_AvgCredit.Name = "tb_AvgCredit";
             this.tb_AvgCredit.Size = new System.Drawing.Size(57, 20);
             this.tb_AvgCredit.TabIndex = 6;
-            this.tb_AvgCredit.Text = "0";
+            this.tb_AvgCredit.Text = "1";
             // 
             // label3
             // 
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(97, 103);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(146, 13);
+            this.label3.Size = new System.Drawing.Size(122, 13);
             this.label3.TabIndex = 5;
-            this.label3.Text = "Estimated Avg Credit Per Unit";
+            this.label3.Text = "Credit per unit or second";
+            this.toolTip1.SetToolTip(this.label3, "IFactional value is credits per second\r\nif greater than 1 then credits per unit");
             // 
             // label2
             // 
@@ -1100,6 +1117,13 @@
             this.TimerShowBuild.Interval = 250;
             this.TimerShowBuild.Tick += new System.EventHandler(this.TimerShowBuild_Tick);
             // 
+            // tbPoints
+            // 
+            this.tbPoints.Location = new System.Drawing.Point(103, 48);
+            this.tbPoints.Name = "tbPoints";
+            this.tbPoints.Size = new System.Drawing.Size(57, 20);
+            this.tbPoints.TabIndex = 29;
+            // 
             // BTHistory
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1129,6 +1153,7 @@
             this.groupBox6.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.nudConCurrent)).EndInit();
             this.groupBox5.ResumeLayout(false);
+            this.groupBox5.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.groupBox1.ResumeLayout(false);
@@ -1156,7 +1181,6 @@
         private System.Windows.Forms.GroupBox gb_filter;
         private System.Windows.Forms.Button btn_Filter;
         private System.Windows.Forms.TextBox tb_Results;
-        private System.Windows.Forms.TextBox tb_AvgCredit;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.ListBox lb_SelWorkUnits;
         private System.Windows.Forms.Button btnClear;
@@ -1224,6 +1248,9 @@
         private System.Windows.Forms.ComboBox cbFilterSTD;
         private System.Windows.Forms.DataGridView dgvOF;
         private System.Windows.Forms.Button btAppOF;
+        private System.Windows.Forms.Button btnPlotCredit;
+        private System.Windows.Forms.TextBox tb_AvgCredit;
+        private System.Windows.Forms.TextBox tbPoints;
     }
 }
 
