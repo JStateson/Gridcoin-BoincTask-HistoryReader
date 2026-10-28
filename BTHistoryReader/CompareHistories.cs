@@ -336,7 +336,7 @@ namespace BTHistoryReader
             bool bShowFL = cboxFL.Checked;
             int MaxAllowed = Convert.ToInt32(tbSumCnt.Text);
             bool bShowSummary = false;
-
+            double WUperDay;
             bool bUseAll = LBoxApps.SelectedIndices.Count == 0;
             bool bUseThis;
             bool bCandidate;
@@ -419,7 +419,9 @@ namespace BTHistoryReader
             sTemp = "Num: " + dTemp.Count.ToString("0") + "\r\n";
             sTemp += "AVG: " + dAvg.ToString("#,##0.00").PadLeft(12) + "\r\n";
             sTemp += "STD: " + dStd.ToString("#,##0.00").PadLeft(12) + "\r\n";
-            sTemp += "\r\nTotal  workunits per day " + Totalcpd.ToString("###,###.##");
+            WUperDay = 1440 / dAvg;
+            sTemp += "\r\nTotal workunits per day (one device) " + WUperDay.ToString("###,###.##");
+            sTemp += "\r\nEstimated credits per day " + Totalcpd.ToString("###,###.##");
             sTemp += "\r\nMultiply by average credit per work unit\r\nto get your average daily credit";
             TBoxStats.Text = strSPAstats + "\r\n" + sTemp;
             toolTip1.SetToolTip(BtnCmpSave, strSystems);

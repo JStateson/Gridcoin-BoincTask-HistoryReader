@@ -54,6 +54,7 @@
             this.colUSE = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.colSysName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.colCount = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.colDistinct = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.btnApply = new System.Windows.Forms.Button();
             this.btnHelp = new System.Windows.Forms.Button();
             this.BtnCmpSave = new System.Windows.Forms.Button();
@@ -68,7 +69,6 @@
             this.cboxFL = new System.Windows.Forms.CheckBox();
             this.TBoxResults = new System.Windows.Forms.TextBox();
             this.lblWarnApps = new System.Windows.Forms.Label();
-            this.colDistinct = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.tbTotalDev = new System.Windows.Forms.TextBox();
             this.panel1.SuspendLayout();
             this.groupBox5.SuspendLayout();
@@ -312,7 +312,7 @@
             this.TBoxStats.Name = "TBoxStats";
             this.TBoxStats.ReadOnly = true;
             this.TBoxStats.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.TBoxStats.Size = new System.Drawing.Size(293, 182);
+            this.TBoxStats.Size = new System.Drawing.Size(481, 182);
             this.TBoxStats.TabIndex = 9;
             this.TBoxStats.WordWrap = false;
             // 
@@ -352,6 +352,11 @@
             // 
             this.colCount.Text = "Count";
             this.colCount.Width = 57;
+            // 
+            // colDistinct
+            // 
+            this.colDistinct.Text = "Num Devices";
+            this.colDistinct.Width = 86;
             // 
             // btnApply
             // 
@@ -458,7 +463,7 @@
             this.groupBox6.Controls.Add(this.TBoxStats);
             this.groupBox6.Location = new System.Drawing.Point(24, 434);
             this.groupBox6.Name = "groupBox6";
-            this.groupBox6.Size = new System.Drawing.Size(716, 227);
+            this.groupBox6.Size = new System.Drawing.Size(897, 227);
             this.groupBox6.TabIndex = 18;
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = "Values / Summery and Results";
@@ -506,11 +511,6 @@
             this.lblWarnApps.Size = new System.Drawing.Size(230, 13);
             this.lblWarnApps.TabIndex = 19;
             this.lblWarnApps.Text = "Cannot edit table if more than one app selected";
-            // 
-            // colDistinct
-            // 
-            this.colDistinct.Text = "Num Devices";
-            this.colDistinct.Width = 86;
             // 
             // tbTotalDev
             // 

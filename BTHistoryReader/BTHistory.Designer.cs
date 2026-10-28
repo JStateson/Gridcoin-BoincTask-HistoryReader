@@ -71,6 +71,7 @@
             this.cbShowError = new System.Windows.Forms.CheckBox();
             this.btnScatSets = new System.Windows.Forms.Button();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.tbPoints = new System.Windows.Forms.TextBox();
             this.btnPlotCredit = new System.Windows.Forms.Button();
             this.cbIdleGpu = new System.Windows.Forms.ComboBox();
             this.btnPlotET = new System.Windows.Forms.Button();
@@ -115,7 +116,6 @@
             this.ofd_history = new System.Windows.Forms.OpenFileDialog();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.TimerShowBuild = new System.Windows.Forms.Timer(this.components);
-            this.tbPoints = new System.Windows.Forms.TextBox();
             this.panel1.SuspendLayout();
             this.groupBox8.SuspendLayout();
             this.groupBox7.SuspendLayout();
@@ -648,6 +648,13 @@
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Above Selections";
             // 
+            // tbPoints
+            // 
+            this.tbPoints.Location = new System.Drawing.Point(103, 48);
+            this.tbPoints.Name = "tbPoints";
+            this.tbPoints.Size = new System.Drawing.Size(57, 20);
+            this.tbPoints.TabIndex = 29;
+            // 
             // btnPlotCredit
             // 
             this.btnPlotCredit.ForeColor = System.Drawing.SystemColors.HotTrack;
@@ -972,6 +979,7 @@
             // btnLkCr
             // 
             this.btnLkCr.BackColor = System.Drawing.SystemColors.Info;
+            this.btnLkCr.Enabled = false;
             this.btnLkCr.Font = new System.Drawing.Font("Arial Narrow", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnLkCr.Location = new System.Drawing.Point(12, 103);
             this.btnLkCr.Name = "btnLkCr";
@@ -1116,13 +1124,6 @@
             this.TimerShowBuild.Enabled = true;
             this.TimerShowBuild.Interval = 250;
             this.TimerShowBuild.Tick += new System.EventHandler(this.TimerShowBuild_Tick);
-            // 
-            // tbPoints
-            // 
-            this.tbPoints.Location = new System.Drawing.Point(103, 48);
-            this.tbPoints.Name = "tbPoints";
-            this.tbPoints.Size = new System.Drawing.Size(57, 20);
-            this.tbPoints.TabIndex = 29;
             // 
             // BTHistory
             // 

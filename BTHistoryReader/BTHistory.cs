@@ -699,7 +699,7 @@ namespace BTHistoryReader
                             strSymbols = LinesHistory[jStop].Split('\t');
                             long lStop = Convert.ToInt64(strSymbols[11]);
                             AppName.TotalTimeSecs = lStop - lStart;
-                            if (AppName.bIsValid.Count > 1)
+                            if (AppName.bIsValid.Count > 0)
                             {
                                 AppName.CreditPerDay = AppName.AppCredit * AppName.bIsValid.Count * 86400.0 / AppName.TotalTimeSecs;
                                 if(AppName.CreditPerDay < 0)

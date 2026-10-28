@@ -815,6 +815,7 @@ namespace BTHistoryReader
         public long TotalTimeSecs; // stop - start time for first and last app
         public double AppCredit = 1.0;
         public double CreditPerDay = 0.0;
+        public int WorkUnitsPerDay = 0;
         public bool DoAverages(ref int FirstValid, ref int LastValid)            // return true if avg was calculated
         {
             int nUsed = 0;
