@@ -300,24 +300,26 @@
             this.lbEditTab.ForeColor = System.Drawing.Color.Crimson;
             this.lbEditTab.Location = new System.Drawing.Point(140, 235);
             this.lbEditTab.Name = "lbEditTab";
-            this.lbEditTab.Size = new System.Drawing.Size(204, 26);
+            this.lbEditTab.Size = new System.Drawing.Size(393, 26);
             this.lbEditTab.TabIndex = 7;
-            this.lbEditTab.Text = "ASSUMES ONE WU PER GPU UNLESS\r\nYOU EDIT VALUE IN FIRST COLUMN";
+            this.lbEditTab.Text = "ASSUMES ONE WU PER GPU UNLESS YOU EDIT VALUE IN FIRST COLUMN\r\nuse F2 to edit the " +
+    "first column and F4 for the last";
             // 
             // TBoxStats
             // 
             this.TBoxStats.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TBoxStats.Location = new System.Drawing.Point(397, 30);
+            this.TBoxStats.Location = new System.Drawing.Point(338, 30);
             this.TBoxStats.Multiline = true;
             this.TBoxStats.Name = "TBoxStats";
             this.TBoxStats.ReadOnly = true;
             this.TBoxStats.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.TBoxStats.Size = new System.Drawing.Size(481, 182);
+            this.TBoxStats.Size = new System.Drawing.Size(540, 182);
             this.TBoxStats.TabIndex = 9;
             this.TBoxStats.WordWrap = false;
             // 
             // LViewConc
             // 
+            this.LViewConc.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.LViewConc.CheckBoxes = true;
             this.LViewConc.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.colUSE,

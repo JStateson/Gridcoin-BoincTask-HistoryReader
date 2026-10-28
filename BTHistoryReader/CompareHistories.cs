@@ -34,6 +34,11 @@ namespace BTHistoryReader
         private string strAverageAll = "Average All";
         public List<bool> bItemsToColor = new List<bool>(); // use color to show which apps have values
         private List<cSeriesData> MySeriesData;
+
+        private TextBox editBox = new TextBox();
+        private ListViewItem editItem;
+        private bool cancelEdit = false;
+
         public class cKPAapps
         {
             public string sAppName;
@@ -165,8 +170,14 @@ namespace BTHistoryReader
             LBoxApps.Items.Clear();
             LBoxProjects.Items.Clear();
             btf.CurrentSystem = "";
+            editBox.Visible = false;
+            LViewConc.Controls.Add(editBox);
+            LViewConc.KeyDown += LViewConc_KeyDown;
+            editBox.KeyDown += EditBox_KeyDown;
+            editBox.Leave += EditBox_Leave;
+
             //ShowAppSelects(false);              // todo need implement multi-select better as systems are list for just one item
-                                                // not all those selected in the listbox
+            // not all those selected in the listbox
             EstimateLineCount();
             foreach (string strHisFile in btf.AllHistories)
             {
@@ -235,6 +246,71 @@ namespace BTHistoryReader
             strDebugTemp += "}";
 #endif
         }
+
+        private void EditBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                cancelEdit = false;
+                FinishEdit();
+            }
+            else if (e.KeyCode == Keys.Escape)
+            {
+                cancelEdit = true;
+                FinishEdit();
+            }
+            else
+                return;
+
+            e.Handled = true;
+            e.SuppressKeyPress = true;
+        }
+
+        private void FinishEdit()
+        {
+            if (!editBox.Visible)
+                return;
+
+            editBox.Visible = false;
+
+            if (!cancelEdit && editItem != null)
+                editItem.SubItems[3].Text = editBox.Text;
+
+            editItem = null;
+            LViewConc.Focus();
+        }
+
+        private void EditBox_Leave(object sender, EventArgs e)
+        {
+            FinishEdit();
+        }
+
+        private void LViewConc_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode != Keys.F4 ||
+                LViewConc.SelectedItems.Count == 0)
+                return;
+
+            editItem = LViewConc.SelectedItems[0];
+
+            if (editItem.SubItems.Count <= 3)
+                return;
+
+            Rectangle rect = editItem.SubItems[3].Bounds;
+
+            editBox.Bounds = rect;
+            editBox.Text = editItem.SubItems[3].Text;
+            cancelEdit = false;
+
+            editBox.Visible = true;
+            editBox.BringToFront();
+            editBox.Focus();
+            editBox.SelectAll();
+
+            e.Handled = true;
+            e.SuppressKeyPress = true;
+        }
+
 
         //{"Milkyway@Home","World Community Grid","SETI@home","Rosetta@home","GPUGRID","Einstein@Home","LHC@home","Asteroids@home","NumberFields@home","latinsquares","TN-Grid Platform","collatz","Collatz Conjecture","PrimeGrid","Universe@Home","Bitcoin Utopia"}
 
@@ -336,11 +412,14 @@ namespace BTHistoryReader
             bool bShowFL = cboxFL.Checked;
             int MaxAllowed = Convert.ToInt32(tbSumCnt.Text);
             bool bShowSummary = false;
-            double WUperDay;
+            double WUperDay=0, TotalWUperDay=0;
             bool bUseAll = LBoxApps.SelectedIndices.Count == 0;
             bool bUseThis;
             bool bCandidate;
             double Totalcpd=0; // credit per day
+
+            int NumDevices = 1;
+            int NumSystems = 0;
 
             Last_sProj = sProj;
             Last_sApp = sApp;
@@ -398,8 +477,10 @@ namespace BTHistoryReader
                                 }
                                 if(bShowSummary)
                                     sTemp += "Summary: " + strLoc + " " + ncnt.ToString() + "\r\n";
+                                WUperDay = 1440 / ckpaa.dLelapsedTime.Average() * ckpaa.nConcurrent * ckpaa.nDev;
+                                TotalWUperDay += WUperDay;
                                 strSPAstats += strLoc + ":\t" + sProj + "-" + sApp + "(" + ncnt.ToString()  + ")" + strDivide(ckpaa.nConcurrent) +
-                                    "\tCPD:" +ckpaa.cpd.ToString("#####.##") + "\r\n";
+                                    "\tWUPD:" +ckpaa.cpd.ToString("#####.##") + "\r\n";
                                 Totalcpd += ckpaa.cpd;
                             }
                         }
@@ -419,9 +500,8 @@ namespace BTHistoryReader
             sTemp = "Num: " + dTemp.Count.ToString("0") + "\r\n";
             sTemp += "AVG: " + dAvg.ToString("#,##0.00").PadLeft(12) + "\r\n";
             sTemp += "STD: " + dStd.ToString("#,##0.00").PadLeft(12) + "\r\n";
-            WUperDay = 1440 / dAvg;
-            sTemp += "\r\nTotal workunits per day (one device) " + WUperDay.ToString("###,###.##");
-            sTemp += "\r\nEstimated credits per day " + Totalcpd.ToString("###,###.##");
+            sTemp += "\r\nTotal workunits per day all systems/devices " + TotalWUperDay.ToString("###,###.##");
+            //sTemp += "\r\nEstimated credits per day " + Totalcpd.ToString("###,###.##");
             sTemp += "\r\nMultiply by average credit per work unit\r\nto get your average daily credit";
             TBoxStats.Text = strSPAstats + "\r\n" + sTemp;
             toolTip1.SetToolTip(BtnCmpSave, strSystems);
@@ -518,7 +598,7 @@ namespace BTHistoryReader
         }
 
         // put the number of concurrent items processed by the GPU into the table that has the corresponding data.
-        private void BackfitConcurrency(string sysname, string projname, string appname, int value,bool bLVchecked)
+        private void BackfitConcurrency(string sysname, string projname, string appname, int value,bool bLVchecked, int nDevices)
         {
             foreach (cKPAlocs ckpal in KPAlocs)                          // for each system
             {
@@ -534,7 +614,8 @@ namespace BTHistoryReader
                                 if (Systems[ckpaa.iSystem] == sysname)
                                 {
                                     ckpaa.nConcurrent = value;
-                                    ckpaa.bUseThisAppInStatsListBox = bLVchecked;
+                                    ckpaa.nDev = nDevices;
+                                        ckpaa.bUseThisAppInStatsListBox = bLVchecked;
                                 }
                             }
                         }
@@ -553,6 +634,7 @@ namespace BTHistoryReader
                     foreach (cKPAapps ckpaa in ckpap.KPAapps)       // for each app in the project
                     {
                         ckpaa.nConcurrent = value;
+                        ckpaa.nDev = 1;
                         ckpaa.bUseThisAppInStatsListBox = bChecked;
                     }
                 }
@@ -567,15 +649,17 @@ namespace BTHistoryReader
             bool bAny = false;
             string strSysName, strProjName, strAppName;
             int nConcurrent = 1;
+            int nDevices = 1;
             lblWarnApply.Visible = false;
             foreach(ListViewItem itm in LViewConc.Items)
             {
                 strSysName = itm.SubItems[1].Text;
                 nConcurrent = Convert.ToInt32(itm.SubItems[0].Text);
+                nDevices = Convert.ToInt32(itm.SubItems[3].Text);
                 strProjName = LBoxProjects.Text;
                 strAppName = "";
                 bool bBad = GetNameFromBox(LBoxApps.Text, ref strAppName);
-                BackfitConcurrency(strSysName, strProjName, strAppName, nConcurrent, itm.Checked);
+                BackfitConcurrency(strSysName, strProjName, strAppName, nConcurrent, itm.Checked, nDevices);
                 if (itm.Checked)
                     bAny = true;
                 // below not needed as we are saving the checkmarks during backfit
